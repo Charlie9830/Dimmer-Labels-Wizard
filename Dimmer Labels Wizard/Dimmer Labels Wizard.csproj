@@ -42,11 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Debug.cs" />
+    <Compile Include="FileOut.cs" />
     <Compile Include="FooterCell.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="HeaderCell.cs" />
     <Compile Include="FileIn.cs" />
     <Compile Include="LabelCell.cs" />
+    <Compile Include="Processing.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

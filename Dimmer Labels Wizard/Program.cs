@@ -13,7 +13,8 @@ namespace Dimmer_Labels_Wizard
        
         static void Main(string[] args)
         {
-        
+            FileIn.ImportFile();
+            Debug.PrintLabelToConsole();
         }
     }
 }

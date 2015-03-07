@@ -11,6 +11,7 @@ namespace Dimmer_Labels_Wizard
         // Properties
         public int strip_identifier { get; set; }
         public int col_index { get; set; }
+        public int global_id { get; set; }
 
         public int height { get; set; }
         public int width { get; set; }

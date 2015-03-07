@@ -30,5 +30,7 @@ namespace Dimmer_Labels_Wizard
         public string bot_font { get; set; }
         public int bot_size { get; set; }
         public string bot_justification { get; set; }
+
+       
     }
 }
