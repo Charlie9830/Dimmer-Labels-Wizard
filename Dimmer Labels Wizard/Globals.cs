@@ -8,6 +8,9 @@ namespace Dimmer_Labels_Wizard
 {
     public static class Globals
     {
+        // List to hold DimDistroUnit Objects
+        public static List<DimDistroUnit> DimDistroUnits = new List<DimDistroUnit>();
+
         // List to hold Header Cell Objects.
         public static List<HeaderCell> HeaderCells = new List<HeaderCell>();
 

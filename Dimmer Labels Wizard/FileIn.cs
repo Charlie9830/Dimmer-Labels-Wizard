@@ -18,7 +18,7 @@ namespace Dimmer_Labels_Wizard
         {
 
             // Creae new CSV Object and Point it to the file location.
-            CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Data.csv");
+            CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Files\Advanced Test Data Les Mis Sydney.csv");
             file.SetDelimiters(",");
 
             // Read the First line to Throw out Coloum header values.
@@ -27,6 +27,13 @@ namespace Dimmer_Labels_Wizard
             // Keep track of and Assign HeaderCells/FooterCells list Indices
             int list_index = 0;
 
+            // Column Indexes
+            int channel_col = 0;
+            int dimmer_col = 1;
+            int instrument_type_col = 2;
+            int multicore_name_col = 3;
+            int cabinet_number_col = 4;
+            
             while (!file.EndOfData)
             {
                 
@@ -37,23 +44,26 @@ namespace Dimmer_Labels_Wizard
                 // Check if a value exists in the Dimmer Cell.
                 if (fields[1] != "")
                 {
-                    // Iterate through File Line, Create and Assign Values to HeaderCells/FooterCells Objects.
-                    for (int i = 0; i < fields.Length; i++)
-                    {
-                        // Init Objects Here
-                        Globals.HeaderCells.Insert(list_index, new HeaderCell());
-                        Globals.FooterCells.Insert(list_index, new FooterCell());
+                    
+                    
+                        // Init Object Representing a Dimmer Or Distro Channel Here
+                        Globals.DimDistroUnits.Insert(list_index, new DimDistroUnit());
+                        
 
-                        // Populate them here
-                        Globals.FooterCells[list_index].global_id = list_index;
-                        Globals.FooterCells[list_index].top_data = fields[0];
-                        Globals.FooterCells[list_index].bot_data = fields[2];
+                        // Populate object 
+                             //Directly Imported Data
+                        Globals.DimDistroUnits[list_index].channel_number = fields[channel_col];
 
-                        Globals.HeaderCells[list_index].global_id = list_index;
-                        Globals.HeaderCells[list_index].data = fields[3];
+                        Globals.DimDistroUnits[list_index].dimmer_number = fields[dimmer_col];
+                        Globals.DimDistroUnits[list_index].instrument_type = fields[instrument_type_col];
+                        Globals.DimDistroUnits[list_index].multicore_name = fields[multicore_name_col];
+                        Globals.DimDistroUnits[list_index].cabinet_number = fields[cabinet_number_col];
+
+                        // Application running data.
+                        Globals.DimDistroUnits[list_index].global_id = list_index;
 
 
-                    }
+                    
 
                     list_index++;
                 }
