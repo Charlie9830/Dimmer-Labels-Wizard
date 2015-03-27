@@ -17,8 +17,7 @@ namespace Dimmer_Labels_Wizard
         // List Cell to footer cell objects.
         public static List<FooterCell> FooterCells = new List<FooterCell>();
 
-        // List to Hold a Dimmer Range to Sort Label Output.
-        public static List<int> DimmerRanges = new List<int>();
+        
 
     }
 }

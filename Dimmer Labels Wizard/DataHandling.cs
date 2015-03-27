@@ -3,22 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Excel = Microsoft.Office.Interop.Excel;
-
 
 namespace Dimmer_Labels_Wizard
 {
-    class Program
+    public static class DataHandling
     {
-       
-        static void Main(string[] args)
+        public static void SortByCabinetNumber()
         {
-            FileIn.ImportFile();
-
-            FileOut.DebugOutputToExcel();
-
-
             
         }
+
     }
 }

@@ -9,16 +9,12 @@ namespace Dimmer_Labels_Wizard
 {
     public static class FileIn
     {
-        /// <summary>
-        /// Import a CSV File. Process into Objects and adds those Objects to the HeaderCells/FooterCells List.
-        /// Paramters: Nothing
-        /// Returns: Nothing
-        /// </summary>
+        
         public static void ImportFile()
         {
 
-            // Creae new CSV Object and Point it to the file location.
-            CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Files\Advanced Test Data Les Mis Sydney.csv");
+            // Create new CSV Object and Point it to the file location.
+            CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\Advanced Test Data Les Mis Sydney.csv");
             file.SetDelimiters(",");
 
             // Read the First line to Throw out Coloum header values.
@@ -54,7 +50,7 @@ namespace Dimmer_Labels_Wizard
                              //Directly Imported Data
                         Globals.DimDistroUnits[list_index].channel_number = fields[channel_col];
 
-                        Globals.DimDistroUnits[list_index].dimmer_number = fields[dimmer_col];
+                        Globals.DimDistroUnits[list_index].dimmer_number_string = fields[dimmer_col];
                         Globals.DimDistroUnits[list_index].instrument_type = fields[instrument_type_col];
                         Globals.DimDistroUnits[list_index].multicore_name = fields[multicore_name_col];
                         Globals.DimDistroUnits[list_index].cabinet_number = fields[cabinet_number_col];
@@ -62,10 +58,11 @@ namespace Dimmer_Labels_Wizard
                         // Application running data.
                         Globals.DimDistroUnits[list_index].global_id = list_index;
 
-
+                        // Call Method to Calculate what kind of RackUnit it is.
+                        Globals.DimDistroUnits[list_index].CalculateRackUnitType();
                     
 
-                    list_index++;
+                        list_index++;
                 }
             }
 
