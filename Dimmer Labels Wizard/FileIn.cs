@@ -53,13 +53,13 @@ namespace Dimmer_Labels_Wizard
                         Globals.DimDistroUnits[list_index].dimmer_number_string = fields[dimmer_col];
                         Globals.DimDistroUnits[list_index].instrument_type = fields[instrument_type_col];
                         Globals.DimDistroUnits[list_index].multicore_name = fields[multicore_name_col];
-                        Globals.DimDistroUnits[list_index].cabinet_number = fields[cabinet_number_col];
+                        Globals.DimDistroUnits[list_index].cabinet_number_string = fields[cabinet_number_col];
 
                         // Application running data.
                         Globals.DimDistroUnits[list_index].global_id = list_index;
 
                         // Call Method to Calculate what kind of RackUnit it is.
-                        Globals.DimDistroUnits[list_index].CalculateRackUnitType();
+                        Globals.DimDistroUnits[list_index].ParseUnitData();
                     
 
                         list_index++;

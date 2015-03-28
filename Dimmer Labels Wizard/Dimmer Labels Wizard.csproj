@@ -45,6 +45,7 @@
     <Compile Include="DataHandling.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="DimDistroUnit.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="FileOut.cs" />
     <Compile Include="FooterCell.cs" />
     <Compile Include="Globals.cs" />

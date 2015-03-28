@@ -51,6 +51,10 @@ namespace Dimmer_Labels_Wizard
                 row_index += 1;
                 Output_Worksheet.Cells[row_index, col_index] = element.channel_number;
                 row_index += 1;
+                Output_Worksheet.Cells[row_index, col_index] = element.cabinet_number;
+                row_index += 1;
+                Output_Worksheet.Cells[row_index, col_index] = element.rack_number;
+                row_index += 1;
                 Output_Worksheet.Cells[row_index, col_index] = element.instrument_type;
 
                 

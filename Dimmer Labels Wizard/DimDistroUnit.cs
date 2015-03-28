@@ -6,49 +6,57 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard
 {
-    public class DimDistroUnit
+    public class DimDistroUnit //: IComparable<DimDistroUnit>
     {
+
         // Imported Data
         public string channel_number { get; set; }
-        
-        public int dimmer_number { get; set; }
         public string instrument_type { get; set; }
         public string multicore_name { get; set; }
-        public string cabinet_number { get; set; }
-
         
+
+        // Imported Temporary Data
         public string dimmer_number_string { get; set; } // Used only for data import, Value gets later parsed into Int.
+        public string cabinet_number_string { get; set; } // Later parsed into Cabinet Number + Rack Number Properties
 
         // Application running data
         public int global_id { get; set; }
 
         // Inferred Data
-        public string rack_unit_type { get; set; }
+        public RackType rack_unit_type { get; set; }
         public int universe_number { get; set; }
         public int absolute_dmx_address { get; set; }
+        public int dimmer_number { get; set; }
+        public int cabinet_number { get; set; }
+        public int rack_number { get; set; }
 
 
-        // Calculates if RackUnit is a Distro or Dimmer.
-        public void CalculateRackUnitType()
+        // Parse and Convert Dimmer, Distro, Cabinet and Global DMX Values.
+        public void ParseUnitData()
         {
-            if (this.dimmer_number_string.Contains("N"))
+            // Calculate Unit Type and Parse relevant data.
+            if (this.dimmer_number_string.Contains('N'))
             {
-                this.rack_unit_type = "Distro";
+                this.rack_unit_type = RackType.Distro;
                 this.ParseDistroNumber();
             }
             
-            else if (this.dimmer_number_string.Contains("/"))
+            else if (this.dimmer_number_string.Contains('/'))
             {
-                this.rack_unit_type = "Dimmer";
-                ParseDimmerNumber();
+                this.rack_unit_type = RackType.Dimmer;
+                this.ParseDimmerNumber();
             }
 
             else
             {
-                this.rack_unit_type = "Unknown";
-                ParseGlobalDMXAddress();
+                this.rack_unit_type = RackType.Unknown;
+                this.ParseGlobalDMXAddress();
             }
+
+            // Parse Cabinet Number regardless of Unit Type.
+            this.ParseCabinetNumber();
         }
+
 
         private void ParseDistroNumber()
         {
@@ -56,7 +64,7 @@ namespace Dimmer_Labels_Wizard
             string working_string = String.Copy(this.dimmer_number_string);
 
             // Find the Index of the "N" Character.
-            int n_index = working_string.IndexOf("N");
+            int n_index = working_string.IndexOf('N');
 
             // Remove the first two characters
             working_string = working_string.Remove(0, n_index + 1);
@@ -70,18 +78,17 @@ namespace Dimmer_Labels_Wizard
 
         private void ParseDimmerNumber()
         { 
-            int slash_index = this.dimmer_number_string.IndexOf("/");
+            int delimiter_index = this.dimmer_number_string.IndexOf('/');
 
             // Copy the contents into 2 working strings.
             string universe_string = String.Copy(this.dimmer_number_string); // Will get trimed to the No# before the slash.
-            
             string address_string = String.Copy(this.dimmer_number_string); // Will get trimed to the No# after the slash.
 
-            // Trim from the Slash to end of the string, leaving only the universe number.
-            universe_string = universe_string.Remove(slash_index, (universe_string.Length - 1));
+            // Trim from the delimiter (slash) to end of the string, leaving only the universe number.
+            universe_string = universe_string.Remove(delimiter_index, (universe_string.Length - delimiter_index));
 
-            // Trim from the Begining of the string to the Slash.
-            address_string = address_string.Remove(0, (slash_index + 1));
+            // Trim from the Begining of the string to the delimiter (slash).
+            address_string = address_string.Remove(0, (delimiter_index + 1));
 
             // Trim any remaining whitespace.
             universe_string = universe_string.Trim();
@@ -99,14 +106,58 @@ namespace Dimmer_Labels_Wizard
             // Copy the Contents into a Working string.
             string working_string = String.Copy(this.dimmer_number_string);
 
-            // Trim Whitespace
+            // Trim Whitespace.
             working_string.Trim();
 
             // Assign result back to Object converted to Int.
             this.absolute_dmx_address = Convert.ToInt32(working_string);
 
         }
-        
+
+        private void ParseCabinetNumber()
+        {
+            // Check if Cabinet_number been assigned a Value.
+            if (this.cabinet_number_string.Equals(null))
+            {
+                this.cabinet_number = 0;
+                this.rack_number = 0;
+            }
+
+            else
+            {
+                // Declare an Array of Characters to be Trimmed from each string.
+                char[] trim_chars = new char[] { 'R', 'a', 'c', 'k' };
+
+                // Copy contents into two working strings.
+                string working_string = String.Copy(cabinet_number_string);
+                
+
+                // Trim "Rack" out of Both Strings.
+                working_string = working_string.TrimStart(trim_chars);
+                
+                string[] split_strings = working_string.Split('-');
+
+                if (split_strings != null && split_strings.Length >= 2)
+                {
+                    this.cabinet_number = Convert.ToInt32(split_strings[0].Trim());
+                    this.rack_number = Convert.ToInt32(split_strings[1].Trim());
+                    
+                }
+                
+                else
+                {
+                    this.cabinet_number = 0;
+                    this.rack_number = 0;
+                }
+            }
+        }
+
+
+        //public int CompareTo(DimDistroUnit other)
+        //{
+            
+        //    // Cabinet Number needs to be converted to an Integer.
+        //}
     }
 
     
