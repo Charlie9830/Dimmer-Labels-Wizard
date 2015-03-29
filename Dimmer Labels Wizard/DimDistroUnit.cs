@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard
 {
-    public class DimDistroUnit //: IComparable<DimDistroUnit>
+    public class DimDistroUnit : IComparable<DimDistroUnit>
     {
 
         // Imported Data
@@ -135,8 +135,10 @@ namespace Dimmer_Labels_Wizard
                 // Trim "Rack" out of Both Strings.
                 working_string = working_string.TrimStart(trim_chars);
                 
+                // Split String into an Array of 2 Strings around Deliminter character.
                 string[] split_strings = working_string.Split('-');
 
+                // Check if string array isn't empty and doesn't exceed two elements.
                 if (split_strings != null && split_strings.Length >= 2)
                 {
                     this.cabinet_number = Convert.ToInt32(split_strings[0].Trim());
@@ -153,11 +155,19 @@ namespace Dimmer_Labels_Wizard
         }
 
 
-        //public int CompareTo(DimDistroUnit other)
-        //{
-            
-        //    // Cabinet Number needs to be converted to an Integer.
-        //}
+        // Provides the comparator functionality to the list.Sort() Method. Sorts by Cabinet Number, Then by Rack Number, then By Dimmer Number.
+        public int CompareTo(DimDistroUnit other)
+        {
+            if (cabinet_number == other.cabinet_number)
+            {
+                if (rack_number == other.rack_number)
+                {
+                    return dimmer_number - other.dimmer_number;
+                }
+                return rack_number - other.rack_number;
+            }
+            return cabinet_number - other.cabinet_number;
+        }
     }
 
     

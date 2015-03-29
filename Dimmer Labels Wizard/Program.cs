@@ -15,8 +15,9 @@ namespace Dimmer_Labels_Wizard
         {
             FileIn.ImportFile();
 
-            FileOut.DebugOutputToExcel();
+            
 
+            //FileOut.DebugOutputToExcel();
 
             
         }
