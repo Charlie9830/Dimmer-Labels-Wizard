@@ -10,15 +10,37 @@ namespace Dimmer_Labels_Wizard
     public class LabelCell
     {
         // Properties
-        public int strip_identifier { get; set; }
-        public int col_index { get; set; }
-        public int global_id { get; set; }
+    
+        public float height { get; set; }
+        public float width { get; set; }
 
-        public int height { get; set; }
-        public int width { get; set; }
+        public Pen fore_colour { get; private set; } // Can be Set only by the back_colour set acsessor.
+        
+        public SolidBrush back_colour
+        {
+            get
+            {
+                return back_colour;
+            }
 
-        public string back_colour { get; set; }
-        public string fore_colour { get; set; }
+            set
+            {
+                back_colour = value;
+
+                // Calculate Luminance of Color and set fore_colour to White or Black based on this luminance result.
+                if ((0.299 * fore_colour.Color.R) + (0.587 * fore_colour.Color.G) + (0.114 * fore_colour.Color.B) > 128)
+                {
+                    fore_colour = new Pen(Color.Black);
+                }
+
+                else
+                {
+                    fore_colour = new Pen(Color.White);
+                }
+            }
+        }
+
+        
 
     }
 }

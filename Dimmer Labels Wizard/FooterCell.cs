@@ -11,26 +11,14 @@ namespace Dimmer_Labels_Wizard
     {
         // Top Line Properties
         public string top_data { get; set; }
-
-        public bool top_isBold { get; set; }
-        public bool top_isItalics { get; set; }
-        public bool top_isUnderline { get; set; }
-
-        public string top_font { get; set; }
-        public int top_size { get; set; }
-        public string top_justification { get; set; }
+        public Font top_font { get; set; }
+        public StringFormat top_format { get; set; }
 
 
         //Bottom line Properties
         public string bot_data { get; set; }
-
-        public bool bot_isBold { get; set; }
-        public bool bot_isItalics { get; set; }
-        public bool bot_isUnderline { get; set; }
-
-        public string bot_font { get; set; }
-        public int bot_size { get; set; }
-        public string bot_justification { get; set; }
+        public Font bot_font { get; set; }
+        public StringFormat bot_format { get; set; }
 
        
     }

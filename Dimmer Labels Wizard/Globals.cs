@@ -11,13 +11,8 @@ namespace Dimmer_Labels_Wizard
         // List to hold DimDistroUnit Objects
         public static List<DimDistroUnit> DimDistroUnits = new List<DimDistroUnit>();
 
-        // List to hold Header Cell Objects.
-        public static List<HeaderCell> HeaderCells = new List<HeaderCell>();
-
-        // List Cell to footer cell objects.
-        public static List<FooterCell> FooterCells = new List<FooterCell>();
-
-        
+        // List to Hold LabelStrip Objects
+        public static List<RackLabel> RackLabels = new List<RackLabel>();
 
     }
 }

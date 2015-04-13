@@ -15,11 +15,18 @@ namespace Dimmer_Labels_Wizard
         {
             FileIn.ImportFile();
 
-            
+            int delete_count = DataHandling.SanitizeDimDistroUnits();
 
-            //FileOut.DebugOutputToExcel();
 
-            
+            Console.WriteLine("Data Handling Complete.");
+            Console.WriteLine("{0} Objects Sanitzed", delete_count);
+            Console.WriteLine();
+
+            Output.ExportToRackLabel();
+
+            Debug.PrintRackLabelsToConsole();
+
+
         }
     }
 }
