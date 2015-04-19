@@ -155,23 +155,35 @@ namespace Dimmer_Labels_Wizard
         }
 
 
-        // Provides the comparator functionality to the list.Sort() Method. Sorts by Cabinet Number, Then by Rack Number, then By Dimmer Number.
+        // Provides the comparator functionality to the list.Sort() Method. Sorts by Rack Unit Type, Cabinet Number, Then by Rack Number, then By Dimmer Number.
         public int CompareTo(DimDistroUnit other)
         {
-            if (cabinet_number == other.cabinet_number)
+            if (Globals.DimDistroSortOrder == SortOrder.Default)
             {
-                if (rack_number == other.rack_number)
+                if (rack_unit_type == other.rack_unit_type)
                 {
-                    return dimmer_number - other.dimmer_number;
+                    if (cabinet_number == other.cabinet_number)
+                    {
+                        if (rack_number == other.rack_number)
+                        {
+                            return dimmer_number - other.dimmer_number;
+                        }
+                        return rack_number - other.rack_number;
+                    }
+                    return cabinet_number - other.cabinet_number;
                 }
-                return rack_number - other.rack_number;
+                return rack_unit_type - other.rack_unit_type;
             }
-            return cabinet_number - other.cabinet_number;
+
+            else
+                if (rack_unit_type == other.rack_unit_type)
+                {
+                        return dimmer_number - other.dimmer_number;
+                }
+            return rack_unit_type - other.rack_unit_type;
         }
+
+
     }
 
-    
-
-        
-    
 }

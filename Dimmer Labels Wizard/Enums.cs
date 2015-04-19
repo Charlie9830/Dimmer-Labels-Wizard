@@ -8,6 +8,9 @@ namespace Dimmer_Labels_Wizard
 {
     // DimDistroUnit Object Data type tracking.
     public enum RackType { Dimmer, Distro, Unknown };
+    public enum SortOrder { Default, DimmerAndDistroNumber}; // Update DimDistroUnit.CompareTo if you Add anything.
+
+    
 }
 
 

@@ -19,11 +19,16 @@ namespace Dimmer_Labels_Wizard
         
         public void PrintToConsole()
         {
+            int count = 0;
             for (int i = 0; i < headers.Count; i++)
             {
                 Console.Write(headers[i].data);
                 Console.Write(" | ");
+                count++;
             }
+            Console.Write("    ");
+            Console.Write(count);
+            count = 0;
 
             Console.WriteLine();
 
@@ -31,7 +36,10 @@ namespace Dimmer_Labels_Wizard
             {
                 Console.Write(footers[i].top_data);
                 Console.Write(" | ");
+                count++;
             }
+            Console.Write("    ");
+            Console.Write(count);
         }
 
     }
