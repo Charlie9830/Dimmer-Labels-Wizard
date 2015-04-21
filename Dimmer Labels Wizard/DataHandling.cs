@@ -21,7 +21,7 @@ namespace Dimmer_Labels_Wizard
             //delete_count += RemoveNonCabinetData();
             delete_count += RemovePiggybacks();
 
-            ResolveBlankDistroChannels(UserParameters.start_distro_number,UserParameters.end_distro_number);
+            ResolveBlankChannels(UserParameters.start_distro_number,UserParameters.end_distro_number);
 
             return delete_count;
         }
@@ -91,7 +91,7 @@ namespace Dimmer_Labels_Wizard
 
         // Needs Proper Testing after Cabinet/Rack Number Resolve methods have been implemented. So that Cabinet/Rack Numbers Can be Properly Assigned
         // this will make the ExportToRackLabels method Range the strips correctly.
-        private static void ResolveBlankDistroChannels(int start_index,int end_index)
+        private static void ResolveBlankChannels(int start_index,int end_index)
         {
          for (int list_index = 0; list_index < Globals.DimDistroUnits.Count; list_index++)
          {
@@ -121,12 +121,13 @@ namespace Dimmer_Labels_Wizard
 
              else if (Globals.DimDistroUnits[list_index].rack_unit_type == RackType.Dimmer)
              {
-                 Console.Write("Entered Code Block");
                  // Don't try and look out of bound.
                  if (list_index + 1 != Globals.DimDistroUnits.Count)
                  {
-                     // Are the Dimmer_numbers Consecutive?
-                     if (Globals.DimDistroUnits[list_index].dimmer_number != Globals.DimDistroUnits[list_index + 1].dimmer_number - 1)
+                     // Are the Dimmer_numbers Consecutive, Within the Dimmer Range & in the dimmer Universe?
+                     if (Globals.DimDistroUnits[list_index].dimmer_number != Globals.DimDistroUnits[list_index + 1].dimmer_number - 1 &&
+                         Globals.DimDistroUnits[list_index].universe_number == UserParameters.dimmer_univese &&
+                         Globals.DimDistroUnits[list_index].dimmer_number <= UserParameters.end_dimmer_number )
                      {
                          // Create a new Blank Object
                          Globals.DimDistroUnits.Insert(list_index + 1, new DimDistroUnit());

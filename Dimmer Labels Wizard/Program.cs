@@ -25,6 +25,7 @@ namespace Dimmer_Labels_Wizard
             // Hard Coded user Preferences
             UserParameters.start_dimmer_number = 1;
             UserParameters.end_dimmer_number = 208;
+            UserParameters.dimmer_univese = 1;
             UserParameters.start_distro_number = 1;
             UserParameters.end_distro_number = 124;
 

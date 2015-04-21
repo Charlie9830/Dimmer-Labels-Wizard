@@ -10,6 +10,7 @@ namespace Dimmer_Labels_Wizard
     {
         public static int start_dimmer_number { get; set; }
         public static int end_dimmer_number { get; set; }
+        public static int dimmer_univese { get; set; }
 
         public static int start_distro_number { get; set; }
         public static int end_distro_number { get; set; }
