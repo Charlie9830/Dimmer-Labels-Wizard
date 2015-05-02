@@ -33,15 +33,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataHandling.cs" />
@@ -53,6 +59,12 @@
     </Compile>
     <Compile Include="FORM_CabinetAddressResolution.Designer.cs">
       <DependentUpon>FORM_CabinetAddressResolution.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FORM_LabelEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORM_LabelEditor.Designer.cs">
+      <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="ToExcel.cs" />
     <Compile Include="FooterCell.cs" />
@@ -101,6 +113,9 @@
   <ItemGroup>
     <EmbeddedResource Include="FORM_CabinetAddressResolution.resx">
       <DependentUpon>FORM_CabinetAddressResolution.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORM_LabelEditor.resx">
+      <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

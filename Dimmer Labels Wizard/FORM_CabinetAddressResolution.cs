@@ -73,5 +73,9 @@ namespace Dimmer_Labels_Wizard
             }
             UnresolvedCabinetsCount.Text = Globals.UnresolvedCabinetRacks.Count.ToString();
         }
+
+        private void ContinueButton_Click(object sender, EventArgs e)
+        {          
+        }
     }
 }

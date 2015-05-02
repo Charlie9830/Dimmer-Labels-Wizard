@@ -10,7 +10,8 @@ namespace Dimmer_Labels_Wizard
     {
         public static int start_dimmer_number { get; set; }
         public static int end_dimmer_number { get; set; }
-        public static int dimmer_univese { get; set; }
+
+        public static List<int> DimmerUniverses = new List<int>();
 
         public static int start_distro_number { get; set; }
         public static int end_distro_number { get; set; }
@@ -18,6 +19,9 @@ namespace Dimmer_Labels_Wizard
         public static List<int> DistroStartAddresses = new List<int>();
         public static List<Globals.DMX> DimmerStartAddresses = new List<Globals.DMX>();
         public static List<Globals.DMX> FiveKDimmerAddresses = new List<Globals.DMX>();
+
+        public static int label_width { get; set; } // Width in Pixels
+        public static int label_height { get; set; } // Height in Pixels
 
         // Create Hardcoded Distro Start Address Values
         public static void PopulateRackStartAddresses()
@@ -60,5 +64,57 @@ namespace Dimmer_Labels_Wizard
             }
         }
  
+       // Checks if a Universe exists in Dimmer Universes list.
+        public static bool IsInDimmerUniverses(int input_universe)
+       {
+           for (int list_index = 0; list_index < DimmerUniverses.Count; list_index++ )
+           {
+               if (DimmerUniverses[list_index] == input_universe)
+               {
+                   return true;
+               }
+           }
+
+           return false;
+       }
+
+        public static void SetDefaultRackLabelSettings()
+        {
+            
+            foreach (var element in Globals.RackLabels)
+            {
+                System.Drawing.StringFormat defaultStringFormat = new System.Drawing.StringFormat();
+                defaultStringFormat.Alignment = System.Drawing.StringAlignment.Center;
+                defaultStringFormat.LineAlignment = System.Drawing.StringAlignment.Center;
+
+                element.SetBackgroundColour(System.Drawing.Color.White);
+                
+                // Set Default Fonts,FontStyles and StringFormat Alignments.
+                for (int list_index = 0; list_index < element.headers.Count; list_index++)
+                {
+                    element.headers[list_index].font = new System.Drawing.Font("Arial",16,System.Drawing.FontStyle.Bold);
+                    element.headers[list_index].format = defaultStringFormat;
+                    
+                    element.headers[list_index].back_color = new System.Drawing.SolidBrush(System.Drawing.Color.White);
+
+                    element.footers[list_index].top_font = new System.Drawing.Font("Arial", 12,System.Drawing.FontStyle.Bold);
+                    element.footers[list_index].top_format = defaultStringFormat;
+
+                    defaultStringFormat.LineAlignment = System.Drawing.StringAlignment.Near;
+                    element.footers[list_index].bot_font = new System.Drawing.Font("Arial", 10);
+                    element.footers[list_index].bot_format = defaultStringFormat;
+
+                    element.footers[list_index].back_color = new System.Drawing.SolidBrush(System.Drawing.Color.White);
+
+                    // Reset Line Aligment to Centre
+                    defaultStringFormat.LineAlignment = System.Drawing.StringAlignment.Center;
+                }
+
+                element.label_height = UserParameters.label_height;
+                element.label_width = UserParameters.label_width;
+            }
+        }
+
+
     }
 }

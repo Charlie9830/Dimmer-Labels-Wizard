@@ -31,19 +31,20 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.ResolvedDataGrid = new System.Windows.Forms.DataGridView();
-            this.ResolvedCabinetsCount = new System.Windows.Forms.Label();
-            this.ResolvedItemsLabel = new System.Windows.Forms.Label();
-            this.UnresolvedDataGrid = new System.Windows.Forms.DataGridView();
-            this.UnresolvedItemsLabel = new System.Windows.Forms.Label();
-            this.UnresolvedCabinetsCount = new System.Windows.Forms.Label();
             this.Resolved_Channel_Col = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Dimmer_Number_Col = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Resolved_Cabinet_Number_Col = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Resolved_Rack_Number_Col = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ResolvedCabinetsCount = new System.Windows.Forms.Label();
+            this.ResolvedItemsLabel = new System.Windows.Forms.Label();
+            this.UnresolvedDataGrid = new System.Windows.Forms.DataGridView();
             this.Unresolved_Channel_Col = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Unresolved_Dimmer_Number_Col = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Unresolved_Cabinet_Col = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Unresolved_Rack_Col = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.UnresolvedItemsLabel = new System.Windows.Forms.Label();
+            this.UnresolvedCabinetsCount = new System.Windows.Forms.Label();
+            this.ContinueButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ResolvedDataGrid)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.UnresolvedDataGrid)).BeginInit();
             this.SuspendLayout();
@@ -83,6 +84,30 @@
             this.ResolvedDataGrid.TabIndex = 2;
             this.ResolvedDataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ResolvedDataGrid_CellContentClick);
             // 
+            // Resolved_Channel_Col
+            // 
+            this.Resolved_Channel_Col.HeaderText = "Channel";
+            this.Resolved_Channel_Col.Name = "Resolved_Channel_Col";
+            this.Resolved_Channel_Col.ReadOnly = true;
+            this.Resolved_Channel_Col.Width = 50;
+            // 
+            // Dimmer_Number_Col
+            // 
+            this.Dimmer_Number_Col.HeaderText = "Dimmer/Distro Number";
+            this.Dimmer_Number_Col.Name = "Dimmer_Number_Col";
+            // 
+            // Resolved_Cabinet_Number_Col
+            // 
+            this.Resolved_Cabinet_Number_Col.HeaderText = "Cabinet Number";
+            this.Resolved_Cabinet_Number_Col.Name = "Resolved_Cabinet_Number_Col";
+            this.Resolved_Cabinet_Number_Col.Width = 75;
+            // 
+            // Resolved_Rack_Number_Col
+            // 
+            this.Resolved_Rack_Number_Col.HeaderText = "Rack Number";
+            this.Resolved_Rack_Number_Col.Name = "Resolved_Rack_Number_Col";
+            this.Resolved_Rack_Number_Col.Width = 75;
+            // 
             // ResolvedCabinetsCount
             // 
             this.ResolvedCabinetsCount.AutoSize = true;
@@ -117,48 +142,6 @@
             this.UnresolvedDataGrid.Size = new System.Drawing.Size(304, 407);
             this.UnresolvedDataGrid.TabIndex = 5;
             // 
-            // UnresolvedItemsLabel
-            // 
-            this.UnresolvedItemsLabel.AutoSize = true;
-            this.UnresolvedItemsLabel.Location = new System.Drawing.Point(752, 13);
-            this.UnresolvedItemsLabel.Name = "UnresolvedItemsLabel";
-            this.UnresolvedItemsLabel.Size = new System.Drawing.Size(31, 13);
-            this.UnresolvedItemsLabel.TabIndex = 7;
-            this.UnresolvedItemsLabel.Text = "items";
-            // 
-            // UnresolvedCabinetsCount
-            // 
-            this.UnresolvedCabinetsCount.AutoSize = true;
-            this.UnresolvedCabinetsCount.Location = new System.Drawing.Point(721, 13);
-            this.UnresolvedCabinetsCount.Name = "UnresolvedCabinetsCount";
-            this.UnresolvedCabinetsCount.Size = new System.Drawing.Size(25, 13);
-            this.UnresolvedCabinetsCount.TabIndex = 6;
-            this.UnresolvedCabinetsCount.Text = "000";
-            // 
-            // Resolved_Channel_Col
-            // 
-            this.Resolved_Channel_Col.HeaderText = "Channel";
-            this.Resolved_Channel_Col.Name = "Resolved_Channel_Col";
-            this.Resolved_Channel_Col.ReadOnly = true;
-            this.Resolved_Channel_Col.Width = 50;
-            // 
-            // Dimmer_Number_Col
-            // 
-            this.Dimmer_Number_Col.HeaderText = "Dimmer/Distro Number";
-            this.Dimmer_Number_Col.Name = "Dimmer_Number_Col";
-            // 
-            // Resolved_Cabinet_Number_Col
-            // 
-            this.Resolved_Cabinet_Number_Col.HeaderText = "Cabinet Number";
-            this.Resolved_Cabinet_Number_Col.Name = "Resolved_Cabinet_Number_Col";
-            this.Resolved_Cabinet_Number_Col.Width = 75;
-            // 
-            // Resolved_Rack_Number_Col
-            // 
-            this.Resolved_Rack_Number_Col.HeaderText = "Rack Number";
-            this.Resolved_Rack_Number_Col.Name = "Resolved_Rack_Number_Col";
-            this.Resolved_Rack_Number_Col.Width = 75;
-            // 
             // Unresolved_Channel_Col
             // 
             this.Unresolved_Channel_Col.HeaderText = "Channel";
@@ -183,11 +166,40 @@
             this.Unresolved_Rack_Col.Name = "Unresolved_Rack_Col";
             this.Unresolved_Rack_Col.Width = 75;
             // 
+            // UnresolvedItemsLabel
+            // 
+            this.UnresolvedItemsLabel.AutoSize = true;
+            this.UnresolvedItemsLabel.Location = new System.Drawing.Point(752, 13);
+            this.UnresolvedItemsLabel.Name = "UnresolvedItemsLabel";
+            this.UnresolvedItemsLabel.Size = new System.Drawing.Size(31, 13);
+            this.UnresolvedItemsLabel.TabIndex = 7;
+            this.UnresolvedItemsLabel.Text = "items";
+            // 
+            // UnresolvedCabinetsCount
+            // 
+            this.UnresolvedCabinetsCount.AutoSize = true;
+            this.UnresolvedCabinetsCount.Location = new System.Drawing.Point(721, 13);
+            this.UnresolvedCabinetsCount.Name = "UnresolvedCabinetsCount";
+            this.UnresolvedCabinetsCount.Size = new System.Drawing.Size(25, 13);
+            this.UnresolvedCabinetsCount.TabIndex = 6;
+            this.UnresolvedCabinetsCount.Text = "000";
+            // 
+            // ContinueButton
+            // 
+            this.ContinueButton.Location = new System.Drawing.Point(918, 414);
+            this.ContinueButton.Name = "ContinueButton";
+            this.ContinueButton.Size = new System.Drawing.Size(75, 23);
+            this.ContinueButton.TabIndex = 8;
+            this.ContinueButton.Text = "Continue";
+            this.ContinueButton.UseVisualStyleBackColor = true;
+            this.ContinueButton.Click += new System.EventHandler(this.ContinueButton_Click);
+            // 
             // FORM_CabinetAddressResolution
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1005, 449);
+            this.Controls.Add(this.ContinueButton);
             this.Controls.Add(this.UnresolvedItemsLabel);
             this.Controls.Add(this.UnresolvedCabinetsCount);
             this.Controls.Add(this.UnresolvedDataGrid);
@@ -224,5 +236,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Unresolved_Dimmer_Number_Col;
         private System.Windows.Forms.DataGridViewTextBoxColumn Unresolved_Cabinet_Col;
         private System.Windows.Forms.DataGridViewTextBoxColumn Unresolved_Rack_Col;
+        private System.Windows.Forms.Button ContinueButton;
     }
 }

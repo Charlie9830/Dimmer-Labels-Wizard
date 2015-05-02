@@ -25,13 +25,17 @@ namespace Dimmer_Labels_Wizard
             // Hard Coded user Preferences
             UserParameters.start_dimmer_number = 1;
             UserParameters.end_dimmer_number = 208;
-            UserParameters.dimmer_univese = 1;
+            UserParameters.DimmerUniverses.Add(1);  
             UserParameters.start_distro_number = 1;
             UserParameters.end_distro_number = 124;
+
+            UserParameters.label_width = 50;
+            UserParameters.label_height = 80;
 
             // Debug Call Method to Populate DistroStartAddresses.
             UserParameters.PopulateRackStartAddresses();
             // ***************************************************
+          
 
             Console.BufferHeight = 8000;
             Console.BufferWidth += 30;
@@ -45,15 +49,17 @@ namespace Dimmer_Labels_Wizard
             Console.WriteLine();
             Console.Write("{0} Resolved Cabinets / {1} Unresolved Cabinets", Globals.ResolvedCabinetRacks.Count, Globals.UnresolvedCabinetRacks.Count);
 
+            Output.ExportToRackLabel();
+
             FORM_CabinetAddressResolution CabinetAddressResolution = new FORM_CabinetAddressResolution();
             CabinetAddressResolution.ShowDialog();
 
-            Output.ExportToRackLabel();
-
             Debug.PrintRackLabelsToConsole();
 
-            
+            UserParameters.SetDefaultRackLabelSettings();
 
+            FORM_LabelEditor NextWindow = new FORM_LabelEditor();
+            NextWindow.ShowDialog();
         }
     }
 }

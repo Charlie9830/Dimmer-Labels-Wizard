@@ -18,7 +18,8 @@ namespace Dimmer_Labels_Wizard
             
             ResolveCabinetRackNumbers();
 
-            //delete_count += RemoveNonCabinetData();
+            //delete_count += RemoveNonCabinetData(); // Currently Will Remove Blank Channels.
+
             delete_count += RemovePiggybacks();
 
             ResolveBlankChannels(UserParameters.start_distro_number,UserParameters.end_distro_number);
@@ -126,8 +127,8 @@ namespace Dimmer_Labels_Wizard
                  {
                      // Are the Dimmer_numbers Consecutive, Within the Dimmer Range & in the dimmer Universe?
                      if (Globals.DimDistroUnits[list_index].dimmer_number != Globals.DimDistroUnits[list_index + 1].dimmer_number - 1 &&
-                         Globals.DimDistroUnits[list_index].universe_number == UserParameters.dimmer_univese &&
-                         Globals.DimDistroUnits[list_index].dimmer_number <= UserParameters.end_dimmer_number )
+                         UserParameters.IsInDimmerUniverses(Globals.DimDistroUnits[list_index].universe_number) == true &&
+                         Globals.DimDistroUnits[list_index].dimmer_number <= UserParameters.end_dimmer_number)
                      {
                          // Create a new Blank Object
                          Globals.DimDistroUnits.Insert(list_index + 1, new DimDistroUnit());
@@ -416,68 +417,74 @@ namespace Dimmer_Labels_Wizard
 
         private static void ResolveDimmerCabRackNo(DimDistroUnit input_object)
         {
-            bool _is5k = IsIn5kRack(input_object);
-            int input_index = Globals.DimDistroUnits.IndexOf(input_object);
-            
-            // Find index of a suitable preceeding DimDistroUnit.
-            int preceding_index = FindPrecedingCabRackNo(input_index,_is5k);
-
-            // Check if Unit exists
-            if (preceding_index != -1)
+            // Check if input_object resides in a Dimmer Universe
+            if (UserParameters.IsInDimmerUniverses(input_object.universe_number) == true)
             {
-                // Calcualte if Units are in the same Distro Rack.
-                if (AreInSameRack(input_index, preceding_index,RackType.Dimmer, _is5k) == true)
-                {
-                    Globals.DimDistroUnits[input_index].cabinet_number = Globals.DimDistroUnits[preceding_index].cabinet_number;
-                    Globals.DimDistroUnits[input_index].rack_number = Globals.DimDistroUnits[preceding_index].rack_number;
 
-                    Globals.ResolvedCabinetRacks.Add(Globals.DimDistroUnits[input_index]);
+
+
+                bool _is5k = IsIn5kRack(input_object);
+                int input_index = Globals.DimDistroUnits.IndexOf(input_object);
+
+                // Find index of a suitable preceeding DimDistroUnit.
+                int preceding_index = FindPrecedingCabRackNo(input_index, _is5k);
+
+                // Check if Unit exists
+                if (preceding_index != -1)
+                {
+                    // Calcualte if Units are in the same Distro Rack.
+                    if (AreInSameRack(input_index, preceding_index, RackType.Dimmer, _is5k) == true)
+                    {
+                        Globals.DimDistroUnits[input_index].cabinet_number = Globals.DimDistroUnits[preceding_index].cabinet_number;
+                        Globals.DimDistroUnits[input_index].rack_number = Globals.DimDistroUnits[preceding_index].rack_number;
+
+                        Globals.ResolvedCabinetRacks.Add(Globals.DimDistroUnits[input_index]);
+                    }
+
+                    // if not in the same distro rack try a succeeding unit.
+                    else
+                    {
+                        int succeeding_index = FindSucceedingCabRackNo(input_index, _is5k);
+
+                        if (succeeding_index != -1)
+                        {
+                            if (AreInSameRack(input_index, succeeding_index, RackType.Dimmer, _is5k) == true)
+                            {
+                                Globals.DimDistroUnits[input_index].cabinet_number = Globals.DimDistroUnits[succeeding_index].cabinet_number;
+                                Globals.DimDistroUnits[input_index].rack_number = Globals.DimDistroUnits[succeeding_index].rack_number;
+
+                                Globals.ResolvedCabinetRacks.Add(Globals.DimDistroUnits[input_index]);
+                            }
+                            else
+                            {
+                                // Unit is Unresolvable
+                                Globals.UnresolvedCabinetRacks.Add(Globals.DimDistroUnits[input_index]);
+                            }
+                        }
+                    }
                 }
 
-                // if not in the same distro rack try a succeeding unit.
                 else
                 {
                     int succeeding_index = FindSucceedingCabRackNo(input_index, _is5k);
 
                     if (succeeding_index != -1)
                     {
-                        if (AreInSameRack(input_index, succeeding_index,RackType.Dimmer, _is5k) == true)
+                        if (AreInSameRack(input_index, succeeding_index, RackType.Dimmer, _is5k) == true)
                         {
                             Globals.DimDistroUnits[input_index].cabinet_number = Globals.DimDistroUnits[succeeding_index].cabinet_number;
                             Globals.DimDistroUnits[input_index].rack_number = Globals.DimDistroUnits[succeeding_index].rack_number;
 
                             Globals.ResolvedCabinetRacks.Add(Globals.DimDistroUnits[input_index]);
                         }
+
                         else
                         {
-                            // Unit is Unresolvable
                             Globals.UnresolvedCabinetRacks.Add(Globals.DimDistroUnits[input_index]);
                         }
                     }
                 }
             }
-
-            else
-            {
-                int succeeding_index = FindSucceedingCabRackNo(input_index, _is5k);
-
-                if (succeeding_index != -1)
-                {
-                    if (AreInSameRack(input_index, succeeding_index,RackType.Dimmer, _is5k) == true)
-                    {
-                        Globals.DimDistroUnits[input_index].cabinet_number = Globals.DimDistroUnits[succeeding_index].cabinet_number;
-                        Globals.DimDistroUnits[input_index].rack_number = Globals.DimDistroUnits[succeeding_index].rack_number;
-
-                        Globals.ResolvedCabinetRacks.Add(Globals.DimDistroUnits[input_index]);
-                    }
-
-                    else
-                    {
-                        Globals.UnresolvedCabinetRacks.Add(Globals.DimDistroUnits[input_index]);
-                    }
-                }
-            }
-
 
         }
         // Removes all Units of RackType Unkown 
