@@ -83,9 +83,14 @@ namespace Dimmer_Labels_Wizard
             
             foreach (var element in Globals.RackLabels)
             {
-                System.Drawing.StringFormat defaultStringFormat = new System.Drawing.StringFormat();
-                defaultStringFormat.Alignment = System.Drawing.StringAlignment.Center;
-                defaultStringFormat.LineAlignment = System.Drawing.StringAlignment.Center;
+                System.Drawing.StringFormat centerStringFormat = new System.Drawing.StringFormat();
+                centerStringFormat.Alignment = System.Drawing.StringAlignment.Center;
+                centerStringFormat.LineAlignment = System.Drawing.StringAlignment.Center;
+
+                System.Drawing.StringFormat farStringFormat = new System.Drawing.StringFormat();
+                farStringFormat.Alignment = System.Drawing.StringAlignment.Center;
+                farStringFormat.LineAlignment = System.Drawing.StringAlignment.Far;
+
 
                 element.SetBackgroundColour(System.Drawing.Color.White);
                 
@@ -93,21 +98,16 @@ namespace Dimmer_Labels_Wizard
                 for (int list_index = 0; list_index < element.headers.Count; list_index++)
                 {
                     element.headers[list_index].font = new System.Drawing.Font("Arial",16,System.Drawing.FontStyle.Bold);
-                    element.headers[list_index].format = defaultStringFormat;
+                    element.headers[list_index].format = centerStringFormat;
                     
-                    element.headers[list_index].back_color = new System.Drawing.SolidBrush(System.Drawing.Color.White);
 
                     element.footers[list_index].top_font = new System.Drawing.Font("Arial", 12,System.Drawing.FontStyle.Bold);
-                    element.footers[list_index].top_format = defaultStringFormat;
+                    element.footers[list_index].top_format = centerStringFormat;
 
-                    defaultStringFormat.LineAlignment = System.Drawing.StringAlignment.Near;
                     element.footers[list_index].bot_font = new System.Drawing.Font("Arial", 10);
-                    element.footers[list_index].bot_format = defaultStringFormat;
+                    element.footers[list_index].bot_format = farStringFormat;
+                    
 
-                    element.footers[list_index].back_color = new System.Drawing.SolidBrush(System.Drawing.Color.White);
-
-                    // Reset Line Aligment to Centre
-                    defaultStringFormat.LineAlignment = System.Drawing.StringAlignment.Center;
                 }
 
                 element.label_height = UserParameters.label_height;

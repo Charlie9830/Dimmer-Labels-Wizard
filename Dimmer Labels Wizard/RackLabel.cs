@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace Dimmer_Labels_Wizard
 {
-    public class RackLabel
+    public class RackLabel : IComparable<RackLabel>
     {
         // Properties.
         public List<HeaderCell> headers = new List<HeaderCell>();
@@ -15,6 +15,9 @@ namespace Dimmer_Labels_Wizard
 
         public int label_width { get; set; } // Width of each Cell in Pixels
         public int label_height { get; set; } // Height of each Cell in Pixels
+
+        public int cabinet_number { get; set; } // Imported from DimDistroUnit for User selection of Labels
+        public int rack_number { get; set; } // Imported from DimDistroUnit for User selection of Labels.
 
         // Methods.
 
@@ -84,10 +87,11 @@ namespace Dimmer_Labels_Wizard
             Point HeaderOrigin = origin;
             Point HeaderPosition = new Point(HeaderOrigin.X, HeaderOrigin.Y);
 
-            Point FooterOrigin = new Point(origin.X,HeaderPosition.Y * 2); 
+            Point FooterOrigin = new Point(origin.X, default_label_height * 2); 
             Point FooterPosition = new Point(FooterOrigin.X, FooterOrigin.Y);
 
             Rectangle HeaderOutline = new Rectangle();
+            Rectangle FooterOutline = new Rectangle();
 
             // Draw the Headers
             for (int i = 0; i < this.headers.Count; i++)
@@ -95,7 +99,7 @@ namespace Dimmer_Labels_Wizard
                 // Determime the Right Bound Position.
                 for (int j = i; j < this.headers.Count; j++)
                     if (j + 1 < this.headers.Count &&
-                        this.headers[j] == this.headers[j + 1])
+                        this.headers[j].data == this.headers[j + 1].data)
                     {
                         right_bound_pos += 1;
                     }
@@ -104,7 +108,7 @@ namespace Dimmer_Labels_Wizard
                         break;
                     }
 
-                // Assign the Size Values to the Label and Fill Rectangles.
+                // Assign the Size Values to the Outline Rectangle
                 HeaderOutline.Height = default_label_height;
                 HeaderOutline.Width = default_label_width * right_bound_pos;
 
@@ -129,7 +133,7 @@ namespace Dimmer_Labels_Wizard
                 float difference_ratio = StringRatio(this.headers[i].data, this.headers[i].font, HeaderOutline, graphics);
                 if (difference_ratio != 1)
                 {
-                    FontBuffer = new Font(FontBuffer.Name, FontBuffer.Size * difference_ratio);
+                    FontBuffer = new Font(FontBuffer.Name, FontBuffer.Size * difference_ratio,FontBuffer.Style);
                 }
 
                 // Draw the String
@@ -139,6 +143,50 @@ namespace Dimmer_Labels_Wizard
                 i += (right_bound_pos - 1);
                 right_bound_pos = 1;
                 HeaderOutline.Width = default_label_width;
+            }
+
+            // Draw the Footers
+            for (int i = 0; i < footers.Count; i++)
+            {
+                // Assign the Size Values to the Outline Rectangle
+                FooterOutline.Width = default_label_width;
+                FooterOutline.Height = default_label_height;
+
+                // Position the Rectangle
+                FooterOutline.X = FooterPosition.X;
+                FooterOutline.Y = FooterPosition.Y;
+
+                // Draw the background Colour
+                graphics.FillRectangle(footers[i].back_color, FooterOutline);
+
+                // Draw the Outline
+                graphics.DrawRectangle(System.Drawing.Pens.Black, FooterOutline);
+
+                // Collect the Objects Font Values
+                Font TopFontBuffer = (Font) this.footers[i].top_font.Clone();
+                Font BotFontBuffer = (Font) this.footers[i].bot_font.Clone();
+
+                // Will the Strings Fit within the Rectangle? If not Reintialize them at a smaller size.
+                float top_difference_ratio = StringRatio(footers[i].top_data, TopFontBuffer, FooterOutline, graphics);
+                float bot_difference_ratio = StringRatio(footers[i].bot_data, BotFontBuffer, FooterOutline, graphics);
+
+                if (top_difference_ratio != 1)
+                {
+                    TopFontBuffer = new Font(TopFontBuffer.Name, TopFontBuffer.Size * top_difference_ratio);
+                }
+
+                if (bot_difference_ratio != 1)
+                {
+                    BotFontBuffer = new Font(BotFontBuffer.Name, BotFontBuffer.Size * bot_difference_ratio);
+                }
+
+                // Draw the Strings
+                graphics.DrawString(footers[i].top_data, TopFontBuffer, footers[i].text_color, FooterOutline,footers[i].top_format);
+                graphics.DrawString(footers[i].bot_data, BotFontBuffer, footers[i].text_color, FooterOutline,footers[i].bot_format);
+
+                // Iterate and Reset
+                FooterPosition.X += FooterOutline.Width;
+
             }
         }
 
@@ -152,7 +200,7 @@ namespace Dimmer_Labels_Wizard
             if (StringSize.Width > input_rec.Width)
             {
                 // It's too big. Figure out the ratio.
-                float difference_ratio = StringSize.Width / input_rec.Width;
+                float difference_ratio = input_rec.Width / StringSize.Width;
                 return difference_ratio;
             }
             else
@@ -160,6 +208,15 @@ namespace Dimmer_Labels_Wizard
                 return 1;
             }
         }
-        
+
+
+        public int CompareTo(RackLabel other)
+        {
+            if (other.cabinet_number == cabinet_number)
+            {
+                return rack_number - other.rack_number;
+            }
+            return cabinet_number - other.cabinet_number;
+        }
     }
 }

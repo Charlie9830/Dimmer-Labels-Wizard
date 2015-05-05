@@ -30,7 +30,7 @@ namespace Dimmer_Labels_Wizard
             UserParameters.end_distro_number = 124;
 
             UserParameters.label_width = 50;
-            UserParameters.label_height = 80;
+            UserParameters.label_height = 60;
 
             // Debug Call Method to Populate DistroStartAddresses.
             UserParameters.PopulateRackStartAddresses();

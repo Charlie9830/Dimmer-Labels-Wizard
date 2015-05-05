@@ -12,19 +12,17 @@ namespace Dimmer_Labels_Wizard
         // Main Method. Sorts and Sanitzes Data. RETURNS: int amount of objects sanitzed.
         public static int SanitizeDimDistroUnits()
         {
-            int delete_count = 0;
+            int deleteCount = 0;
 
-            delete_count += RemoveUnknownUnits();
-            
+            deleteCount += RemoveUnknownUnits();
+
             ResolveCabinetRackNumbers();
 
-            //delete_count += RemoveNonCabinetData(); // Currently Will Remove Blank Channels.
-
-            delete_count += RemovePiggybacks();
+            deleteCount += RemovePiggybacks();
 
             ResolveBlankChannels(UserParameters.start_distro_number,UserParameters.end_distro_number);
 
-            return delete_count;
+            return deleteCount;
         }
 
         // Sort the DimDistoUnits List into A Sortorder set by the Globals.DimDistroSortOrder Enumeration.
@@ -36,25 +34,25 @@ namespace Dimmer_Labels_Wizard
         // Remove All Instances of Cabinet number 0. Returns: The amount of items removed.
         private static int RemoveNonCabinetData()
         {
-            int list_index = 0;
-            int delete_count = 0;
+            int index = 0;
+            int deleteCount = 0;
 
-            for (list_index = 0; list_index < Globals.DimDistroUnits.Count;) // Because list.RemoveAt Reorders the list, List_index Iteration has to be handled programatically.
+            for (index = 0; index < Globals.DimDistroUnits.Count;)
             {
                 // Remove object from List if Cabinet Number equals 0.
-                if (Globals.DimDistroUnits[list_index].cabinet_number == 0)
+                if (Globals.DimDistroUnits[index].cabinet_number == 0)
                 {
-                    Globals.DimDistroUnits.RemoveAt(list_index);
-                    delete_count += 1;
+                    Globals.DimDistroUnits.RemoveAt(index);
+                    deleteCount += 1;
                 }
                 
                 else
                 {
-                    list_index++;
+                    index++;
                 }
             }
 
-            return delete_count;
+            return deleteCount;
         }
 
         // Remove Occurances of Piggybacks and Concatenates Multicore names if needed.
