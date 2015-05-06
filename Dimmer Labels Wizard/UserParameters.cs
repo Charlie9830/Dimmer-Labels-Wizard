@@ -100,8 +100,8 @@ namespace Dimmer_Labels_Wizard
                 // Set Default Fonts,FontStyles and StringFormat Alignments.
                 for (int list_index = 0; list_index < element.Headers.Count; list_index++)
                 {
-                    element.Headers[list_index].MiddleFont = new System.Drawing.Font("Arial",16,System.Drawing.FontStyle.Bold);
-                    element.Headers[list_index].MiddleFormat = centerStringFormat;
+                    element.Headers[list_index].Font = new System.Drawing.Font("Arial",16,System.Drawing.FontStyle.Bold);
+                    element.Headers[list_index].Format = centerStringFormat;
                     
 
                     element.Footers[list_index].MiddleFont = new System.Drawing.Font("Arial", 18,System.Drawing.FontStyle.Bold);

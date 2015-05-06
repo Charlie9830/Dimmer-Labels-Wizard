@@ -50,7 +50,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeFile1.cs" />
     <Compile Include="DataHandling.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="DimmerDistroUnit.cs" />
