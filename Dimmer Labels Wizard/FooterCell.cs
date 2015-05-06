@@ -10,15 +10,19 @@ namespace Dimmer_Labels_Wizard
     public class FooterCell : LabelCell
     {
         // Top Line Properties
-        public string top_data { get; set; }
-        public Font top_font { get; set; }
-        public StringFormat top_format { get; set; }
+        public string TopData { get; set; }
+        public Font TopFont { get; set; }
+        public StringFormat TopFormat { get; set; }
 
+        // Middle Line Properties
+        public string MiddleData { get; set; }
+        public Font MiddleFont { get; set; }
+        public StringFormat MiddleFormat { get; set; }
 
         //Bottom line Properties
-        public string bot_data { get; set; }
-        public Font bot_font { get; set; }
-        public StringFormat bot_format { get; set; }
+        public string bottomData { get; set; }
+        public Font bottomFont { get; set; }
+        public StringFormat bottomFormat { get; set; }
 
        
     }

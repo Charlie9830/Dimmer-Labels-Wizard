@@ -9,8 +9,18 @@ namespace Dimmer_Labels_Wizard
 {
     public class HeaderCell : LabelCell
     {
-        public string data { get; set; }
-        public Font font { get; set; }
-        public StringFormat format { get; set; }
+        // Currently not Used. Although Multiple Word Strings Split into Top and Bottom Data During Render.
+        public string TopData { get; set; }
+        public Font TopFont { get; set; }
+        public StringFormat TopFormat { get; set; }
+
+        public string MiddleData { get; set; }
+        public Font MiddleFont { get; set; }
+        public StringFormat MiddleFormat { get; set; }
+
+        // Currently not Used. Although Multiple Word Strings Split into Top and Bottom Data During Render.
+        public string BottomData { get; set; }
+        public Font BottomFont { get; set; }
+        public StringFormat BottomFormat { get; set; }
     }
 }

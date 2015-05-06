@@ -9,17 +9,17 @@ namespace Dimmer_Labels_Wizard
     public static class Globals
     {
         // List to hold DimDistroUnit Objects
-        public static List<DimDistroUnit> DimDistroUnits = new List<DimDistroUnit>();
-        public static SortOrder DimDistroSortOrder { get; set; }
+        public static List<DimmerDistroUnit> DimmerDistroUnits = new List<DimmerDistroUnit>();
+        public static SortOrder DimmerDistroSortOrder { get; set; }
 
         // List to Hold LabelStrip Objects
-        public static List<RackLabel> RackLabels = new List<RackLabel>();
+        public static List<LabelStrip> LabelStrips = new List<LabelStrip>();
 
         // List to Hold DimDistroUnits that have had their Cabinet/Rack Numbers Sucsefully resolved.
-        public static List<DimDistroUnit> ResolvedCabinetRacks = new List<DimDistroUnit>();
+        public static List<DimmerDistroUnit> ResolvedCabinetRackNumbers = new List<DimmerDistroUnit>();
 
         // List to Hold DimDistroUnits that had failed to have their Cabinet/Rack Numbers Resolved.
-        public static List<DimDistroUnit> UnresolvedCabinetRacks = new List<DimDistroUnit>();
+        public static List<DimmerDistroUnit> UnresolvedCabinetRackNumbers = new List<DimmerDistroUnit>();
 
         // Represents DMX Addresses.
         public struct DMX

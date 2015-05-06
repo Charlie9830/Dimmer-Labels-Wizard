@@ -50,9 +50,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeFile1.cs" />
     <Compile Include="DataHandling.cs" />
     <Compile Include="Debug.cs" />
-    <Compile Include="DimDistroUnit.cs" />
+    <Compile Include="DimmerDistroUnit.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FORM_CabinetAddressResolution.cs">
       <SubType>Form</SubType>
@@ -66,16 +67,15 @@
     <Compile Include="FORM_LabelEditor.Designer.cs">
       <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToExcel.cs" />
     <Compile Include="FooterCell.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="HeaderCell.cs" />
-    <Compile Include="FileIn.cs" />
+    <Compile Include="FileImport.cs" />
     <Compile Include="LabelCell.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RackLabel.cs" />
+    <Compile Include="LabelStrip.cs" />
     <Compile Include="UserParameters.cs" />
   </ItemGroup>
   <ItemGroup>

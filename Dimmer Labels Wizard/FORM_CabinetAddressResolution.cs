@@ -32,46 +32,46 @@ namespace Dimmer_Labels_Wizard
 
         private void PopulateResolvedDataGrid()
         {
-            foreach (var element in Globals.ResolvedCabinetRacks)
+            foreach (var element in Globals.ResolvedCabinetRackNumbers)
             {
-                if (element.rack_unit_type == RackType.Distro)
+                if (element.RackUnitType == RackType.Distro)
                 {
-                    ResolvedDataGrid.Rows.Add(element.channel_number, "N" + element.dimmer_number, element.cabinet_number, element.rack_number);
+                    ResolvedDataGrid.Rows.Add(element.ChannelNumber, "N" + element.DimmerNumber, element.CabinetNumber, element.RackNumber);
                 }
                 
-                else if (element.rack_unit_type == RackType.Dimmer)
+                else if (element.RackUnitType == RackType.Dimmer)
                 {
-                    ResolvedDataGrid.Rows.Add(element.channel_number, element.universe_number + "/" + element.dimmer_number, element.cabinet_number, element.rack_number);
+                    ResolvedDataGrid.Rows.Add(element.ChannelNumber, element.UniverseNumber + "/" + element.DimmerNumber, element.CabinetNumber, element.RackNumber);
                 }
 
                 else
                 {
-                    ResolvedDataGrid.Rows.Add(element.channel_number, "?" + element.dimmer_number, element.cabinet_number, element.rack_number);
+                    ResolvedDataGrid.Rows.Add(element.ChannelNumber, "?" + element.DimmerNumber, element.CabinetNumber, element.RackNumber);
                 }
             }
-            ResolvedCabinetsCount.Text = Globals.ResolvedCabinetRacks.Count.ToString();
+            ResolvedCabinetsCount.Text = Globals.ResolvedCabinetRackNumbers.Count.ToString();
         }
 
         private void PopulateUnresolvedDataGrid()
         {
-            foreach (var element in Globals.UnresolvedCabinetRacks)
+            foreach (var element in Globals.UnresolvedCabinetRackNumbers)
             {
-                if (element.rack_unit_type == RackType.Distro)
+                if (element.RackUnitType == RackType.Distro)
                 {
-                    UnresolvedDataGrid.Rows.Add(element.channel_number, "N" + element.dimmer_number, element.cabinet_number, element.rack_number);
+                    UnresolvedDataGrid.Rows.Add(element.ChannelNumber, "N" + element.DimmerNumber, element.CabinetNumber, element.RackNumber);
                 }
 
-                else if (element.rack_unit_type == RackType.Dimmer)
+                else if (element.RackUnitType == RackType.Dimmer)
                 {
-                    UnresolvedDataGrid.Rows.Add(element.channel_number, element.universe_number + "/" + element.dimmer_number, element.cabinet_number, element.rack_number);
+                    UnresolvedDataGrid.Rows.Add(element.ChannelNumber, element.UniverseNumber + "/" + element.DimmerNumber, element.CabinetNumber, element.RackNumber);
                 }
 
                 else
                 {
-                    UnresolvedDataGrid.Rows.Add(element.channel_number, "?" + element.dimmer_number, element.cabinet_number, element.rack_number);
+                    UnresolvedDataGrid.Rows.Add(element.ChannelNumber, "?" + element.DimmerNumber, element.CabinetNumber, element.RackNumber);
                 }
             }
-            UnresolvedCabinetsCount.Text = Globals.UnresolvedCabinetRacks.Count.ToString();
+            UnresolvedCabinetsCount.Text = Globals.UnresolvedCabinetRackNumbers.Count.ToString();
         }
 
         private void ContinueButton_Click(object sender, EventArgs e)

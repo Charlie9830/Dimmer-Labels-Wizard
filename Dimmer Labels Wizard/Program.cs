@@ -23,14 +23,14 @@ namespace Dimmer_Labels_Wizard
         {
             // ***************************************************
             // Hard Coded user Preferences
-            UserParameters.start_dimmer_number = 1;
-            UserParameters.end_dimmer_number = 208;
+            UserParameters.StartDimmerNumber = 1;
+            UserParameters.EndDimmerNumber = 208;
             UserParameters.DimmerUniverses.Add(1);  
-            UserParameters.start_distro_number = 1;
-            UserParameters.end_distro_number = 124;
+            UserParameters.StartDistroNumber = 1;
+            UserParameters.EndDistroNumber = 124;
 
-            UserParameters.label_width = 50;
-            UserParameters.label_height = 60;
+            UserParameters.LabelWidth = 50;
+            UserParameters.LabelHeight = 60;
 
             // Debug Call Method to Populate DistroStartAddresses.
             UserParameters.PopulateRackStartAddresses();
@@ -40,14 +40,14 @@ namespace Dimmer_Labels_Wizard
             Console.BufferHeight = 8000;
             Console.BufferWidth += 30;
 
-            FileIn.ImportFile();
+            FileImport.ImportFile();
 
-            int delete_count = DataHandling.SanitizeDimDistroUnits();
+            int deleteCount = DataHandling.SanitizeDimDistroUnits();
 
             Console.WriteLine("Data Handling Complete.");
-            Console.WriteLine("{0} Objects Sanitzed", delete_count);
+            Console.WriteLine("{0} Objects Sanitzed", deleteCount);
             Console.WriteLine();
-            Console.Write("{0} Resolved Cabinets / {1} Unresolved Cabinets", Globals.ResolvedCabinetRacks.Count, Globals.UnresolvedCabinetRacks.Count);
+            Console.Write("{0} Resolved Cabinets / {1} Unresolved Cabinets", Globals.ResolvedCabinetRackNumbers.Count, Globals.UnresolvedCabinetRackNumbers.Count);
 
             Output.ExportToRackLabel();
 
