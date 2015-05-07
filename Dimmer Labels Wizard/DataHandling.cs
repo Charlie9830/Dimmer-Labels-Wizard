@@ -108,7 +108,7 @@ namespace Dimmer_Labels_Wizard
                          Globals.DimmerDistroUnits[index + 1].RackUnitType = RackType.Distro;
                          Globals.DimmerDistroUnits[index + 1].DimmerNumber = Globals.DimmerDistroUnits[index].DimmerNumber + 1;
                          Globals.DimmerDistroUnits[index + 1].ChannelNumber = "Blank";
-                         Globals.DimmerDistroUnits[index + 1].MulticoreName = "Blank";
+                         Globals.DimmerDistroUnits[index + 1].MulticoreName = "Blank Blank Blank";
                          Globals.DimmerDistroUnits[index + 1].InstrumentType = "Blank";
                          // Atempt to Resolve it's Cabinet Address.
                          ResolveDistroCabRackNo(Globals.DimmerDistroUnits[index + 1]);
