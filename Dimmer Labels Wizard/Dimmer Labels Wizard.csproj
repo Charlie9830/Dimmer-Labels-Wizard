@@ -60,6 +60,12 @@
     <Compile Include="FORM_CabinetAddressResolution.Designer.cs">
       <DependentUpon>FORM_CabinetAddressResolution.cs</DependentUpon>
     </Compile>
+    <Compile Include="FORM_InstrumentNameEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORM_InstrumentNameEntry.Designer.cs">
+      <DependentUpon>FORM_InstrumentNameEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="FORM_LabelEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +73,12 @@
       <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="FooterCell.cs" />
+    <Compile Include="FORM_UserParameterEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORM_UserParameterEntry.Designer.cs">
+      <DependentUpon>FORM_UserParameterEntry.cs</DependentUpon>
+    </Compile>
     <Compile Include="Globals.cs" />
     <Compile Include="HeaderCell.cs" />
     <Compile Include="FileImport.cs" />
@@ -113,8 +125,14 @@
     <EmbeddedResource Include="FORM_CabinetAddressResolution.resx">
       <DependentUpon>FORM_CabinetAddressResolution.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FORM_InstrumentNameEntry.resx">
+      <DependentUpon>FORM_InstrumentNameEntry.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FORM_LabelEditor.resx">
       <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORM_UserParameterEntry.resx">
+      <DependentUpon>FORM_UserParameterEntry.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

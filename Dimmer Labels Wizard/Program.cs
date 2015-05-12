@@ -21,24 +21,22 @@ namespace Dimmer_Labels_Wizard
        
         static void Main(string[] args)
         {
-            // ***************************************************
-            // Hard Coded user Preferences
-            UserParameters.StartDimmerNumber = 1;
-            UserParameters.EndDimmerNumber = 208;
-            UserParameters.DimmerUniverses.Add(1);  
-            UserParameters.StartDistroNumber = 1;
-            UserParameters.EndDistroNumber = 124;
+            
+            //UserParameters.StartDimmerNumber = 1;
+            //UserParameters.EndDimmerNumber = 208;
+            //UserParameters.DimmerUniverses.Add(1);  
+            //UserParameters.StartDistroNumber = 1;
+            //UserParameters.EndDistroNumber = 124;
 
             UserParameters.LabelWidth = 50;
             UserParameters.LabelHeight = 60;
 
-            // Debug Call Method to Populate DistroStartAddresses.
-            UserParameters.PopulateRackStartAddresses();
-            // ***************************************************
-          
+            FORM_UserParameterEntry UserParameterEntry = new FORM_UserParameterEntry();
+            UserParameterEntry.ShowDialog();
 
-            Console.BufferHeight = 8000;
-            Console.BufferWidth += 30;
+            // Debug Call Method to Populate DistroStartAddresses.
+            UserParameters.HardCodeRackStartAddresses();
+            
 
             FileImport.ImportFile();
 
@@ -49,13 +47,12 @@ namespace Dimmer_Labels_Wizard
             Console.WriteLine();
             Console.Write("{0} Resolved Cabinets / {1} Unresolved Cabinets", Globals.ResolvedCabinetRackNumbers.Count, Globals.UnresolvedCabinetRackNumbers.Count);
 
-            Output.ExportToRackLabel();
+            
 
             FORM_CabinetAddressResolution CabinetAddressResolution = new FORM_CabinetAddressResolution();
             CabinetAddressResolution.ShowDialog();
 
-            Debug.PrintRackLabelsToConsole();
-
+            Output.ExportToRackLabel();
             UserParameters.SetDefaultRackLabelSettings();
 
             FORM_LabelEditor NextWindow = new FORM_LabelEditor();

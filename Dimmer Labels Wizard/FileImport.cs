@@ -13,9 +13,9 @@ namespace Dimmer_Labels_Wizard
         
         public static void ImportFile()
         {
-
             // Create new CSV Object and Point it to the file location.
-            CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\Advanced Test Data Les Mis Sydney.csv");
+            CSVRead.TextFieldParser file = CreateTextFieldParser();
+            
             file.SetDelimiters(",");
 
             // Read the First line to Throw out Coloum header values.
@@ -50,7 +50,7 @@ namespace Dimmer_Labels_Wizard
                         Globals.DimmerDistroUnits[index].ChannelNumber = fields[channelColumn];
 
                         Globals.DimmerDistroUnits[index].DimmerNumberText = fields[dimmerColumn];
-                        Globals.DimmerDistroUnits[index].InstrumentType = fields[instrumentTypeColumn];
+                        Globals.DimmerDistroUnits[index].InstrumentName = fields[instrumentTypeColumn];
                         Globals.DimmerDistroUnits[index].MulticoreName = fields[multicoreNameColumn];
                         Globals.DimmerDistroUnits[index].CabinetNumberText = fields[cabinetNumberColumn];
 
@@ -67,6 +67,27 @@ namespace Dimmer_Labels_Wizard
 
             file.Close();
 
+        }
+
+        private static CSVRead.TextFieldParser CreateTextFieldParser()
+        {
+            if (Environment.MachineName == "CHARLIESAMSUNG")
+            {
+                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\WarHorse Brisbane Test Data.csv");
+                return file;
+            }
+
+            else if (Environment.MachineName == "CHARLIE-METABOX")
+            {
+                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\Advanced Test Data Les Mis Sydney.csv");
+                return file;
+            }
+
+            else
+            {
+                Console.WriteLine("Unrecognized Computer: Please add a Condition for this Computer Name, and a Filepath to FileImport.cs");
+                return null;
+            }
         }
 
     }

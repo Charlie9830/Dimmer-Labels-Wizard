@@ -75,7 +75,10 @@ namespace Dimmer_Labels_Wizard
         }
 
         private void ContinueButton_Click(object sender, EventArgs e)
-        {          
+        {
+            FORM_InstrumentNameEntry nextWindow = new FORM_InstrumentNameEntry();
+            nextWindow.ShowDialog();
+            this.Close();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Dimmer_Labels_Wizard
         public static int LabelHeight { get; set; } // Height in Pixels
 
         // Create Hardcoded Distro Start Address Values
-        public static void PopulateRackStartAddresses()
+        public static void HardCodeRackStartAddresses()
         {
             DistroStartAddresses.Add(1);
             DistroStartAddresses.Add(13);
@@ -41,12 +41,12 @@ namespace Dimmer_Labels_Wizard
             Globals.DMX address1;
             Globals.DMX address2;
             Globals.DMX address3;
-            address1.universe = 1;
-            address1.channel = 1;
-            address2.universe = 1;
-            address2.channel = 13;
-            address3.universe = 1;
-            address3.channel = 37;
+            address1.Universe = 1;
+            address1.Channel = 1;
+            address2.Universe = 1;
+            address2.Channel = 13;
+            address3.Universe = 1;
+            address3.Channel = 37;
 
             FiveKDimmerAddresses.Add(address1);
             FiveKDimmerAddresses.Add(address2);
@@ -56,11 +56,36 @@ namespace Dimmer_Labels_Wizard
             for (int counter = 1; counter <= 19; counter ++)
             {
                 Globals.DMX dimmer_address;
-                dimmer_address.universe = 1;
-                dimmer_address.channel = variableAddress;
+                dimmer_address.Universe = 1;
+                dimmer_address.Channel = variableAddress;
                 variableAddress += 12;
 
                 DimmerStartAddresses.Add(dimmer_address);
+            }
+        }
+
+        public static void PopulateRackStartAddresses()
+        {
+            int listIndex = 0;
+            for (int channel = StartDimmerNumber; channel <= EndDimmerNumber;)
+            {
+                Globals.DMX address;
+                address.Universe = 1;
+                address.Channel = channel;
+
+                DimmerStartAddresses.Insert(listIndex, address);
+
+                listIndex++;
+                channel += 12;
+            }
+
+            listIndex = 0;
+            for (int channel = StartDistroNumber; channel <= EndDistroNumber;)
+            {
+                DistroStartAddresses.Insert(listIndex, channel);
+
+                listIndex++;
+                channel += 12;
             }
         }
  

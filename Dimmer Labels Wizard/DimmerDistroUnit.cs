@@ -11,7 +11,7 @@ namespace Dimmer_Labels_Wizard
 
         // Imported Data
         public string ChannelNumber { get; set; }
-        public string InstrumentType { get; set; }
+        public string InstrumentName { get; set; }
         public string MulticoreName { get; set; }
         
 

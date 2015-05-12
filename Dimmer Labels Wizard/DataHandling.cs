@@ -108,8 +108,8 @@ namespace Dimmer_Labels_Wizard
                          Globals.DimmerDistroUnits[index + 1].RackUnitType = RackType.Distro;
                          Globals.DimmerDistroUnits[index + 1].DimmerNumber = Globals.DimmerDistroUnits[index].DimmerNumber + 1;
                          Globals.DimmerDistroUnits[index + 1].ChannelNumber = "Blank";
-                         Globals.DimmerDistroUnits[index + 1].MulticoreName = "Blank Blank Blank";
-                         Globals.DimmerDistroUnits[index + 1].InstrumentType = "Blank";
+                         Globals.DimmerDistroUnits[index + 1].MulticoreName = "Blank";
+                         Globals.DimmerDistroUnits[index + 1].InstrumentName = "Blank";
                          // Atempt to Resolve it's Cabinet Address.
                          ResolveDistroCabRackNo(Globals.DimmerDistroUnits[index + 1]);
                      }
@@ -135,7 +135,7 @@ namespace Dimmer_Labels_Wizard
                          Globals.DimmerDistroUnits[index + 1].DimmerNumber = Globals.DimmerDistroUnits[index].DimmerNumber + 1;
                          Globals.DimmerDistroUnits[index + 1].ChannelNumber = "Blank";
                          Globals.DimmerDistroUnits[index + 1].MulticoreName = "Blank";
-                         Globals.DimmerDistroUnits[index + 1].InstrumentType = "Blank";
+                         Globals.DimmerDistroUnits[index + 1].InstrumentName = "Blank";
                          // Attempt to Resolve it's cabinet number.
                          ResolveDimmerCabRackNo(Globals.DimmerDistroUnits[index + 1]);
                      }
@@ -243,9 +243,9 @@ namespace Dimmer_Labels_Wizard
                 {
                     if (i != UserParameters.DimmerStartAddresses.Count)
                     {
-                        if (Globals.DimmerDistroUnits[inputIndex1].UniverseNumber == UserParameters.DimmerStartAddresses[i].universe &&
-                            Globals.DimmerDistroUnits[inputIndex1].DimmerNumber >= UserParameters.DimmerStartAddresses[i].channel &&
-                            Globals.DimmerDistroUnits[inputIndex1].DimmerNumber <= UserParameters.DimmerStartAddresses[i].channel + (rackSize - 1))
+                        if (Globals.DimmerDistroUnits[inputIndex1].UniverseNumber == UserParameters.DimmerStartAddresses[i].Universe &&
+                            Globals.DimmerDistroUnits[inputIndex1].DimmerNumber >= UserParameters.DimmerStartAddresses[i].Channel &&
+                            Globals.DimmerDistroUnits[inputIndex1].DimmerNumber <= UserParameters.DimmerStartAddresses[i].Channel + (rackSize - 1))
                         {
                             dimmerIndex1 = i;
                             break;
@@ -257,9 +257,9 @@ namespace Dimmer_Labels_Wizard
                 {
                     if (i != UserParameters.DimmerStartAddresses.Count)
                     {
-                        if (Globals.DimmerDistroUnits[inputIndex2].UniverseNumber == UserParameters.DimmerStartAddresses[i].universe &&
-                            Globals.DimmerDistroUnits[inputIndex2].DimmerNumber >= UserParameters.DimmerStartAddresses[i].channel &&
-                            Globals.DimmerDistroUnits[inputIndex2].DimmerNumber <= UserParameters.DimmerStartAddresses[i].channel + (rackSize - 1))
+                        if (Globals.DimmerDistroUnits[inputIndex2].UniverseNumber == UserParameters.DimmerStartAddresses[i].Universe &&
+                            Globals.DimmerDistroUnits[inputIndex2].DimmerNumber >= UserParameters.DimmerStartAddresses[i].Channel &&
+                            Globals.DimmerDistroUnits[inputIndex2].DimmerNumber <= UserParameters.DimmerStartAddresses[i].Channel + (rackSize - 1))
                         {
                             dimmerIndex2 = i;
                             break;
@@ -338,9 +338,9 @@ namespace Dimmer_Labels_Wizard
         {
            for (int list_index = 0; list_index < UserParameters.FiveKDimmerAddresses.Count; list_index++)
            {
-               if (unit.UniverseNumber == UserParameters.FiveKDimmerAddresses[list_index].universe &&
-                   unit.DimmerNumber >= UserParameters.FiveKDimmerAddresses[list_index].channel &&
-                   unit.DimmerNumber <= UserParameters.FiveKDimmerAddresses[list_index].channel + 5)
+               if (unit.UniverseNumber == UserParameters.FiveKDimmerAddresses[list_index].Universe &&
+                   unit.DimmerNumber >= UserParameters.FiveKDimmerAddresses[list_index].Channel &&
+                   unit.DimmerNumber <= UserParameters.FiveKDimmerAddresses[list_index].Channel + 5)
                {
                    return true;
                }

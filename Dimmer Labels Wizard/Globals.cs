@@ -24,8 +24,8 @@ namespace Dimmer_Labels_Wizard
         // Represents DMX Addresses.
         public struct DMX
         {
-            public int universe;
-            public int channel;
+            public int Universe;
+            public int Channel;
         }
     }
 }
