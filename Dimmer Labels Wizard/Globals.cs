@@ -15,11 +15,8 @@ namespace Dimmer_Labels_Wizard
         // List to Hold LabelStrip Objects
         public static List<LabelStrip> LabelStrips = new List<LabelStrip>();
 
-        // List to Hold DimDistroUnits that have had their Cabinet/Rack Numbers Sucsefully resolved.
-        public static List<DimmerDistroUnit> ResolvedCabinetRackNumbers = new List<DimmerDistroUnit>();
-
-        // List to Hold DimDistroUnits that had failed to have their Cabinet/Rack Numbers Resolved.
-        public static List<DimmerDistroUnit> UnresolvedCabinetRackNumbers = new List<DimmerDistroUnit>();
+        // List to Hold Imported Elements with Dimmer Data that does not Match Formatting Styles.
+        public static List<DimmerDistroUnit> UnParseableData = new List<DimmerDistroUnit>();
 
         // Represents DMX Addresses.
         public struct DMX

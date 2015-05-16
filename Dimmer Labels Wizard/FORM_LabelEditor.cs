@@ -12,7 +12,7 @@ namespace Dimmer_Labels_Wizard
 {
     public partial class FORM_LabelEditor : Form
     {
-        // A list of Lists. 1st Dimension Cabinets. 2nd Dimension Racks.
+        // A list of Lists. 1st Dimension RackTypes. 2nd Dimension Racks.
         private List<List<LabelStrip>> SelectorRackLabels = new List<List<LabelStrip>>();
 
         // Dictionary to Map User Selections to RackLabel Objects.
@@ -35,20 +35,20 @@ namespace Dimmer_Labels_Wizard
                 // Dont Run Out of Index.
                 if (i + 1 < bufferList.Count)
                 {
-                    // Do the cabinet numbers match?
-                    if (bufferList[i].CabinetNumber == bufferList[i + 1].CabinetNumber)
+                    // Do the RackTypes Match?
+                    if (bufferList[i].RackUnitType == bufferList[i + 1].RackUnitType)
                     {
                         // Create a new 2nd Dimension List.
                         SelectorRackLabels.Insert(outputIndex, new List<LabelStrip>());
 
-                        // Add all the Racks that reside within that cabinet.
+                        // Add all the Racks that reside within that Unit Type
                         for (int j = i; j < bufferList.Count; j++)
                         {
                             // Dont run out of Index.
                             if (j + 1 < bufferList.Count)
                             {
-                                // Do the Rack numbers match?
-                                if (bufferList[j].CabinetNumber == bufferList[j + 1].CabinetNumber)
+                                // Do the RackUnitTYpes match?
+                                if (bufferList[j].RackUnitType == bufferList[j + 1].RackUnitType)
                                 {
                                     // Add them to the list.
                                     SelectorRackLabels[outputIndex].Add(bufferList[j]);
@@ -57,7 +57,7 @@ namespace Dimmer_Labels_Wizard
                                 else
                                 {
                                     // Add the Current object if it is in the same Cabinet as the last Object Added.
-                                    if (bufferList[j].CabinetNumber == SelectorRackLabels[outputIndex].Last<LabelStrip>().CabinetNumber)
+                                    if (bufferList[j].RackUnitType == SelectorRackLabels[outputIndex].Last<LabelStrip>().RackUnitType)
                                     {
                                         SelectorRackLabels[outputIndex].Add(bufferList[j]);
                                     }
@@ -67,6 +67,12 @@ namespace Dimmer_Labels_Wizard
                                     i = j - 1;
                                     break;
                                 }
+                            }
+                            else
+                            {
+                                outputIndex++;
+                                i = j - 1;
+                                break;
                             }
                         }
                     }
@@ -85,25 +91,9 @@ namespace Dimmer_Labels_Wizard
             PopulateRackLabelSelector();
         }
 
-
-        private void RenderLabelContainer()
-        {
-            System.Drawing.Graphics graphics = this.CreateGraphics();
-            SolidBrush foregroundColour = new SolidBrush(Color.Black);
-            SolidBrush backgroundColour = new SolidBrush(Color.LightGray);
-            Pen foregroundPen = new Pen(foregroundColour);
-            Pen backgroundPen = new Pen(backgroundColour);
-            Rectangle container = new Rectangle(10, 10, 1000, 300);
-
-            graphics.DrawRectangle(foregroundPen, container);
-            graphics.FillRectangle(backgroundColour, container);
-        }
-
-
         private void button1_Click(object sender, EventArgs e)
         {
-            RenderLabelContainer();
-            
+            // Do Nothing!
         }
        
         // Populate RackLabelSelector Treeview. Add Tracking KeyPairs to UserSelectionDict.
@@ -123,7 +113,7 @@ namespace Dimmer_Labels_Wizard
                     UserSelectionDict.Add(children.Last<TreeNode>(), element);
                 }
 
-                RackLabelSelector.Nodes.Insert(i, new TreeNode("Cab" + SelectorRackLabels[i][0].CabinetNumber,children.ToArray()));
+                RackLabelSelector.Nodes.Insert(i, new TreeNode(SelectorRackLabels[i][0].RackUnitType.ToString(),children.ToArray()));
             }
 
             RackLabelSelector.EndUpdate();

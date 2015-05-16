@@ -5,54 +5,39 @@ using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
-
-/*
- * Working Notes:
- * Datahandling is still trying to Resolve Scenic Tower Dimmers. 
- * Test DataHandling.CalculateBlankDistroChannel()
- * Code CalculateBlankDimmerChannel
-*/
-
+using System.IO;
 
 namespace Dimmer_Labels_Wizard
 {
     class Program
     {
-       
         static void Main(string[] args)
         {
-            
-            //UserParameters.StartDimmerNumber = 1;
-            //UserParameters.EndDimmerNumber = 208;
-            //UserParameters.DimmerUniverses.Add(1);  
-            //UserParameters.StartDistroNumber = 1;
-            //UserParameters.EndDistroNumber = 124;
+            FORM_UserParameterEntry UserParamEntry = new FORM_UserParameterEntry();
+            UserParamEntry.ShowDialog();
+
+            // Setup Mock User Paramater Inputs
+            UserParameters.DimmerImportFormat = ImportFormatting.Format2;
+            UserParameters.DistroImportFormat = ImportFormatting.Format1;
 
             UserParameters.LabelWidth = 50;
             UserParameters.LabelHeight = 60;
 
-            FORM_UserParameterEntry UserParameterEntry = new FORM_UserParameterEntry();
-            UserParameterEntry.ShowDialog();
+            UserParameters.StartDimmerNumber = 1;
+            UserParameters.EndDimmerNumber = 223;
+            UserParameters.StartDistroNumber = 1;
+            UserParameters.EndDistroNumber = 72;
 
-            // Debug Call Method to Populate DistroStartAddresses.
-            UserParameters.HardCodeRackStartAddresses();
-            
-
+            UserParameters.HardCodeRackNumbers();
             FileImport.ImportFile();
 
-            int deleteCount = DataHandling.SanitizeDimDistroUnits();
+            FORM_UnparseableDataDisplay UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
+            UnparseableDataDisplay.ShowDialog();
 
-            Console.WriteLine("Data Handling Complete.");
-            Console.WriteLine("{0} Objects Sanitzed", deleteCount);
-            Console.WriteLine();
-            Console.Write("{0} Resolved Cabinets / {1} Unresolved Cabinets", Globals.ResolvedCabinetRackNumbers.Count, Globals.UnresolvedCabinetRackNumbers.Count);
-
-            
-
-            FORM_CabinetAddressResolution CabinetAddressResolution = new FORM_CabinetAddressResolution();
-            CabinetAddressResolution.ShowDialog();
+            DataHandling.SanitizeDimDistroUnits();
 
             Output.ExportToRackLabel();
+
             UserParameters.SetDefaultRackLabelSettings();
 
             FORM_LabelEditor NextWindow = new FORM_LabelEditor();

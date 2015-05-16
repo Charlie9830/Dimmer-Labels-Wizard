@@ -36,17 +36,16 @@ namespace Dimmer_Labels_Wizard
         {
             foreach (var element in Globals.DimmerDistroUnits)
             {
-                if (element.CabinetNumber != 0)
+                
+                if (ImportedInstrumentNames.Contains(element.InstrumentName) != true)
                 {
-                    if (ImportedInstrumentNames.Contains(element.InstrumentName) != true)
-                    {
-                        // Add Instrument Name to List.
-                        ImportedInstrumentNames.Add(element.InstrumentName);
+                    // Add Instrument Name to List.
+                    ImportedInstrumentNames.Add(element.InstrumentName);
                         
-                        // Add a Tracking KeyPair to the User selection dictionary.
-                        UserSelectionDictionary.Add(element.InstrumentName, element);
-                    }
+                    // Add a Tracking KeyPair to the User selection dictionary.
+                    UserSelectionDictionary.Add(element.InstrumentName, element);
                 }
+                
             }
         }
 

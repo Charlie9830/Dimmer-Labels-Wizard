@@ -8,6 +8,17 @@ namespace Dimmer_Labels_Wizard
 {
     public static class UserParameters
     {
+        public static ImportFormatting DimmerImportFormat { get; set; }
+        public static ImportFormatting DistroImportFormat { get; set; }
+        public static ImportFormatting DMXAddressImportFormat { get; set; }
+
+        public static int ChannelNumberColumnIndex { get; set; }
+        public static int DimmerNumberColumnIndex { get; set; }
+        public static int InstrumentTypeColumnIndex { get; set; }
+        public static int MulticoreNameColumnIndex { get; set; }
+        public static int PositionColumnIndex { get; set; }
+        public static int UniverseDataColumnIndex { get; set; }
+
         public static int StartDimmerNumber { get; set; }
         public static int EndDimmerNumber { get; set; }
 
@@ -16,79 +27,84 @@ namespace Dimmer_Labels_Wizard
         public static int StartDistroNumber { get; set; }
         public static int EndDistroNumber { get; set; }
 
-        public static List<int> DistroStartAddresses = new List<int>();
-        public static List<Globals.DMX> DimmerStartAddresses = new List<Globals.DMX>();
-        public static List<Globals.DMX> FiveKDimmerAddresses = new List<Globals.DMX>();
+        public static List<DistroRack> DistroRacks = new List<DistroRack>();
+        public static List<DimmerRack> DimmerRacks = new List<DimmerRack>();
 
         public static int LabelWidth { get; set; } // Width in Pixels
         public static int LabelHeight { get; set; } // Height in Pixels
 
         // Create Hardcoded Distro Start Address Values
-        public static void HardCodeRackStartAddresses()
+        public static void HardCodeRackNumbers()
         {
-            DistroStartAddresses.Add(1);
-            DistroStartAddresses.Add(13);
-            DistroStartAddresses.Add(25);
-            DistroStartAddresses.Add(37);
-            DistroStartAddresses.Add(49);
-            DistroStartAddresses.Add(61);
-            DistroStartAddresses.Add(73);
-            DistroStartAddresses.Add(85);
-            DistroStartAddresses.Add(97);
-            DistroStartAddresses.Add(109);
-            DistroStartAddresses.Add(121);
+            // Distro Starting Address. NOT the Very Last Distro Channel.
+            int firstDistroAddress = StartDistroNumber;
+            int lastDistroAddress = EndDistroNumber - 12;
 
-            Globals.DMX address1;
-            Globals.DMX address2;
-            Globals.DMX address3;
-            address1.Universe = 1;
-            address1.Channel = 1;
-            address2.Universe = 1;
-            address2.Channel = 13;
-            address3.Universe = 1;
-            address3.Channel = 37;
+            // Dimmer Starting Addresses. NOT the Very Last Distro Channel
+            int dimmerUniverse = 1;
+            int firstDimmerAddress = StartDimmerNumber;
+            int lastDimmerAddress = EndDimmerNumber - 12;
 
-            FiveKDimmerAddresses.Add(address1);
-            FiveKDimmerAddresses.Add(address2);
-            FiveKDimmerAddresses.Add(address3);
 
-            int variableAddress = 1;
-            for (int counter = 1; counter <= 19; counter ++)
+            int distroRackNumberCounter = 1;
+            int distroOutputIndex = 0;
+            int distroRackCounter = 12;
+
+            for (int channel = firstDistroAddress; channel <= lastDistroAddress + 12; channel++)
             {
-                Globals.DMX dimmer_address;
-                dimmer_address.Universe = 1;
-                dimmer_address.Channel = variableAddress;
-                variableAddress += 12;
+                if (distroRackCounter == 12)
+                {
+                    DistroRacks.Insert(distroOutputIndex, new DistroRack());
+                    DistroRacks[distroOutputIndex].StartingAddress = channel;
+                    DistroRacks[distroOutputIndex].EndingAddress = channel + 11;
+                    DistroRacks[distroOutputIndex].RackNumber = distroRackNumberCounter;
 
-                DimmerStartAddresses.Add(dimmer_address);
+                    distroRackNumberCounter++;
+                    distroOutputIndex++;
+                    distroRackCounter = 1;
+                }
+
+                else
+                {
+                    distroRackCounter++;
+                }
             }
+
+            int dimmerOutputIndex = 0;
+            int dimmerRackCounter = 12;
+            int dimmerRackNumberCounter = 1;
+
+            for (int channel = firstDimmerAddress; channel <= lastDimmerAddress + 12; channel++)
+            {
+                if (dimmerRackCounter == 12)
+                {
+                    DimmerRacks.Insert(dimmerOutputIndex,new DimmerRack());
+                    
+                    Globals.DMX startAddress = new Globals.DMX();
+                    startAddress.Channel = channel;
+                    startAddress.Universe = dimmerUniverse;
+                    Globals.DMX endAddress = new Globals.DMX();
+                    endAddress.Channel = channel + 11;
+                    endAddress.Universe = dimmerUniverse;
+
+                    DimmerRacks[dimmerOutputIndex].StartingAddress = startAddress;
+                    DimmerRacks[dimmerOutputIndex].EndingAddress = endAddress;
+                    DimmerRacks[dimmerOutputIndex].RackNumber = dimmerRackNumberCounter;
+
+                    dimmerRackCounter = 1;
+                    dimmerOutputIndex++;
+                    dimmerRackNumberCounter++;
+                }
+
+                else
+                {
+                    dimmerRackCounter++;
+                }
+            }
+
+            DimmerUniverses.Add(1);
         }
 
-        public static void PopulateRackStartAddresses()
-        {
-            int listIndex = 0;
-            for (int channel = StartDimmerNumber; channel <= EndDimmerNumber;)
-            {
-                Globals.DMX address;
-                address.Universe = 1;
-                address.Channel = channel;
-
-                DimmerStartAddresses.Insert(listIndex, address);
-
-                listIndex++;
-                channel += 12;
-            }
-
-            listIndex = 0;
-            for (int channel = StartDistroNumber; channel <= EndDistroNumber;)
-            {
-                DistroStartAddresses.Insert(listIndex, channel);
-
-                listIndex++;
-                channel += 12;
-            }
-        }
- 
        // Checks if a Universe exists in Dimmer Universes list.
         public static bool IsInDimmerUniverses(int inputUniverse)
        {

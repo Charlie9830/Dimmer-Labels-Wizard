@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 namespace Dimmer_Labels_Wizard
 {
     // DimDistroUnit Object Data type tracking.
-    public enum RackType { Dimmer, Distro, Unknown };
+    public enum RackType { Dimmer, Distro, OutsideLabelRange, Unparseable };
     public enum SortOrder { Default, DimmerAndDistroNumber}; // Update DimDistroUnit.CompareTo if you Add anything.
 
+    // Distro Formating.     Format1 ND###: Format2 ###: Format3 #/###: Format4 A/###:.
+    // Dimmer Formatting.    Format1 #/###: Format2 ###: Format3 A###: Format4 A/###:.
+    // Dimmer Format2 Requires more infomation be Imported as that Format does not provide Universe Infomation.
+    public enum ImportFormatting { Format1, Format2, Format3, Format4 }
     
 }
 

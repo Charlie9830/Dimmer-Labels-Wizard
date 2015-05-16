@@ -10,7 +10,22 @@ namespace Dimmer_Labels_Wizard
 {
     public static class FileImport
     {
-        
+        public static string[] CollectHeaders()
+        {
+            // Create new CSV object Pointed to File Location.
+            CSVRead.TextFieldParser file = CreateTextFieldParser();
+            file.SetDelimiters(",");
+            
+            
+            // Read the First line to Collect the Headers.
+            string[] headers = file.ReadFields();
+
+            // Close the File to return Cursor to Top.
+            file.Close();
+
+            return headers;
+        }
+
         public static void ImportFile()
         {
             // Create new CSV Object and Point it to the file location.
@@ -24,44 +39,46 @@ namespace Dimmer_Labels_Wizard
             // Keep track of and Assign HeaderCells/FooterCells list Indices
             int index = 0;
 
-            // Column Indexes
-            int channelColumn = 0;
-            int dimmerColumn = 1;
-            int instrumentTypeColumn = 2;
-            int multicoreNameColumn = 3;
-            int cabinetNumberColumn = 4;
-            
+            // Collect Column Indexes
+            int channelColumn = UserParameters.ChannelNumberColumnIndex;
+            int dimmerColumn = UserParameters.DimmerNumberColumnIndex;
+            int instrumentTypeColumn = UserParameters.InstrumentTypeColumnIndex;
+            int multicoreNameColumn = UserParameters.MulticoreNameColumnIndex;
+            int positionColumn = UserParameters.PositionColumnIndex;
+            int DMXaddressColumn = UserParameters.UniverseDataColumnIndex;
+
             while (!file.EndOfData)
             {
                 // Capture Each CSV File Line.
                 string[] fields = file.ReadFields();
 
                 // Check if a value exists in the Dimmer Cell.
-                if (fields[1] != "")
+                if (fields[dimmerColumn] != "")
                 {
-                    
-                    
-                        // Init Object Representing a Dimmer Or Distro Channel Here
-                        Globals.DimmerDistroUnits.Insert(index, new DimmerDistroUnit());
-                        
+                    // Init Object Representing a Dimmer Or Distro Channel Here
+                    Globals.DimmerDistroUnits.Insert(index, new DimmerDistroUnit());
 
-                        // Populate object 
-                             //Directly Imported Data
-                        Globals.DimmerDistroUnits[index].ChannelNumber = fields[channelColumn];
+                    // Populate object 
+                            //Directly Imported Data
+                    Globals.DimmerDistroUnits[index].ChannelNumber = fields[channelColumn];
 
-                        Globals.DimmerDistroUnits[index].DimmerNumberText = fields[dimmerColumn];
-                        Globals.DimmerDistroUnits[index].InstrumentName = fields[instrumentTypeColumn];
-                        Globals.DimmerDistroUnits[index].MulticoreName = fields[multicoreNameColumn];
-                        Globals.DimmerDistroUnits[index].CabinetNumberText = fields[cabinetNumberColumn];
+                    Globals.DimmerDistroUnits[index].DimmerNumberText = fields[dimmerColumn];
+                    Globals.DimmerDistroUnits[index].InstrumentName = fields[instrumentTypeColumn];
+                    Globals.DimmerDistroUnits[index].MulticoreName = fields[multicoreNameColumn];
 
-                        // Application running data.
-                        Globals.DimmerDistroUnits[index].GlobalIdentifier = index;
+                    // Application running data.
+                    Globals.DimmerDistroUnits[index].ImportIndex = index;
 
-                        // Call Method to Calculate what kind of RackUnit it is.
-                        Globals.DimmerDistroUnits[index].ParseUnitData();
-                    
+                    // Import Format specific Data.
+                    if (UserParameters.DimmerImportFormat == ImportFormatting.Format2)
+                    {
+                        Globals.DimmerDistroUnits[index].DMXAddressText = fields[DMXaddressColumn];
+                    }
 
-                        index++;
+                    // Parse Unit Data.
+                    Globals.DimmerDistroUnits[index].ParseUnitData();
+
+                    index++;
                 }
             }
 
@@ -70,16 +87,16 @@ namespace Dimmer_Labels_Wizard
         }
 
         private static CSVRead.TextFieldParser CreateTextFieldParser()
-        {
+        {   
             if (Environment.MachineName == "CHARLIESAMSUNG")
             {
-                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\WarHorse Brisbane Test Data.csv");
+                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\Once Melbourne Test Data.csv");
                 return file;
             }
 
             else if (Environment.MachineName == "CHARLIE-METABOX")
             {
-                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\Advanced Test Data Les Mis Sydney.csv");
+                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\Once Melbourne Test Data.csv");
                 return file;
             }
 
@@ -88,6 +105,11 @@ namespace Dimmer_Labels_Wizard
                 Console.WriteLine("Unrecognized Computer: Please add a Condition for this Computer Name, and a Filepath to FileImport.cs");
                 return null;
             }
+        }
+
+        private static void DetermineColumnIndexes()
+        {
+
         }
 
     }
