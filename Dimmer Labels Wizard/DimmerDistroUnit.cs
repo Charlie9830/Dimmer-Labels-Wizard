@@ -257,10 +257,6 @@ namespace Dimmer_Labels_Wizard
         // cannot be sucseffully assinged a Type.
         private RackType DetermineUnitType(ImportFormatting dimmerFormat, ImportFormatting distroFormat)
         {
-            if (dimmerFormat == ImportFormatting.Format2)
-            {
-                Console.WriteLine("REMEMBER!! Dimmer Format2 Requires Seperate Universe Infomation be imported.");
-            }
             // Assuming it's a dimmer for now. Can the data Format be Verified?
             if (VerifyStringFormat(DimmerNumberText, RackType.Dimmer, dimmerFormat) == true)
             {
@@ -272,13 +268,17 @@ namespace Dimmer_Labels_Wizard
 
                 else
                 {
-                    return RackType.OutsideLabelRange;
+                    // If ImportFormats are the same, it may still be a Distro, Don't return Yet.
+                    if (dimmerFormat != distroFormat)
+                    {
+                        return RackType.OutsideLabelRange;
+                    }
+                    // Let Control fall through to next IF statement.
                 }
-                
             }
             
             // Let's Assume it is a Distro Now. Can the data format be Verified?
-            else if (VerifyStringFormat(DimmerNumberText, RackType.Distro, distroFormat) == true)
+             if (VerifyStringFormat(DimmerNumberText, RackType.Distro, distroFormat) == true)
             {
                 // It fits the Distro String Format. Is it in the Distro Label Range?
                 if (FindRackNumber(ParseDistroNumber(DimmerNumberText, distroFormat)) != -1)
@@ -382,8 +382,9 @@ namespace Dimmer_Labels_Wizard
                 switch (format)
                 {
                     case ImportFormatting.Format1:
-                        // Does the data Contain Numbers and Letters But NOT Slashes?
-                        if (data.IndexOfAny(numbers) != -1 && data.IndexOfAny(letters) != -1 && data.IndexOfAny(slash) == -1)
+                        // Does the data Contain Numbers and Letters But NOT Slashes, And Contains the Correct Distro Prefix?
+                        if (data.IndexOfAny(numbers) != -1 && data.IndexOfAny(letters) != -1 && data.IndexOfAny(slash) == -1 &&
+                            data.Contains(UserParameters.DistroNumberPrefix))
                         {
                             return true;
                         }
@@ -440,20 +441,37 @@ namespace Dimmer_Labels_Wizard
             return RackUnitType - other.RackUnitType;
         }
 
-        private int ExtractUniverseNumber(string text, ImportFormatting dimmerFormat)
+        private int ExtractUniverseNumber(string text, ImportFormatting DMXaddressColumnFormat)
         {
-            switch (dimmerFormat)
+            // Overide the Function if User has chosen to overide Universe Infomation.
+            if (DMXaddressColumnFormat == ImportFormatting.NoUniverseData)
             {
-                case ImportFormatting.Format1:
-                    return Convert.ToInt32(SplitBySlash(text)[0].Trim());
-                case ImportFormatting.Format2:
-                    return Convert.ToInt32(text.Trim());
-                case ImportFormatting.Format3:
-                    return ConvertStreamLetterToNumber(RemoveNumbers(text).ToCharArray()[0]);
-                case ImportFormatting.Format4:
-                    return Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(text)[0].Trim().ToCharArray()[0]));
-                default:
-                    return -5;
+                return UserParameters.DimmerUniverses[0];
+            }
+
+            if (VerifyStringFormat(text, RackType.Dimmer, DMXaddressColumnFormat) == true)
+            {
+                switch (DMXaddressColumnFormat)
+                {
+                    case ImportFormatting.Format1:
+                        return Convert.ToInt32(SplitBySlash(text)[0].Trim());
+                    case ImportFormatting.Format2:
+                        return Convert.ToInt32(text.Trim());
+                    case ImportFormatting.Format3:
+                        return ConvertStreamLetterToNumber(RemoveNumbers(text).ToCharArray()[0]);
+                    case ImportFormatting.Format4:
+                        return Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(text)[0].Trim().ToCharArray()[0]));
+                    case ImportFormatting.NoUniverseData:
+                        return UserParameters.DimmerUniverses[0];
+                    default:
+                        return -2;
+                }
+            }
+
+            else
+            {
+                Console.WriteLine("Could Not Read DMX Address Column");
+                return UserParameters.DimmerUniverses[0];
             }
         }
     }

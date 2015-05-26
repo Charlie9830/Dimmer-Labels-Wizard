@@ -20,10 +20,10 @@ namespace Dimmer_Labels_Wizard
         public StringFormat MiddleFormat { get; set; }
 
         //Bottom line Properties
-        public string bottomData { get; set; }
-        public Font bottomFont { get; set; }
-        public StringFormat bottomFormat { get; set; }
+        public string BottomData { get; set; }
+        public Font BottomFont { get; set; }
+        public StringFormat BottomFormat { get; set; }
 
-       
+        public bool IsSelected { get; set; }
     }
 }

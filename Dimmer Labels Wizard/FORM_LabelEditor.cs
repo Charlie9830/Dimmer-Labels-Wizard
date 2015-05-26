@@ -7,16 +7,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Printing;
 
 namespace Dimmer_Labels_Wizard
 {
     public partial class FORM_LabelEditor : Form
     {
+        // Currently Selected LabelStrip.
+        private LabelStripSelection ActiveLabelStrip = new LabelStripSelection();
+
+        public static List<Rectangle> HeaderSelectionBounds = new List<Rectangle>();
+        public static List<Rectangle> FooterSelectionBounds = new List<Rectangle>();
+
         // A list of Lists. 1st Dimension RackTypes. 2nd Dimension Racks.
         private List<List<LabelStrip>> SelectorRackLabels = new List<List<LabelStrip>>();
 
         // Dictionary to Map User Selections to RackLabel Objects.
         private Dictionary<TreeNode,LabelStrip> UserSelectionDict = new Dictionary<TreeNode,LabelStrip>();
+
+        // User Page Settings
+        private PageSettings UserPageSettings = new PageSettings();
+
+        // User Printer Settings
+        private PrinterSettings UserPrinterSettings = new PrinterSettings();
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            if (ActiveLabelStrip != null)
+            {
+                Render(ActiveLabelStrip.LabelStrip);
+            }
+        }
 
         // Collects RackLabels and Adds them to the SelectorRackLabels List.
         private void CollectRackLabels()
@@ -47,7 +70,7 @@ namespace Dimmer_Labels_Wizard
                             // Dont run out of Index.
                             if (j + 1 < bufferList.Count)
                             {
-                                // Do the RackUnitTYpes match?
+                                // Do the RackUnitTypes match?
                                 if (bufferList[j].RackUnitType == bufferList[j + 1].RackUnitType)
                                 {
                                     // Add them to the list.
@@ -70,6 +93,9 @@ namespace Dimmer_Labels_Wizard
                             }
                             else
                             {
+                                // Add The Current Object Anyway
+                                SelectorRackLabels[outputIndex].Add(bufferList[j]);
+
                                 outputIndex++;
                                 i = j - 1;
                                 break;
@@ -83,6 +109,11 @@ namespace Dimmer_Labels_Wizard
         public FORM_LabelEditor()
         {
             InitializeComponent();
+
+            this.printDocument.PrintPage +=
+                new System.Drawing.Printing.PrintPageEventHandler(this.printDocument_PrintPage);
+
+            CanvasPanel.MouseClick += new MouseEventHandler(this.CanvasPanel_MouseClick);
         }
 
         private void FORM_LabelEditor_Load(object sender, EventArgs e)
@@ -93,7 +124,8 @@ namespace Dimmer_Labels_Wizard
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // Do Nothing!
+            Graphics graphics = CanvasPanel.CreateGraphics();
+            graphics.DrawRectangles(Pens.Blue, ActiveLabelStrip.FooterOutlines.ToArray());
         }
        
         // Populate RackLabelSelector Treeview. Add Tracking KeyPairs to UserSelectionDict.
@@ -121,15 +153,194 @@ namespace Dimmer_Labels_Wizard
 
         private void RackLabelSelector_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            LabelStrip Label = new LabelStrip();
-            TreeNode UserSelection = RackLabelSelector.SelectedNode;
+            LabelStrip label = new LabelStrip();
+            TreeNode userSelection = RackLabelSelector.SelectedNode;
 
-            if (UserSelection.Parent != null)
+            if (userSelection.Parent != null)
             {
-                UserSelectionDict.TryGetValue(RackLabelSelector.SelectedNode, out Label);
-                Label.Render(this.CreateGraphics(), new Point(20, 20));
+                UserSelectionDict.TryGetValue(RackLabelSelector.SelectedNode, out label);
+
+                ActiveLabelStrip.LabelStrip = label;
+                PopDownFooterCellSelections();
+                Render(label);
+                
+            }   
+        }
+
+        private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            Globals.LabelStrips[0].RenderToPrinter(e.Graphics, new Point(20, 20));
+        }
+
+        private void PrintButton_Click(object sender, EventArgs e)
+        {
+            printDocument.DefaultPageSettings = UserPageSettings;
+            printDocument.PrinterSettings = UserPrinterSettings;
+            printDocument.Print();
+        }
+
+        private void printSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PrintDialog printSettingsDialog = new PrintDialog();
+            printSettingsDialog.PrinterSettings = UserPrinterSettings;
+            printSettingsDialog.ShowDialog();
+        }
+
+        private void pageSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PageSetupDialog pageSetup = new PageSetupDialog();
+            pageSetup.PageSettings = UserPageSettings;
+            pageSetup.PrinterSettings = UserPrinterSettings;
+
+            pageSetup.ShowDialog();
+        }
+
+        private void BackgroundColorButton_Click(object sender, EventArgs e)
+        {
+            backgroundColorDialog.Color = ActiveLabelStrip.LabelStrip.Footers[0].BackgroundColor.Color;
+
+            if (backgroundColorDialog.ShowDialog() == DialogResult.OK)
+            {
+                foreach (var element in ActiveLabelStrip.SelectedFooterCells)
+                {
+                    element.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                }
+
+                // Force a Render.
+                Render(ActiveLabelStrip.LabelStrip);
+            }
+            
+        }
+
+        // Control Method for RenderToDisplay. Renders to Canvas Panel and collects Header and Footer Outlines.
+        private void Render(LabelStrip label)
+        {
+            if (ActiveLabelStrip != null)
+            {
+                // Clear the Current Selection Rectangles.
+                ActiveLabelStrip.HeaderOutlines.Clear();
+                ActiveLabelStrip.FooterOutlines.Clear();
+
+                // Render to Display and Collect Outline Rectangles.
+                RectangleF[][] headerAndFooterRectangles = label.RenderToDisplay(CanvasPanel.CreateGraphics(),
+                    new Point(20, 10), new Size(CanvasPanel.Width, CanvasPanel.Height));
+
+                // Return type of RenderToDisplay is Jagged Array. Headers in Index 0. Footers index 1.
+                ActiveLabelStrip.HeaderOutlines.AddRange(headerAndFooterRectangles[0]);
+                ActiveLabelStrip.FooterOutlines.AddRange(headerAndFooterRectangles[1]);
+
+                Console.WriteLine("RENDERED");
+            }
+        }
+
+        private void CanvasPanel_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (ActiveLabelStrip != null)
+            {
+                ActiveLabelStrip.UpdateSelectedFooterCells(e.Location);
             }
 
+            PopulateFooterCellTextBoxes();
+            PopUpFooterCellSelections();
+        }
+
+        // Renders Footercell data to Textboxes.
+        private void PopulateFooterCellTextBoxes()
+        {   
+            if (ActiveLabelStrip.SelectedFooterCells.Count == 1)
+            {
+                //HeaderTextBox.Text =
+                ChannelTextBox.Text = ActiveLabelStrip.SelectedFooterCells.First().MiddleData;
+                InstrumentNameTextBox.Text = ActiveLabelStrip.SelectedFooterCells.First().BottomData;
+            }
+
+            else if (ActiveLabelStrip.SelectedFooterCells.Count > 1)
+            {
+                HeaderTextBox.Text = "*";
+                ChannelTextBox.Text = "*";
+                ChannelTextBox.Text = "*";
+                InstrumentNameTextBox.Text = "*";
+            }
+
+            // No Current FooterCell Selections.
+            else
+            {
+                HeaderTextBox.Text = "";
+                ChannelTextBox.Text = "";
+                InstrumentNameTextBox.Text = "";
+            }
+        }
+
+        private void PopUpFooterCellSelections()
+        {
+           
+            if (ActiveLabelStrip != null)
+            {
+                foreach (var element in ActiveLabelStrip.LabelStrip.Footers)
+                {
+                    int listIndex = ActiveLabelStrip.LabelStrip.Footers.IndexOf(element);
+
+                    if (ActiveLabelStrip.SelectedFooterCells.Contains(element))
+                    {
+                        ActiveLabelStrip.LabelStrip.Footers[listIndex].IsSelected = true;
+                    }
+
+                    else
+                    {
+                        ActiveLabelStrip.LabelStrip.Footers[listIndex].IsSelected = false;
+                    }
+                }
+            
+            }
+
+            // Force a Render.
+            Render(ActiveLabelStrip.LabelStrip);
+        }
+
+        private void PopDownFooterCellSelections()
+        {
+            if (ActiveLabelStrip != null)
+            {
+                foreach (var element in ActiveLabelStrip.LabelStrip.Footers)
+                {
+                    element.IsSelected = false;
+                }
+            }
+        }
+
+        private void HeaderFontButton_Click(object sender, EventArgs e)
+        {
+            // Font Choosing Dialog.
+        }
+
+        private void ChannelFontButton_Click(object sender, EventArgs e)
+        {
+            if (fontDialog.ShowDialog() == DialogResult.OK)
+            {
+                foreach (var element in ActiveLabelStrip.SelectedFooterCells)
+                {
+                    element.MiddleFont = fontDialog.Font;
+                }
+            }
+
+            // Force Render
+            Render(ActiveLabelStrip.LabelStrip);
+            
+        }
+
+        private void InstrumentNameFontButton_Click(object sender, EventArgs e)
+        {
+            if (fontDialog.ShowDialog() == DialogResult.OK)
+            {
+                foreach (var element in ActiveLabelStrip.SelectedFooterCells)
+                {
+                    element.BottomFont = fontDialog.Font;
+                }
+            }
+
+            // Force Render
+            Render(ActiveLabelStrip.LabelStrip);
+            
         }
     }
 }

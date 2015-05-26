@@ -13,26 +13,36 @@ namespace Dimmer_Labels_Wizard
     {
         static void Main(string[] args)
         {
-            FORM_UserParameterEntry UserParamEntry = new FORM_UserParameterEntry();
-            UserParamEntry.ShowDialog();
+            //FORM_UserParameterEntry UserParamEntry = new FORM_UserParameterEntry();
+            //UserParamEntry.ShowDialog();
 
-            // Setup Mock User Paramater Inputs
-            UserParameters.DimmerImportFormat = ImportFormatting.Format2;
-            UserParameters.DistroImportFormat = ImportFormatting.Format1;
-
-            UserParameters.LabelWidth = 50;
-            UserParameters.LabelHeight = 60;
-
+            // Setup Mock User Paramater Inputs.
             UserParameters.StartDimmerNumber = 1;
-            UserParameters.EndDimmerNumber = 223;
-            UserParameters.StartDistroNumber = 1;
-            UserParameters.EndDistroNumber = 72;
+            UserParameters.EndDimmerNumber = 24;
+            UserParameters.StartDistroNumber = 1001;
+            UserParameters.EndDistroNumber = 1024;
+            UserParameters.DimmerUniverses.Add(1);
+            UserParameters.DistroImportFormat = ImportFormatting.Format2;
+            UserParameters.DimmerImportFormat = ImportFormatting.Format2;
+            UserParameters.DistroNumberPrefix = "N";
+            UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
+
+            UserParameters.ChannelNumberColumnIndex = 0;
+            UserParameters.DimmerNumberColumnIndex = 1;
+            UserParameters.InstrumentTypeColumnIndex = 2;
+            UserParameters.MulticoreNameColumnIndex = 3;
+
+            UserParameters.LabelWidthInMM = 20;
+            UserParameters.LabelHeightInMM = 25;
 
             UserParameters.HardCodeRackNumbers();
             FileImport.ImportFile();
 
-            FORM_UnparseableDataDisplay UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
-            UnparseableDataDisplay.ShowDialog();
+            if (Globals.UnParseableData.Count > 0)
+            {
+                FORM_UnparseableDataDisplay UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
+                UnparseableDataDisplay.ShowDialog();
+            }
 
             DataHandling.SanitizeDimDistroUnits();
 

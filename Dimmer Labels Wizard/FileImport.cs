@@ -90,13 +90,13 @@ namespace Dimmer_Labels_Wizard
         {   
             if (Environment.MachineName == "CHARLIESAMSUNG")
             {
-                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\Once Melbourne Test Data.csv");
+                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\General Test Data.csv");
                 return file;
             }
 
             else if (Environment.MachineName == "CHARLIE-METABOX")
             {
-                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\Once Melbourne Test Data.csv");
+                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\General Test Data.csv");
                 return file;
             }
 

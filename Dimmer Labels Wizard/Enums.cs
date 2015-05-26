@@ -13,8 +13,8 @@ namespace Dimmer_Labels_Wizard
     // Distro Formating.     Format1 ND###: Format2 ###: Format3 #/###: Format4 A/###:.
     // Dimmer Formatting.    Format1 #/###: Format2 ###: Format3 A###: Format4 A/###:.
     // Dimmer Format2 Requires more infomation be Imported as that Format does not provide Universe Infomation.
-    public enum ImportFormatting { Format1, Format2, Format3, Format4 }
-    
+    // NoUniverseData is used only as a Format2 Overide. SHould be referenced only by UserParameters.DMXAddresColumnFormatting.
+    public enum ImportFormatting { Format1, Format2, Format3, Format4, NoUniverseData }
 }
 
 

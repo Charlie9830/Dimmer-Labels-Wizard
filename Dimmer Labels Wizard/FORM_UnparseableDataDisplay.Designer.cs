@@ -35,6 +35,7 @@
             this.MulticoreNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ImportIndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.OmitColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ContinueButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.UnparseableDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,6 +53,7 @@
             this.OmitColumn});
             this.UnparseableDataGridView.Location = new System.Drawing.Point(12, 12);
             this.UnparseableDataGridView.Name = "UnparseableDataGridView";
+            this.UnparseableDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.UnparseableDataGridView.Size = new System.Drawing.Size(584, 418);
             this.UnparseableDataGridView.TabIndex = 0;
             // 
@@ -86,11 +88,22 @@
             this.OmitColumn.Name = "OmitColumn";
             this.OmitColumn.Width = 35;
             // 
+            // ContinueButton
+            // 
+            this.ContinueButton.Location = new System.Drawing.Point(922, 407);
+            this.ContinueButton.Name = "ContinueButton";
+            this.ContinueButton.Size = new System.Drawing.Size(75, 23);
+            this.ContinueButton.TabIndex = 1;
+            this.ContinueButton.Text = "Continue";
+            this.ContinueButton.UseVisualStyleBackColor = true;
+            this.ContinueButton.Click += new System.EventHandler(this.ContinueButton_Click);
+            // 
             // FORM_UnparseableDataDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1009, 443);
+            this.Controls.Add(this.ContinueButton);
             this.Controls.Add(this.UnparseableDataGridView);
             this.Name = "FORM_UnparseableDataDisplay";
             this.Text = "FORM_UnparseableDataDisplay";
@@ -109,5 +122,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn MulticoreNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ImportIndexColumn;
         private System.Windows.Forms.DataGridViewCheckBoxColumn OmitColumn;
+        private System.Windows.Forms.Button ContinueButton;
     }
 }

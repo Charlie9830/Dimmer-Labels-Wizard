@@ -21,8 +21,9 @@ namespace Dimmer_Labels_Wizard
         {
             FiveKPanel.Enabled = false;
             FiveKPanel.Visible = false;
-
             UniverseColumnSelectPanel.Visible = false;
+            DistroNumberPrefixPanel.Visible = false;
+
             PopulateUniverseHeadersComboBox();
             PopulateColumnMappingComboBoxes();
         }
@@ -30,6 +31,7 @@ namespace Dimmer_Labels_Wizard
         private void ApplyButton_Click(object sender, EventArgs e)
         {
             UpdateUserParameters();
+            this.Close();
         }
 
         // Needs Sanity Checking. Have User selections actually been entered?
@@ -65,8 +67,21 @@ namespace Dimmer_Labels_Wizard
 
             if (UniverseColumnSelectPanel.Visible == true)
             {
-                UserParameters.UniverseDataColumnIndex = UniverseDMXColumnsComboBox.SelectedIndex;
-                UserParameters.DMXAddressImportFormat = CollectDMXAddressFormatValue();
+                if (NoUniverseDataCheckBox.Checked == false)
+                {
+                    UserParameters.UniverseDataColumnIndex = UniverseDMXColumnsComboBox.SelectedIndex;
+                    UserParameters.DMXAddressImportFormat = CollectDMXAddressFormatValue();
+                }
+
+                else
+                {
+                    UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
+                }
+            }
+
+            if (DistroFormatComboBox.SelectedIndex == 0)
+            {
+                UserParameters.DistroNumberPrefix = DistroNumberPrefixTextBox.Text.Trim();
             }
         }
 
@@ -225,6 +240,34 @@ namespace Dimmer_Labels_Wizard
                     PositionMappingComboBox.SelectedItem = element;
                     break;
                 }
+            }
+        }
+
+        private void NoUniverseDataCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (NoUniverseDataCheckBox.Checked == true)
+            {
+                UniverseDMXColumnsComboBox.Enabled = false;
+                DMXAddressFormatComboBox.Enabled = false;
+            }
+
+            else
+            {
+                UniverseDMXColumnsComboBox.Enabled = true;
+                DMXAddressFormatComboBox.Enabled = true;
+            }
+        }
+
+        private void DistroFormatComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (DistroFormatComboBox.SelectedIndex == 0)
+            {
+                DistroNumberPrefixPanel.Visible = true;
+            }
+
+            else
+            {
+                DistroNumberPrefixPanel.Visible = false;
             }
         }
     }

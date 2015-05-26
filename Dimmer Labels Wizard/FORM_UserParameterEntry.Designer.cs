@@ -49,6 +49,7 @@
             this.DistroTextFormatLabel = new System.Windows.Forms.Label();
             this.DimmerNumberFormatLabel = new System.Windows.Forms.Label();
             this.UniverseColumnSelectPanel = new System.Windows.Forms.Panel();
+            this.NoUniverseDataCheckBox = new System.Windows.Forms.CheckBox();
             this.UniverseDMXColumnsComboBox = new System.Windows.Forms.ComboBox();
             this.DMXAddressFormatComboBox = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -65,6 +66,9 @@
             this.MulticoreNameMappingLabel = new System.Windows.Forms.Label();
             this.InstrumentNameMappingLabel = new System.Windows.Forms.Label();
             this.ChannelMappingLabel = new System.Windows.Forms.Label();
+            this.DistroNumberPrefixPanel = new System.Windows.Forms.Panel();
+            this.DistroNumberPrefixTextBox = new System.Windows.Forms.TextBox();
+            this.DistroNumberPrefixLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.FirstDimmerNumberSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LastDimmerNumberSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FirstDistroNumberSelector)).BeginInit();
@@ -74,6 +78,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.FiveKDimmerAddressDataGrid)).BeginInit();
             this.UniverseColumnSelectPanel.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.DistroNumberPrefixPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -105,6 +110,11 @@
             this.FirstDimmerNumberSelector.Name = "FirstDimmerNumberSelector";
             this.FirstDimmerNumberSelector.Size = new System.Drawing.Size(93, 20);
             this.FirstDimmerNumberSelector.TabIndex = 2;
+            this.FirstDimmerNumberSelector.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // LastDimmerNumberSelector
             // 
@@ -117,6 +127,11 @@
             this.LastDimmerNumberSelector.Name = "LastDimmerNumberSelector";
             this.LastDimmerNumberSelector.Size = new System.Drawing.Size(93, 20);
             this.LastDimmerNumberSelector.TabIndex = 3;
+            this.LastDimmerNumberSelector.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // label3
             // 
@@ -140,25 +155,35 @@
             // 
             this.FirstDistroNumberSelector.Location = new System.Drawing.Point(16, 89);
             this.FirstDistroNumberSelector.Maximum = new decimal(new int[] {
-            512,
+            9999,
             0,
             0,
             0});
             this.FirstDistroNumberSelector.Name = "FirstDistroNumberSelector";
             this.FirstDistroNumberSelector.Size = new System.Drawing.Size(93, 20);
             this.FirstDistroNumberSelector.TabIndex = 6;
+            this.FirstDistroNumberSelector.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // LastDistroNumberSelector
             // 
             this.LastDistroNumberSelector.Location = new System.Drawing.Point(160, 88);
             this.LastDistroNumberSelector.Maximum = new decimal(new int[] {
-            512,
+            9999,
             0,
             0,
             0});
             this.LastDistroNumberSelector.Name = "LastDistroNumberSelector";
             this.LastDistroNumberSelector.Size = new System.Drawing.Size(93, 20);
             this.LastDistroNumberSelector.TabIndex = 7;
+            this.LastDistroNumberSelector.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // label5
             // 
@@ -175,6 +200,11 @@
             this.DimmersUniverseSelector.Name = "DimmersUniverseSelector";
             this.DimmersUniverseSelector.Size = new System.Drawing.Size(89, 20);
             this.DimmersUniverseSelector.TabIndex = 9;
+            this.DimmersUniverseSelector.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // FiveKPanel
             // 
@@ -221,7 +251,7 @@
             // 
             // ApplyButton
             // 
-            this.ApplyButton.Location = new System.Drawing.Point(883, 413);
+            this.ApplyButton.Location = new System.Drawing.Point(920, 413);
             this.ApplyButton.Name = "ApplyButton";
             this.ApplyButton.Size = new System.Drawing.Size(75, 23);
             this.ApplyButton.TabIndex = 12;
@@ -242,6 +272,7 @@
             this.DistroFormatComboBox.Size = new System.Drawing.Size(121, 21);
             this.DistroFormatComboBox.TabIndex = 13;
             this.DistroFormatComboBox.Text = "Select";
+            this.DistroFormatComboBox.SelectedIndexChanged += new System.EventHandler(this.DistroFormatComboBox_SelectedIndexChanged);
             // 
             // DimmerFormatComboBox
             // 
@@ -251,7 +282,7 @@
             "###",
             "A###",
             "A/###"});
-            this.DimmerFormatComboBox.Location = new System.Drawing.Point(664, 31);
+            this.DimmerFormatComboBox.Location = new System.Drawing.Point(671, 31);
             this.DimmerFormatComboBox.Name = "DimmerFormatComboBox";
             this.DimmerFormatComboBox.Size = new System.Drawing.Size(121, 21);
             this.DimmerFormatComboBox.TabIndex = 14;
@@ -270,7 +301,7 @@
             // DimmerNumberFormatLabel
             // 
             this.DimmerNumberFormatLabel.AutoSize = true;
-            this.DimmerNumberFormatLabel.Location = new System.Drawing.Point(661, 14);
+            this.DimmerNumberFormatLabel.Location = new System.Drawing.Point(668, 14);
             this.DimmerNumberFormatLabel.Name = "DimmerNumberFormatLabel";
             this.DimmerNumberFormatLabel.Size = new System.Drawing.Size(117, 13);
             this.DimmerNumberFormatLabel.TabIndex = 16;
@@ -279,19 +310,31 @@
             // UniverseColumnSelectPanel
             // 
             this.UniverseColumnSelectPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.UniverseColumnSelectPanel.Controls.Add(this.NoUniverseDataCheckBox);
             this.UniverseColumnSelectPanel.Controls.Add(this.UniverseDMXColumnsComboBox);
             this.UniverseColumnSelectPanel.Controls.Add(this.DMXAddressFormatComboBox);
             this.UniverseColumnSelectPanel.Controls.Add(this.label6);
             this.UniverseColumnSelectPanel.Controls.Add(this.UniverseColumnLabel);
-            this.UniverseColumnSelectPanel.Location = new System.Drawing.Point(803, 9);
+            this.UniverseColumnSelectPanel.Location = new System.Drawing.Point(817, 9);
             this.UniverseColumnSelectPanel.Name = "UniverseColumnSelectPanel";
-            this.UniverseColumnSelectPanel.Size = new System.Drawing.Size(155, 99);
+            this.UniverseColumnSelectPanel.Size = new System.Drawing.Size(167, 138);
             this.UniverseColumnSelectPanel.TabIndex = 17;
+            // 
+            // NoUniverseDataCheckBox
+            // 
+            this.NoUniverseDataCheckBox.AutoSize = true;
+            this.NoUniverseDataCheckBox.Location = new System.Drawing.Point(6, 4);
+            this.NoUniverseDataCheckBox.Name = "NoUniverseDataCheckBox";
+            this.NoUniverseDataCheckBox.Size = new System.Drawing.Size(142, 17);
+            this.NoUniverseDataCheckBox.TabIndex = 4;
+            this.NoUniverseDataCheckBox.Text = "No Universe info in Data";
+            this.NoUniverseDataCheckBox.UseVisualStyleBackColor = true;
+            this.NoUniverseDataCheckBox.CheckedChanged += new System.EventHandler(this.NoUniverseDataCheckBox_CheckedChanged);
             // 
             // UniverseDMXColumnsComboBox
             // 
             this.UniverseDMXColumnsComboBox.FormattingEnabled = true;
-            this.UniverseDMXColumnsComboBox.Location = new System.Drawing.Point(14, 21);
+            this.UniverseDMXColumnsComboBox.Location = new System.Drawing.Point(6, 46);
             this.UniverseDMXColumnsComboBox.Name = "UniverseDMXColumnsComboBox";
             this.UniverseDMXColumnsComboBox.Size = new System.Drawing.Size(121, 21);
             this.UniverseDMXColumnsComboBox.TabIndex = 3;
@@ -305,7 +348,7 @@
             "###",
             "A###",
             "A/###"});
-            this.DMXAddressFormatComboBox.Location = new System.Drawing.Point(14, 63);
+            this.DMXAddressFormatComboBox.Location = new System.Drawing.Point(6, 88);
             this.DMXAddressFormatComboBox.Name = "DMXAddressFormatComboBox";
             this.DMXAddressFormatComboBox.Size = new System.Drawing.Size(121, 21);
             this.DMXAddressFormatComboBox.TabIndex = 2;
@@ -314,7 +357,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 47);
+            this.label6.Location = new System.Drawing.Point(3, 72);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(79, 13);
             this.label6.TabIndex = 1;
@@ -323,7 +366,7 @@
             // UniverseColumnLabel
             // 
             this.UniverseColumnLabel.AutoSize = true;
-            this.UniverseColumnLabel.Location = new System.Drawing.Point(11, 4);
+            this.UniverseColumnLabel.Location = new System.Drawing.Point(3, 29);
             this.UniverseColumnLabel.Name = "UniverseColumnLabel";
             this.UniverseColumnLabel.Size = new System.Drawing.Size(116, 13);
             this.UniverseColumnLabel.TabIndex = 0;
@@ -446,11 +489,39 @@
             this.ChannelMappingLabel.TabIndex = 19;
             this.ChannelMappingLabel.Text = "Channel";
             // 
+            // DistroNumberPrefixPanel
+            // 
+            this.DistroNumberPrefixPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.DistroNumberPrefixPanel.Controls.Add(this.DistroNumberPrefixLabel);
+            this.DistroNumberPrefixPanel.Controls.Add(this.DistroNumberPrefixTextBox);
+            this.DistroNumberPrefixPanel.Location = new System.Drawing.Point(529, 58);
+            this.DistroNumberPrefixPanel.Name = "DistroNumberPrefixPanel";
+            this.DistroNumberPrefixPanel.Size = new System.Drawing.Size(121, 51);
+            this.DistroNumberPrefixPanel.TabIndex = 20;
+            // 
+            // DistroNumberPrefixTextBox
+            // 
+            this.DistroNumberPrefixTextBox.Location = new System.Drawing.Point(7, 24);
+            this.DistroNumberPrefixTextBox.Name = "DistroNumberPrefixTextBox";
+            this.DistroNumberPrefixTextBox.Size = new System.Drawing.Size(100, 20);
+            this.DistroNumberPrefixTextBox.TabIndex = 0;
+            this.DistroNumberPrefixTextBox.Text = "Enter Letter Prefix";
+            // 
+            // DistroNumberPrefixLabel
+            // 
+            this.DistroNumberPrefixLabel.AutoSize = true;
+            this.DistroNumberPrefixLabel.Location = new System.Drawing.Point(4, 5);
+            this.DistroNumberPrefixLabel.Name = "DistroNumberPrefixLabel";
+            this.DistroNumberPrefixLabel.Size = new System.Drawing.Size(103, 13);
+            this.DistroNumberPrefixLabel.TabIndex = 1;
+            this.DistroNumberPrefixLabel.Text = "Distro Number Prefix";
+            // 
             // FORM_UserParameterEntry
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(970, 448);
+            this.ClientSize = new System.Drawing.Size(1007, 448);
+            this.Controls.Add(this.DistroNumberPrefixPanel);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.CSVColumnMappingLabel);
             this.Controls.Add(this.UniverseColumnSelectPanel);
@@ -485,6 +556,8 @@
             this.UniverseColumnSelectPanel.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.DistroNumberPrefixPanel.ResumeLayout(false);
+            this.DistroNumberPrefixPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -529,5 +602,9 @@
         private System.Windows.Forms.ComboBox ChannelMappingComboBox;
         private System.Windows.Forms.ComboBox DimmerNumberMappingComboBox;
         private System.Windows.Forms.Label DimmerNumberMappingLabel;
+        private System.Windows.Forms.CheckBox NoUniverseDataCheckBox;
+        private System.Windows.Forms.Panel DistroNumberPrefixPanel;
+        private System.Windows.Forms.Label DistroNumberPrefixLabel;
+        private System.Windows.Forms.TextBox DistroNumberPrefixTextBox;
     }
 }

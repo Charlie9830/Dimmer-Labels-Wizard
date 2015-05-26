@@ -12,16 +12,17 @@ namespace Dimmer_Labels_Wizard
         // Main Method. Sorts and Sanitzes Data. RETURNS: int amount of objects sanitzed.
         public static void SanitizeDimDistroUnits()
         {
+            SortDimDistroUnits();
+
             RemoveNonLabelRangeUnits();
             ResolveRackNumbers();
 
             ResolvePiggybacks();
 
             // Resolve Blank Distro Channels
-            ResolveBlankChannels(UserParameters.StartDistroNumber,UserParameters.EndDistroNumber);
-
+            ResolveBlankDistroChannels(UserParameters.StartDistroNumber, UserParameters.EndDistroNumber);
             // Resolve Blank Dimmer Channels
-            ResolveBlankChannels(UserParameters.StartDimmerNumber, UserParameters.EndDimmerNumber);
+            ResolveBlankDimmerChannels(UserParameters.StartDimmerNumber, UserParameters.EndDimmerNumber);
         }
 
         // Sort the DimDistoUnits List into A Sortorder set by the Globals.DimDistroSortOrder Enumeration.
@@ -30,7 +31,7 @@ namespace Dimmer_Labels_Wizard
             Globals.DimmerDistroUnits.Sort();
         }
 
-        // Remove Dual Occurances of Piggybacks and Concatenates Multicore names if required.
+        // Remove Multiple Occurances of Piggybacks and Concatenates Multicore names if required.
         private static int ResolvePiggybacks()
         {
             int index = 0;
@@ -50,9 +51,7 @@ namespace Dimmer_Labels_Wizard
 
                     // Remove object.
                     Globals.DimmerDistroUnits.RemoveAt(index + 1);
-                    index++;
                     deleteCount++;
- 
                 }
                 
                 else
@@ -64,7 +63,7 @@ namespace Dimmer_Labels_Wizard
         }
 
         // Generates Blank DimmerDistroObjects.
-        private static void ResolveBlankChannels(int startIndex,int endIndex)
+        private static void ResolveBlankChannels(int startDimmerNumber,int endDimmerNumber)
         {
          for (int index = 0; index < Globals.DimmerDistroUnits.Count; index++)
          {
@@ -120,6 +119,95 @@ namespace Dimmer_Labels_Wizard
 
         }
 
+        private static void ResolveBlankDistroChannels(int firstDimmerNumber, int lastDimmerNumber)
+        {
+            // Make a list of Integers spanning from the first DistroNumber to the Last DistroNumber.
+            int[] distroNumbers = GenerateNumberArray(firstDimmerNumber, lastDimmerNumber);
+
+            // Find the index of the First Distro Unit in DimmerDistroUnits.
+            int firstDistroIndex = Globals.DimmerDistroUnits.FindIndex(delegate(DimmerDistroUnit unit) { return unit.RackUnitType == RackType.Distro; });
+
+            // Iterate through both lists simoultenously.
+            int primaryIndex = 0;
+            int secondaryIndex = 0;
+
+            for (primaryIndex = firstDistroIndex; primaryIndex < Globals.DimmerDistroUnits.Count && 
+                secondaryIndex < distroNumbers.Length;)
+            {
+                if (Globals.DimmerDistroUnits[primaryIndex].DimmerNumber != distroNumbers[secondaryIndex])
+                {
+                    Globals.DimmerDistroUnits.Insert(primaryIndex, new DimmerDistroUnit());
+
+                    // The Blank Unit is now the PrimaryIndex. "I am the captain now".
+                    Globals.DimmerDistroUnits[primaryIndex].RackUnitType = RackType.Distro;
+                    Globals.DimmerDistroUnits[primaryIndex].DimmerNumber = Globals.DimmerDistroUnits[primaryIndex + 1].DimmerNumber - 1;
+                    Globals.DimmerDistroUnits[primaryIndex].ChannelNumber = "Blank";
+                    Globals.DimmerDistroUnits[primaryIndex].MulticoreName = "Blank";
+                    Globals.DimmerDistroUnits[primaryIndex].InstrumentName = "Blank";
+                    Globals.DimmerDistroUnits[primaryIndex].Position = "Blank";
+
+                    Globals.DimmerDistroUnits[primaryIndex].RackNumber = FindRackNumber(Globals.DimmerDistroUnits[primaryIndex]);
+                }
+
+                else
+                {
+                    primaryIndex++;
+                    secondaryIndex++;
+                }
+            }
+        }
+
+        private static void ResolveBlankDimmerChannels(int firstDimmerNumber, int lastDimmerNumber)
+        {
+         // Make a list of Integers spanning from the first DistroNumber to the Last DistroNumber.
+            int[] dimmerNumbers = GenerateNumberArray(firstDimmerNumber, lastDimmerNumber);
+
+            // Find the index of the First Distro Unit in DimmerDistroUnits.
+            int firstDimmerIndex = Globals.DimmerDistroUnits.FindIndex(delegate(DimmerDistroUnit unit) { return unit.RackUnitType == RackType.Dimmer; });
+            int lastDimmerIndex = Globals.DimmerDistroUnits.FindLastIndex(delegate(DimmerDistroUnit unit) { return unit.RackUnitType == RackType.Dimmer; });
+
+            // Iterate through both lists simoultenously.
+            int primaryIndex = 0;
+            int secondaryIndex = 0;
+
+            for (primaryIndex = firstDimmerIndex; primaryIndex < Globals.DimmerDistroUnits.Count &&
+                secondaryIndex < dimmerNumbers.Length; )
+            {
+                if (Globals.DimmerDistroUnits[primaryIndex].DimmerNumber != dimmerNumbers[secondaryIndex])
+                {
+                    Globals.DimmerDistroUnits.Insert(primaryIndex, new DimmerDistroUnit());
+
+                    // The Blank Unit is now the PrimaryIndex. "I am the captain now".
+                    Globals.DimmerDistroUnits[primaryIndex].RackUnitType = RackType.Dimmer;
+                    Globals.DimmerDistroUnits[primaryIndex].DimmerNumber = Globals.DimmerDistroUnits[primaryIndex + 1].DimmerNumber - 1;
+                    Globals.DimmerDistroUnits[primaryIndex].UniverseNumber = Globals.DimmerDistroUnits[primaryIndex + 1].UniverseNumber;
+                    Globals.DimmerDistroUnits[primaryIndex].ChannelNumber = "Blank";
+                    Globals.DimmerDistroUnits[primaryIndex].MulticoreName = "Blank";
+                    Globals.DimmerDistroUnits[primaryIndex].InstrumentName = "Blank";
+                    Globals.DimmerDistroUnits[primaryIndex].Position = "Blank";
+
+                    Globals.DimmerDistroUnits[primaryIndex].RackNumber = FindRackNumber(Globals.DimmerDistroUnits[primaryIndex]);
+                }
+
+                else
+                {
+                    primaryIndex++;
+                    secondaryIndex++;
+                }
+            }
+        }
+
+        private static int[] GenerateNumberArray(int firstNumber, int lastNumber)
+        {
+            List<int> returnList = new List<int>();
+
+            for (int counter = firstNumber; counter <= lastNumber; counter++)
+            {
+                returnList.Add(counter);
+            }
+
+            return returnList.ToArray();
+        }
         // Determine Rack Numbers for objects based of the User Inputed List of Rack Addresses.
         public static void ResolveRackNumbers()
         {

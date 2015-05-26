@@ -9,8 +9,10 @@ namespace Dimmer_Labels_Wizard
     public static class UserParameters
     {
         public static ImportFormatting DimmerImportFormat { get; set; }
-        public static ImportFormatting DistroImportFormat { get; set; }
         public static ImportFormatting DMXAddressImportFormat { get; set; }
+
+        public static ImportFormatting DistroImportFormat { get; set; }
+        public static string DistroNumberPrefix { get; set; }
 
         public static int ChannelNumberColumnIndex { get; set; }
         public static int DimmerNumberColumnIndex { get; set; }
@@ -30,8 +32,8 @@ namespace Dimmer_Labels_Wizard
         public static List<DistroRack> DistroRacks = new List<DistroRack>();
         public static List<DimmerRack> DimmerRacks = new List<DimmerRack>();
 
-        public static int LabelWidth { get; set; } // Width in Pixels
-        public static int LabelHeight { get; set; } // Height in Pixels
+        public static int LabelWidthInMM { get; set; } // Width in Pixels
+        public static int LabelHeightInMM { get; set; } // Height in Pixels
 
         // Create Hardcoded Distro Start Address Values
         public static void HardCodeRackNumbers()
@@ -148,14 +150,14 @@ namespace Dimmer_Labels_Wizard
                     element.Footers[list_index].MiddleFont = new System.Drawing.Font("Arial", 18,System.Drawing.FontStyle.Bold);
                     element.Footers[list_index].MiddleFormat = centerStringFormat;
 
-                    element.Footers[list_index].bottomFont = new System.Drawing.Font("Arial", 10);
-                    element.Footers[list_index].bottomFormat = farStringFormat;
+                    element.Footers[list_index].BottomFont = new System.Drawing.Font("Arial", 10);
+                    element.Footers[list_index].BottomFormat = farStringFormat;
                     
 
                 }
 
-                element.LabelHeight = UserParameters.LabelHeight;
-                element.LabelWidth = UserParameters.LabelWidth;
+                element.LabelHeightInMM = UserParameters.LabelHeightInMM;
+                element.LabelWidthInMM = UserParameters.LabelWidthInMM;
             }
         }
 

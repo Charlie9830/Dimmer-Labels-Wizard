@@ -24,7 +24,7 @@ namespace Dimmer_Labels_Wizard
                 return _textColor;
             }
 
-            private set     // Set By BackgroundColor Setter
+            protected set     // Set By BackgroundColor Setter
             {
                 _textColor = value;
             }
@@ -38,21 +38,19 @@ namespace Dimmer_Labels_Wizard
             }
 
             set
-            {
+            {    
+                    // Calculate Luminance of Color and set _textColor to White or Black based on this luminance result.
+                    if ((0.299 * value.Color.R) + (0.587 * value.Color.G) + (0.114 * value.Color.B) > 128)
+                    {
+                        _textColor = new SolidBrush(Color.Black);
+                    }
 
-                _backgroundColor = value;
+                    else
+                    {
+                        _textColor = new SolidBrush(Color.White);
+                    }
 
-                // Calculate Luminance of Color and set _textColor to White or Black based on this luminance result.
-                if ((0.299 * value.Color.R) + (0.587 * value.Color.G) + (0.114 * value.Color.B) > 128)
-                {
-                    _textColor = new SolidBrush(Color.Black);
-                }
-
-                else
-                {
-                    _textColor = new SolidBrush(Color.White);
-                }
-
+                    _backgroundColor = value;
                 
             }
         }
