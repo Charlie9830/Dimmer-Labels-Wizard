@@ -55,6 +55,8 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
+        // Utilized by FORM_LabelSelector to Track selection of Individual Label Cells.
+        public bool IsSelected { get; set; }
         
 
     }

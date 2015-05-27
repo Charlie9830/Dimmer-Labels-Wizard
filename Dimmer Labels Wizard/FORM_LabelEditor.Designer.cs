@@ -30,14 +30,17 @@
         {
             this.BreakButton = new System.Windows.Forms.Button();
             this.LowerPanel = new System.Windows.Forms.Panel();
+            this.FooterBottomFontButton = new System.Windows.Forms.Button();
+            this.FooterMiddleFontButton = new System.Windows.Forms.Button();
+            this.FooterTopFontButton = new System.Windows.Forms.Button();
             this.InstrumentNameTextBox = new System.Windows.Forms.TextBox();
-            this.InstrumentNameLabel = new System.Windows.Forms.Label();
-            this.ChannelTextBox = new System.Windows.Forms.TextBox();
-            this.ChannelLabel = new System.Windows.Forms.Label();
-            this.HeaderTextBox = new System.Windows.Forms.TextBox();
-            this.HeaderLabel = new System.Windows.Forms.Label();
-            this.BackgroundColorButton = new System.Windows.Forms.Button();
-            this.BackgroundColorLabel = new System.Windows.Forms.Label();
+            this.FooterBottomDataTextBox = new System.Windows.Forms.Label();
+            this.FooterMiddleDataTextBox = new System.Windows.Forms.TextBox();
+            this.FooterMiddleLabel = new System.Windows.Forms.Label();
+            this.FooterTopDataTextBox = new System.Windows.Forms.TextBox();
+            this.FooterTopLabel = new System.Windows.Forms.Label();
+            this.FooterBackgroundColorButton = new System.Windows.Forms.Button();
+            this.FooterBackgroundColorLabel = new System.Windows.Forms.Label();
             this.PrintButton = new System.Windows.Forms.Button();
             this.RackLabelSelector = new System.Windows.Forms.TreeView();
             this.printDocument = new System.Drawing.Printing.PrintDocument();
@@ -49,11 +52,10 @@
             this.CanvasPanel = new System.Windows.Forms.Panel();
             this.backgroundColorDialog = new System.Windows.Forms.ColorDialog();
             this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.HeaderFontButton = new System.Windows.Forms.Button();
-            this.ChannelFontButton = new System.Windows.Forms.Button();
-            this.InstrumentNameFontButton = new System.Windows.Forms.Button();
+            this.FooterPanel = new System.Windows.Forms.Panel();
             this.LowerPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.FooterPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // BreakButton
@@ -69,17 +71,7 @@
             // LowerPanel
             // 
             this.LowerPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.LowerPanel.Controls.Add(this.InstrumentNameFontButton);
-            this.LowerPanel.Controls.Add(this.ChannelFontButton);
-            this.LowerPanel.Controls.Add(this.HeaderFontButton);
-            this.LowerPanel.Controls.Add(this.InstrumentNameTextBox);
-            this.LowerPanel.Controls.Add(this.InstrumentNameLabel);
-            this.LowerPanel.Controls.Add(this.ChannelTextBox);
-            this.LowerPanel.Controls.Add(this.ChannelLabel);
-            this.LowerPanel.Controls.Add(this.HeaderTextBox);
-            this.LowerPanel.Controls.Add(this.HeaderLabel);
-            this.LowerPanel.Controls.Add(this.BackgroundColorButton);
-            this.LowerPanel.Controls.Add(this.BackgroundColorLabel);
+            this.LowerPanel.Controls.Add(this.FooterPanel);
             this.LowerPanel.Controls.Add(this.PrintButton);
             this.LowerPanel.Controls.Add(this.RackLabelSelector);
             this.LowerPanel.Controls.Add(this.BreakButton);
@@ -87,73 +79,104 @@
             this.LowerPanel.Name = "LowerPanel";
             this.LowerPanel.Size = new System.Drawing.Size(1015, 272);
             this.LowerPanel.TabIndex = 6;
+            this.LowerPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.LowerPanel_Paint);
+            // 
+            // FooterBottomFontButton
+            // 
+            this.FooterBottomFontButton.Location = new System.Drawing.Point(148, 98);
+            this.FooterBottomFontButton.Name = "FooterBottomFontButton";
+            this.FooterBottomFontButton.Size = new System.Drawing.Size(75, 23);
+            this.FooterBottomFontButton.TabIndex = 18;
+            this.FooterBottomFontButton.Text = "Font";
+            this.FooterBottomFontButton.UseVisualStyleBackColor = true;
+            this.FooterBottomFontButton.Click += new System.EventHandler(this.InstrumentNameFontButton_Click);
+            // 
+            // FooterMiddleFontButton
+            // 
+            this.FooterMiddleFontButton.Location = new System.Drawing.Point(148, 58);
+            this.FooterMiddleFontButton.Name = "FooterMiddleFontButton";
+            this.FooterMiddleFontButton.Size = new System.Drawing.Size(75, 23);
+            this.FooterMiddleFontButton.TabIndex = 17;
+            this.FooterMiddleFontButton.Text = "Font";
+            this.FooterMiddleFontButton.UseVisualStyleBackColor = true;
+            this.FooterMiddleFontButton.Click += new System.EventHandler(this.ChannelFontButton_Click);
+            // 
+            // FooterTopFontButton
+            // 
+            this.FooterTopFontButton.Location = new System.Drawing.Point(148, 19);
+            this.FooterTopFontButton.Name = "FooterTopFontButton";
+            this.FooterTopFontButton.Size = new System.Drawing.Size(75, 23);
+            this.FooterTopFontButton.TabIndex = 16;
+            this.FooterTopFontButton.Text = "Font";
+            this.FooterTopFontButton.UseVisualStyleBackColor = true;
+            this.FooterTopFontButton.Click += new System.EventHandler(this.HeaderFontButton_Click);
             // 
             // InstrumentNameTextBox
             // 
-            this.InstrumentNameTextBox.Location = new System.Drawing.Point(289, 126);
+            this.InstrumentNameTextBox.Location = new System.Drawing.Point(6, 100);
             this.InstrumentNameTextBox.Name = "InstrumentNameTextBox";
             this.InstrumentNameTextBox.Size = new System.Drawing.Size(100, 20);
             this.InstrumentNameTextBox.TabIndex = 15;
             // 
-            // InstrumentNameLabel
+            // FooterBottomDataTextBox
             // 
-            this.InstrumentNameLabel.AutoSize = true;
-            this.InstrumentNameLabel.Location = new System.Drawing.Point(286, 110);
-            this.InstrumentNameLabel.Name = "InstrumentNameLabel";
-            this.InstrumentNameLabel.Size = new System.Drawing.Size(87, 13);
-            this.InstrumentNameLabel.TabIndex = 14;
-            this.InstrumentNameLabel.Text = "Instrument Name";
+            this.FooterBottomDataTextBox.AutoSize = true;
+            this.FooterBottomDataTextBox.Location = new System.Drawing.Point(3, 84);
+            this.FooterBottomDataTextBox.Name = "FooterBottomDataTextBox";
+            this.FooterBottomDataTextBox.Size = new System.Drawing.Size(40, 13);
+            this.FooterBottomDataTextBox.TabIndex = 14;
+            this.FooterBottomDataTextBox.Text = "Bottom";
             // 
-            // ChannelTextBox
+            // FooterMiddleDataTextBox
             // 
-            this.ChannelTextBox.Location = new System.Drawing.Point(289, 87);
-            this.ChannelTextBox.Name = "ChannelTextBox";
-            this.ChannelTextBox.Size = new System.Drawing.Size(100, 20);
-            this.ChannelTextBox.TabIndex = 13;
+            this.FooterMiddleDataTextBox.Location = new System.Drawing.Point(6, 61);
+            this.FooterMiddleDataTextBox.Name = "FooterMiddleDataTextBox";
+            this.FooterMiddleDataTextBox.Size = new System.Drawing.Size(100, 20);
+            this.FooterMiddleDataTextBox.TabIndex = 13;
             // 
-            // ChannelLabel
+            // FooterMiddleLabel
             // 
-            this.ChannelLabel.AutoSize = true;
-            this.ChannelLabel.Location = new System.Drawing.Point(286, 70);
-            this.ChannelLabel.Name = "ChannelLabel";
-            this.ChannelLabel.Size = new System.Drawing.Size(46, 13);
-            this.ChannelLabel.TabIndex = 12;
-            this.ChannelLabel.Text = "Channel";
+            this.FooterMiddleLabel.AutoSize = true;
+            this.FooterMiddleLabel.Location = new System.Drawing.Point(3, 44);
+            this.FooterMiddleLabel.Name = "FooterMiddleLabel";
+            this.FooterMiddleLabel.Size = new System.Drawing.Size(38, 13);
+            this.FooterMiddleLabel.TabIndex = 12;
+            this.FooterMiddleLabel.Text = "Middle";
             // 
-            // HeaderTextBox
+            // FooterTopDataTextBox
             // 
-            this.HeaderTextBox.Location = new System.Drawing.Point(289, 21);
-            this.HeaderTextBox.Name = "HeaderTextBox";
-            this.HeaderTextBox.Size = new System.Drawing.Size(100, 20);
-            this.HeaderTextBox.TabIndex = 11;
+            this.FooterTopDataTextBox.Location = new System.Drawing.Point(6, 21);
+            this.FooterTopDataTextBox.Name = "FooterTopDataTextBox";
+            this.FooterTopDataTextBox.Size = new System.Drawing.Size(100, 20);
+            this.FooterTopDataTextBox.TabIndex = 11;
             // 
-            // HeaderLabel
+            // FooterTopLabel
             // 
-            this.HeaderLabel.AutoSize = true;
-            this.HeaderLabel.Location = new System.Drawing.Point(286, 4);
-            this.HeaderLabel.Name = "HeaderLabel";
-            this.HeaderLabel.Size = new System.Drawing.Size(42, 13);
-            this.HeaderLabel.TabIndex = 10;
-            this.HeaderLabel.Text = "Header";
+            this.FooterTopLabel.AutoSize = true;
+            this.FooterTopLabel.Location = new System.Drawing.Point(3, 4);
+            this.FooterTopLabel.Name = "FooterTopLabel";
+            this.FooterTopLabel.Size = new System.Drawing.Size(26, 13);
+            this.FooterTopLabel.TabIndex = 10;
+            this.FooterTopLabel.Text = "Top";
             // 
-            // BackgroundColorButton
+            // FooterBackgroundColorButton
             // 
-            this.BackgroundColorButton.Location = new System.Drawing.Point(171, 21);
-            this.BackgroundColorButton.Name = "BackgroundColorButton";
-            this.BackgroundColorButton.Size = new System.Drawing.Size(75, 23);
-            this.BackgroundColorButton.TabIndex = 9;
-            this.BackgroundColorButton.Text = "Choose";
-            this.BackgroundColorButton.UseVisualStyleBackColor = true;
-            this.BackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
+            this.FooterBackgroundColorButton.Location = new System.Drawing.Point(148, 138);
+            this.FooterBackgroundColorButton.Name = "FooterBackgroundColorButton";
+            this.FooterBackgroundColorButton.Size = new System.Drawing.Size(75, 23);
+            this.FooterBackgroundColorButton.TabIndex = 9;
+            this.FooterBackgroundColorButton.Text = "Choose";
+            this.FooterBackgroundColorButton.UseVisualStyleBackColor = true;
+            this.FooterBackgroundColorButton.Click += new System.EventHandler(this.BackgroundColorButton_Click);
             // 
-            // BackgroundColorLabel
+            // FooterBackgroundColorLabel
             // 
-            this.BackgroundColorLabel.AutoSize = true;
-            this.BackgroundColorLabel.Location = new System.Drawing.Point(168, 4);
-            this.BackgroundColorLabel.Name = "BackgroundColorLabel";
-            this.BackgroundColorLabel.Size = new System.Drawing.Size(98, 13);
-            this.BackgroundColorLabel.TabIndex = 8;
-            this.BackgroundColorLabel.Text = "Background Colour";
+            this.FooterBackgroundColorLabel.AutoSize = true;
+            this.FooterBackgroundColorLabel.Location = new System.Drawing.Point(3, 138);
+            this.FooterBackgroundColorLabel.Name = "FooterBackgroundColorLabel";
+            this.FooterBackgroundColorLabel.Size = new System.Drawing.Size(98, 13);
+            this.FooterBackgroundColorLabel.TabIndex = 8;
+            this.FooterBackgroundColorLabel.Text = "Background Colour";
             // 
             // PrintButton
             // 
@@ -218,35 +241,24 @@
             this.CanvasPanel.Size = new System.Drawing.Size(1015, 302);
             this.CanvasPanel.TabIndex = 8;
             // 
-            // HeaderFontButton
+            // FooterPanel
             // 
-            this.HeaderFontButton.Location = new System.Drawing.Point(431, 18);
-            this.HeaderFontButton.Name = "HeaderFontButton";
-            this.HeaderFontButton.Size = new System.Drawing.Size(75, 23);
-            this.HeaderFontButton.TabIndex = 16;
-            this.HeaderFontButton.Text = "Font";
-            this.HeaderFontButton.UseVisualStyleBackColor = true;
-            this.HeaderFontButton.Click += new System.EventHandler(this.HeaderFontButton_Click);
-            // 
-            // ChannelFontButton
-            // 
-            this.ChannelFontButton.Location = new System.Drawing.Point(431, 84);
-            this.ChannelFontButton.Name = "ChannelFontButton";
-            this.ChannelFontButton.Size = new System.Drawing.Size(75, 23);
-            this.ChannelFontButton.TabIndex = 17;
-            this.ChannelFontButton.Text = "Font";
-            this.ChannelFontButton.UseVisualStyleBackColor = true;
-            this.ChannelFontButton.Click += new System.EventHandler(this.ChannelFontButton_Click);
-            // 
-            // InstrumentNameFontButton
-            // 
-            this.InstrumentNameFontButton.Location = new System.Drawing.Point(431, 124);
-            this.InstrumentNameFontButton.Name = "InstrumentNameFontButton";
-            this.InstrumentNameFontButton.Size = new System.Drawing.Size(75, 23);
-            this.InstrumentNameFontButton.TabIndex = 18;
-            this.InstrumentNameFontButton.Text = "Font";
-            this.InstrumentNameFontButton.UseVisualStyleBackColor = true;
-            this.InstrumentNameFontButton.Click += new System.EventHandler(this.InstrumentNameFontButton_Click);
+            this.FooterPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FooterPanel.Controls.Add(this.FooterTopLabel);
+            this.FooterPanel.Controls.Add(this.FooterBackgroundColorButton);
+            this.FooterPanel.Controls.Add(this.FooterBottomFontButton);
+            this.FooterPanel.Controls.Add(this.FooterBackgroundColorLabel);
+            this.FooterPanel.Controls.Add(this.FooterTopDataTextBox);
+            this.FooterPanel.Controls.Add(this.FooterMiddleFontButton);
+            this.FooterPanel.Controls.Add(this.FooterMiddleLabel);
+            this.FooterPanel.Controls.Add(this.FooterTopFontButton);
+            this.FooterPanel.Controls.Add(this.FooterMiddleDataTextBox);
+            this.FooterPanel.Controls.Add(this.InstrumentNameTextBox);
+            this.FooterPanel.Controls.Add(this.FooterBottomDataTextBox);
+            this.FooterPanel.Location = new System.Drawing.Point(150, 4);
+            this.FooterPanel.Name = "FooterPanel";
+            this.FooterPanel.Size = new System.Drawing.Size(229, 220);
+            this.FooterPanel.TabIndex = 19;
             // 
             // FORM_LabelEditor
             // 
@@ -261,9 +273,10 @@
             this.Text = "FORM_LabelEditor";
             this.Load += new System.EventHandler(this.FORM_LabelEditor_Load);
             this.LowerPanel.ResumeLayout(false);
-            this.LowerPanel.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.FooterPanel.ResumeLayout(false);
+            this.FooterPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -283,18 +296,19 @@
         private System.Windows.Forms.ToolStripMenuItem pageSettingsToolStripMenuItem;
         private System.Windows.Forms.PrintDialog printDialog;
         private System.Windows.Forms.Panel CanvasPanel;
-        private System.Windows.Forms.Button BackgroundColorButton;
-        private System.Windows.Forms.Label BackgroundColorLabel;
+        private System.Windows.Forms.Button FooterBackgroundColorButton;
+        private System.Windows.Forms.Label FooterBackgroundColorLabel;
         private System.Windows.Forms.ColorDialog backgroundColorDialog;
         private System.Windows.Forms.TextBox InstrumentNameTextBox;
-        private System.Windows.Forms.Label InstrumentNameLabel;
-        private System.Windows.Forms.TextBox ChannelTextBox;
-        private System.Windows.Forms.Label ChannelLabel;
-        private System.Windows.Forms.TextBox HeaderTextBox;
-        private System.Windows.Forms.Label HeaderLabel;
-        private System.Windows.Forms.Button HeaderFontButton;
+        private System.Windows.Forms.Label FooterBottomDataTextBox;
+        private System.Windows.Forms.TextBox FooterMiddleDataTextBox;
+        private System.Windows.Forms.Label FooterMiddleLabel;
+        private System.Windows.Forms.TextBox FooterTopDataTextBox;
+        private System.Windows.Forms.Label FooterTopLabel;
+        private System.Windows.Forms.Button FooterTopFontButton;
         private System.Windows.Forms.FontDialog fontDialog;
-        private System.Windows.Forms.Button ChannelFontButton;
-        private System.Windows.Forms.Button InstrumentNameFontButton;
+        private System.Windows.Forms.Button FooterMiddleFontButton;
+        private System.Windows.Forms.Button FooterBottomFontButton;
+        private System.Windows.Forms.Panel FooterPanel;
     }
 }

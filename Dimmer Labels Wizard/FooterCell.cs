@@ -23,7 +23,5 @@ namespace Dimmer_Labels_Wizard
         public string BottomData { get; set; }
         public Font BottomFont { get; set; }
         public StringFormat BottomFormat { get; set; }
-
-        public bool IsSelected { get; set; }
     }
 }
