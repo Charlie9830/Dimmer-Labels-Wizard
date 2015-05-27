@@ -33,7 +33,7 @@ namespace Dimmer_Labels_Wizard
             
             file.SetDelimiters(",");
 
-            // Read the First line to Throw out Coloum header values.
+            // Read the First line to Throw out Coloum headerCell values.
             file.ReadLine();
 
             // Keep track of and Assign HeaderCells/FooterCells list Indices

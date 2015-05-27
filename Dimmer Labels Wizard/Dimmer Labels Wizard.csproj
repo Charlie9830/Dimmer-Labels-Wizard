@@ -83,7 +83,7 @@
     <Compile Include="HeaderCell.cs" />
     <Compile Include="FileImport.cs" />
     <Compile Include="LabelCell.cs" />
-    <Compile Include="LabelStripSelection.cs" />
+    <Compile Include="Label Strip Selection Handling.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

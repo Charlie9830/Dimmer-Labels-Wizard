@@ -22,7 +22,7 @@ namespace Dimmer_Labels_Wizard
         // A list of Lists. 1st Dimension RackTypes. 2nd Dimension Racks.
         private List<List<LabelStrip>> SelectorRackLabels = new List<List<LabelStrip>>();
 
-        // Dictionary to Map User Selections to RackLabel Objects.
+        // Dictionary to Map User UserLabelSelection to RackLabel Objects.
         private Dictionary<TreeNode,LabelStrip> UserSelectionDict = new Dictionary<TreeNode,LabelStrip>();
 
         // User Page Settings
@@ -124,18 +124,7 @@ namespace Dimmer_Labels_Wizard
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (ActiveLabelStrip != null)
-            {
-                Graphics graphics = CanvasPanel.CreateGraphics();
-                graphics.DrawRectangles(Pens.Red, ActiveLabelStrip.HeaderOutlines.ToArray());
-                graphics.DrawRectangles(Pens.Blue, ActiveLabelStrip.FooterOutlines.ToArray());
-            }
-
-            // Debug Code
-            foreach (var element in ActiveLabelStrip.SelectedHeaderCells)
-            {
-                Console.WriteLine(element.Data);
-            }
+            Console.WriteLine("Break");
         }
        
         // Populate RackLabelSelector Treeview. Add Tracking KeyPairs to UserSelectionDict.
@@ -171,7 +160,7 @@ namespace Dimmer_Labels_Wizard
                 UserSelectionDict.TryGetValue(RackLabelSelector.SelectedNode, out label);
 
                 ActiveLabelStrip.LabelStrip = label;
-                PopDownFooterCellSelections();
+                ActiveLabelStrip.ClearSelections();
                 Render(label);
                 
             }   
@@ -213,7 +202,10 @@ namespace Dimmer_Labels_Wizard
             {
                 foreach (var element in ActiveLabelStrip.SelectedFooterCells)
                 {
-                    element.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                    foreach (var footer in element.Footers)
+                    {
+                        footer.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                    }
                 }
 
                 // Force a Render.
@@ -228,16 +220,16 @@ namespace Dimmer_Labels_Wizard
             if (ActiveLabelStrip != null)
             {
                 // Clear the Current Selection Rectangles.
-                ActiveLabelStrip.HeaderOutlines.Clear();
-                ActiveLabelStrip.FooterOutlines.Clear();
+                ActiveLabelStrip.RenderedHeaders.Clear();
+                ActiveLabelStrip.RenderedFooters.Clear();
 
                 // Render to Display and Collect Outline Rectangles.
-                RectangleF[][] headerAndFooterRectangles = label.RenderToDisplay(CanvasPanel.CreateGraphics(),
+                UserLabelSelection userSelections = label.RenderToDisplay(CanvasPanel.CreateGraphics(),
                     new Point(20, 10), new Size(CanvasPanel.Width, CanvasPanel.Height));
 
                 // Return type of RenderToDisplay is Jagged Array. Headers in Index 0. Footers index 1.
-                ActiveLabelStrip.HeaderOutlines.AddRange(headerAndFooterRectangles[0]);
-                ActiveLabelStrip.FooterOutlines.AddRange(headerAndFooterRectangles[1]);
+                ActiveLabelStrip.RenderedHeaders.AddRange(userSelections.HeaderSelections);
+                ActiveLabelStrip.RenderedFooters.AddRange(userSelections.FooterSelections);
 
                 Console.WriteLine("RENDERED");
             }
@@ -250,19 +242,24 @@ namespace Dimmer_Labels_Wizard
                 // User has selected a Header.
                 if (ActiveLabelStrip.UpdateSelectedHeaderCells(e.Location) == true)
                 {
-                    // Populate header Cell Text Boxes
-                    PopUpHeaderCellSelections();
+                    // Populate headerCell Cell Text Boxes
+                    Render(ActiveLabelStrip.LabelStrip);
                 }
 
                 // User has Selected a Footer.
                 else if (ActiveLabelStrip.UpdateSelectedFooterCells(e.Location) == true)
                 {
-                    PopulateFooterCellTextBoxes();
-                    PopUpFooterCellSelections();
+                    //PopulateFooterCellTextBoxes();
+                    Render(ActiveLabelStrip.LabelStrip);
                 }
 
-                // User has clicked on the Canvas Outside the Selection Zones. No Action Required as
-                // UpdateSelectedFooterCells() and UpdateSelectedHeaderCells() will Clear their own Selections.
+                else
+                {
+                    // User has clicked on Canvas outside Selection Area. 
+                    // UpdateSelectedHeaderCells() and UpdateSelectedFooterCells will Clear their own
+                    // respective Selections. Only action required is a Forced Render.
+                    Render(ActiveLabelStrip.LabelStrip);
+                }
             }
 
             
@@ -274,8 +271,8 @@ namespace Dimmer_Labels_Wizard
             if (ActiveLabelStrip.SelectedFooterCells.Count == 1)
             {
                 //HeaderTextBox.Text =
-                FooterMiddleDataTextBox.Text = ActiveLabelStrip.SelectedFooterCells.First().MiddleData;
-                InstrumentNameTextBox.Text = ActiveLabelStrip.SelectedFooterCells.First().BottomData;
+                FooterMiddleDataTextBox.Text = ActiveLabelStrip.SelectedFooterCells.First().Footers.First().MiddleData;
+                InstrumentNameTextBox.Text = ActiveLabelStrip.SelectedFooterCells.First().Footers.First().BottomData;
             }
 
             else if (ActiveLabelStrip.SelectedFooterCells.Count > 1)
@@ -286,86 +283,12 @@ namespace Dimmer_Labels_Wizard
                 InstrumentNameTextBox.Text = "*";
             }
 
-            // No Current FooterCell Selections.
+            // No Current FooterCell UserLabelSelection.
             else
             {
                 FooterTopDataTextBox.Text = "";
                 FooterMiddleDataTextBox.Text = "";
                 InstrumentNameTextBox.Text = "";
-            }
-        }
-
-        private void PopUpHeaderCellSelections()
-        {
-
-            if (ActiveLabelStrip != null)
-            {
-                foreach (var element in ActiveLabelStrip.LabelStrip.Headers)
-                {
-                    int listIndex = ActiveLabelStrip.LabelStrip.Headers.IndexOf(element);
-
-                    if (ActiveLabelStrip.SelectedHeaderCells.Contains(element))
-                    {
-                        ActiveLabelStrip.LabelStrip.Headers[listIndex].IsSelected = true;
-                    }
-
-                    else
-                    {
-                        ActiveLabelStrip.LabelStrip.Headers[listIndex].IsSelected = false;
-                    }
-                }
-
-            }
-
-            // Force a Render.
-            Render(ActiveLabelStrip.LabelStrip);
-        }
-
-        private void PopDownHeaderCellSelections()
-        {
-            if (ActiveLabelStrip != null)
-            {
-                foreach (var element in ActiveLabelStrip.LabelStrip.Headers)
-                {
-                    element.IsSelected = false;
-                }
-            }
-        }
-
-        private void PopUpFooterCellSelections()
-        {
-           
-            if (ActiveLabelStrip != null)
-            {
-                foreach (var element in ActiveLabelStrip.LabelStrip.Footers)
-                {
-                    int listIndex = ActiveLabelStrip.LabelStrip.Footers.IndexOf(element);
-
-                    if (ActiveLabelStrip.SelectedFooterCells.Contains(element))
-                    {
-                        ActiveLabelStrip.LabelStrip.Footers[listIndex].IsSelected = true;
-                    }
-
-                    else
-                    {
-                        ActiveLabelStrip.LabelStrip.Footers[listIndex].IsSelected = false;
-                    }
-                }
-            
-            }
-
-            // Force a Render.
-            Render(ActiveLabelStrip.LabelStrip);
-        }
-
-        private void PopDownFooterCellSelections()
-        {
-            if (ActiveLabelStrip != null)
-            {
-                foreach (var element in ActiveLabelStrip.LabelStrip.Footers)
-                {
-                    element.IsSelected = false;
-                }
             }
         }
 
@@ -380,7 +303,7 @@ namespace Dimmer_Labels_Wizard
             {
                 foreach (var element in ActiveLabelStrip.SelectedFooterCells)
                 {
-                    element.MiddleFont = fontDialog.Font;
+                    element.Footers.First().MiddleFont = fontDialog.Font;
                 }
             }
 
@@ -395,7 +318,10 @@ namespace Dimmer_Labels_Wizard
             {
                 foreach (var element in ActiveLabelStrip.SelectedFooterCells)
                 {
-                    element.BottomFont = fontDialog.Font;
+                    foreach (var footer in element.Footers)
+                    {
+                        footer.BottomFont = fontDialog.Font;
+                    }
                 }
             }
 
