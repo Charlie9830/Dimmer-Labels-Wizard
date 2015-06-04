@@ -17,7 +17,7 @@ namespace Dimmer_Labels_Wizard
             file.SetDelimiters(",");
             
             
-            // Read the First line to Collect the Headers.
+            // Read the First line to Collect the Cells.
             string[] headers = file.ReadFields();
 
             // Close the File to return Cursor to Top.

@@ -50,10 +50,22 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CellSeperator.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CellSeperator.Designer.cs">
+      <DependentUpon>CellSeperator.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataHandling.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="DimmerDistroUnit.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="FontStyleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FontStyleControl.Designer.cs">
+      <DependentUpon>FontStyleControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="FORM_InstrumentNameEntry.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +79,12 @@
       <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="FooterCell.cs" />
+    <Compile Include="FORM_SplitCellDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORM_SplitCellDialog.Designer.cs">
+      <DependentUpon>FORM_SplitCellDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="FORM_UnparseableDataDisplay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +106,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LabelStrip.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Racks.cs" />
     <Compile Include="UserParameters.cs" />
   </ItemGroup>
@@ -124,11 +147,20 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CellSeperator.resx">
+      <DependentUpon>CellSeperator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FontStyleControl.resx">
+      <DependentUpon>FontStyleControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FORM_InstrumentNameEntry.resx">
       <DependentUpon>FORM_InstrumentNameEntry.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FORM_LabelEditor.resx">
       <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORM_SplitCellDialog.resx">
+      <DependentUpon>FORM_SplitCellDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FORM_UnparseableDataDisplay.resx">
       <DependentUpon>FORM_UnparseableDataDisplay.cs</DependentUpon>
@@ -136,6 +168,28 @@
     <EmbeddedResource Include="FORM_UserParameterEntry.resx">
       <DependentUpon>FORM_UserParameterEntry.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text-bold-16-000000.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Bold.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text-bold-36-000000.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text-bold-24-000000.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text-italic-16-000000.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\text-underline-16-000000.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

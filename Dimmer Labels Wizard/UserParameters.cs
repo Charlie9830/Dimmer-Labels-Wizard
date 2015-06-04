@@ -141,17 +141,19 @@ namespace Dimmer_Labels_Wizard
                 element.SetBackgroundColor(System.Drawing.Color.White);
                 
                 // Set Default Fonts,FontStyles and StringFormat Alignments.
-                for (int list_index = 0; list_index < element.Headers.Count; list_index++)
+                for (int listIndex = 0; listIndex < element.Headers.Count; listIndex++)
                 {
-                    element.Headers[list_index].Font = new System.Drawing.Font("Arial",16,System.Drawing.FontStyle.Bold);
-                    element.Headers[list_index].Format = centerStringFormat;
-                    
+                    element.Headers[listIndex].Font = new System.Drawing.Font("Arial",16,System.Drawing.FontStyle.Bold);
+                    element.Headers[listIndex].Format = centerStringFormat;
 
-                    element.Footers[list_index].MiddleFont = new System.Drawing.Font("Arial", 18,System.Drawing.FontStyle.Bold);
-                    element.Footers[list_index].MiddleFormat = centerStringFormat;
+                    element.Footers[listIndex].TopFont = new System.Drawing.Font("Arial", 10);
+                    element.Footers[listIndex].TopFormat = nearStringFormat;
 
-                    element.Footers[list_index].BottomFont = new System.Drawing.Font("Arial", 10);
-                    element.Footers[list_index].BottomFormat = farStringFormat;
+                    element.Footers[listIndex].MiddleFont = new System.Drawing.Font("Arial", 18,System.Drawing.FontStyle.Bold);
+                    element.Footers[listIndex].MiddleFormat = centerStringFormat;
+
+                    element.Footers[listIndex].BottomFont = new System.Drawing.Font("Arial", 10);
+                    element.Footers[listIndex].BottomFormat = farStringFormat;
                     
 
                 }

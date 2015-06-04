@@ -13,6 +13,8 @@ namespace Dimmer_Labels_Wizard
     {
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+
             //FORM_UserParameterEntry UserParamEntry = new FORM_UserParameterEntry();
             //UserParamEntry.ShowDialog();
 
