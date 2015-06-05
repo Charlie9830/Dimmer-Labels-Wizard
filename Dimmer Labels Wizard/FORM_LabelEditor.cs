@@ -22,6 +22,7 @@ namespace Dimmer_Labels_Wizard
 
         private Graphics CanvasGraphics;
         private Point RenderOrigin;
+        private Point CanvasPanelCenter;
 
         // A list of Lists. 1st Dimension RackTypes. 2nd Dimension Racks.
         private List<List<LabelStrip>> SelectorRackLabels = new List<List<LabelStrip>>();
@@ -65,12 +66,13 @@ namespace Dimmer_Labels_Wizard
             this.printDocument.PrintPage +=
                 new System.Drawing.Printing.PrintPageEventHandler(this.printDocument_PrintPage);
             CanvasPanel.MouseClick += new MouseEventHandler(this.CanvasPanel_MouseClick);
-            CanvasContextMenu.ItemClicked += new ToolStripItemClickedEventHandler(this.CanvasContextMenu_ItemClicked);
 
-            HeaderTextBox.TextChanged += new EventHandler(this.TextBoxes_ValueChanged);
-            FooterTopDataTextBox.TextChanged += new EventHandler(this.TextBoxes_ValueChanged);
-            FooterMiddleDataTextBox.TextChanged += new EventHandler(this.TextBoxes_ValueChanged);
-            FooterBottomDataTextBox.TextChanged += new EventHandler(this.TextBoxes_ValueChanged);
+            CanvasContextMenu.ItemClicked += new ToolStripItemClickedEventHandler(this.CanvasContextMenu_ItemClicked);
+           
+            HeaderTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
+            FooterTopDataTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
+            FooterMiddleDataTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
+            FooterBottomDataTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
 
             HeaderFontStyleSelector.FontStyleChanged += new EventHandler(this.HeaderFontStyleSelector_StyleChanged);
             FooterTopFontStyleSelector.FontStyleChanged += new EventHandler(this.FooterTopFontStyleSelector_StyleChanged);
@@ -83,10 +85,13 @@ namespace Dimmer_Labels_Wizard
             // Generate Graphics Object
             CanvasGraphics = CanvasPanel.CreateGraphics();
             CanvasGraphics.PageUnit = GraphicsUnit.Pixel;
-            CanvasGraphics.PageScale = 3.54f;
+            //CanvasGraphics.PageScale = 3.54f;
 
             RenderOrigin.X = 20;
             RenderOrigin.Y = 10;
+
+            CanvasPanelCenter.X = CanvasPanel.Width / 2;
+            CanvasPanelCenter.Y = CanvasPanel.Height / 2;
 
             CollectRackLabels();
             PopulateRackLabelSelector();
@@ -681,13 +686,18 @@ namespace Dimmer_Labels_Wizard
         #region Text, Font, Size Selection/TextChanged Event Handlers
 
         // Event Handler Subscribed to All Three Footer Text Boxes and the Header Text Box.
-        private void TextBoxes_ValueChanged(object sender, EventArgs e)
+        private void TextBoxes_KeyDown(object sender, KeyEventArgs e)
         {
-            UpdateHeaderCellData();
-            UpdateFooterCellData();
+            if (e.KeyCode == Keys.Enter)
+            {
+                UpdateHeaderCellData();
+                UpdateFooterCellData();
 
-            // Force a Render
-            Render(ActiveLabelStrip.LabelStrip);
+                // Force a Render
+                Render(ActiveLabelStrip.LabelStrip);
+            }
+
+            
         }
 
         private void HeaderFontComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -903,7 +913,31 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, EventArgs e)
         {
+            CenterLabelStrips();
+
             Render(ActiveLabelStrip.LabelStrip);
+        }
+
+        private void MagnifyPlusButton_Click(object sender, EventArgs e)
+        {
+            CanvasGraphics.ScaleTransform(1.1f, 1.1f);
+            CanvasGraphics.TranslateTransform(2f, 2f);
+
+            Render(ActiveLabelStrip.LabelStrip);
+        }
+
+        private void MagnifyMinusButton_Click(object sender, EventArgs e)
+        {
+            CanvasGraphics.ScaleTransform(0.9f, 0.9f);
+
+            Render(ActiveLabelStrip.LabelStrip);
+        }
+
+        private void CenterLabelStrips()
+        {
+
+            int labelStripWidth = (int)Math.Round(ActiveLabelStrip.HeaderStripOutline.Width);
+            RenderOrigin.X = (CanvasPanel.Width - labelStripWidth) / 2;
         }
     }
 }

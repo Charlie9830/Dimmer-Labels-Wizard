@@ -40,11 +40,15 @@
             this.FooterBackgroundColorButton = new System.Windows.Forms.Button();
             this.FooterBackgroundColorLabel = new System.Windows.Forms.Label();
             this.HeaderControlsPanel = new System.Windows.Forms.Panel();
+            this.HeaderFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
             this.HeaderTextBox = new System.Windows.Forms.TextBox();
             this.HeaderFontSizeComboBox = new System.Windows.Forms.ComboBox();
             this.HeaderFontComboBox = new System.Windows.Forms.ComboBox();
             this.HeaderTextLabel = new System.Windows.Forms.Label();
             this.FooterControlsPanel = new System.Windows.Forms.Panel();
+            this.FooterBottomFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
+            this.FooterMiddleFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
+            this.FooterTopFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
             this.FooterBottomSizeComboBox = new System.Windows.Forms.ComboBox();
             this.FooterBottomFontComboBox = new System.Windows.Forms.ComboBox();
             this.FooterMiddleSizeComboBox = new System.Windows.Forms.ComboBox();
@@ -75,17 +79,17 @@
             this.CanvasContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.splitCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label5 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.HeaderFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
-            this.FooterBottomFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
-            this.FooterMiddleFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
-            this.FooterTopFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
+            this.ViewControlPanel = new System.Windows.Forms.Panel();
+            this.MagnifyPlusButton = new System.Windows.Forms.Button();
+            this.MagnifyMinusButton = new System.Windows.Forms.Button();
+            this.CenterViewButton = new System.Windows.Forms.Button();
             this.LowerPanel.SuspendLayout();
             this.GeneralControlsPanel.SuspendLayout();
             this.HeaderControlsPanel.SuspendLayout();
             this.FooterControlsPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.CanvasContextMenu.SuspendLayout();
+            this.ViewControlPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // DebugButton
@@ -214,6 +218,16 @@
             this.HeaderControlsPanel.Size = new System.Drawing.Size(262, 101);
             this.HeaderControlsPanel.TabIndex = 20;
             // 
+            // HeaderFontStyleSelector
+            // 
+            this.HeaderFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.HeaderFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.HeaderFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
+            this.HeaderFontStyleSelector.Location = new System.Drawing.Point(164, 20);
+            this.HeaderFontStyleSelector.Name = "HeaderFontStyleSelector";
+            this.HeaderFontStyleSelector.Size = new System.Drawing.Size(74, 21);
+            this.HeaderFontStyleSelector.TabIndex = 28;
+            // 
             // HeaderTextBox
             // 
             this.HeaderTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -271,6 +285,36 @@
             this.FooterControlsPanel.Name = "FooterControlsPanel";
             this.FooterControlsPanel.Size = new System.Drawing.Size(267, 286);
             this.FooterControlsPanel.TabIndex = 19;
+            // 
+            // FooterBottomFontStyleSelector
+            // 
+            this.FooterBottomFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.FooterBottomFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FooterBottomFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
+            this.FooterBottomFontStyleSelector.Location = new System.Drawing.Point(164, 206);
+            this.FooterBottomFontStyleSelector.Name = "FooterBottomFontStyleSelector";
+            this.FooterBottomFontStyleSelector.Size = new System.Drawing.Size(74, 21);
+            this.FooterBottomFontStyleSelector.TabIndex = 27;
+            // 
+            // FooterMiddleFontStyleSelector
+            // 
+            this.FooterMiddleFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.FooterMiddleFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FooterMiddleFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
+            this.FooterMiddleFontStyleSelector.Location = new System.Drawing.Point(164, 109);
+            this.FooterMiddleFontStyleSelector.Name = "FooterMiddleFontStyleSelector";
+            this.FooterMiddleFontStyleSelector.Size = new System.Drawing.Size(74, 21);
+            this.FooterMiddleFontStyleSelector.TabIndex = 26;
+            // 
+            // FooterTopFontStyleSelector
+            // 
+            this.FooterTopFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.FooterTopFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FooterTopFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
+            this.FooterTopFontStyleSelector.Location = new System.Drawing.Point(164, 20);
+            this.FooterTopFontStyleSelector.Name = "FooterTopFontStyleSelector";
+            this.FooterTopFontStyleSelector.Size = new System.Drawing.Size(74, 21);
+            this.FooterTopFontStyleSelector.TabIndex = 0;
             // 
             // FooterBottomSizeComboBox
             // 
@@ -494,54 +538,46 @@
             this.label5.TabIndex = 32;
             this.label5.Text = "Label Viewer";
             // 
-            // panel1
+            // ViewControlPanel
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Location = new System.Drawing.Point(875, 18);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(152, 31);
-            this.panel1.TabIndex = 0;
+            this.ViewControlPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.ViewControlPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ViewControlPanel.Controls.Add(this.CenterViewButton);
+            this.ViewControlPanel.Controls.Add(this.MagnifyMinusButton);
+            this.ViewControlPanel.Controls.Add(this.MagnifyPlusButton);
+            this.ViewControlPanel.Location = new System.Drawing.Point(875, 18);
+            this.ViewControlPanel.Name = "ViewControlPanel";
+            this.ViewControlPanel.Size = new System.Drawing.Size(152, 31);
+            this.ViewControlPanel.TabIndex = 0;
             // 
-            // HeaderFontStyleSelector
+            // MagnifyPlusButton
             // 
-            this.HeaderFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.HeaderFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.HeaderFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
-            this.HeaderFontStyleSelector.Location = new System.Drawing.Point(164, 20);
-            this.HeaderFontStyleSelector.Name = "HeaderFontStyleSelector";
-            this.HeaderFontStyleSelector.Size = new System.Drawing.Size(74, 21);
-            this.HeaderFontStyleSelector.TabIndex = 28;
+            this.MagnifyPlusButton.Image = global::Dimmer_Labels_Wizard.Properties.Resources.magnify_add_16_000000;
+            this.MagnifyPlusButton.Location = new System.Drawing.Point(3, 2);
+            this.MagnifyPlusButton.Name = "MagnifyPlusButton";
+            this.MagnifyPlusButton.Size = new System.Drawing.Size(25, 25);
+            this.MagnifyPlusButton.TabIndex = 0;
+            this.MagnifyPlusButton.UseVisualStyleBackColor = true;
+            this.MagnifyPlusButton.Click += new System.EventHandler(this.MagnifyPlusButton_Click);
             // 
-            // FooterBottomFontStyleSelector
+            // MagnifyMinusButton
             // 
-            this.FooterBottomFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.FooterBottomFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FooterBottomFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
-            this.FooterBottomFontStyleSelector.Location = new System.Drawing.Point(164, 206);
-            this.FooterBottomFontStyleSelector.Name = "FooterBottomFontStyleSelector";
-            this.FooterBottomFontStyleSelector.Size = new System.Drawing.Size(74, 21);
-            this.FooterBottomFontStyleSelector.TabIndex = 27;
+            this.MagnifyMinusButton.Image = global::Dimmer_Labels_Wizard.Properties.Resources.magnify_minus_16_000000;
+            this.MagnifyMinusButton.Location = new System.Drawing.Point(34, 2);
+            this.MagnifyMinusButton.Name = "MagnifyMinusButton";
+            this.MagnifyMinusButton.Size = new System.Drawing.Size(25, 25);
+            this.MagnifyMinusButton.TabIndex = 1;
+            this.MagnifyMinusButton.UseVisualStyleBackColor = true;
+            this.MagnifyMinusButton.Click += new System.EventHandler(this.MagnifyMinusButton_Click);
             // 
-            // FooterMiddleFontStyleSelector
+            // CenterViewButton
             // 
-            this.FooterMiddleFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.FooterMiddleFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FooterMiddleFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
-            this.FooterMiddleFontStyleSelector.Location = new System.Drawing.Point(164, 109);
-            this.FooterMiddleFontStyleSelector.Name = "FooterMiddleFontStyleSelector";
-            this.FooterMiddleFontStyleSelector.Size = new System.Drawing.Size(74, 21);
-            this.FooterMiddleFontStyleSelector.TabIndex = 26;
-            // 
-            // FooterTopFontStyleSelector
-            // 
-            this.FooterTopFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.FooterTopFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FooterTopFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
-            this.FooterTopFontStyleSelector.Location = new System.Drawing.Point(164, 20);
-            this.FooterTopFontStyleSelector.Name = "FooterTopFontStyleSelector";
-            this.FooterTopFontStyleSelector.Size = new System.Drawing.Size(74, 21);
-            this.FooterTopFontStyleSelector.TabIndex = 0;
+            this.CenterViewButton.Image = global::Dimmer_Labels_Wizard.Properties.Resources.corner_16_000000;
+            this.CenterViewButton.Location = new System.Drawing.Point(65, 2);
+            this.CenterViewButton.Name = "CenterViewButton";
+            this.CenterViewButton.Size = new System.Drawing.Size(25, 25);
+            this.CenterViewButton.TabIndex = 2;
+            this.CenterViewButton.UseVisualStyleBackColor = true;
             // 
             // FORM_LabelEditor
             // 
@@ -549,7 +585,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(1048, 761);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.ViewControlPanel);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.CanvasPanel);
             this.Controls.Add(this.LowerPanel);
@@ -569,6 +605,7 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.CanvasContextMenu.ResumeLayout(false);
+            this.ViewControlPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -626,6 +663,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel ViewControlPanel;
+        private System.Windows.Forms.Button MagnifyPlusButton;
+        private System.Windows.Forms.Button MagnifyMinusButton;
+        private System.Windows.Forms.Button CenterViewButton;
     }
 }
