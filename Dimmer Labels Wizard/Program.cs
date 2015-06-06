@@ -34,8 +34,8 @@ namespace Dimmer_Labels_Wizard
             UserParameters.InstrumentTypeColumnIndex = 2;
             UserParameters.MulticoreNameColumnIndex = 3;
 
-            UserParameters.LabelWidthInMM = 20;
-            UserParameters.LabelHeightInMM = 25;
+            UserParameters.LabelWidthInMM = 22;
+            UserParameters.LabelHeightInMM = 18;
 
             UserParameters.HardCodeRackNumbers();
             FileImport.ImportFile();

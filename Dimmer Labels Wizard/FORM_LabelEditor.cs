@@ -85,7 +85,6 @@ namespace Dimmer_Labels_Wizard
             // Generate Graphics Object
             CanvasGraphics = CanvasPanel.CreateGraphics();
             CanvasGraphics.PageUnit = GraphicsUnit.Pixel;
-            //CanvasGraphics.PageScale = 3.54f;
 
             RenderOrigin.X = 20;
             RenderOrigin.Y = 10;
@@ -270,7 +269,7 @@ namespace Dimmer_Labels_Wizard
 
         private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            Globals.LabelStrips[0].RenderToPrinter(e.Graphics, new Point(20, 20));
+            Globals.LabelStrips[2].RenderToPrinter(e.Graphics, new Point(20, 20));
         }
 
         private void PrintButton_Click(object sender, EventArgs e)
@@ -348,15 +347,17 @@ namespace Dimmer_Labels_Wizard
                     userSelections.FooterSelections.First().Outline.Left, userSelections.FooterSelections.First().Outline.Height);
 
                 // Render Selection Outlines.
-                RenderSelectionOutlines();
+                RenderSelectionRectangles(CanvasGraphics);
 
                 Console.WriteLine("RENDERED");
+                Console.WriteLine("Width: {0}  Height: {1}", ActiveLabelStrip.HeaderStripOutline.Width, ActiveLabelStrip.HeaderStripOutline.Height);
             }
         }
 
-        private void RenderSelectionOutlines()
+        private void RenderSelectionRectangles(Graphics graphics)
         {
-            Graphics graphics = CanvasPanel.CreateGraphics();
+            float originalPageScale = graphics.PageScale;
+            graphics.PageScale = 1;
 
             // Fill Color. Full Blue. 50% Opacity.
             SolidBrush fillBrush = new SolidBrush(Color.FromArgb(128,0,0,255));
@@ -376,6 +377,8 @@ namespace Dimmer_Labels_Wizard
                     graphics.FillRectangle(fillBrush, footer.Outline);
                 }
             }
+
+            graphics.PageScale = originalPageScale;
         }
 
         private void CanvasPanel_MouseClick(object sender, MouseEventArgs e)
@@ -383,6 +386,8 @@ namespace Dimmer_Labels_Wizard
             // Left Mouse Button Click
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
+                Console.WriteLine("Mouse Locatoin {0} : {1}", e.X, e.Y);
+
                 if (ActiveLabelStrip != null)
                 {
                     // User has selected a Header.
@@ -707,7 +712,7 @@ namespace Dimmer_Labels_Wizard
                 foreach (var cell in element.Cells)
                 {
                     cell.Font = new Font(fontFamilyTracking[HeaderFontComboBox.SelectedIndex], cell.Font.Size,
-                           cell.Font.Style);
+                           cell.Font.Style,CanvasGraphics.PageUnit);
                 }
             }
 
@@ -728,7 +733,7 @@ namespace Dimmer_Labels_Wizard
                 {
                     foreach (var cell in element.Cells)
                     {
-                        cell.Font = new Font(cell.Font.FontFamily, fontSize, cell.Font.Style);
+                        cell.Font = new Font(cell.Font.FontFamily, fontSize, cell.Font.Style,CanvasGraphics.PageUnit);
                     }
                 }
 
@@ -756,7 +761,7 @@ namespace Dimmer_Labels_Wizard
             foreach (var element in ActiveLabelStrip.SelectedFooters)
             {
                 element.Cell.TopFont = new Font(fontFamilyTracking[FooterTopFontComboBox.SelectedIndex], element.Cell.TopFont.Size,
-                       element.Cell.TopFont.Style);
+                       element.Cell.TopFont.Style, CanvasGraphics.PageUnit);
 
             }
 
@@ -775,7 +780,7 @@ namespace Dimmer_Labels_Wizard
 
                 foreach (var element in ActiveLabelStrip.SelectedFooters)
                 {
-                    element.Cell.TopFont = new Font(element.Cell.TopFont.FontFamily, fontSize, element.Cell.TopFont.Style);
+                    element.Cell.TopFont = new Font(element.Cell.TopFont.FontFamily, fontSize, element.Cell.TopFont.Style, CanvasGraphics.PageUnit);
                 }
 
                 // Force Render.
@@ -799,7 +804,7 @@ namespace Dimmer_Labels_Wizard
             foreach (var element in ActiveLabelStrip.SelectedFooters)
             {
                 element.Cell.MiddleFont = new Font(fontFamilyTracking[FooterMiddleFontComboBox.SelectedIndex], element.Cell.MiddleFont.Size,
-                       element.Cell.MiddleFont.Style);
+                       element.Cell.MiddleFont.Style, CanvasGraphics.PageUnit);
 
             }
 
@@ -818,7 +823,7 @@ namespace Dimmer_Labels_Wizard
 
                 foreach (var element in ActiveLabelStrip.SelectedFooters)
                 {
-                    element.Cell.MiddleFont = new Font(element.Cell.MiddleFont.FontFamily, fontSize, element.Cell.MiddleFont.Style);
+                    element.Cell.MiddleFont = new Font(element.Cell.MiddleFont.FontFamily, fontSize, element.Cell.MiddleFont.Style, CanvasGraphics.PageUnit);
                 }
 
                 // Force Render.
@@ -842,7 +847,7 @@ namespace Dimmer_Labels_Wizard
             foreach (var element in ActiveLabelStrip.SelectedFooters)
             {
                 element.Cell.BottomFont = new Font(fontFamilyTracking[FooterBottomFontComboBox.SelectedIndex], element.Cell.BottomFont.Size,
-                       element.Cell.BottomFont.Style);
+                       element.Cell.BottomFont.Style, CanvasGraphics.PageUnit);
 
             }
 
@@ -861,7 +866,7 @@ namespace Dimmer_Labels_Wizard
 
                 foreach (var element in ActiveLabelStrip.SelectedFooters)
                 {
-                    element.Cell.BottomFont = new Font(element.Cell.BottomFont.FontFamily, fontSize, element.Cell.BottomFont.Style);
+                    element.Cell.BottomFont = new Font(element.Cell.BottomFont.FontFamily, fontSize, element.Cell.BottomFont.Style, CanvasGraphics.PageUnit);
                 }
 
                 // Force Render.
@@ -913,31 +918,36 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, EventArgs e)
         {
-            CenterLabelStrips();
+            this.CreateGraphics().DrawRectangle(Pens.Red, Rectangle.Round(ActiveLabelStrip.HeaderStripOutline));
+            this.CreateGraphics().DrawRectangle(Pens.Red, Rectangle.Round(ActiveLabelStrip.FooterStripOutline));
 
-            Render(ActiveLabelStrip.LabelStrip);
+            CanvasGraphics.DrawRectangle(Pens.Blue, Rectangle.Round(ActiveLabelStrip.HeaderStripOutline));
+            CanvasGraphics.DrawRectangle(Pens.Blue, Rectangle.Round(ActiveLabelStrip.FooterStripOutline));
         }
 
         private void MagnifyPlusButton_Click(object sender, EventArgs e)
         {
-            CanvasGraphics.ScaleTransform(1.1f, 1.1f);
-            CanvasGraphics.TranslateTransform(2f, 2f);
-
             Render(ActiveLabelStrip.LabelStrip);
         }
 
         private void MagnifyMinusButton_Click(object sender, EventArgs e)
         {
-            CanvasGraphics.ScaleTransform(0.9f, 0.9f);
+            Render(ActiveLabelStrip.LabelStrip);
+        }
+
+        private void CenterViewButton_Click(object sender, EventArgs e)
+        {
+            float centerX = (CanvasPanel.Width) / 2;
+            float centerY = (CanvasPanel.Height) / 2;
+
+            Console.WriteLine("Canvas Center Point {0} : {1}", centerX, centerY);
+
+            RenderOrigin.X = (int) Math.Round(centerX - (ActiveLabelStrip.HeaderStripOutline.Width / 2));
+            RenderOrigin.Y = (int) Math.Round(centerY - (((ActiveLabelStrip.HeaderStripOutline.Height * 2) + 20) / 2));
+            RenderOrigin.Y = (int)Math.Round(centerY - ((ActiveLabelStrip.FooterStripOutline.Bottom - ActiveLabelStrip.HeaderStripOutline.Top) / 2));
 
             Render(ActiveLabelStrip.LabelStrip);
         }
 
-        private void CenterLabelStrips()
-        {
-
-            int labelStripWidth = (int)Math.Round(ActiveLabelStrip.HeaderStripOutline.Width);
-            RenderOrigin.X = (CanvasPanel.Width - labelStripWidth) / 2;
-        }
     }
 }

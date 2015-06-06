@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -143,16 +144,16 @@ namespace Dimmer_Labels_Wizard
                 // Set Default Fonts,FontStyles and StringFormat Alignments.
                 for (int listIndex = 0; listIndex < element.Headers.Count; listIndex++)
                 {
-                    element.Headers[listIndex].Font = new System.Drawing.Font("Arial",16,System.Drawing.FontStyle.Bold);
+                    element.Headers[listIndex].Font = new System.Drawing.Font("Arial",12,FontStyle.Bold, GraphicsUnit.Pixel);
                     element.Headers[listIndex].Format = centerStringFormat;
 
-                    element.Footers[listIndex].TopFont = new System.Drawing.Font("Arial", 10);
+                    element.Footers[listIndex].TopFont = new System.Drawing.Font("Arial", 6, GraphicsUnit.Pixel);
                     element.Footers[listIndex].TopFormat = nearStringFormat;
 
-                    element.Footers[listIndex].MiddleFont = new System.Drawing.Font("Arial", 18,System.Drawing.FontStyle.Bold);
+                    element.Footers[listIndex].MiddleFont = new System.Drawing.Font("Arial", 8, System.Drawing.FontStyle.Bold, GraphicsUnit.Pixel);
                     element.Footers[listIndex].MiddleFormat = centerStringFormat;
 
-                    element.Footers[listIndex].BottomFont = new System.Drawing.Font("Arial", 10);
+                    element.Footers[listIndex].BottomFont = new System.Drawing.Font("Arial", 6, GraphicsUnit.Pixel);
                     element.Footers[listIndex].BottomFormat = farStringFormat;
                     
 
