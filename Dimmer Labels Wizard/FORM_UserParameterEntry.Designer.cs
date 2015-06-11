@@ -67,8 +67,13 @@
             this.InstrumentNameMappingLabel = new System.Windows.Forms.Label();
             this.ChannelMappingLabel = new System.Windows.Forms.Label();
             this.DistroNumberPrefixPanel = new System.Windows.Forms.Panel();
-            this.DistroNumberPrefixTextBox = new System.Windows.Forms.TextBox();
             this.DistroNumberPrefixLabel = new System.Windows.Forms.Label();
+            this.DistroNumberPrefixTextBox = new System.Windows.Forms.TextBox();
+            this.Panel8 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label8 = new System.Windows.Forms.Label();
+            this.DimmerRangeInput = new Dimmer_Labels_Wizard.DimmerRangeInputControl();
             ((System.ComponentModel.ISupportInitialize)(this.FirstDimmerNumberSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LastDimmerNumberSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FirstDistroNumberSelector)).BeginInit();
@@ -79,12 +84,14 @@
             this.UniverseColumnSelectPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             this.DistroNumberPrefixPanel.SuspendLayout();
+            this.Panel8.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Location = new System.Drawing.Point(8, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(104, 13);
             this.label1.TabIndex = 0;
@@ -93,7 +100,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(157, 13);
+            this.label2.Location = new System.Drawing.Point(152, 8);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(105, 13);
             this.label2.TabIndex = 1;
@@ -101,7 +108,7 @@
             // 
             // FirstDimmerNumberSelector
             // 
-            this.FirstDimmerNumberSelector.Location = new System.Drawing.Point(16, 30);
+            this.FirstDimmerNumberSelector.Location = new System.Drawing.Point(11, 25);
             this.FirstDimmerNumberSelector.Maximum = new decimal(new int[] {
             512,
             0,
@@ -118,7 +125,7 @@
             // 
             // LastDimmerNumberSelector
             // 
-            this.LastDimmerNumberSelector.Location = new System.Drawing.Point(160, 30);
+            this.LastDimmerNumberSelector.Location = new System.Drawing.Point(155, 25);
             this.LastDimmerNumberSelector.Maximum = new decimal(new int[] {
             512,
             0,
@@ -136,7 +143,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 72);
+            this.label3.Location = new System.Drawing.Point(8, 67);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(96, 13);
             this.label3.TabIndex = 4;
@@ -145,7 +152,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(157, 72);
+            this.label4.Location = new System.Drawing.Point(152, 67);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(97, 13);
             this.label4.TabIndex = 5;
@@ -153,7 +160,7 @@
             // 
             // FirstDistroNumberSelector
             // 
-            this.FirstDistroNumberSelector.Location = new System.Drawing.Point(16, 89);
+            this.FirstDistroNumberSelector.Location = new System.Drawing.Point(11, 84);
             this.FirstDistroNumberSelector.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -170,7 +177,7 @@
             // 
             // LastDistroNumberSelector
             // 
-            this.LastDistroNumberSelector.Location = new System.Drawing.Point(160, 88);
+            this.LastDistroNumberSelector.Location = new System.Drawing.Point(155, 83);
             this.LastDistroNumberSelector.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -188,7 +195,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(300, 13);
+            this.label5.Location = new System.Drawing.Point(295, 8);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(92, 13);
             this.label5.TabIndex = 8;
@@ -196,7 +203,7 @@
             // 
             // DimmersUniverseSelector
             // 
-            this.DimmersUniverseSelector.Location = new System.Drawing.Point(303, 30);
+            this.DimmersUniverseSelector.Location = new System.Drawing.Point(298, 25);
             this.DimmersUniverseSelector.Name = "DimmersUniverseSelector";
             this.DimmersUniverseSelector.Size = new System.Drawing.Size(89, 20);
             this.DimmersUniverseSelector.TabIndex = 9;
@@ -209,7 +216,7 @@
             // FiveKPanel
             // 
             this.FiveKPanel.Controls.Add(this.FiveKDimmerAddressDataGrid);
-            this.FiveKPanel.Location = new System.Drawing.Point(16, 153);
+            this.FiveKPanel.Location = new System.Drawing.Point(16, 210);
             this.FiveKPanel.Name = "FiveKPanel";
             this.FiveKPanel.Size = new System.Drawing.Size(246, 283);
             this.FiveKPanel.TabIndex = 10;
@@ -241,7 +248,7 @@
             // FiveKDimmersCheckBox
             // 
             this.FiveKDimmersCheckBox.AutoSize = true;
-            this.FiveKDimmersCheckBox.Location = new System.Drawing.Point(16, 130);
+            this.FiveKDimmersCheckBox.Location = new System.Drawing.Point(16, 186);
             this.FiveKDimmersCheckBox.Name = "FiveKDimmersCheckBox";
             this.FiveKDimmersCheckBox.Size = new System.Drawing.Size(117, 17);
             this.FiveKDimmersCheckBox.TabIndex = 11;
@@ -251,7 +258,7 @@
             // 
             // ApplyButton
             // 
-            this.ApplyButton.Location = new System.Drawing.Point(920, 413);
+            this.ApplyButton.Location = new System.Drawing.Point(825, 470);
             this.ApplyButton.Name = "ApplyButton";
             this.ApplyButton.Size = new System.Drawing.Size(75, 23);
             this.ApplyButton.TabIndex = 12;
@@ -267,7 +274,7 @@
             "###",
             "#/###",
             "A/###"});
-            this.DistroFormatComboBox.Location = new System.Drawing.Point(529, 31);
+            this.DistroFormatComboBox.Location = new System.Drawing.Point(6, 21);
             this.DistroFormatComboBox.Name = "DistroFormatComboBox";
             this.DistroFormatComboBox.Size = new System.Drawing.Size(121, 21);
             this.DistroFormatComboBox.TabIndex = 13;
@@ -282,7 +289,7 @@
             "###",
             "A###",
             "A/###"});
-            this.DimmerFormatComboBox.Location = new System.Drawing.Point(671, 31);
+            this.DimmerFormatComboBox.Location = new System.Drawing.Point(148, 21);
             this.DimmerFormatComboBox.Name = "DimmerFormatComboBox";
             this.DimmerFormatComboBox.Size = new System.Drawing.Size(121, 21);
             this.DimmerFormatComboBox.TabIndex = 14;
@@ -292,7 +299,7 @@
             // DistroTextFormatLabel
             // 
             this.DistroTextFormatLabel.AutoSize = true;
-            this.DistroTextFormatLabel.Location = new System.Drawing.Point(526, 13);
+            this.DistroTextFormatLabel.Location = new System.Drawing.Point(3, 3);
             this.DistroTextFormatLabel.Name = "DistroTextFormatLabel";
             this.DistroTextFormatLabel.Size = new System.Drawing.Size(109, 13);
             this.DistroTextFormatLabel.TabIndex = 15;
@@ -301,7 +308,7 @@
             // DimmerNumberFormatLabel
             // 
             this.DimmerNumberFormatLabel.AutoSize = true;
-            this.DimmerNumberFormatLabel.Location = new System.Drawing.Point(668, 14);
+            this.DimmerNumberFormatLabel.Location = new System.Drawing.Point(145, 4);
             this.DimmerNumberFormatLabel.Name = "DimmerNumberFormatLabel";
             this.DimmerNumberFormatLabel.Size = new System.Drawing.Size(117, 13);
             this.DimmerNumberFormatLabel.TabIndex = 16;
@@ -315,9 +322,9 @@
             this.UniverseColumnSelectPanel.Controls.Add(this.DMXAddressFormatComboBox);
             this.UniverseColumnSelectPanel.Controls.Add(this.label6);
             this.UniverseColumnSelectPanel.Controls.Add(this.UniverseColumnLabel);
-            this.UniverseColumnSelectPanel.Location = new System.Drawing.Point(817, 9);
+            this.UniverseColumnSelectPanel.Location = new System.Drawing.Point(733, 39);
             this.UniverseColumnSelectPanel.Name = "UniverseColumnSelectPanel";
-            this.UniverseColumnSelectPanel.Size = new System.Drawing.Size(167, 138);
+            this.UniverseColumnSelectPanel.Size = new System.Drawing.Size(167, 114);
             this.UniverseColumnSelectPanel.TabIndex = 17;
             // 
             // NoUniverseDataCheckBox
@@ -375,9 +382,10 @@
             // CSVColumnMappingLabel
             // 
             this.CSVColumnMappingLabel.AutoSize = true;
-            this.CSVColumnMappingLabel.Location = new System.Drawing.Point(395, 130);
+            this.CSVColumnMappingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.CSVColumnMappingLabel.Location = new System.Drawing.Point(299, 186);
             this.CSVColumnMappingLabel.Name = "CSVColumnMappingLabel";
-            this.CSVColumnMappingLabel.Size = new System.Drawing.Size(110, 13);
+            this.CSVColumnMappingLabel.Size = new System.Drawing.Size(165, 20);
             this.CSVColumnMappingLabel.TabIndex = 18;
             this.CSVColumnMappingLabel.Text = "CSV Column Mapping";
             // 
@@ -394,7 +402,7 @@
             this.panel1.Controls.Add(this.MulticoreNameMappingLabel);
             this.panel1.Controls.Add(this.InstrumentNameMappingLabel);
             this.panel1.Controls.Add(this.ChannelMappingLabel);
-            this.panel1.Location = new System.Drawing.Point(303, 153);
+            this.panel1.Location = new System.Drawing.Point(303, 210);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(276, 150);
             this.panel1.TabIndex = 19;
@@ -494,18 +502,10 @@
             this.DistroNumberPrefixPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DistroNumberPrefixPanel.Controls.Add(this.DistroNumberPrefixLabel);
             this.DistroNumberPrefixPanel.Controls.Add(this.DistroNumberPrefixTextBox);
-            this.DistroNumberPrefixPanel.Location = new System.Drawing.Point(529, 58);
+            this.DistroNumberPrefixPanel.Location = new System.Drawing.Point(6, 48);
             this.DistroNumberPrefixPanel.Name = "DistroNumberPrefixPanel";
             this.DistroNumberPrefixPanel.Size = new System.Drawing.Size(121, 51);
             this.DistroNumberPrefixPanel.TabIndex = 20;
-            // 
-            // DistroNumberPrefixTextBox
-            // 
-            this.DistroNumberPrefixTextBox.Location = new System.Drawing.Point(7, 24);
-            this.DistroNumberPrefixTextBox.Name = "DistroNumberPrefixTextBox";
-            this.DistroNumberPrefixTextBox.Size = new System.Drawing.Size(100, 20);
-            this.DistroNumberPrefixTextBox.TabIndex = 0;
-            this.DistroNumberPrefixTextBox.Text = "Enter Letter Prefix";
             // 
             // DistroNumberPrefixLabel
             // 
@@ -516,32 +516,90 @@
             this.DistroNumberPrefixLabel.TabIndex = 1;
             this.DistroNumberPrefixLabel.Text = "Distro Number Prefix";
             // 
+            // DistroNumberPrefixTextBox
+            // 
+            this.DistroNumberPrefixTextBox.Location = new System.Drawing.Point(7, 24);
+            this.DistroNumberPrefixTextBox.Name = "DistroNumberPrefixTextBox";
+            this.DistroNumberPrefixTextBox.Size = new System.Drawing.Size(100, 20);
+            this.DistroNumberPrefixTextBox.TabIndex = 0;
+            this.DistroNumberPrefixTextBox.Text = "Enter Letter Prefix";
+            // 
+            // Panel8
+            // 
+            this.Panel8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Panel8.Controls.Add(this.label2);
+            this.Panel8.Controls.Add(this.label1);
+            this.Panel8.Controls.Add(this.FirstDimmerNumberSelector);
+            this.Panel8.Controls.Add(this.LastDimmerNumberSelector);
+            this.Panel8.Controls.Add(this.label3);
+            this.Panel8.Controls.Add(this.label4);
+            this.Panel8.Controls.Add(this.FirstDistroNumberSelector);
+            this.Panel8.Controls.Add(this.LastDistroNumberSelector);
+            this.Panel8.Controls.Add(this.label5);
+            this.Panel8.Controls.Add(this.DimmersUniverseSelector);
+            this.Panel8.Location = new System.Drawing.Point(16, 39);
+            this.Panel8.Name = "Panel8";
+            this.Panel8.Size = new System.Drawing.Size(405, 114);
+            this.Panel8.TabIndex = 21;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.label7.Location = new System.Drawing.Point(12, 11);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(170, 20);
+            this.label7.TabIndex = 10;
+            this.label7.Text = "Dimmer/Distro Ranges";
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.DistroTextFormatLabel);
+            this.panel2.Controls.Add(this.DistroFormatComboBox);
+            this.panel2.Controls.Add(this.DimmerFormatComboBox);
+            this.panel2.Controls.Add(this.DistroNumberPrefixPanel);
+            this.panel2.Controls.Add(this.DimmerNumberFormatLabel);
+            this.panel2.Location = new System.Drawing.Point(440, 39);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(277, 114);
+            this.panel2.TabIndex = 22;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.label8.Location = new System.Drawing.Point(436, 11);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(97, 20);
+            this.label8.TabIndex = 23;
+            this.label8.Text = "CSV Format";
+            // 
+            // DimmerRangeInput
+            // 
+            this.DimmerRangeInput.AutoScroll = true;
+            this.DimmerRangeInput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.DimmerRangeInput.Location = new System.Drawing.Point(593, 210);
+            this.DimmerRangeInput.Name = "DimmerRangeInput";
+            this.DimmerRangeInput.Size = new System.Drawing.Size(289, 162);
+            this.DimmerRangeInput.TabIndex = 24;
+            // 
             // FORM_UserParameterEntry
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1007, 448);
-            this.Controls.Add(this.DistroNumberPrefixPanel);
+            this.ClientSize = new System.Drawing.Size(909, 505);
+            this.Controls.Add(this.DimmerRangeInput);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.Panel8);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.CSVColumnMappingLabel);
             this.Controls.Add(this.UniverseColumnSelectPanel);
-            this.Controls.Add(this.DimmerNumberFormatLabel);
-            this.Controls.Add(this.DistroTextFormatLabel);
-            this.Controls.Add(this.DimmerFormatComboBox);
-            this.Controls.Add(this.DistroFormatComboBox);
-            this.Controls.Add(this.ApplyButton);
             this.Controls.Add(this.FiveKDimmersCheckBox);
+            this.Controls.Add(this.ApplyButton);
             this.Controls.Add(this.FiveKPanel);
-            this.Controls.Add(this.DimmersUniverseSelector);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.LastDistroNumberSelector);
-            this.Controls.Add(this.FirstDistroNumberSelector);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.LastDimmerNumberSelector);
-            this.Controls.Add(this.FirstDimmerNumberSelector);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Name = "FORM_UserParameterEntry";
             this.Text = "FORM_UserParameterEntry";
             this.Load += new System.EventHandler(this.FORM_UserParameterEntry_Load);
@@ -558,6 +616,10 @@
             this.panel1.PerformLayout();
             this.DistroNumberPrefixPanel.ResumeLayout(false);
             this.DistroNumberPrefixPanel.PerformLayout();
+            this.Panel8.ResumeLayout(false);
+            this.Panel8.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -606,5 +668,10 @@
         private System.Windows.Forms.Panel DistroNumberPrefixPanel;
         private System.Windows.Forms.Label DistroNumberPrefixLabel;
         private System.Windows.Forms.TextBox DistroNumberPrefixTextBox;
+        private System.Windows.Forms.Panel Panel8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label8;
+        private DimmerRangeInputControl DimmerRangeInput;
     }
 }

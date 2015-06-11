@@ -33,6 +33,9 @@ namespace Dimmer_Labels_Wizard
         // Dictionary to Map User Combobox FontFamily Selections. Key: Implied ComboBox Index, Value: FontFamily.
         private Dictionary<int, FontFamily> fontFamilyTracking = new Dictionary<int, FontFamily>();
 
+        // Controls scaleRatio paramter of LabelStrip.Render(). Initialized to 1.
+        private float zoomRatio;
+
         // List to Hold FontFamily.Name Values.
         private List<string> fontFamilyNames = new List<string>();
 
@@ -43,11 +46,20 @@ namespace Dimmer_Labels_Wizard
                                      "22","24","26","28","30","32","34","36","38","40","42","44","46","48","50",
                                      "52","54","56","58","60","62","64","66","68","70","72"};
 
+        private String[] lineWeights = { "0.00", "0.25", "0.50", "0.75", "1.00", "1.25", "1.50", "1.75", "2.00", "2.25", "2.50", "2.75", "3.00" };
+
         // User Page Settings
         private PageSettings UserPageSettings = new PageSettings();
 
         // User Printer Settings
         private PrinterSettings UserPrinterSettings = new PrinterSettings();
+
+        // Mouse Tracking
+        private Point OldMousePosition = new Point();
+        private Point NewMousePosition = new Point();
+
+        // Dialog warning message tracking.
+        private bool GlobalApplyDialogShow;
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -65,10 +77,12 @@ namespace Dimmer_Labels_Wizard
 
             this.printDocument.PrintPage +=
                 new System.Drawing.Printing.PrintPageEventHandler(this.printDocument_PrintPage);
+            CanvasPanel.MouseDown += new MouseEventHandler(this.CanvasPanel_MouseDown);
             CanvasPanel.MouseClick += new MouseEventHandler(this.CanvasPanel_MouseClick);
+            CanvasPanel.MouseUp += new MouseEventHandler(this.CanvasPanel_MouseUp);
+            CanvasPanel.MouseMove += new MouseEventHandler(this.CanvasPanel_MouseMove);
+            
 
-            CanvasContextMenu.ItemClicked += new ToolStripItemClickedEventHandler(this.CanvasContextMenu_ItemClicked);
-           
             HeaderTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
             FooterTopDataTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
             FooterMiddleDataTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
@@ -78,6 +92,13 @@ namespace Dimmer_Labels_Wizard
             FooterTopFontStyleSelector.FontStyleChanged += new EventHandler(this.FooterTopFontStyleSelector_StyleChanged);
             FooterMiddleFontStyleSelector.FontStyleChanged += new EventHandler(this.FooterMiddleFontStyleSelector_StyleChanged);
             FooterBottomFontStyleSelector.FontStyleChanged += new EventHandler(this.FooterBottomFontStyleSelector_StyleChanged);
+
+            BackgroundColorGlobalApplyCheckBox.CheckStateChanged += new EventHandler(this.GlobalApplyCheckboxes_CheckStateChanged);
+            LineWeightGlobalApplyCheckBox.CheckStateChanged += new EventHandler(this.GlobalApplyCheckboxes_CheckStateChanged);
+            HeaderGlobalApplyCheckBox.CheckStateChanged += new EventHandler(this.GlobalApplyCheckboxes_CheckStateChanged);
+            FooterTopGlobalApplyCheckBox.CheckStateChanged += new EventHandler(this.GlobalApplyCheckboxes_CheckStateChanged);
+            FooterMiddleGlobalApplyCheckBox.CheckStateChanged += new EventHandler(this.GlobalApplyCheckboxes_CheckStateChanged);
+            FooterBottomGlobalApplyCheckBox.CheckStateChanged += new EventHandler(this.GlobalApplyCheckboxes_CheckStateChanged);
         }
 
         private void FORM_LabelEditor_Load(object sender, EventArgs e)
@@ -85,6 +106,8 @@ namespace Dimmer_Labels_Wizard
             // Generate Graphics Object
             CanvasGraphics = CanvasPanel.CreateGraphics();
             CanvasGraphics.PageUnit = GraphicsUnit.Pixel;
+
+            zoomRatio = 3;
 
             RenderOrigin.X = 20;
             RenderOrigin.Y = 10;
@@ -95,6 +118,12 @@ namespace Dimmer_Labels_Wizard
             CollectRackLabels();
             PopulateRackLabelSelector();
             PopulateQuickAccessFontControls();
+
+            LineWeightComboBox.Items.AddRange(lineWeights);
+
+            StartTipLabel.Visible = true;
+
+            GlobalApplyDialogShow = true;
         }
 
         // Collects RackLabels and Adds them to the SelectorRackLabels List.
@@ -160,13 +189,6 @@ namespace Dimmer_Labels_Wizard
                     }
                 }
             }
-        }
-
-        private void CanvasContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            ToolStripItem selectedItem = e.ClickedItem;
-
-            RenderCellSeperators();
         }
 
         private void RenderCellSeperators()
@@ -259,10 +281,13 @@ namespace Dimmer_Labels_Wizard
             {
                 UserSelectionDict.TryGetValue(RackLabelSelector.SelectedNode, out label);
 
+                StartTipLabel.Visible = false;
                 ActiveLabelStrip = new LabelStripSelection();
                 ActiveLabelStrip.LabelStrip = label;
                 ActiveLabelStrip.ClearSelections();
                 Render(label);
+                CenterLabelStrips();
+                
                 
             }   
         }
@@ -299,25 +324,45 @@ namespace Dimmer_Labels_Wizard
         {
             backgroundColorDialog.Color = ActiveLabelStrip.LabelStrip.Footers[0].BackgroundColor.Color;
 
-            if (backgroundColorDialog.ShowDialog() == DialogResult.OK)
+            if (BackgroundColorGlobalApplyCheckBox.Checked == false)
             {
-                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                if (backgroundColorDialog.ShowDialog() == DialogResult.OK)
                 {
-                        element.Cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);   
-                }
-
-                foreach (var element in ActiveLabelStrip.SelectedHeaders)
-                {
-                    foreach (var cell in element.Cells)
+                    foreach (var element in ActiveLabelStrip.SelectedFooters)
                     {
-                        cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                        element.Cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                    }
+
+                    foreach (var element in ActiveLabelStrip.SelectedHeaders)
+                    {
+                        foreach (var cell in element.Cells)
+                        {
+                            cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                        }
                     }
                 }
-
-                // Force a Render.
-                Render(ActiveLabelStrip.LabelStrip);
             }
-            
+
+            else
+            {
+                if (backgroundColorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    foreach (var labelStrip in Globals.LabelStrips)
+                    {
+                        foreach (var cell in labelStrip.Headers)
+                        {
+                            cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                        }
+
+                        foreach (var cell in labelStrip.Footers)
+                        {
+                            cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                        }
+                    }
+                }
+            }
+            // Force a Render.
+            Render(ActiveLabelStrip.LabelStrip);
         }
 
         // Control Method for RenderToDisplay. Renders to Canvas Panel and collects Header and Cell Outlines.
@@ -331,7 +376,7 @@ namespace Dimmer_Labels_Wizard
 
                 // Render to Display and Collect Outline Rectangles.
                 UserLabelSelection userSelections = label.RenderToDisplay(CanvasGraphics,
-                    RenderOrigin, new Size(CanvasPanel.Width, CanvasPanel.Height));
+                    RenderOrigin, zoomRatio);
 
                 // Return Objects of RenderToDisplay().
                 ActiveLabelStrip.RenderedHeaders.AddRange(userSelections.HeaderSelections);
@@ -350,14 +395,11 @@ namespace Dimmer_Labels_Wizard
                 RenderSelectionRectangles(CanvasGraphics);
 
                 Console.WriteLine("RENDERED");
-                Console.WriteLine("Width: {0}  Height: {1}", ActiveLabelStrip.HeaderStripOutline.Width, ActiveLabelStrip.HeaderStripOutline.Height);
             }
         }
 
         private void RenderSelectionRectangles(Graphics graphics)
         {
-            float originalPageScale = graphics.PageScale;
-            graphics.PageScale = 1;
 
             // Fill Color. Full Blue. 50% Opacity.
             SolidBrush fillBrush = new SolidBrush(Color.FromArgb(128,0,0,255));
@@ -377,34 +419,37 @@ namespace Dimmer_Labels_Wizard
                     graphics.FillRectangle(fillBrush, footer.Outline);
                 }
             }
-
-            graphics.PageScale = originalPageScale;
         }
 
         private void CanvasPanel_MouseClick(object sender, MouseEventArgs e)
         {
+            Point lastClickLocation = new Point();
+
             // Left Mouse Button Click
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                Console.WriteLine("Mouse Locatoin {0} : {1}", e.X, e.Y);
-
                 if (ActiveLabelStrip != null)
                 {
                     // User has selected a Header.
                     if (ActiveLabelStrip.HeaderStripOutline.Contains(e.Location) == true)
                     {
-                        ActiveLabelStrip.SelectHeaderCells(e.Location);
-                        RenderHeaderCellControls();
-                        Render(ActiveLabelStrip.LabelStrip);
-                        DeRenderCellSeperators();
+                            lastClickLocation = e.Location;
+                            ActiveLabelStrip.SelectHeaderCells(e.Location);
+                            RenderHeaderCellControls();
+                            Render(ActiveLabelStrip.LabelStrip);
+                            DeRenderCellSeperators();
+                            RenderAppearanceControls();
+                        
                     }
 
                     // User has Selected a Footer.
                     else if (ActiveLabelStrip.FooterStripOutline.Contains(e.Location) == true)
                     {
+                        lastClickLocation = e.Location;
                         ActiveLabelStrip.SelectFooterCells(e.Location);
                         Render(ActiveLabelStrip.LabelStrip);
                         RenderFooterCellControls();
+                        RenderAppearanceControls();
                     }
 
                     // User has Clicked the area outside the Header and Footer Labels.
@@ -420,6 +465,7 @@ namespace Dimmer_Labels_Wizard
                         Render(ActiveLabelStrip.LabelStrip);
                         RenderFooterCellControls();
                         RenderHeaderCellControls();
+                        RenderAppearanceControls();
                     }
                 }
             }
@@ -427,9 +473,46 @@ namespace Dimmer_Labels_Wizard
             // Right Mouse Button Click
             else if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                CanvasContextMenu.Show(CanvasPanel,e.Location);
+
             }
         }
+
+        private void CanvasPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                OldMousePosition = e.Location;
+            }
+        }
+
+        private void CanvasPanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (MouseButtons.HasFlag(MouseButtons.Right))
+            {
+                
+            }
+        }
+
+        private void CanvasPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                NewMousePosition = e.Location;
+
+                if (ActiveLabelStrip.HeaderStripOutline.Contains(OldMousePosition) || ActiveLabelStrip.HeaderStripOutline.Contains(NewMousePosition))
+                {
+                    ActiveLabelStrip.SelectHeaderCells(OldMousePosition, NewMousePosition);
+                }
+
+                else
+                {
+                    ActiveLabelStrip.SelectFooterCells(OldMousePosition, NewMousePosition);
+                }
+
+                RenderSelectionRectangles(CanvasGraphics);
+            }
+        }
+
 
         // Renders HeaderCell Data to Textboxes.
         private void RenderHeaderCellControls()
@@ -628,6 +711,16 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
+        private void RenderAppearanceControls()
+        {
+            if (ActiveLabelStrip != null)
+            {
+                LineWeightComboBox.ResetText();
+                LineWeightComboBox.SelectedText = ActiveLabelStrip.LabelStrip.LineWeight.ToString();
+            }
+        }
+
+
         private void UpdateHeaderCellData()
         {
             if (HeaderTextBox.Text != "" && HeaderTextBox.Text != "*")
@@ -661,6 +754,37 @@ namespace Dimmer_Labels_Wizard
                     element.Cell.BottomData = FooterBottomDataTextBox.Text;
                 }
             }
+        }
+
+        private void UpdateCellAppearance()
+        {
+            string selectionValue = lineWeights[LineWeightComboBox.SelectedIndex];
+            float parsedValue;
+
+            if (float.TryParse(selectionValue, out parsedValue) == true)
+            {
+                if (LineWeightGlobalApplyCheckBox.Checked == false)
+                {
+                    ActiveLabelStrip.LabelStrip.LineWeight = parsedValue;
+                    
+                }
+
+                else
+                {
+                    foreach (var element in Globals.LabelStrips)
+                    {
+                        element.LineWeight = parsedValue;
+                    }
+                }
+            }
+
+            else
+            {
+                Console.WriteLine("Parse Failed");
+            }
+
+            // Force Render.
+            Render(ActiveLabelStrip.LabelStrip);
         }
 
 
@@ -707,12 +831,27 @@ namespace Dimmer_Labels_Wizard
 
         private void HeaderFontComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            foreach (var element in ActiveLabelStrip.SelectedHeaders)
+            if (HeaderGlobalApplyCheckBox.Checked == false)
             {
-                foreach (var cell in element.Cells)
+                foreach (var element in ActiveLabelStrip.SelectedHeaders)
                 {
-                    cell.Font = new Font(fontFamilyTracking[HeaderFontComboBox.SelectedIndex], cell.Font.Size,
-                           cell.Font.Style,CanvasGraphics.PageUnit);
+                    foreach (var cell in element.Cells)
+                    {
+                        cell.Font = new Font(fontFamilyTracking[HeaderFontComboBox.SelectedIndex], cell.Font.Size,
+                                cell.Font.Style, CanvasGraphics.PageUnit);
+                    }
+                }
+            }
+
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var cell in labelStrip.Headers)
+                    {
+                        cell.Font = new Font(fontFamilyTracking[HeaderFontComboBox.SelectedIndex], cell.Font.Size,
+                                 cell.Font.Style, CanvasGraphics.PageUnit);
+                    }
                 }
             }
 
@@ -729,11 +868,25 @@ namespace Dimmer_Labels_Wizard
                 float fontSize;
                 float.TryParse(selectedValue, out fontSize);
 
-                foreach (var element in ActiveLabelStrip.SelectedHeaders)
+                if (HeaderGlobalApplyCheckBox.Checked == false)
                 {
-                    foreach (var cell in element.Cells)
+                    foreach (var element in ActiveLabelStrip.SelectedHeaders)
                     {
-                        cell.Font = new Font(cell.Font.FontFamily, fontSize, cell.Font.Style,CanvasGraphics.PageUnit);
+                        foreach (var cell in element.Cells)
+                        {
+                            cell.Font = new Font(cell.Font.FontFamily, fontSize, cell.Font.Style, CanvasGraphics.PageUnit);
+                        }
+                    }
+                }
+
+                else
+                {
+                    foreach (var labelStrip in Globals.LabelStrips)
+                    {
+                        foreach (var cell in labelStrip.Headers)
+                        {
+                            cell.Font = new Font(cell.Font.FontFamily, fontSize, cell.Font.Style, CanvasGraphics.PageUnit);
+                        }
                     }
                 }
 
@@ -744,25 +897,52 @@ namespace Dimmer_Labels_Wizard
 
         private void HeaderFontStyleSelector_StyleChanged(object sender, EventArgs e)
         {
-            foreach (var element in ActiveLabelStrip.SelectedHeaders)
+            if (HeaderGlobalApplyCheckBox.Checked == false)
             {
-                foreach (var cell in element.Cells)
+                foreach (var element in ActiveLabelStrip.SelectedHeaders)
                 {
-                    cell.Font = new Font(cell.Font, HeaderFontStyleSelector.FontStyle);
+                    foreach (var cell in element.Cells)
+                    {
+                        cell.Font = new Font(cell.Font, HeaderFontStyleSelector.FontStyle);
+                    }
                 }
             }
 
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var cell in labelStrip.Headers)
+                    {
+                        cell.Font = new Font(cell.Font, HeaderFontStyleSelector.FontStyle);
+                    }
+                }
+            }
             // Force Render.
             Render(ActiveLabelStrip.LabelStrip);
         }
 
         private void FooterTopFontComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            if (FooterTopGlobalApplyCheckBox.Checked == false)
             {
-                element.Cell.TopFont = new Font(fontFamilyTracking[FooterTopFontComboBox.SelectedIndex], element.Cell.TopFont.Size,
-                       element.Cell.TopFont.Style, CanvasGraphics.PageUnit);
+                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                {
+                    element.Cell.TopFont = new Font(fontFamilyTracking[FooterTopFontComboBox.SelectedIndex], element.Cell.TopFont.Size,
+                           element.Cell.TopFont.Style, CanvasGraphics.PageUnit);
 
+                }
+            }
+
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var cell in labelStrip.Footers)
+                    {
+                        cell.TopFont = new Font(fontFamilyTracking[FooterTopFontComboBox.SelectedIndex], cell.TopFont.Size, cell.TopFont.Style, CanvasGraphics.PageUnit);
+                    }
+                }
             }
 
             // Force Render
@@ -778,9 +958,23 @@ namespace Dimmer_Labels_Wizard
                 float fontSize;
                 float.TryParse(selectedValue, out fontSize);
 
-                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                if (FooterTopGlobalApplyCheckBox.Checked == false)
                 {
-                    element.Cell.TopFont = new Font(element.Cell.TopFont.FontFamily, fontSize, element.Cell.TopFont.Style, CanvasGraphics.PageUnit);
+                    foreach (var element in ActiveLabelStrip.SelectedFooters)
+                    {
+                        element.Cell.TopFont = new Font(element.Cell.TopFont.FontFamily, fontSize, element.Cell.TopFont.Style, CanvasGraphics.PageUnit);
+                    }
+                }
+
+                else
+                {
+                    foreach (var labelStrip in Globals.LabelStrips)
+                    {
+                        foreach (var cell in labelStrip.Footers)
+                        {
+                            cell.TopFont = new Font(cell.TopFont.FontFamily, fontSize, cell.TopFont.Style, CanvasGraphics.PageUnit);
+                        }
+                    }
                 }
 
                 // Force Render.
@@ -790,24 +984,50 @@ namespace Dimmer_Labels_Wizard
 
         private void FooterTopFontStyleSelector_StyleChanged(object sender, EventArgs e)
         {
-            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            if (FooterTopGlobalApplyCheckBox.Checked == false)
             {
-                element.Cell.TopFont = new Font(element.Cell.TopFont, FooterTopFontStyleSelector.FontStyle);
+                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                {
+                    element.Cell.TopFont = new Font(element.Cell.TopFont, FooterTopFontStyleSelector.FontStyle);
+                }
             }
 
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var cell in labelStrip.Footers)
+                    {
+                        cell.TopFont = new Font(cell.TopFont, FooterTopFontStyleSelector.FontStyle);
+                    }
+                }
+            }
             // Force Render.
             Render(ActiveLabelStrip.LabelStrip);
         }
 
         private void FooterMiddleFontComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            if (FooterMiddleGlobalApplyCheckBox.Checked == false)
             {
-                element.Cell.MiddleFont = new Font(fontFamilyTracking[FooterMiddleFontComboBox.SelectedIndex], element.Cell.MiddleFont.Size,
-                       element.Cell.MiddleFont.Style, CanvasGraphics.PageUnit);
-
+                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                {
+                    element.Cell.MiddleFont = new Font(fontFamilyTracking[FooterMiddleFontComboBox.SelectedIndex], element.Cell.MiddleFont.Size,
+                           element.Cell.MiddleFont.Style, CanvasGraphics.PageUnit);
+                }
             }
 
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var cell in labelStrip.Footers)
+                    {
+                        cell.MiddleFont = new Font(fontFamilyTracking[FooterMiddleFontComboBox.SelectedIndex], cell.MiddleFont.Size,
+                            cell.MiddleFont.Style, CanvasGraphics.PageUnit);
+                    }
+                }
+            }
             // Force Render
             Render(ActiveLabelStrip.LabelStrip);
         }
@@ -821,9 +1041,23 @@ namespace Dimmer_Labels_Wizard
                 float fontSize;
                 float.TryParse(selectedValue, out fontSize);
 
-                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                if (FooterMiddleGlobalApplyCheckBox.Checked == false)
                 {
-                    element.Cell.MiddleFont = new Font(element.Cell.MiddleFont.FontFamily, fontSize, element.Cell.MiddleFont.Style, CanvasGraphics.PageUnit);
+                    foreach (var element in ActiveLabelStrip.SelectedFooters)
+                    {
+                        element.Cell.MiddleFont = new Font(element.Cell.MiddleFont.FontFamily, fontSize, element.Cell.MiddleFont.Style, CanvasGraphics.PageUnit);
+                    }
+                }
+
+                else
+                {
+                    foreach (var labelStrip in Globals.LabelStrips)
+                    {
+                        foreach (var cell in labelStrip.Footers)
+                        {
+                            cell.MiddleFont = new Font(cell.MiddleFont.FontFamily,fontSize,cell.MiddleFont.Style,CanvasGraphics.PageUnit);
+                        }
+                    }
                 }
 
                 // Force Render.
@@ -833,22 +1067,50 @@ namespace Dimmer_Labels_Wizard
 
         private void FooterMiddleFontStyleSelector_StyleChanged(object sender, EventArgs e)
         {
-            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            if (FooterMiddleGlobalApplyCheckBox.Checked == false)
             {
-                element.Cell.MiddleFont = new Font(element.Cell.MiddleFont, FooterMiddleFontStyleSelector.FontStyle);
+                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                {
+                    element.Cell.MiddleFont = new Font(element.Cell.MiddleFont, FooterMiddleFontStyleSelector.FontStyle);
+                }
             }
 
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var cell in labelStrip.Footers)
+                    {
+                        cell.MiddleFont = new Font(cell.MiddleFont, FooterMiddleFontStyleSelector.FontStyle);
+                    }
+                }
+            }
             // Force Render.
             Render(ActiveLabelStrip.LabelStrip);
         }
 
         private void FooterBottomFontComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            if (FooterBottomGlobalApplyCheckBox.Checked == false)
             {
-                element.Cell.BottomFont = new Font(fontFamilyTracking[FooterBottomFontComboBox.SelectedIndex], element.Cell.BottomFont.Size,
-                       element.Cell.BottomFont.Style, CanvasGraphics.PageUnit);
+                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                {
+                    element.Cell.BottomFont = new Font(fontFamilyTracking[FooterBottomFontComboBox.SelectedIndex], element.Cell.BottomFont.Size,
+                           element.Cell.BottomFont.Style, CanvasGraphics.PageUnit);
 
+                }
+            }
+
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var cell in labelStrip.Footers)
+                    {
+                        cell.BottomFont = new Font(fontFamilyTracking[FooterBottomFontComboBox.SelectedIndex], cell.BottomFont.Size,
+                            cell.BottomFont.Style, CanvasGraphics.PageUnit);
+                    }
+                }
             }
 
             // Force Render
@@ -864,11 +1126,24 @@ namespace Dimmer_Labels_Wizard
                 float fontSize;
                 float.TryParse(selectedValue, out fontSize);
 
-                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                if (FooterBottomGlobalApplyCheckBox.Checked == false)
                 {
-                    element.Cell.BottomFont = new Font(element.Cell.BottomFont.FontFamily, fontSize, element.Cell.BottomFont.Style, CanvasGraphics.PageUnit);
+                    foreach (var element in ActiveLabelStrip.SelectedFooters)
+                    {
+                        element.Cell.BottomFont = new Font(element.Cell.BottomFont.FontFamily, fontSize, element.Cell.BottomFont.Style, CanvasGraphics.PageUnit);
+                    }
                 }
 
+                else
+                {
+                    foreach (var labelStrip in Globals.LabelStrips)
+                    {
+                        foreach (var cell in labelStrip.Footers)
+                        {
+                            cell.BottomFont = new Font(cell.BottomFont.FontFamily, fontSize, cell.BottomFont.Style, CanvasGraphics.PageUnit);
+                        }
+                    }
+                }
                 // Force Render.
                 Render(ActiveLabelStrip.LabelStrip);
             }
@@ -876,9 +1151,23 @@ namespace Dimmer_Labels_Wizard
 
         private void FooterBottomFontStyleSelector_StyleChanged(object sender, EventArgs e)
         {
-            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            if (FooterBottomGlobalApplyCheckBox.Checked == false)
             {
-                element.Cell.BottomFont = new Font(element.Cell.BottomFont, FooterBottomFontStyleSelector.FontStyle);
+                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                {
+                    element.Cell.BottomFont = new Font(element.Cell.BottomFont, FooterBottomFontStyleSelector.FontStyle);
+                }
+            }
+
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var cell in labelStrip.Footers)
+                    {
+                        cell.BottomFont = new Font(cell.BottomFont, FooterBottomFontStyleSelector.FontStyle);
+                    }
+                }
             }
 
             // Force Render.
@@ -918,36 +1207,59 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, EventArgs e)
         {
-            this.CreateGraphics().DrawRectangle(Pens.Red, Rectangle.Round(ActiveLabelStrip.HeaderStripOutline));
-            this.CreateGraphics().DrawRectangle(Pens.Red, Rectangle.Round(ActiveLabelStrip.FooterStripOutline));
-
-            CanvasGraphics.DrawRectangle(Pens.Blue, Rectangle.Round(ActiveLabelStrip.HeaderStripOutline));
-            CanvasGraphics.DrawRectangle(Pens.Blue, Rectangle.Round(ActiveLabelStrip.FooterStripOutline));
+            Console.WriteLine();
         }
 
         private void MagnifyPlusButton_Click(object sender, EventArgs e)
         {
+            zoomRatio += 0.25f;
             Render(ActiveLabelStrip.LabelStrip);
         }
 
         private void MagnifyMinusButton_Click(object sender, EventArgs e)
         {
+            zoomRatio -= 0.25f;
             Render(ActiveLabelStrip.LabelStrip);
         }
 
         private void CenterViewButton_Click(object sender, EventArgs e)
         {
+            CenterLabelStrips();
+        }
+
+        // Centers the Label Strips to the Middle of the CanvasPanel.
+        private void CenterLabelStrips()
+        {
             float centerX = (CanvasPanel.Width) / 2;
             float centerY = (CanvasPanel.Height) / 2;
 
-            Console.WriteLine("Canvas Center Point {0} : {1}", centerX, centerY);
-
-            RenderOrigin.X = (int) Math.Round(centerX - (ActiveLabelStrip.HeaderStripOutline.Width / 2));
-            RenderOrigin.Y = (int) Math.Round(centerY - (((ActiveLabelStrip.HeaderStripOutline.Height * 2) + 20) / 2));
+            RenderOrigin.X = (int)Math.Round(centerX - (ActiveLabelStrip.HeaderStripOutline.Width / 2));
+            RenderOrigin.Y = (int)Math.Round(centerY - (((ActiveLabelStrip.HeaderStripOutline.Height * 2) + 20) / 2));
             RenderOrigin.Y = (int)Math.Round(centerY - ((ActiveLabelStrip.FooterStripOutline.Bottom - ActiveLabelStrip.HeaderStripOutline.Top) / 2));
 
             Render(ActiveLabelStrip.LabelStrip);
         }
 
+        private void SplitCellButton_Click(object sender, EventArgs e)
+        {
+            RenderCellSeperators();
+        }
+
+        private void GlobalApplyCheckboxes_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (GlobalApplyDialogShow == true)
+            {
+                FORM_GlobalApplyWarning GlobalApplyDialog = new FORM_GlobalApplyWarning();
+                if (GlobalApplyDialog.ShowDialog() == DialogResult.OK)
+                {
+                    GlobalApplyDialogShow = GlobalApplyDialog.DontShowAgain ? false : true;
+                }
+            }
+        }
+
+        private void LineWeightComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateCellAppearance();
+        }
     }
 }

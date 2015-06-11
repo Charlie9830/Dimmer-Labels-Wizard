@@ -10,13 +10,15 @@ namespace Dimmer_Labels_Wizard
 {
     public static class FileImport
     {
+        public static string FilePath;
+
         public static string[] CollectHeaders()
         {
             // Create new CSV object Pointed to File Location.
             CSVRead.TextFieldParser file = CreateTextFieldParser();
             file.SetDelimiters(",");
-            
-            
+
+
             // Read the First line to Collect the Cells.
             string[] headers = file.ReadFields();
 
@@ -30,7 +32,7 @@ namespace Dimmer_Labels_Wizard
         {
             // Create new CSV Object and Point it to the file location.
             CSVRead.TextFieldParser file = CreateTextFieldParser();
-            
+
             file.SetDelimiters(",");
 
             // Read the First line to Throw out Coloum headerCell values.
@@ -59,7 +61,7 @@ namespace Dimmer_Labels_Wizard
                     Globals.DimmerDistroUnits.Insert(index, new DimmerDistroUnit());
 
                     // Populate object 
-                            //Directly Imported Data
+                    //Directly Imported Data
                     Globals.DimmerDistroUnits[index].ChannelNumber = fields[channelColumn];
 
                     Globals.DimmerDistroUnits[index].DimmerNumberText = fields[dimmerColumn];
@@ -87,15 +89,24 @@ namespace Dimmer_Labels_Wizard
         }
 
         private static CSVRead.TextFieldParser CreateTextFieldParser()
-        {   
-            if (Environment.MachineName == "CHARLIESAMSUNG")
+        {
+            if (FilePath != null)
             {
+                Console.WriteLine("Loading from User Selected File");
+                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(FilePath);
+                return file;
+            }
+
+            else if (Environment.MachineName == "CHARLIESAMSUNG")
+            {
+                Console.WriteLine("Loading from Hardcoded File Path");
                 CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\General Test Data.csv");
                 return file;
             }
 
             else if (Environment.MachineName == "CHARLIE-METABOX")
             {
+                Console.WriteLine("Loading from Hardcoded File Path");
                 CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\General Test Data.csv");
                 return file;
             }

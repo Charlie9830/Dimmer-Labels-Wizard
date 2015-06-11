@@ -129,7 +129,7 @@ namespace Dimmer_Labels_Wizard
                     break;
                 case ImportFormatting.Format4:
                     UniverseNumber = Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(DimmerNumberText)[0].Trim().ToCharArray()[0]));
-                    DimmerNumber = Convert.ToInt32(RemoveLetters(DimmerNumberText).Trim());
+                    DimmerNumber = Convert.ToInt32(RemoveSlash(RemoveLetters(DimmerNumberText).Trim()));
                     break;
                 default:
                     Console.WriteLine("ParseDimmerNumber() is hiting the default case!");
@@ -160,7 +160,7 @@ namespace Dimmer_Labels_Wizard
                         break;
                     case ImportFormatting.Format4:
                         returnValue.Universe = Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(text)[0].Trim().ToCharArray()[0]));
-                        returnValue.Channel = Convert.ToInt32(RemoveLetters(text).Trim());
+                        returnValue.Channel = Convert.ToInt32(RemoveSlash(RemoveLetters(text).Trim()));
                         break;
                     default:
                         Console.WriteLine("ParseDimmerNumber() is hiting the default case!");
@@ -238,6 +238,20 @@ namespace Dimmer_Labels_Wizard
             return outputText;
         }
 
+        // Helper Method for Parse Methods. Removes Occurances of Slashes.
+        private string RemoveSlash(string input)
+        {
+            char slash = '/';
+            if (input.IndexOf(slash) == -1)
+            {
+                return input;
+            }
+
+            else
+            {
+                return input.Remove(input.IndexOf(slash), 1);
+            }
+        }
         // Helper Method for Parse Methods. Splits string by Slash and Returns results as String Array.
         private string[] SplitBySlash(string input)
         {

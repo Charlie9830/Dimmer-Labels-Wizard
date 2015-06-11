@@ -28,11 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FORM_InstrumentNameEntry));
             this.InstrumentNamesTable = new System.Windows.Forms.DataGridView();
             this.ImportedNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ShortenedInstrumentNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CharacterCountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ContinueButton = new System.Windows.Forms.Button();
-            this.SkipButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.InstrumentNamesTable)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,10 +46,11 @@
             this.InstrumentNamesTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.InstrumentNamesTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ImportedNameColumn,
-            this.ShortenedInstrumentNameColumn});
-            this.InstrumentNamesTable.Location = new System.Drawing.Point(13, 13);
+            this.ShortenedInstrumentNameColumn,
+            this.CharacterCountColumn});
+            this.InstrumentNamesTable.Location = new System.Drawing.Point(433, 12);
             this.InstrumentNamesTable.Name = "InstrumentNamesTable";
-            this.InstrumentNamesTable.Size = new System.Drawing.Size(519, 495);
+            this.InstrumentNamesTable.Size = new System.Drawing.Size(579, 341);
             this.InstrumentNamesTable.TabIndex = 0;
             this.InstrumentNamesTable.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InstrumentNames_CellContentClick);
             // 
@@ -63,10 +67,17 @@
             this.ShortenedInstrumentNameColumn.Name = "ShortenedInstrumentNameColumn";
             this.ShortenedInstrumentNameColumn.Width = 150;
             // 
+            // CharacterCountColumn
+            // 
+            this.CharacterCountColumn.HeaderText = "Character Count";
+            this.CharacterCountColumn.Name = "CharacterCountColumn";
+            this.CharacterCountColumn.ReadOnly = true;
+            this.CharacterCountColumn.Width = 75;
+            // 
             // ContinueButton
             // 
             this.ContinueButton.BackColor = System.Drawing.Color.Cornsilk;
-            this.ContinueButton.Location = new System.Drawing.Point(918, 485);
+            this.ContinueButton.Location = new System.Drawing.Point(937, 359);
             this.ContinueButton.Name = "ContinueButton";
             this.ContinueButton.Size = new System.Drawing.Size(75, 23);
             this.ContinueButton.TabIndex = 1;
@@ -74,21 +85,32 @@
             this.ContinueButton.UseVisualStyleBackColor = false;
             this.ContinueButton.Click += new System.EventHandler(this.ContinueButton_Click);
             // 
-            // SkipButton
+            // label1
             // 
-            this.SkipButton.Location = new System.Drawing.Point(817, 485);
-            this.SkipButton.Name = "SkipButton";
-            this.SkipButton.Size = new System.Drawing.Size(95, 23);
-            this.SkipButton.TabIndex = 2;
-            this.SkipButton.Text = "Skip this Step";
-            this.SkipButton.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(230, 20);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Instrument Name Management";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(13, 41);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(375, 91);
+            this.label2.TabIndex = 4;
+            this.label2.Text = resources.GetString("label2.Text");
             // 
             // FORM_InstrumentNameEntry
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1014, 521);
-            this.Controls.Add(this.SkipButton);
+            this.ClientSize = new System.Drawing.Size(1024, 392);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.ContinueButton);
             this.Controls.Add(this.InstrumentNamesTable);
             this.Name = "FORM_InstrumentNameEntry";
@@ -96,6 +118,7 @@
             this.Load += new System.EventHandler(this.FORM_InstrumentNameEntry_Load);
             ((System.ComponentModel.ISupportInitialize)(this.InstrumentNamesTable)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -103,8 +126,10 @@
 
         private System.Windows.Forms.DataGridView InstrumentNamesTable;
         private System.Windows.Forms.Button ContinueButton;
-        private System.Windows.Forms.Button SkipButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn ImportedNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn ShortenedInstrumentNameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CharacterCountColumn;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

@@ -140,7 +140,9 @@ namespace Dimmer_Labels_Wizard
                 farStringFormat.LineAlignment = System.Drawing.StringAlignment.Far;
 
                 element.SetBackgroundColor(System.Drawing.Color.White);
-                
+
+                element.LineWeight = 1.25f;
+
                 // Set Default Fonts,FontStyles and StringFormat Alignments.
                 for (int listIndex = 0; listIndex < element.Headers.Count; listIndex++)
                 {
@@ -163,7 +165,5 @@ namespace Dimmer_Labels_Wizard
                 element.LabelWidthInMM = UserParameters.LabelWidthInMM;
             }
         }
-
-
     }
 }

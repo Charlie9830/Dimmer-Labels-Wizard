@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -23,6 +24,13 @@ namespace Dimmer_Labels_Wizard
         {
             public int Universe;
             public int Channel;
+        }
+
+        public struct DimmerRange
+        {
+            public int Universe;
+            public int FirstChannel;
+            public int LastChannel;
         }
     }
 }

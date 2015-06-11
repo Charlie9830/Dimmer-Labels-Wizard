@@ -13,16 +13,24 @@ namespace Dimmer_Labels_Wizard
         public static void SanitizeDimDistroUnits()
         {
             SortDimDistroUnits();
+            Console.WriteLine("Sort Complete");
 
             RemoveNonLabelRangeUnits();
+            Console.WriteLine("Non Label Range Unit Removal Complete");
+
             ResolveRackNumbers();
+            Console.WriteLine("Racknumber Resolution Complete");
 
             ResolvePiggybacks();
+            Console.WriteLine("PiggyBack Resolution Complete");
 
             // Resolve Blank Distro Channels
             ResolveBlankDistroChannels(UserParameters.StartDistroNumber, UserParameters.EndDistroNumber);
+            Console.WriteLine("Blank Distro Channel Resolution Complete");
+
             // Resolve Blank Dimmer Channels
             ResolveBlankDimmerChannels(UserParameters.StartDimmerNumber, UserParameters.EndDimmerNumber);
+            Console.WriteLine("Blank Dimmer Channel Resolution Complete");
         }
 
         // Sort the DimDistoUnits List into A Sortorder set by the Globals.DimDistroSortOrder Enumeration.
@@ -159,10 +167,10 @@ namespace Dimmer_Labels_Wizard
 
         private static void ResolveBlankDimmerChannels(int firstDimmerNumber, int lastDimmerNumber)
         {
-         // Make a list of Integers spanning from the first DistroNumber to the Last DistroNumber.
+         // Make a list of Integers spanning from the first DimmerNumber to the Last DimmerNumber.
             int[] dimmerNumbers = GenerateNumberArray(firstDimmerNumber, lastDimmerNumber);
 
-            // Find the index of the First Distro Unit in DimmerDistroUnits.
+            // Find the index of the First and Last Dimmer Units in DimmerDistroUnits.
             int firstDimmerIndex = Globals.DimmerDistroUnits.FindIndex(delegate(DimmerDistroUnit unit) { return unit.RackUnitType == RackType.Dimmer; });
             int lastDimmerIndex = Globals.DimmerDistroUnits.FindLastIndex(delegate(DimmerDistroUnit unit) { return unit.RackUnitType == RackType.Dimmer; });
 
@@ -173,6 +181,11 @@ namespace Dimmer_Labels_Wizard
             for (primaryIndex = firstDimmerIndex; primaryIndex < Globals.DimmerDistroUnits.Count &&
                 secondaryIndex < dimmerNumbers.Length; )
             {
+                if (Globals.DimmerDistroUnits[primaryIndex].DimmerNumber == -1)
+                {
+                    Console.WriteLine("The Priscilla Bus has Crashed!, A dimmer Number equals -1, See ResolveBlankDimmerNumbers()");
+                    break;
+                }
                 if (Globals.DimmerDistroUnits[primaryIndex].DimmerNumber != dimmerNumbers[secondaryIndex])
                 {
                     Globals.DimmerDistroUnits.Insert(primaryIndex, new DimmerDistroUnit());
@@ -268,7 +281,7 @@ namespace Dimmer_Labels_Wizard
         {
             for (int index = 0; index < Globals.DimmerDistroUnits.Count;)
             {
-                if (FindRackNumber(Globals.DimmerDistroUnits[index]) == -1)
+                if (IsInLabelRange(Globals.DimmerDistroUnits[index]) != true)
                 {
                     Globals.DimmerDistroUnits.RemoveAt(index);
                 }
@@ -280,6 +293,7 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
+        // Helper Method for RemoveNonLabelRangeUnits.
         private static bool IsInLabelRange(DimmerDistroUnit unit)
         {
             if (FindRackNumber(unit) == -1)

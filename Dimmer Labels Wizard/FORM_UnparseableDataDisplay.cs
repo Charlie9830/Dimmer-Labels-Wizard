@@ -116,5 +116,28 @@ namespace Dimmer_Labels_Wizard
                 this.Close();
             }
         }
+
+        private void OmitAllCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (OmitAllCheckBox.Checked == true)
+            {
+                for (int index = 0; index < UnparseableDataGridView.Rows.Count; index++)
+                {
+                    DataGridViewRow currentRow = UnparseableDataGridView.Rows[index];
+
+                    currentRow.Cells[OmitColumn.Index].Value = true;
+                }
+            }
+
+            else
+            {
+                for (int index = 0; index < UnparseableDataGridView.Rows.Count; index++)
+                {
+                    DataGridViewRow currentRow = UnparseableDataGridView.Rows[index];
+
+                    currentRow.Cells[OmitColumn.Index].Value = false;
+                }
+            }
+        }
     }
 }

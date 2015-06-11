@@ -123,4 +123,16 @@
   <metadata name="ShortenedInstrumentNameColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="CharacterCountColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Instrument names with character counts exceeding 8 can be difficult to fit onto
+ labels. Here you can enter shorthand names for your instruments if required.
+
+Cells in orange are character counts that exceed the recomended amount.
+
+If no Label Instrument Name is entered. Those Labels will adopt their Imported
+Instrument Name.</value>
+  </data>
 </root>

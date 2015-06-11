@@ -28,23 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.DebugButton = new System.Windows.Forms.Button();
             this.LowerPanel = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.PerformanceTestButton = new System.Windows.Forms.Button();
             this.GeneralControlsPanel = new System.Windows.Forms.Panel();
+            this.BackgroundColorGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.FooterBackgroundColorButton = new System.Windows.Forms.Button();
             this.FooterBackgroundColorLabel = new System.Windows.Forms.Label();
             this.HeaderControlsPanel = new System.Windows.Forms.Panel();
+            this.HeaderGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
             this.HeaderTextBox = new System.Windows.Forms.TextBox();
             this.HeaderFontSizeComboBox = new System.Windows.Forms.ComboBox();
             this.HeaderFontComboBox = new System.Windows.Forms.ComboBox();
             this.HeaderTextLabel = new System.Windows.Forms.Label();
             this.FooterControlsPanel = new System.Windows.Forms.Panel();
+            this.FooterBottomGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
+            this.FooterMiddleGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
+            this.FooterTopGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
             this.FooterBottomSizeComboBox = new System.Windows.Forms.ComboBox();
             this.FooterBottomFontComboBox = new System.Windows.Forms.ComboBox();
             this.FooterMiddleSizeComboBox = new System.Windows.Forms.ComboBox();
@@ -57,8 +61,9 @@
             this.FooterMiddleLabel = new System.Windows.Forms.Label();
             this.FooterMiddleDataTextBox = new System.Windows.Forms.TextBox();
             this.FooterBottomDataTextBox = new System.Windows.Forms.TextBox();
-            this.PrintButton = new System.Windows.Forms.Button();
             this.RackLabelSelector = new System.Windows.Forms.TreeView();
+            this.PerformanceTestButton = new System.Windows.Forms.Button();
+            this.PrintButton = new System.Windows.Forms.Button();
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,15 +75,18 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printDialog = new System.Windows.Forms.PrintDialog();
             this.CanvasPanel = new System.Windows.Forms.Panel();
+            this.StartTipLabel = new System.Windows.Forms.Label();
             this.backgroundColorDialog = new System.Windows.Forms.ColorDialog();
             this.fontDialog = new System.Windows.Forms.FontDialog();
-            this.CanvasContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.splitCellsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label5 = new System.Windows.Forms.Label();
             this.ViewControlPanel = new System.Windows.Forms.Panel();
             this.CenterViewButton = new System.Windows.Forms.Button();
             this.MagnifyMinusButton = new System.Windows.Forms.Button();
             this.MagnifyPlusButton = new System.Windows.Forms.Button();
+            this.ToolsPanel = new System.Windows.Forms.Panel();
+            this.SplitCellButton = new System.Windows.Forms.Button();
+            this.LineWeightGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
+            this.LineWeightComboBox = new System.Windows.Forms.ComboBox();
             this.HeaderFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
             this.FooterBottomFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
             this.FooterMiddleFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
@@ -88,13 +96,14 @@
             this.HeaderControlsPanel.SuspendLayout();
             this.FooterControlsPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.CanvasContextMenu.SuspendLayout();
+            this.CanvasPanel.SuspendLayout();
             this.ViewControlPanel.SuspendLayout();
+            this.ToolsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // DebugButton
             // 
-            this.DebugButton.Location = new System.Drawing.Point(935, 3);
+            this.DebugButton.Location = new System.Drawing.Point(952, 304);
             this.DebugButton.Name = "DebugButton";
             this.DebugButton.Size = new System.Drawing.Size(75, 23);
             this.DebugButton.TabIndex = 5;
@@ -110,16 +119,13 @@
             this.LowerPanel.Controls.Add(this.label2);
             this.LowerPanel.Controls.Add(this.label1);
             this.LowerPanel.Controls.Add(this.label3);
-            this.LowerPanel.Controls.Add(this.PerformanceTestButton);
             this.LowerPanel.Controls.Add(this.GeneralControlsPanel);
             this.LowerPanel.Controls.Add(this.HeaderControlsPanel);
             this.LowerPanel.Controls.Add(this.FooterControlsPanel);
-            this.LowerPanel.Controls.Add(this.PrintButton);
             this.LowerPanel.Controls.Add(this.RackLabelSelector);
-            this.LowerPanel.Controls.Add(this.DebugButton);
-            this.LowerPanel.Location = new System.Drawing.Point(12, 360);
+            this.LowerPanel.Location = new System.Drawing.Point(12, 300);
             this.LowerPanel.Name = "LowerPanel";
-            this.LowerPanel.Size = new System.Drawing.Size(1015, 350);
+            this.LowerPanel.Size = new System.Drawing.Size(662, 449);
             this.LowerPanel.TabIndex = 6;
             // 
             // label4
@@ -127,18 +133,18 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label4.Location = new System.Drawing.Point(146, 142);
+            this.label4.Location = new System.Drawing.Point(168, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(55, 20);
+            this.label4.Size = new System.Drawing.Size(96, 20);
             this.label4.TabIndex = 33;
-            this.label4.Text = "Colour";
+            this.label4.Text = "Appearance";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(414, 3);
+            this.label2.Location = new System.Drawing.Point(331, 120);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(99, 20);
             this.label2.TabIndex = 32;
@@ -149,7 +155,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(146, 3);
+            this.label1.Location = new System.Drawing.Point(331, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(105, 20);
             this.label1.TabIndex = 31;
@@ -160,31 +166,46 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(3, 3);
+            this.label3.Location = new System.Drawing.Point(3, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(46, 20);
             this.label3.TabIndex = 32;
             this.label3.Text = "Rack";
             // 
-            // PerformanceTestButton
-            // 
-            this.PerformanceTestButton.Location = new System.Drawing.Point(935, 121);
-            this.PerformanceTestButton.Name = "PerformanceTestButton";
-            this.PerformanceTestButton.Size = new System.Drawing.Size(75, 48);
-            this.PerformanceTestButton.TabIndex = 22;
-            this.PerformanceTestButton.Text = "Performance Test";
-            this.PerformanceTestButton.UseVisualStyleBackColor = true;
-            this.PerformanceTestButton.Click += new System.EventHandler(this.PerformanceTestButton_Click);
-            // 
             // GeneralControlsPanel
             // 
             this.GeneralControlsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.GeneralControlsPanel.Controls.Add(this.LineWeightComboBox);
+            this.GeneralControlsPanel.Controls.Add(this.LineWeightGlobalApplyCheckBox);
+            this.GeneralControlsPanel.Controls.Add(this.BackgroundColorGlobalApplyCheckBox);
+            this.GeneralControlsPanel.Controls.Add(this.label6);
             this.GeneralControlsPanel.Controls.Add(this.FooterBackgroundColorButton);
             this.GeneralControlsPanel.Controls.Add(this.FooterBackgroundColorLabel);
-            this.GeneralControlsPanel.Location = new System.Drawing.Point(150, 169);
+            this.GeneralControlsPanel.Location = new System.Drawing.Point(172, 29);
             this.GeneralControlsPanel.Name = "GeneralControlsPanel";
-            this.GeneralControlsPanel.Size = new System.Drawing.Size(262, 149);
+            this.GeneralControlsPanel.Size = new System.Drawing.Size(157, 138);
             this.GeneralControlsPanel.TabIndex = 21;
+            // 
+            // BackgroundColorGlobalApplyCheckBox
+            // 
+            this.BackgroundColorGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.BackgroundColorGlobalApplyCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.DimGray;
+            this.BackgroundColorGlobalApplyCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BackgroundColorGlobalApplyCheckBox.Image = global::Dimmer_Labels_Wizard.Properties.Resources.earth_16_000000;
+            this.BackgroundColorGlobalApplyCheckBox.Location = new System.Drawing.Point(127, 3);
+            this.BackgroundColorGlobalApplyCheckBox.Name = "BackgroundColorGlobalApplyCheckBox";
+            this.BackgroundColorGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
+            this.BackgroundColorGlobalApplyCheckBox.TabIndex = 35;
+            this.BackgroundColorGlobalApplyCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(3, 60);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(64, 13);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "Line Weight";
             // 
             // FooterBackgroundColorButton
             // 
@@ -199,7 +220,7 @@
             // FooterBackgroundColorLabel
             // 
             this.FooterBackgroundColorLabel.AutoSize = true;
-            this.FooterBackgroundColorLabel.Location = new System.Drawing.Point(3, 9);
+            this.FooterBackgroundColorLabel.Location = new System.Drawing.Point(3, 6);
             this.FooterBackgroundColorLabel.Name = "FooterBackgroundColorLabel";
             this.FooterBackgroundColorLabel.Size = new System.Drawing.Size(98, 13);
             this.FooterBackgroundColorLabel.TabIndex = 8;
@@ -207,16 +228,30 @@
             // 
             // HeaderControlsPanel
             // 
+            this.HeaderControlsPanel.BackColor = System.Drawing.SystemColors.Control;
             this.HeaderControlsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.HeaderControlsPanel.Controls.Add(this.HeaderGlobalApplyCheckBox);
             this.HeaderControlsPanel.Controls.Add(this.HeaderFontStyleSelector);
             this.HeaderControlsPanel.Controls.Add(this.HeaderTextBox);
             this.HeaderControlsPanel.Controls.Add(this.HeaderFontSizeComboBox);
             this.HeaderControlsPanel.Controls.Add(this.HeaderFontComboBox);
             this.HeaderControlsPanel.Controls.Add(this.HeaderTextLabel);
-            this.HeaderControlsPanel.Location = new System.Drawing.Point(150, 32);
+            this.HeaderControlsPanel.Location = new System.Drawing.Point(335, 29);
             this.HeaderControlsPanel.Name = "HeaderControlsPanel";
-            this.HeaderControlsPanel.Size = new System.Drawing.Size(262, 101);
+            this.HeaderControlsPanel.Size = new System.Drawing.Size(292, 88);
             this.HeaderControlsPanel.TabIndex = 20;
+            // 
+            // HeaderGlobalApplyCheckBox
+            // 
+            this.HeaderGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.HeaderGlobalApplyCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.DimGray;
+            this.HeaderGlobalApplyCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.HeaderGlobalApplyCheckBox.Image = global::Dimmer_Labels_Wizard.Properties.Resources.earth_16_000000;
+            this.HeaderGlobalApplyCheckBox.Location = new System.Drawing.Point(262, 17);
+            this.HeaderGlobalApplyCheckBox.Name = "HeaderGlobalApplyCheckBox";
+            this.HeaderGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
+            this.HeaderGlobalApplyCheckBox.TabIndex = 34;
+            this.HeaderGlobalApplyCheckBox.UseVisualStyleBackColor = true;
             // 
             // HeaderTextBox
             // 
@@ -256,6 +291,9 @@
             // FooterControlsPanel
             // 
             this.FooterControlsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FooterControlsPanel.Controls.Add(this.FooterBottomGlobalApplyCheckBox);
+            this.FooterControlsPanel.Controls.Add(this.FooterMiddleGlobalApplyCheckBox);
+            this.FooterControlsPanel.Controls.Add(this.FooterTopGlobalApplyCheckBox);
             this.FooterControlsPanel.Controls.Add(this.FooterBottomFontStyleSelector);
             this.FooterControlsPanel.Controls.Add(this.FooterMiddleFontStyleSelector);
             this.FooterControlsPanel.Controls.Add(this.FooterTopFontStyleSelector);
@@ -271,10 +309,46 @@
             this.FooterControlsPanel.Controls.Add(this.FooterMiddleLabel);
             this.FooterControlsPanel.Controls.Add(this.FooterMiddleDataTextBox);
             this.FooterControlsPanel.Controls.Add(this.FooterBottomDataTextBox);
-            this.FooterControlsPanel.Location = new System.Drawing.Point(418, 32);
+            this.FooterControlsPanel.Location = new System.Drawing.Point(335, 149);
             this.FooterControlsPanel.Name = "FooterControlsPanel";
-            this.FooterControlsPanel.Size = new System.Drawing.Size(267, 286);
+            this.FooterControlsPanel.Size = new System.Drawing.Size(292, 275);
             this.FooterControlsPanel.TabIndex = 19;
+            // 
+            // FooterBottomGlobalApplyCheckBox
+            // 
+            this.FooterBottomGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.FooterBottomGlobalApplyCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.DimGray;
+            this.FooterBottomGlobalApplyCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FooterBottomGlobalApplyCheckBox.Image = global::Dimmer_Labels_Wizard.Properties.Resources.earth_16_000000;
+            this.FooterBottomGlobalApplyCheckBox.Location = new System.Drawing.Point(262, 203);
+            this.FooterBottomGlobalApplyCheckBox.Name = "FooterBottomGlobalApplyCheckBox";
+            this.FooterBottomGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
+            this.FooterBottomGlobalApplyCheckBox.TabIndex = 37;
+            this.FooterBottomGlobalApplyCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // FooterMiddleGlobalApplyCheckBox
+            // 
+            this.FooterMiddleGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.FooterMiddleGlobalApplyCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.DimGray;
+            this.FooterMiddleGlobalApplyCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FooterMiddleGlobalApplyCheckBox.Image = global::Dimmer_Labels_Wizard.Properties.Resources.earth_16_000000;
+            this.FooterMiddleGlobalApplyCheckBox.Location = new System.Drawing.Point(262, 106);
+            this.FooterMiddleGlobalApplyCheckBox.Name = "FooterMiddleGlobalApplyCheckBox";
+            this.FooterMiddleGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
+            this.FooterMiddleGlobalApplyCheckBox.TabIndex = 36;
+            this.FooterMiddleGlobalApplyCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // FooterTopGlobalApplyCheckBox
+            // 
+            this.FooterTopGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.FooterTopGlobalApplyCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.DimGray;
+            this.FooterTopGlobalApplyCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FooterTopGlobalApplyCheckBox.Image = global::Dimmer_Labels_Wizard.Properties.Resources.earth_16_000000;
+            this.FooterTopGlobalApplyCheckBox.Location = new System.Drawing.Point(262, 17);
+            this.FooterTopGlobalApplyCheckBox.Name = "FooterTopGlobalApplyCheckBox";
+            this.FooterTopGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
+            this.FooterTopGlobalApplyCheckBox.TabIndex = 35;
+            this.FooterTopGlobalApplyCheckBox.UseVisualStyleBackColor = true;
             // 
             // FooterBottomSizeComboBox
             // 
@@ -381,23 +455,33 @@
             this.FooterBottomDataTextBox.Size = new System.Drawing.Size(232, 26);
             this.FooterBottomDataTextBox.TabIndex = 15;
             // 
+            // RackLabelSelector
+            // 
+            this.RackLabelSelector.Location = new System.Drawing.Point(3, 29);
+            this.RackLabelSelector.Name = "RackLabelSelector";
+            this.RackLabelSelector.Size = new System.Drawing.Size(140, 313);
+            this.RackLabelSelector.TabIndex = 6;
+            this.RackLabelSelector.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.RackLabelSelector_AfterSelect);
+            // 
+            // PerformanceTestButton
+            // 
+            this.PerformanceTestButton.Location = new System.Drawing.Point(952, 490);
+            this.PerformanceTestButton.Name = "PerformanceTestButton";
+            this.PerformanceTestButton.Size = new System.Drawing.Size(75, 48);
+            this.PerformanceTestButton.TabIndex = 22;
+            this.PerformanceTestButton.Text = "Performance Test";
+            this.PerformanceTestButton.UseVisualStyleBackColor = true;
+            this.PerformanceTestButton.Click += new System.EventHandler(this.PerformanceTestButton_Click);
+            // 
             // PrintButton
             // 
-            this.PrintButton.Location = new System.Drawing.Point(935, 32);
+            this.PrintButton.Location = new System.Drawing.Point(952, 333);
             this.PrintButton.Name = "PrintButton";
             this.PrintButton.Size = new System.Drawing.Size(75, 23);
             this.PrintButton.TabIndex = 7;
             this.PrintButton.Text = "Print";
             this.PrintButton.UseVisualStyleBackColor = true;
             this.PrintButton.Click += new System.EventHandler(this.PrintButton_Click);
-            // 
-            // RackLabelSelector
-            // 
-            this.RackLabelSelector.Location = new System.Drawing.Point(3, 32);
-            this.RackLabelSelector.Name = "RackLabelSelector";
-            this.RackLabelSelector.Size = new System.Drawing.Size(140, 313);
-            this.RackLabelSelector.TabIndex = 6;
-            this.RackLabelSelector.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.RackLabelSelector_AfterSelect);
             // 
             // menuStrip1
             // 
@@ -469,23 +553,21 @@
             // 
             this.CanvasPanel.BackColor = System.Drawing.SystemColors.Control;
             this.CanvasPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CanvasPanel.Controls.Add(this.StartTipLabel);
+            this.CanvasPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CanvasPanel.Location = new System.Drawing.Point(12, 52);
             this.CanvasPanel.Name = "CanvasPanel";
-            this.CanvasPanel.Size = new System.Drawing.Size(1015, 302);
+            this.CanvasPanel.Size = new System.Drawing.Size(1015, 242);
             this.CanvasPanel.TabIndex = 8;
             // 
-            // CanvasContextMenu
+            // StartTipLabel
             // 
-            this.CanvasContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.splitCellsToolStripMenuItem});
-            this.CanvasContextMenu.Name = "CanvasContextMenu";
-            this.CanvasContextMenu.Size = new System.Drawing.Size(126, 26);
-            // 
-            // splitCellsToolStripMenuItem
-            // 
-            this.splitCellsToolStripMenuItem.Name = "splitCellsToolStripMenuItem";
-            this.splitCellsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.splitCellsToolStripMenuItem.Text = "Split Cells";
+            this.StartTipLabel.AutoSize = true;
+            this.StartTipLabel.Location = new System.Drawing.Point(400, 112);
+            this.StartTipLabel.Name = "StartTipLabel";
+            this.StartTipLabel.Size = new System.Drawing.Size(215, 13);
+            this.StartTipLabel.TabIndex = 0;
+            this.StartTipLabel.Text = "To begin, Select a Label from the Rack List.";
             // 
             // label5
             // 
@@ -505,14 +587,14 @@
             this.ViewControlPanel.Controls.Add(this.CenterViewButton);
             this.ViewControlPanel.Controls.Add(this.MagnifyMinusButton);
             this.ViewControlPanel.Controls.Add(this.MagnifyPlusButton);
-            this.ViewControlPanel.Location = new System.Drawing.Point(875, 18);
+            this.ViewControlPanel.Location = new System.Drawing.Point(930, 15);
             this.ViewControlPanel.Name = "ViewControlPanel";
-            this.ViewControlPanel.Size = new System.Drawing.Size(152, 31);
+            this.ViewControlPanel.Size = new System.Drawing.Size(97, 31);
             this.ViewControlPanel.TabIndex = 0;
             // 
             // CenterViewButton
             // 
-            this.CenterViewButton.Image = global::Dimmer_Labels_Wizard.Properties.Resources.corner_16_000000;
+            this.CenterViewButton.Image = global::Dimmer_Labels_Wizard.Properties.Resources.crosshair_16_000000;
             this.CenterViewButton.Location = new System.Drawing.Point(65, 2);
             this.CenterViewButton.Name = "CenterViewButton";
             this.CenterViewButton.Size = new System.Drawing.Size(25, 25);
@@ -539,6 +621,47 @@
             this.MagnifyPlusButton.TabIndex = 0;
             this.MagnifyPlusButton.UseVisualStyleBackColor = true;
             this.MagnifyPlusButton.Click += new System.EventHandler(this.MagnifyPlusButton_Click);
+            // 
+            // ToolsPanel
+            // 
+            this.ToolsPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.ToolsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ToolsPanel.Controls.Add(this.SplitCellButton);
+            this.ToolsPanel.Location = new System.Drawing.Point(772, 15);
+            this.ToolsPanel.Name = "ToolsPanel";
+            this.ToolsPanel.Size = new System.Drawing.Size(152, 31);
+            this.ToolsPanel.TabIndex = 33;
+            // 
+            // SplitCellButton
+            // 
+            this.SplitCellButton.Image = global::Dimmer_Labels_Wizard.Properties.Resources.Split_16_000;
+            this.SplitCellButton.Location = new System.Drawing.Point(3, 3);
+            this.SplitCellButton.Name = "SplitCellButton";
+            this.SplitCellButton.Size = new System.Drawing.Size(25, 24);
+            this.SplitCellButton.TabIndex = 3;
+            this.SplitCellButton.UseVisualStyleBackColor = true;
+            this.SplitCellButton.Click += new System.EventHandler(this.SplitCellButton_Click);
+            // 
+            // LineWeightGlobalApplyCheckBox
+            // 
+            this.LineWeightGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.LineWeightGlobalApplyCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.DimGray;
+            this.LineWeightGlobalApplyCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.LineWeightGlobalApplyCheckBox.Image = global::Dimmer_Labels_Wizard.Properties.Resources.earth_16_000000;
+            this.LineWeightGlobalApplyCheckBox.Location = new System.Drawing.Point(127, 60);
+            this.LineWeightGlobalApplyCheckBox.Name = "LineWeightGlobalApplyCheckBox";
+            this.LineWeightGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
+            this.LineWeightGlobalApplyCheckBox.TabIndex = 36;
+            this.LineWeightGlobalApplyCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // LineWeightComboBox
+            // 
+            this.LineWeightComboBox.FormattingEnabled = true;
+            this.LineWeightComboBox.Location = new System.Drawing.Point(6, 77);
+            this.LineWeightComboBox.Name = "LineWeightComboBox";
+            this.LineWeightComboBox.Size = new System.Drawing.Size(95, 21);
+            this.LineWeightComboBox.TabIndex = 37;
+            this.LineWeightComboBox.SelectedIndexChanged += new System.EventHandler(this.LineWeightComboBox_SelectedIndexChanged);
             // 
             // HeaderFontStyleSelector
             // 
@@ -585,12 +708,16 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(1048, 761);
+            this.ClientSize = new System.Drawing.Size(1048, 759);
+            this.Controls.Add(this.ToolsPanel);
             this.Controls.Add(this.ViewControlPanel);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.CanvasPanel);
+            this.Controls.Add(this.PerformanceTestButton);
             this.Controls.Add(this.LowerPanel);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.DebugButton);
+            this.Controls.Add(this.PrintButton);
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FORM_LabelEditor";
@@ -606,8 +733,10 @@
             this.FooterControlsPanel.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.CanvasContextMenu.ResumeLayout(false);
+            this.CanvasPanel.ResumeLayout(false);
+            this.CanvasPanel.PerformLayout();
             this.ViewControlPanel.ResumeLayout(false);
+            this.ToolsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -640,8 +769,6 @@
         private System.Windows.Forms.Panel HeaderControlsPanel;
         private System.Windows.Forms.TextBox HeaderTextBox;
         private System.Windows.Forms.Label HeaderTextLabel;
-        private System.Windows.Forms.ContextMenuStrip CanvasContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem splitCellsToolStripMenuItem;
         private System.Windows.Forms.Label FooterBottomTextLabel;
         private System.Windows.Forms.ComboBox FooterTopFontComboBox;
         private System.Windows.Forms.ComboBox FooterTopSizeComboBox;
@@ -669,5 +796,16 @@
         private System.Windows.Forms.Button MagnifyPlusButton;
         private System.Windows.Forms.Button MagnifyMinusButton;
         private System.Windows.Forms.Button CenterViewButton;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label StartTipLabel;
+        private System.Windows.Forms.Button SplitCellButton;
+        private System.Windows.Forms.Panel ToolsPanel;
+        private System.Windows.Forms.CheckBox HeaderGlobalApplyCheckBox;
+        private System.Windows.Forms.CheckBox BackgroundColorGlobalApplyCheckBox;
+        private System.Windows.Forms.CheckBox FooterBottomGlobalApplyCheckBox;
+        private System.Windows.Forms.CheckBox FooterMiddleGlobalApplyCheckBox;
+        private System.Windows.Forms.CheckBox FooterTopGlobalApplyCheckBox;
+        private System.Windows.Forms.CheckBox LineWeightGlobalApplyCheckBox;
+        private System.Windows.Forms.ComboBox LineWeightComboBox;
     }
 }

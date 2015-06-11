@@ -73,6 +73,26 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap crosshair_16_000000 {
+            get {
+                object obj = ResourceManager.GetObject("crosshair-16-000000", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap earth_16_000000 {
+            get {
+                object obj = ResourceManager.GetObject("earth-16-000000", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap magnify_add_16_000000 {
             get {
                 object obj = ResourceManager.GetObject("magnify-add-16-000000", resourceCulture);
@@ -86,6 +106,36 @@ namespace Dimmer_Labels_Wizard.Properties {
         internal static System.Drawing.Bitmap magnify_minus_16_000000 {
             get {
                 object obj = ResourceManager.GetObject("magnify-minus-16-000000", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Minus_Sign_12 {
+            get {
+                object obj = ResourceManager.GetObject("Minus-Sign-12", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Plus_Sign_12 {
+            get {
+                object obj = ResourceManager.GetObject("Plus-Sign-12", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Split_16_000 {
+            get {
+                object obj = ResourceManager.GetObject("Split-16-000", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

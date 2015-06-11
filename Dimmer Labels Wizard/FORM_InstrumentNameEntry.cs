@@ -7,12 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace Dimmer_Labels_Wizard
 {
     public partial class FORM_InstrumentNameEntry : Form
     {
         private List<string> ImportedInstrumentNames = new List<string>();
+
+        private int importedInstrumentNameColumnIndex = 0;
+        private int labelInstrumentNameColumnIndex = 1;
+        private int characterCountColumnIndex = 2;
 
         private Dictionary<string, DimmerDistroUnit> UserSelectionDictionary = new Dictionary<string, DimmerDistroUnit>();
 
@@ -36,7 +41,6 @@ namespace Dimmer_Labels_Wizard
         {
             foreach (var element in Globals.DimmerDistroUnits)
             {
-                
                 if (ImportedInstrumentNames.Contains(element.InstrumentName) != true)
                 {
                     // Add Instrument Name to List.
@@ -52,10 +56,24 @@ namespace Dimmer_Labels_Wizard
         private void PopulateInstrumentNamesTable()
         {
             PopulateImportedInstrumentNames();
-            
+
+            int rowIndex = 0;
             foreach (var element in ImportedInstrumentNames)
             {
-                InstrumentNamesTable.Rows.Add(element);
+                InstrumentNamesTable.Rows.Add(new DataGridViewRow());
+
+                InstrumentNamesTable.Rows[rowIndex].Cells[characterCountColumnIndex].Style.Alignment = 
+                    DataGridViewContentAlignment.MiddleCenter;
+
+                InstrumentNamesTable.Rows[rowIndex].Cells[importedInstrumentNameColumnIndex].Value = element;
+                InstrumentNamesTable.Rows[rowIndex].Cells[characterCountColumnIndex].Value = element.Length;
+                
+                if (element.Length > 8)
+                {
+                    InstrumentNamesTable.Rows[rowIndex].Cells[characterCountColumnIndex].Style.BackColor = Color.Orange;
+                }
+
+                rowIndex++;
             }
         }
 
@@ -65,19 +83,19 @@ namespace Dimmer_Labels_Wizard
             {
                 DataGridViewRow row = InstrumentNamesTable.Rows[index];
 
-                if (row.Cells[1].Value != null)
+                if (row.Cells[labelInstrumentNameColumnIndex].Value != null)
                 {
                     // Collect the selected DimmerDistroUnit
                     DimmerDistroUnit currentUnit = UserSelectionDictionary[row.Cells[0].Value.ToString()];
 
-                    if (currentUnit.InstrumentName != row.Cells[1].Value.ToString())
+                    if (currentUnit.InstrumentName != row.Cells[labelInstrumentNameColumnIndex].Value.ToString())
                     {
-                        currentUnit.InstrumentName = row.Cells[1].Value.ToString();
+                        currentUnit.InstrumentName = row.Cells[labelInstrumentNameColumnIndex].Value.ToString();
                         
                         // Search for and Update Like DimmerDistroUnits.
                         foreach (var element in Globals.DimmerDistroUnits)
                         {
-                            if (element.InstrumentName == row.Cells[0].Value.ToString())
+                            if (element.InstrumentName == row.Cells[importedInstrumentNameColumnIndex].Value.ToString())
                             {
                                 element.InstrumentName = currentUnit.InstrumentName;
                             }
@@ -88,16 +106,6 @@ namespace Dimmer_Labels_Wizard
                 
             }
         }
-
-        private void TruncateInstrumentNames()
-        {
-            // Truncate by Manufacturer
-
-            // If Above Fails. Force Truncate. Decide on a character length, then cut down by the nearest
-            // whitespcae.
-
-        }
-
 
         private void ContinueButton_Click(object sender, EventArgs e)
         {
