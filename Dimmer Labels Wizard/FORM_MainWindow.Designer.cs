@@ -35,6 +35,7 @@
             this.WelcomeScreenPanel = new System.Windows.Forms.Panel();
             this.FileNameLabel = new System.Windows.Forms.Label();
             this.NextButton = new System.Windows.Forms.Button();
+            this.DebugModeCheckBox = new System.Windows.Forms.CheckBox();
             this.WelcomeScreenPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -102,12 +103,24 @@
             this.NextButton.TabIndex = 5;
             this.NextButton.Text = "Next";
             this.NextButton.UseVisualStyleBackColor = true;
+            this.NextButton.Click += new System.EventHandler(this.NextButton_Click);
+            // 
+            // DebugModeCheckBox
+            // 
+            this.DebugModeCheckBox.AutoSize = true;
+            this.DebugModeCheckBox.Location = new System.Drawing.Point(518, 220);
+            this.DebugModeCheckBox.Name = "DebugModeCheckBox";
+            this.DebugModeCheckBox.Size = new System.Drawing.Size(88, 17);
+            this.DebugModeCheckBox.TabIndex = 6;
+            this.DebugModeCheckBox.Text = "Debug Mode";
+            this.DebugModeCheckBox.UseVisualStyleBackColor = true;
             // 
             // FORM_MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(618, 285);
+            this.Controls.Add(this.DebugModeCheckBox);
             this.Controls.Add(this.NextButton);
             this.Controls.Add(this.WelcomeScreenPanel);
             this.Name = "FORM_MainWindow";
@@ -116,6 +129,7 @@
             this.WelcomeScreenPanel.ResumeLayout(false);
             this.WelcomeScreenPanel.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -128,5 +142,6 @@
         private System.Windows.Forms.Panel WelcomeScreenPanel;
         private System.Windows.Forms.Button NextButton;
         private System.Windows.Forms.Label FileNameLabel;
+        private System.Windows.Forms.CheckBox DebugModeCheckBox;
     }
 }

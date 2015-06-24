@@ -15,6 +15,9 @@ namespace Dimmer_Labels_Wizard
     // Dimmer Format2 Requires more infomation be Imported as that Format does not provide Universe Infomation.
     // NoUniverseData is used only as a Format2 Overide. SHould be referenced only by UserParameters.DMXAddresColumnFormatting.
     public enum ImportFormatting { Format1, Format2, Format3, Format4, NoUniverseData }
+
+
+    public enum LabelField { ChannelNumber, InstrumentName, MulticoreName, Position, NoAssignment}
 }
 
 

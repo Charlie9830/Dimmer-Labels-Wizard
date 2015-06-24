@@ -17,58 +17,97 @@ namespace Dimmer_Labels_Wizard
         {
             Application.EnableVisualStyles();
 
-            FORM_UserParameterEntry UserParamEntry = new FORM_UserParameterEntry();
-            UserParamEntry.ShowDialog();
-
             FORM_MainWindow mainWindow = new FORM_MainWindow();
             mainWindow.ShowDialog();
 
-            
-
-            //// Setup Mock User Paramater Inputs.
-            //UserParameters.StartDimmerNumber = 1;
-            //UserParameters.EndDimmerNumber = 24;
-            //UserParameters.StartDistroNumber = 1001;
-            //UserParameters.EndDistroNumber = 1024;
-            //UserParameters.DimmerUniverses.Add(1);
-            //UserParameters.DistroImportFormat = ImportFormatting.Format2;
-            //UserParameters.DimmerImportFormat = ImportFormatting.Format2;
-            //UserParameters.DistroNumberPrefix = "N";
-            //UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
-
-            //UserParameters.ChannelNumberColumnIndex = 0;
-            //UserParameters.DimmerNumberColumnIndex = 1;
-            //UserParameters.InstrumentTypeColumnIndex = 2;
-            //UserParameters.MulticoreNameColumnIndex = 3;
-
-            UserParameters.HardCodeRackNumbers();
-
-            UserParameters.LabelWidthInMM = 25;
-            UserParameters.LabelHeightInMM = 20;
-
-            FileImport.ImportFile();
-            
-            if (Globals.UnParseableData.Count > 0)
+            if (Globals.DebugActive == false)
             {
-                FORM_UnparseableDataDisplay UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
-                UnparseableDataDisplay.ShowDialog();
+                FORM_UserParameterEntry UserParamEntry = new FORM_UserParameterEntry();
+                UserParamEntry.ShowDialog();
+
+                UserParameters.GenerateDistroRange();
+
+                FileImport.ImportFile();
+
+                if (Globals.UnParseableData.Count > 0)
+                {
+                    FORM_UnparseableDataDisplay UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
+                    UnparseableDataDisplay.ShowDialog();
+                }
+
+                Console.WriteLine("Sanitation Starting");
+                DataHandling.SanitizeDimDistroUnits();
+                Console.WriteLine("Sanitation Complete");
+
+                FORM_InstrumentNameEntry instrumentNameEntry = new FORM_InstrumentNameEntry();
+                instrumentNameEntry.ShowDialog();
+
+                FORM_LabelSetup labelSetup = new FORM_LabelSetup();
+                labelSetup.ShowDialog();
+
+                UserParameters.SetDefaultRackLabelSettings();
+
+                FORM_LabelEditor NextWindow = new FORM_LabelEditor();
+                NextWindow.ShowDialog();
             }
 
-            Console.WriteLine("Sanitation Starting");
+            else
+            {
+                // Setup Mock User Paramater Inputs.
+                #region Hardcoded User Paramaters.
+                UserParameters.CreateDimmerObjects = true;
+                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 12));
+                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(2, 1, 24));
+                UserParameters.DimmerRanges.Sort();
 
-            DataHandling.SanitizeDimDistroUnits();
+                UserParameters.CreateDistroObjects = false;
+                UserParameters.StartDistroNumber = 1001; //1001;
+                UserParameters.EndDistroNumber = 1024; //1024;
+                UserParameters.DistroImportFormat = ImportFormatting.Format2;
+                UserParameters.DimmerImportFormat = ImportFormatting.Format1;
 
-            Console.WriteLine("Sanitation Complete");
+                UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
 
-            FORM_InstrumentNameEntry instrumentNameEntry = new FORM_InstrumentNameEntry();
-            instrumentNameEntry.ShowDialog();
+                UserParameters.ChannelNumberColumnIndex = 0;
+                UserParameters.DimmerNumberColumnIndex = 1;
+                UserParameters.InstrumentTypeColumnIndex = 2;
+                UserParameters.MulticoreNameColumnIndex = 3;
+                UserParameters.PositionColumnIndex = 4;
 
-            Output.ExportToRackLabel();
+                UserParameters.LabelWidthInMM = 20;
+                UserParameters.LabelHeightInMM = 20;
+                #endregion
 
-            UserParameters.SetDefaultRackLabelSettings();
+                UserParameters.GenerateDistroRange();
 
-            FORM_LabelEditor NextWindow = new FORM_LabelEditor();
-            NextWindow.ShowDialog();
+                FileImport.ImportFile();
+
+                if (Globals.UnParseableData.Count > 0)
+                {
+                    FORM_UnparseableDataDisplay UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
+                    UnparseableDataDisplay.ShowDialog();
+                }
+
+                Console.WriteLine("Sanitation Starting");
+                DataHandling.SanitizeDimDistroUnits();
+                Console.WriteLine("Sanitation Complete");
+
+                UserParameters.HeaderField = LabelField.Position;
+                UserParameters.FooterMiddleField = LabelField.ChannelNumber;
+                UserParameters.FooterBottomField = LabelField.InstrumentName;
+
+                Output.ExportToRackLabel();
+
+                foreach (var element in Globals.LabelStrips)
+                {
+                    element.SetBackgroundColor(System.Drawing.Color.White);
+                }
+
+                UserParameters.SetDefaultRackLabelSettings();
+
+                FORM_LabelEditor NextWindow = new FORM_LabelEditor();
+                NextWindow.ShowDialog();
+            }
         }
     }
 }

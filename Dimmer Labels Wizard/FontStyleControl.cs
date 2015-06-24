@@ -90,7 +90,6 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
-        //public delegate void FontStyleStateChangedEventHandler(object sender, EventArgs e);
         public event EventHandler FontStyleChanged;
 
         protected void OnFontStyleChanged()

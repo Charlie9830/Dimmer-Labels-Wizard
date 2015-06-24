@@ -12,7 +12,13 @@ namespace Dimmer_Labels_Wizard
 {
     public partial class DimmerRangeSelector : UserControl
     {
-        public Globals.DimmerRange Range;
+        public Globals.DimmerRange Range
+        {
+            get
+            {
+                return GetRange();
+            }
+        }
 
         // Read only. Determines if Valid Input has been entered when acsessed.
         public bool ValidEntry
@@ -31,25 +37,10 @@ namespace Dimmer_Labels_Wizard
             InitializeComponent();
         }
 
-        private void UniverseSelector_ValueChanged(object sender, EventArgs e)
-        {
-            Range.Universe = (int)UniverseSelector.Value;
-        }
-
-        private void FirstChannelSelector_ValueChanged(object sender, EventArgs e)
-        {
-            Range.FirstChannel = (int)FirstChannelSelector.Value;
-        }
-
-        private void LastChannelSelector_ValueChanged(object sender, EventArgs e)
-        {
-            Range.LastChannel = (int)LastChannelSelector.Value;
-        }
-
         // Determines if Valid Data has been Entered. Called by ValidEntry Getter.
         private void DetermineValidEntry()
         {
-            if (Range.FirstChannel <= Range.LastChannel)
+            if (Range.Universe > 0 && Range.FirstChannel <= Range.LastChannel)
             {
                 validEntry = true;
             }
@@ -58,6 +49,12 @@ namespace Dimmer_Labels_Wizard
             {
                 validEntry = false;
             }
+        }
+
+        private Globals.DimmerRange GetRange()
+        {
+            return new Globals.DimmerRange((int)UniverseSelector.Value, (int)FirstChannelSelector.Value,
+                (int)LastChannelSelector.Value);
         }
     }
 }

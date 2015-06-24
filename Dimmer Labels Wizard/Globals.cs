@@ -9,6 +9,9 @@ namespace Dimmer_Labels_Wizard
 {
     public static class Globals
     {
+        // Debug Mode
+        public static bool DebugActive = false;
+
         // List to hold DimDistroUnit Objects
         public static List<DimmerDistroUnit> DimmerDistroUnits = new List<DimmerDistroUnit>();
         public static SortOrder DimmerDistroSortOrder { get; set; }
@@ -26,11 +29,40 @@ namespace Dimmer_Labels_Wizard
             public int Channel;
         }
 
-        public struct DimmerRange
+        public struct DimmerRange : IComparable<DimmerRange>
         {
+            public DimmerRange(int universe, int firstChannel, int lastChannel)
+            {
+                this.Universe = universe;
+                this.FirstChannel = firstChannel;
+                this.LastChannel = lastChannel;
+            }
+
             public int Universe;
             public int FirstChannel;
             public int LastChannel;
+
+
+            public int CompareTo(DimmerRange other)
+            {
+                if (Universe == other.Universe)
+                {
+                    return FirstChannel - other.FirstChannel;
+                }
+                return Universe - other.Universe;
+            }
+        }
+
+        public struct BoolString
+        {
+            public BoolString (bool sanityCheck, string errorMessage)
+            {
+                SanityCheck = sanityCheck;
+                ErrorMessage = errorMessage;
+            }
+
+            public bool SanityCheck;
+            public string ErrorMessage;
         }
     }
 }

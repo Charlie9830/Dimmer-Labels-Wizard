@@ -47,11 +47,20 @@
             0,
             0,
             0});
+            this.UniverseSelector.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.UniverseSelector.Name = "UniverseSelector";
             this.UniverseSelector.Size = new System.Drawing.Size(46, 20);
             this.UniverseSelector.TabIndex = 0;
             this.UniverseSelector.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.UniverseSelector.ValueChanged += new System.EventHandler(this.UniverseSelector_ValueChanged);
+            this.UniverseSelector.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // FirstChannelSelector
             // 
@@ -75,7 +84,6 @@
             0,
             0,
             0});
-            this.FirstChannelSelector.ValueChanged += new System.EventHandler(this.FirstChannelSelector_ValueChanged);
             // 
             // LastChannelSelector
             // 
@@ -99,7 +107,6 @@
             0,
             0,
             0});
-            this.LastChannelSelector.ValueChanged += new System.EventHandler(this.LastChannelSelector_ValueChanged);
             // 
             // label1
             // 

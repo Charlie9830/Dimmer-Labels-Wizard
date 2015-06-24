@@ -8,7 +8,6 @@ namespace Dimmer_Labels_Wizard
 {
     public class DimmerDistroUnit : IComparable<DimmerDistroUnit>
     {
-
         // Imported Data
         public string ChannelNumber { get; set; }
         public string InstrumentName { get; set; }
@@ -308,7 +307,7 @@ namespace Dimmer_Labels_Wizard
 
             else
             {
-                // Data Format cannot be Verified assuming Dimmer or Distro. User Input requried.
+                // Data Format cannot be Verified assuming Dimmer or Distro. User Intervention is required.
                 return RackType.Unparseable;
             }
         }
@@ -440,7 +439,11 @@ namespace Dimmer_Labels_Wizard
                 {
                     if (RackNumber == other.RackNumber)
                     {
-                        return DimmerNumber - other.DimmerNumber;
+                        if (UniverseNumber == other.UniverseNumber)
+                        {
+                            return DimmerNumber - other.DimmerNumber;
+                        }
+                        return UniverseNumber - other.UniverseNumber;
                     }
                     return RackNumber - other.RackNumber;
                 }
@@ -450,7 +453,11 @@ namespace Dimmer_Labels_Wizard
             else
                 if (RackUnitType == other.RackUnitType)
                 {
+                    if (UniverseNumber == other.UniverseNumber)
+                    {
                         return DimmerNumber - other.DimmerNumber;
+                    }
+                    return UniverseNumber - other.UniverseNumber;
                 }
             return RackUnitType - other.RackUnitType;
         }
@@ -460,7 +467,7 @@ namespace Dimmer_Labels_Wizard
             // Overide the Function if User has chosen to overide Universe Infomation.
             if (DMXaddressColumnFormat == ImportFormatting.NoUniverseData)
             {
-                return UserParameters.DimmerUniverses[0];
+                return UserParameters.DimmerRanges.First().Universe;
             }
 
             if (VerifyStringFormat(text, RackType.Dimmer, DMXaddressColumnFormat) == true)
@@ -476,7 +483,7 @@ namespace Dimmer_Labels_Wizard
                     case ImportFormatting.Format4:
                         return Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(text)[0].Trim().ToCharArray()[0]));
                     case ImportFormatting.NoUniverseData:
-                        return UserParameters.DimmerUniverses[0];
+                        return UserParameters.DimmerRanges.First().Universe;
                     default:
                         return -2;
                 }
@@ -485,7 +492,7 @@ namespace Dimmer_Labels_Wizard
             else
             {
                 Console.WriteLine("Could Not Read DMX Address Column");
-                return UserParameters.DimmerUniverses[0];
+                return UserParameters.DimmerRanges.First().Universe;
             }
         }
     }

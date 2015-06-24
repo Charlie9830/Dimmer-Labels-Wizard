@@ -22,32 +22,33 @@ namespace Dimmer_Labels_Wizard
         public static int PositionColumnIndex { get; set; }
         public static int UniverseDataColumnIndex { get; set; }
 
-        public static int StartDimmerNumber { get; set; }
-        public static int EndDimmerNumber { get; set; }
-
-        public static List<int> DimmerUniverses = new List<int>();
+        public static bool CreateDistroObjects { get; set; }
+        public static bool CreateDimmerObjects { get; set; }
 
         public static int StartDistroNumber { get; set; }
         public static int EndDistroNumber { get; set; }
 
+        // Gets Sorted by FORM_UserParamaterEntry.UpdateUserParameters().
+        public static List<Globals.DimmerRange> DimmerRanges = new List<Globals.DimmerRange>();
+
         public static List<DistroRack> DistroRacks = new List<DistroRack>();
         public static List<DimmerRack> DimmerRacks = new List<DimmerRack>();
 
-        public static int LabelWidthInMM { get; set; } // Width in Pixels
-        public static int LabelHeightInMM { get; set; } // Height in Pixels
+        public static int LabelWidthInMM { get; set; } 
+        public static int LabelHeightInMM { get; set; } 
+
+        // Label Field Assignments
+        public static LabelField HeaderField { get; set; }
+        public static LabelField FooterTopField { get; set; }
+        public static LabelField FooterMiddleField { get; set; }
+        public static LabelField FooterBottomField { get; set; }
 
         // Create Hardcoded Distro Start Address Values
-        public static void HardCodeRackNumbers()
+        public static void GenerateDistroRange()
         {
             // Distro Starting Address. NOT the Very Last Distro Channel.
             int firstDistroAddress = StartDistroNumber;
             int lastDistroAddress = EndDistroNumber - 12;
-
-            // Dimmer Starting Addresses. NOT the Very Last Distro Channel
-            int dimmerUniverse = 1;
-            int firstDimmerAddress = StartDimmerNumber;
-            int lastDimmerAddress = EndDimmerNumber - 12;
-
 
             int distroRackNumberCounter = 1;
             int distroOutputIndex = 0;
@@ -77,54 +78,49 @@ namespace Dimmer_Labels_Wizard
             int dimmerRackCounter = 12;
             int dimmerRackNumberCounter = 1;
 
-            for (int channel = firstDimmerAddress; channel <= lastDimmerAddress + 12; channel++)
+            foreach (var element in UserParameters.DimmerRanges)
             {
-                if (dimmerRackCounter == 12)
+                // Dimmer Starting Addresses. NOT the Very Last Distro Channel
+                int dimmerUniverse = element.Universe;
+                int firstDimmerAddress = element.FirstChannel;
+                int lastDimmerAddress = element.LastChannel - 12;
+
+
+                for (int channel = firstDimmerAddress; channel <= lastDimmerAddress + 12; channel++)
                 {
-                    DimmerRacks.Insert(dimmerOutputIndex,new DimmerRack());
-                    
-                    Globals.DMX startAddress = new Globals.DMX();
-                    startAddress.Channel = channel;
-                    startAddress.Universe = dimmerUniverse;
-                    Globals.DMX endAddress = new Globals.DMX();
-                    endAddress.Channel = channel + 11;
-                    endAddress.Universe = dimmerUniverse;
+                    if (dimmerRackCounter == 12)
+                    {
+                        DimmerRacks.Insert(dimmerOutputIndex, new DimmerRack());
 
-                    DimmerRacks[dimmerOutputIndex].StartingAddress = startAddress;
-                    DimmerRacks[dimmerOutputIndex].EndingAddress = endAddress;
-                    DimmerRacks[dimmerOutputIndex].RackNumber = dimmerRackNumberCounter;
+                        Globals.DMX startAddress = new Globals.DMX();
+                        startAddress.Channel = channel;
+                        startAddress.Universe = dimmerUniverse;
+                        Globals.DMX endAddress = new Globals.DMX();
+                        endAddress.Channel = channel + 11;
+                        endAddress.Universe = dimmerUniverse;
 
-                    dimmerRackCounter = 1;
-                    dimmerOutputIndex++;
-                    dimmerRackNumberCounter++;
+                        DimmerRacks[dimmerOutputIndex].StartingAddress = startAddress;
+                        DimmerRacks[dimmerOutputIndex].EndingAddress = endAddress;
+                        DimmerRacks[dimmerOutputIndex].RackNumber = dimmerRackNumberCounter;
+
+                        dimmerRackCounter = 1;
+                        dimmerOutputIndex++;
+                        dimmerRackNumberCounter++;
+                    }
+
+                    else
+                    {
+                        dimmerRackCounter++;
+                    }
                 }
 
-                else
-                {
-                    dimmerRackCounter++;
-                }
+                dimmerRackCounter = 12;
             }
-
-            DimmerUniverses.Add(1);
         }
-
-       // Checks if a Universe exists in Dimmer Universes list.
-        public static bool IsInDimmerUniverses(int inputUniverse)
-       {
-           for (int index = 0; index < DimmerUniverses.Count; index++ )
-           {
-               if (DimmerUniverses[index] == inputUniverse)
-               {
-                   return true;
-               }
-           }
-
-           return false;
-       }
 
         public static void SetDefaultRackLabelSettings()
         {
-            
+
             foreach (var element in Globals.LabelStrips)
             {
                 System.Drawing.StringFormat nearStringFormat = new System.Drawing.StringFormat();
@@ -139,14 +135,12 @@ namespace Dimmer_Labels_Wizard
                 farStringFormat.Alignment = System.Drawing.StringAlignment.Center;
                 farStringFormat.LineAlignment = System.Drawing.StringAlignment.Far;
 
-                element.SetBackgroundColor(System.Drawing.Color.White);
-
                 element.LineWeight = 1.25f;
 
                 // Set Default Fonts,FontStyles and StringFormat Alignments.
                 for (int listIndex = 0; listIndex < element.Headers.Count; listIndex++)
                 {
-                    element.Headers[listIndex].Font = new System.Drawing.Font("Arial",12,FontStyle.Bold, GraphicsUnit.Pixel);
+                    element.Headers[listIndex].Font = new System.Drawing.Font("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
                     element.Headers[listIndex].Format = centerStringFormat;
 
                     element.Footers[listIndex].TopFont = new System.Drawing.Font("Arial", 6, GraphicsUnit.Pixel);
@@ -157,7 +151,7 @@ namespace Dimmer_Labels_Wizard
 
                     element.Footers[listIndex].BottomFont = new System.Drawing.Font("Arial", 6, GraphicsUnit.Pixel);
                     element.Footers[listIndex].BottomFormat = farStringFormat;
-                    
+
 
                 }
 

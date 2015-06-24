@@ -48,18 +48,26 @@ namespace Dimmer_Labels_Wizard
 
         private String[] lineWeights = { "0.00", "0.25", "0.50", "0.75", "1.00", "1.25", "1.50", "1.75", "2.00", "2.25", "2.50", "2.75", "3.00" };
 
+        // Printing.
         // User Page Settings
         private PageSettings UserPageSettings = new PageSettings();
 
         // User Printer Settings
         private PrinterSettings UserPrinterSettings = new PrinterSettings();
 
+        // List of Lists to Hold each "Page".
+        private List<List<LabelStrip>> Pages;
+        // Tracks the current page Required for Printing.
+        int PrintPageIndex = 0;
+        
         // Mouse Tracking
         private Point OldMousePosition = new Point();
         private Point NewMousePosition = new Point();
 
         // Dialog warning message tracking.
         private bool GlobalApplyDialogShow;
+
+        private int RenderCount = 0;
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -122,73 +130,52 @@ namespace Dimmer_Labels_Wizard
             LineWeightComboBox.Items.AddRange(lineWeights);
 
             StartTipLabel.Visible = true;
-
             GlobalApplyDialogShow = true;
+
+            // Print Defualts
+            UserPageSettings.Landscape = true;
+
+            #region ToolTipSetup
+            // ToolTip Setup
+            toolTip.AutoPopDelay = 5000;
+            toolTip.InitialDelay = 1000;
+            toolTip.ReshowDelay = 500;
+
+            toolTip.ShowAlways = true;
+
+            // ToolTip Data
+            toolTip.SetToolTip(SplitCellButton, "Split Header Cells");
+            toolTip.SetToolTip(MagnifyPlusButton, "Zoom In");
+            toolTip.SetToolTip(MagnifyMinusButton, "Zoom Out");
+            toolTip.SetToolTip(CenterViewButton, "Center View");
+
+            toolTip.SetToolTip(BackgroundColorGlobalApplyCheckBox, "Apply appearance changes to all Labels Toggle");
+            toolTip.SetToolTip(HeaderGlobalApplyCheckBox, "Apply appearance changes to all Labels Toggle");
+            toolTip.SetToolTip(FooterTopGlobalApplyCheckBox, "Apply appearance changes to all Labels Toggle");
+            toolTip.SetToolTip(FooterMiddleGlobalApplyCheckBox, "Apply appearance changes to all Labels Toggle");
+            toolTip.SetToolTip(FooterBottomGlobalApplyCheckBox, "Apply appearance changes to all Labels Toggle");
+            toolTip.SetToolTip(HeaderTextBox, "Label Text");
+            toolTip.SetToolTip(FooterTopDataTextBox, "Label Text");
+            toolTip.SetToolTip(FooterMiddleDataTextBox, "Label Text");
+            toolTip.SetToolTip(FooterBottomDataTextBox, "Label Text");
+            #endregion
         }
 
         // Collects RackLabels and Adds them to the SelectorRackLabels List.
         private void CollectRackLabels()
         {
-            int outputIndex = 0;
+            // Converts the Single Dimensional LabelStrips to the 2D SelectorRackLabels. Dimensioned by
+            // RackUnitType.
+            int distroDimension = 0;
+            int dimmerDimension = 1;
 
-            // Copy the Existing list to a Buffer List.
-            List<LabelStrip> bufferList = new List<LabelStrip>(Globals.LabelStrips);
+            // Initialize First Dimension Lists.
+            SelectorRackLabels.Insert(distroDimension, new List<LabelStrip>());
+            SelectorRackLabels.Insert(dimmerDimension, new List<LabelStrip>());
 
-            // Sort the Buffer List.
-            bufferList.Sort();
-
-            // Add elements to SelectorRackLabels List.
-            for (int i = 0; i < bufferList.Count; i++)
-            {
-                // Dont Run Out of Index.
-                if (i + 1 < bufferList.Count)
-                {
-                    // Do the RackTypes Match?
-                    if (bufferList[i].RackUnitType == bufferList[i + 1].RackUnitType)
-                    {
-                        // Create a new 2nd Dimension List.
-                        SelectorRackLabels.Insert(outputIndex, new List<LabelStrip>());
-
-                        // Add all the Racks that reside within that Unit Type
-                        for (int j = i; j < bufferList.Count; j++)
-                        {
-                            // Dont run out of Index.
-                            if (j + 1 < bufferList.Count)
-                            {
-                                // Do the RackUnitTypes match?
-                                if (bufferList[j].RackUnitType == bufferList[j + 1].RackUnitType)
-                                {
-                                    // Add them to the list.
-                                    SelectorRackLabels[outputIndex].Add(bufferList[j]);
-                                }
-
-                                else
-                                {
-                                    // Add the Current object if it is in the same Cabinet as the last Object Added.
-                                    if (bufferList[j].RackUnitType == SelectorRackLabels[outputIndex].Last<LabelStrip>().RackUnitType)
-                                    {
-                                        SelectorRackLabels[outputIndex].Add(bufferList[j]);
-                                    }
-
-                                    // Reset, Iterate and Break.
-                                    outputIndex++;
-                                    i = j - 1;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                // Add The Current Object Anyway
-                                SelectorRackLabels[outputIndex].Add(bufferList[j]);
-
-                                outputIndex++;
-                                i = j - 1;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+            SelectorRackLabels[distroDimension].AddRange(Globals.LabelStrips.FindAll(
+                label => label.RackUnitType == RackType.Distro));
+            SelectorRackLabels[dimmerDimension].AddRange(Globals.LabelStrips.FindAll(label => label.RackUnitType == RackType.Dimmer));
         }
 
         private void RenderCellSeperators()
@@ -256,17 +243,22 @@ namespace Dimmer_Labels_Wizard
 
             for (int i = 0; i < SelectorRackLabels.Count; i++)
             {
-                List<TreeNode> children = new List<TreeNode>();
-
-                foreach (var element in SelectorRackLabels[i])
+                // If the user has elected not to Create Dimmer or Distro Labels. These 2nd Dimension Lists
+                // may be empty. Check for that.
+                if (SelectorRackLabels[i].Count != 0)
                 {
-                    children.Add(new TreeNode("Rack " + element.RackNumber.ToString()));
-                    
-                    // Add a tracking Keypair to the Dictionary.
-                    UserSelectionDict.Add(children.Last<TreeNode>(), element);
-                }
+                    List<TreeNode> children = new List<TreeNode>();
 
-                RackLabelSelector.Nodes.Insert(i, new TreeNode(SelectorRackLabels[i][0].RackUnitType.ToString(),children.ToArray()));
+                    foreach (var element in SelectorRackLabels[i])
+                    {
+                        children.Add(new TreeNode("Rack " + element.RackNumber.ToString()));
+
+                        // Add a tracking Keypair to the Dictionary.
+                        UserSelectionDict.Add(children.Last<TreeNode>(), element);
+                    }
+
+                    RackLabelSelector.Nodes.Insert(i, new TreeNode(SelectorRackLabels[i][0].RackUnitType.ToString(), children.ToArray()));
+                }
             }
 
             RackLabelSelector.EndUpdate();
@@ -285,23 +277,93 @@ namespace Dimmer_Labels_Wizard
                 ActiveLabelStrip = new LabelStripSelection();
                 ActiveLabelStrip.LabelStrip = label;
                 ActiveLabelStrip.ClearSelections();
+
                 Render(label);
-                CenterLabelStrips();
-                
-                
+
+                if (RenderCount == 1)
+                {
+                    CenterLabelStrips(true);
+                }
+
+                else
+                {
+                    CenterLabelStrips(false);
+                }
             }   
         }
 
         private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            Globals.LabelStrips[2].RenderToPrinter(e.Graphics, new Point(20, 20));
+            Point printOrigin = new Point();
+            printOrigin.X = (int)Math.Round(e.MarginBounds.X * 0.254d);
+            printOrigin.Y = (int)Math.Round(e.MarginBounds.Y * 0.254d);
+
+            Point printLocation = new Point(printOrigin.X,printOrigin.Y);
+
+            int totalLabelStripHeight = (int)Math.Round((UserParameters.LabelHeightInMM * 2) + (UserParameters.LabelHeightInMM * 0.5f));
+            int labelSeperation = 10;
+            
+            int maxLabelStripsPerPage = (int)Math.Floor((e.MarginBounds.Height * 0.254d) / (totalLabelStripHeight + labelSeperation));
+            int requiredPageQTY = (int)Math.Ceiling((float)Globals.LabelStrips.Count / maxLabelStripsPerPage);
+
+            // Create the List of Pages if it hasn't already been created.
+            if (Pages == null)
+            {
+                // Make a 2D List of LabelStrips Dimensioned by Pages.
+                Pages = new List<List<LabelStrip>>();
+
+                int lowerIndex = 0;
+                for (int index = 0; index < requiredPageQTY; index++)
+                {
+                    // count will equal maxLabelStripsPerPage unless that will place it out of Range.
+                    // in that case it will equal the ammount of remaining LabelStrips. (Should always be less than
+                    // maxLabelStripsPerPage).
+                    int count = maxLabelStripsPerPage;
+                    count = lowerIndex + maxLabelStripsPerPage >= Globals.LabelStrips.Count ?
+                        Globals.LabelStrips.Count - lowerIndex : maxLabelStripsPerPage;
+
+                    Pages.Insert(index, new List<LabelStrip>());
+                    Pages[index].AddRange(Globals.LabelStrips.GetRange(lowerIndex, count));
+
+                    lowerIndex = lowerIndex + count;
+                }
+            }
+
+            // Don't keep Printing forever.
+            while (PrintPageIndex < Pages.Count)
+            {
+                // Print the Current Page.
+                foreach (var element in Pages[PrintPageIndex])
+                {
+                    element.RenderToPrinter(e.Graphics, printLocation);
+
+                    printLocation.Y += totalLabelStripHeight + labelSeperation;
+                }
+
+                e.HasMorePages = true;
+                printLocation.Y = printOrigin.Y;
+                PrintPageIndex++;
+                
+                // "return" triggers the PrintPage Event again if e.HasMorePages = true.
+                return;
+            }
+
+            // No more Printing required
+            e.HasMorePages = false;
         }
 
         private void PrintButton_Click(object sender, EventArgs e)
         {
-            printDocument.DefaultPageSettings = UserPageSettings;
-            printDocument.PrinterSettings = UserPrinterSettings;
-            printDocument.Print();
+            PrintDialog printSettingsDialog = new PrintDialog();
+            printSettingsDialog.PrinterSettings = UserPrinterSettings;
+
+            if (printSettingsDialog.ShowDialog() == DialogResult.OK)
+            {
+                printDocument.DefaultPageSettings = UserPageSettings;
+                printDocument.DocumentName = "Labels";
+                printDocument.PrinterSettings = UserPrinterSettings;
+                printDocument.Print();
+            }
         }
 
         private void printSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -393,6 +455,8 @@ namespace Dimmer_Labels_Wizard
 
                 // Render Selection Outlines.
                 RenderSelectionRectangles(CanvasGraphics);
+
+                RenderCount++;
 
                 Console.WriteLine("RENDERED");
             }
@@ -1208,6 +1272,7 @@ namespace Dimmer_Labels_Wizard
         private void DebugButton_Click(object sender, EventArgs e)
         {
             Console.WriteLine();
+            CollectRackLabels();
         }
 
         private void MagnifyPlusButton_Click(object sender, EventArgs e)
@@ -1224,11 +1289,11 @@ namespace Dimmer_Labels_Wizard
 
         private void CenterViewButton_Click(object sender, EventArgs e)
         {
-            CenterLabelStrips();
+            CenterLabelStrips(true);
         }
 
         // Centers the Label Strips to the Middle of the CanvasPanel.
-        private void CenterLabelStrips()
+        private void CenterLabelStrips(bool forceRender)
         {
             float centerX = (CanvasPanel.Width) / 2;
             float centerY = (CanvasPanel.Height) / 2;
@@ -1237,7 +1302,10 @@ namespace Dimmer_Labels_Wizard
             RenderOrigin.Y = (int)Math.Round(centerY - (((ActiveLabelStrip.HeaderStripOutline.Height * 2) + 20) / 2));
             RenderOrigin.Y = (int)Math.Round(centerY - ((ActiveLabelStrip.FooterStripOutline.Bottom - ActiveLabelStrip.HeaderStripOutline.Top) / 2));
 
-            Render(ActiveLabelStrip.LabelStrip);
+            if (forceRender == true)
+            {
+                Render(ActiveLabelStrip.LabelStrip);
+            }
         }
 
         private void SplitCellButton_Click(object sender, EventArgs e)

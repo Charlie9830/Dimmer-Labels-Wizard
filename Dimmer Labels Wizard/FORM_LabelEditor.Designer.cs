@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.DebugButton = new System.Windows.Forms.Button();
             this.LowerPanel = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
@@ -35,12 +36,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.GeneralControlsPanel = new System.Windows.Forms.Panel();
+            this.LineWeightComboBox = new System.Windows.Forms.ComboBox();
+            this.LineWeightGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
             this.BackgroundColorGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.FooterBackgroundColorButton = new System.Windows.Forms.Button();
             this.FooterBackgroundColorLabel = new System.Windows.Forms.Label();
             this.HeaderControlsPanel = new System.Windows.Forms.Panel();
             this.HeaderGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
+            this.HeaderFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
             this.HeaderTextBox = new System.Windows.Forms.TextBox();
             this.HeaderFontSizeComboBox = new System.Windows.Forms.ComboBox();
             this.HeaderFontComboBox = new System.Windows.Forms.ComboBox();
@@ -49,6 +53,9 @@
             this.FooterBottomGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
             this.FooterMiddleGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
             this.FooterTopGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
+            this.FooterBottomFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
+            this.FooterMiddleFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
+            this.FooterTopFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
             this.FooterBottomSizeComboBox = new System.Windows.Forms.ComboBox();
             this.FooterBottomFontComboBox = new System.Windows.Forms.ComboBox();
             this.FooterMiddleSizeComboBox = new System.Windows.Forms.ComboBox();
@@ -69,7 +76,6 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pageSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,12 +91,7 @@
             this.MagnifyPlusButton = new System.Windows.Forms.Button();
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.SplitCellButton = new System.Windows.Forms.Button();
-            this.LineWeightGlobalApplyCheckBox = new System.Windows.Forms.CheckBox();
-            this.LineWeightComboBox = new System.Windows.Forms.ComboBox();
-            this.HeaderFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
-            this.FooterBottomFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
-            this.FooterMiddleFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
-            this.FooterTopFontStyleSelector = new Dimmer_Labels_Wizard.FontStyleControl();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.LowerPanel.SuspendLayout();
             this.GeneralControlsPanel.SuspendLayout();
             this.HeaderControlsPanel.SuspendLayout();
@@ -186,6 +187,27 @@
             this.GeneralControlsPanel.Size = new System.Drawing.Size(157, 138);
             this.GeneralControlsPanel.TabIndex = 21;
             // 
+            // LineWeightComboBox
+            // 
+            this.LineWeightComboBox.FormattingEnabled = true;
+            this.LineWeightComboBox.Location = new System.Drawing.Point(6, 77);
+            this.LineWeightComboBox.Name = "LineWeightComboBox";
+            this.LineWeightComboBox.Size = new System.Drawing.Size(95, 21);
+            this.LineWeightComboBox.TabIndex = 37;
+            this.LineWeightComboBox.SelectedIndexChanged += new System.EventHandler(this.LineWeightComboBox_SelectedIndexChanged);
+            // 
+            // LineWeightGlobalApplyCheckBox
+            // 
+            this.LineWeightGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+            this.LineWeightGlobalApplyCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.DimGray;
+            this.LineWeightGlobalApplyCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.LineWeightGlobalApplyCheckBox.Image = global::Dimmer_Labels_Wizard.Properties.Resources.earth_16_000000;
+            this.LineWeightGlobalApplyCheckBox.Location = new System.Drawing.Point(127, 60);
+            this.LineWeightGlobalApplyCheckBox.Name = "LineWeightGlobalApplyCheckBox";
+            this.LineWeightGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
+            this.LineWeightGlobalApplyCheckBox.TabIndex = 36;
+            this.LineWeightGlobalApplyCheckBox.UseVisualStyleBackColor = true;
+            // 
             // BackgroundColorGlobalApplyCheckBox
             // 
             this.BackgroundColorGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
@@ -252,6 +274,16 @@
             this.HeaderGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
             this.HeaderGlobalApplyCheckBox.TabIndex = 34;
             this.HeaderGlobalApplyCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // HeaderFontStyleSelector
+            // 
+            this.HeaderFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.HeaderFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.HeaderFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
+            this.HeaderFontStyleSelector.Location = new System.Drawing.Point(164, 20);
+            this.HeaderFontStyleSelector.Name = "HeaderFontStyleSelector";
+            this.HeaderFontStyleSelector.Size = new System.Drawing.Size(74, 21);
+            this.HeaderFontStyleSelector.TabIndex = 28;
             // 
             // HeaderTextBox
             // 
@@ -349,6 +381,36 @@
             this.FooterTopGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
             this.FooterTopGlobalApplyCheckBox.TabIndex = 35;
             this.FooterTopGlobalApplyCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // FooterBottomFontStyleSelector
+            // 
+            this.FooterBottomFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.FooterBottomFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FooterBottomFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
+            this.FooterBottomFontStyleSelector.Location = new System.Drawing.Point(164, 206);
+            this.FooterBottomFontStyleSelector.Name = "FooterBottomFontStyleSelector";
+            this.FooterBottomFontStyleSelector.Size = new System.Drawing.Size(74, 21);
+            this.FooterBottomFontStyleSelector.TabIndex = 27;
+            // 
+            // FooterMiddleFontStyleSelector
+            // 
+            this.FooterMiddleFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.FooterMiddleFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FooterMiddleFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
+            this.FooterMiddleFontStyleSelector.Location = new System.Drawing.Point(164, 109);
+            this.FooterMiddleFontStyleSelector.Name = "FooterMiddleFontStyleSelector";
+            this.FooterMiddleFontStyleSelector.Size = new System.Drawing.Size(74, 21);
+            this.FooterMiddleFontStyleSelector.TabIndex = 26;
+            // 
+            // FooterTopFontStyleSelector
+            // 
+            this.FooterTopFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.FooterTopFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FooterTopFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
+            this.FooterTopFontStyleSelector.Location = new System.Drawing.Point(164, 20);
+            this.FooterTopFontStyleSelector.Name = "FooterTopFontStyleSelector";
+            this.FooterTopFontStyleSelector.Size = new System.Drawing.Size(74, 21);
+            this.FooterTopFontStyleSelector.TabIndex = 0;
             // 
             // FooterBottomSizeComboBox
             // 
@@ -488,7 +550,6 @@
             this.menuStrip1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.viewToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -518,12 +579,6 @@
             this.pageSettingsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pageSettingsToolStripMenuItem.Text = "Page Setup";
             this.pageSettingsToolStripMenuItem.Click += new System.EventHandler(this.pageSettingsToolStripMenuItem_Click);
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "View";
             // 
             // helpToolStripMenuItem
             // 
@@ -627,81 +682,20 @@
             this.ToolsPanel.BackColor = System.Drawing.SystemColors.Control;
             this.ToolsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ToolsPanel.Controls.Add(this.SplitCellButton);
-            this.ToolsPanel.Location = new System.Drawing.Point(772, 15);
+            this.ToolsPanel.Location = new System.Drawing.Point(890, 15);
             this.ToolsPanel.Name = "ToolsPanel";
-            this.ToolsPanel.Size = new System.Drawing.Size(152, 31);
+            this.ToolsPanel.Size = new System.Drawing.Size(34, 31);
             this.ToolsPanel.TabIndex = 33;
             // 
             // SplitCellButton
             // 
             this.SplitCellButton.Image = global::Dimmer_Labels_Wizard.Properties.Resources.Split_16_000;
-            this.SplitCellButton.Location = new System.Drawing.Point(3, 3);
+            this.SplitCellButton.Location = new System.Drawing.Point(3, 2);
             this.SplitCellButton.Name = "SplitCellButton";
             this.SplitCellButton.Size = new System.Drawing.Size(25, 24);
             this.SplitCellButton.TabIndex = 3;
             this.SplitCellButton.UseVisualStyleBackColor = true;
             this.SplitCellButton.Click += new System.EventHandler(this.SplitCellButton_Click);
-            // 
-            // LineWeightGlobalApplyCheckBox
-            // 
-            this.LineWeightGlobalApplyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
-            this.LineWeightGlobalApplyCheckBox.FlatAppearance.CheckedBackColor = System.Drawing.Color.DimGray;
-            this.LineWeightGlobalApplyCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.LineWeightGlobalApplyCheckBox.Image = global::Dimmer_Labels_Wizard.Properties.Resources.earth_16_000000;
-            this.LineWeightGlobalApplyCheckBox.Location = new System.Drawing.Point(127, 60);
-            this.LineWeightGlobalApplyCheckBox.Name = "LineWeightGlobalApplyCheckBox";
-            this.LineWeightGlobalApplyCheckBox.Size = new System.Drawing.Size(25, 25);
-            this.LineWeightGlobalApplyCheckBox.TabIndex = 36;
-            this.LineWeightGlobalApplyCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // LineWeightComboBox
-            // 
-            this.LineWeightComboBox.FormattingEnabled = true;
-            this.LineWeightComboBox.Location = new System.Drawing.Point(6, 77);
-            this.LineWeightComboBox.Name = "LineWeightComboBox";
-            this.LineWeightComboBox.Size = new System.Drawing.Size(95, 21);
-            this.LineWeightComboBox.TabIndex = 37;
-            this.LineWeightComboBox.SelectedIndexChanged += new System.EventHandler(this.LineWeightComboBox_SelectedIndexChanged);
-            // 
-            // HeaderFontStyleSelector
-            // 
-            this.HeaderFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.HeaderFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.HeaderFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
-            this.HeaderFontStyleSelector.Location = new System.Drawing.Point(164, 20);
-            this.HeaderFontStyleSelector.Name = "HeaderFontStyleSelector";
-            this.HeaderFontStyleSelector.Size = new System.Drawing.Size(74, 21);
-            this.HeaderFontStyleSelector.TabIndex = 28;
-            // 
-            // FooterBottomFontStyleSelector
-            // 
-            this.FooterBottomFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.FooterBottomFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FooterBottomFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
-            this.FooterBottomFontStyleSelector.Location = new System.Drawing.Point(164, 206);
-            this.FooterBottomFontStyleSelector.Name = "FooterBottomFontStyleSelector";
-            this.FooterBottomFontStyleSelector.Size = new System.Drawing.Size(74, 21);
-            this.FooterBottomFontStyleSelector.TabIndex = 27;
-            // 
-            // FooterMiddleFontStyleSelector
-            // 
-            this.FooterMiddleFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.FooterMiddleFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FooterMiddleFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
-            this.FooterMiddleFontStyleSelector.Location = new System.Drawing.Point(164, 109);
-            this.FooterMiddleFontStyleSelector.Name = "FooterMiddleFontStyleSelector";
-            this.FooterMiddleFontStyleSelector.Size = new System.Drawing.Size(74, 21);
-            this.FooterMiddleFontStyleSelector.TabIndex = 26;
-            // 
-            // FooterTopFontStyleSelector
-            // 
-            this.FooterTopFontStyleSelector.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.FooterTopFontStyleSelector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FooterTopFontStyleSelector.FontStyle = System.Drawing.FontStyle.Regular;
-            this.FooterTopFontStyleSelector.Location = new System.Drawing.Point(164, 20);
-            this.FooterTopFontStyleSelector.Name = "FooterTopFontStyleSelector";
-            this.FooterTopFontStyleSelector.Size = new System.Drawing.Size(74, 21);
-            this.FooterTopFontStyleSelector.TabIndex = 0;
             // 
             // FORM_LabelEditor
             // 
@@ -787,7 +781,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
@@ -807,5 +800,6 @@
         private System.Windows.Forms.CheckBox FooterTopGlobalApplyCheckBox;
         private System.Windows.Forms.CheckBox LineWeightGlobalApplyCheckBox;
         private System.Windows.Forms.ComboBox LineWeightComboBox;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

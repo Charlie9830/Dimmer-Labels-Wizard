@@ -44,7 +44,7 @@ namespace Dimmer_Labels_Wizard
             // Collect Column Indexes
             int channelColumn = UserParameters.ChannelNumberColumnIndex;
             int dimmerColumn = UserParameters.DimmerNumberColumnIndex;
-            int instrumentTypeColumn = UserParameters.InstrumentTypeColumnIndex;
+            int instrumentNameColumn = UserParameters.InstrumentTypeColumnIndex;
             int multicoreNameColumn = UserParameters.MulticoreNameColumnIndex;
             int positionColumn = UserParameters.PositionColumnIndex;
             int DMXaddressColumn = UserParameters.UniverseDataColumnIndex;
@@ -62,12 +62,16 @@ namespace Dimmer_Labels_Wizard
 
                     // Populate object 
                     //Directly Imported Data
-                    Globals.DimmerDistroUnits[index].ChannelNumber = fields[channelColumn];
+                    
+                    Globals.DimmerDistroUnits[index].ChannelNumber = channelColumn == -1 ? "" : fields[channelColumn];
+                    Globals.DimmerDistroUnits[index].DimmerNumberText = dimmerColumn == -1 ? "" : fields[dimmerColumn];
+                    Globals.DimmerDistroUnits[index].InstrumentName = instrumentNameColumn == -1 ? "" : fields[instrumentNameColumn];
+                    Globals.DimmerDistroUnits[index].MulticoreName = multicoreNameColumn == -1 ? "" : fields[multicoreNameColumn];
 
-                    Globals.DimmerDistroUnits[index].DimmerNumberText = fields[dimmerColumn];
-                    Globals.DimmerDistroUnits[index].InstrumentName = fields[instrumentTypeColumn];
-                    Globals.DimmerDistroUnits[index].MulticoreName = fields[multicoreNameColumn];
-
+                    if (positionColumn != -1)
+                    {
+                        Globals.DimmerDistroUnits[index].Position = fields[positionColumn];
+                    }
                     // Application running data.
                     Globals.DimmerDistroUnits[index].ImportIndex = index;
 

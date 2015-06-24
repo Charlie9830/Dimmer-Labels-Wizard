@@ -39,5 +39,10 @@ namespace Dimmer_Labels_Wizard
                 NextButton.Enabled = true;
             }
         }
+
+        private void NextButton_Click(object sender, EventArgs e)
+        {
+            Globals.DebugActive = DebugModeCheckBox.Checked;
+        }
     }
 }

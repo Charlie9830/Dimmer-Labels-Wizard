@@ -97,6 +97,12 @@
       <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="FooterCell.cs" />
+    <Compile Include="FORM_LabelSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORM_LabelSetup.Designer.cs">
+      <DependentUpon>FORM_LabelSetup.cs</DependentUpon>
+    </Compile>
     <Compile Include="FORM_MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +132,18 @@
     <Compile Include="FileImport.cs" />
     <Compile Include="LabelCell.cs" />
     <Compile Include="Label Strip Selection Handling.cs" />
+    <Compile Include="LabelSetupPart1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LabelSetupPart1.Designer.cs">
+      <DependentUpon>LabelSetupPart1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LabelSetupPart2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LabelSetupPart2.Designer.cs">
+      <DependentUpon>LabelSetupPart2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Output.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -192,6 +210,9 @@
     <EmbeddedResource Include="FORM_LabelEditor.resx">
       <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FORM_LabelSetup.resx">
+      <DependentUpon>FORM_LabelSetup.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FORM_MainWindow.resx">
       <DependentUpon>FORM_MainWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -203,6 +224,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FORM_UserParameterEntry.resx">
       <DependentUpon>FORM_UserParameterEntry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LabelSetupPart1.resx">
+      <DependentUpon>LabelSetupPart1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LabelSetupPart2.resx">
+      <DependentUpon>LabelSetupPart2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -250,6 +277,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Plus-Sign-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Label Preview.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
