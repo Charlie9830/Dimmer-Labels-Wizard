@@ -51,6 +51,10 @@ namespace Dimmer_Labels_Wizard
                     Globals.UnParseableData.Add(this);
                     RackUnitType = RackType.Unparseable;
                     break;
+                case RackType.ClashingRange:
+                    Globals.ClashingRangeData.Add(this);
+                    RackUnitType = RackType.ClashingRange;
+                    break;
                 default:
                     Console.WriteLine("I couldn't find a RackType!");
                     break;
@@ -270,10 +274,27 @@ namespace Dimmer_Labels_Wizard
         // cannot be sucseffully assinged a Type.
         private RackType DetermineUnitType(ImportFormatting dimmerFormat, ImportFormatting distroFormat)
         {
-            // Assuming it's a dimmer for now. Can the data Format be Verified?
-            if (VerifyStringFormat(DimmerNumberText, RackType.Dimmer, dimmerFormat) == true)
+            bool verifiedDimmer = false;
+            bool verifiedDistro = false;
+
+            // Test as Dimmer.
+            if (dimmerFormat != ImportFormatting.NoAssignment &&
+                VerifyStringFormat(DimmerNumberText,RackType.Dimmer,dimmerFormat) == true)
             {
-                // It fits the Dimmer String Format, is it in the Dimmer Label Range?
+                verifiedDimmer = true;
+            }
+
+            // Test as Distro
+            if (distroFormat != ImportFormatting.NoAssignment &&
+                VerifyStringFormat(DimmerNumberText,RackType.Distro,distroFormat) == true)
+            {
+                verifiedDistro = true;
+            }
+
+            // Compare Results.
+            // Verified Dimmer.
+            if (verifiedDimmer == true && verifiedDistro == false)
+            {
                 if (FindRackNumber(ParseDimmerNumber(DimmerNumberText, dimmerFormat)) != -1)
                 {
                     return RackType.Dimmer;
@@ -281,20 +302,14 @@ namespace Dimmer_Labels_Wizard
 
                 else
                 {
-                    // If ImportFormats are the same, it may still be a Distro, Don't return Yet.
-                    if (dimmerFormat != distroFormat)
-                    {
-                        return RackType.OutsideLabelRange;
-                    }
-                    // Let Control fall through to next IF statement.
+                    return RackType.OutsideLabelRange;
                 }
             }
-            
-            // Let's Assume it is a Distro Now. Can the data format be Verified?
-             if (VerifyStringFormat(DimmerNumberText, RackType.Distro, distroFormat) == true)
+
+            // Verified Distro.
+            if (verifiedDimmer == false && verifiedDistro == true)
             {
-                // It fits the Distro String Format. Is it in the Distro Label Range?
-                if (FindRackNumber(ParseDistroNumber(DimmerNumberText, distroFormat)) != -1)
+                if (FindRackNumber(ParseDistroNumber(DimmerNumberText,distroFormat)) != -1)
                 {
                     return RackType.Distro;
                 }
@@ -305,11 +320,57 @@ namespace Dimmer_Labels_Wizard
                 }
             }
 
-            else
+            // Both failed Verification.
+            if (verifiedDimmer == false && verifiedDistro == false)
             {
-                // Data Format cannot be Verified assuming Dimmer or Distro. User Intervention is required.
                 return RackType.Unparseable;
             }
+
+            // Both Passed Verification.
+            if (verifiedDimmer == true && verifiedDistro == true)
+            {
+                bool inDimmerRange = false;
+                bool inDistroRange = false;
+
+                // Test Both Ranges
+                if (FindRackNumber(ParseDimmerNumber(DimmerNumberText, dimmerFormat)) != -1)
+                {
+                    inDimmerRange = true;
+                }
+
+                if (FindRackNumber(ParseDistroNumber(DimmerNumberText,distroFormat)) != -1)
+                {
+                    inDistroRange = true;
+                }
+
+                // Compare Results
+                // In Dimmer Range.
+                if (inDimmerRange == true && inDistroRange == false)
+                {
+                    return RackType.Dimmer;
+                }
+
+                // In Distro Range.
+                if (inDimmerRange == false && inDistroRange == true)
+                {
+                    return RackType.Distro;
+                }
+
+                // Not in either Range.
+                if (inDimmerRange == false && inDistroRange == false)
+                {
+                    return RackType.OutsideLabelRange;
+                }
+
+                // In Both Ranges.
+                if (inDimmerRange == true && inDistroRange == true)
+                {
+                    return RackType.ClashingRange;
+                }
+            }
+
+            Console.WriteLine("Control Fell through all of DetermineUnitType(). Return RackType.Unparseable.");
+            return RackType.Unparseable;
         }
 
         // Helper Method. Refined Version of Private Method DataHandling.FindRackNumber. Checks if Distro DimmerNumber
@@ -384,6 +445,9 @@ namespace Dimmer_Labels_Wizard
                             return true;
                         }
                         return false;
+                    case ImportFormatting.NoAssignment:
+                        return false;
+
                     default:
                         return false;
                 }
@@ -422,6 +486,8 @@ namespace Dimmer_Labels_Wizard
                         {
                             return true;
                         }
+                        return false;
+                    case ImportFormatting.NoAssignment:
                         return false;
                     default:
                         break;

@@ -35,6 +35,11 @@ namespace Dimmer_Labels_Wizard
                     UnparseableDataDisplay.ShowDialog();
                 }
 
+                foreach (var element in Globals.ClashingRangeData)
+                {
+                    Console.WriteLine("Clashing Data Dimmer Text {0}", element.DimmerNumberText);
+                }
+
                 Console.WriteLine("Sanitation Starting");
                 DataHandling.SanitizeDimDistroUnits();
                 Console.WriteLine("Sanitation Complete");

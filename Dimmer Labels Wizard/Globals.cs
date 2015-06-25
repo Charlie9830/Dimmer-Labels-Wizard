@@ -22,6 +22,10 @@ namespace Dimmer_Labels_Wizard
         // List to Hold Imported Elements with Dimmer Data that does not Match Formatting Styles.
         public static List<DimmerDistroUnit> UnParseableData = new List<DimmerDistroUnit>();
 
+        // List to hold Imported Elements that passed both Dimmer and Distro String Verifcation,
+        // and reside in the same Range.
+        public static List<DimmerDistroUnit> ClashingRangeData = new List<DimmerDistroUnit>();
+
         // Represents DMX Addresses.
         public struct DMX
         {

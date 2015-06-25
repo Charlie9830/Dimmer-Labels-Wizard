@@ -132,6 +132,11 @@ namespace Dimmer_Labels_Wizard
 
         private ImportFormatting CollectDimmerFormatValue()
         {
+            if (DimmerFormatComboBox.Enabled == false)
+            {
+                return ImportFormatting.NoAssignment;
+            }
+
             int valueIndex = DimmerFormatComboBox.SelectedIndex;
 
             switch (valueIndex)
@@ -152,6 +157,11 @@ namespace Dimmer_Labels_Wizard
 
         private ImportFormatting CollectDistroFormatValue()
         {
+            if (DistroFormatComboBox.Enabled == false)
+            {
+                return ImportFormatting.NoAssignment;
+            }
+
             int valueIndex = DistroFormatComboBox.SelectedIndex;
 
             switch (valueIndex)
