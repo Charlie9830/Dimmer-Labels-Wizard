@@ -60,18 +60,14 @@ namespace Dimmer_Labels_Wizard
                     // Init Object Representing a Dimmer Or Distro Channel Here
                     Globals.DimmerDistroUnits.Insert(index, new DimmerDistroUnit());
 
-                    // Populate object 
+                    // Populate object if Columns have been assigned Indexes.
                     //Directly Imported Data
-                    
                     Globals.DimmerDistroUnits[index].ChannelNumber = channelColumn == -1 ? "" : fields[channelColumn];
                     Globals.DimmerDistroUnits[index].DimmerNumberText = dimmerColumn == -1 ? "" : fields[dimmerColumn];
                     Globals.DimmerDistroUnits[index].InstrumentName = instrumentNameColumn == -1 ? "" : fields[instrumentNameColumn];
                     Globals.DimmerDistroUnits[index].MulticoreName = multicoreNameColumn == -1 ? "" : fields[multicoreNameColumn];
+                    Globals.DimmerDistroUnits[index].Position = positionColumn == -1 ? "" : fields[positionColumn];
 
-                    if (positionColumn != -1)
-                    {
-                        Globals.DimmerDistroUnits[index].Position = fields[positionColumn];
-                    }
                     // Application running data.
                     Globals.DimmerDistroUnits[index].ImportIndex = index;
 

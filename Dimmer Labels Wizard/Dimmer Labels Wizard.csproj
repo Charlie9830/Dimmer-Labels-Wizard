@@ -156,6 +156,12 @@
     <Compile Include="FORM_UserParameterEntry.Designer.cs">
       <DependentUpon>FORM_UserParameterEntry.cs</DependentUpon>
     </Compile>
+    <Compile Include="FORM_UserParameterEntry_Help.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORM_UserParameterEntry_Help.Designer.cs">
+      <DependentUpon>FORM_UserParameterEntry_Help.cs</DependentUpon>
+    </Compile>
     <Compile Include="Globals.cs" />
     <Compile Include="HeaderCell.cs" />
     <Compile Include="FileImport.cs" />
@@ -254,6 +260,9 @@
     <EmbeddedResource Include="FORM_UserParameterEntry.resx">
       <DependentUpon>FORM_UserParameterEntry.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FORM_UserParameterEntry_Help.resx">
+      <DependentUpon>FORM_UserParameterEntry_Help.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LabelSetupPart1.resx">
       <DependentUpon>LabelSetupPart1.cs</DependentUpon>
     </EmbeddedResource>
@@ -327,6 +336,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\help-circled-24-000000.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

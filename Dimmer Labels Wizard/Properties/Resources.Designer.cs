@@ -93,6 +93,16 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap help_circled_24_000000 {
+            get {
+                object obj = ResourceManager.GetObject("help-circled-24-000000", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Label_Preview {
             get {
                 object obj = ResourceManager.GetObject("Label Preview", resourceCulture);

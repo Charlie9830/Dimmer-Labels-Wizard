@@ -17,6 +17,8 @@ namespace Dimmer_Labels_Wizard
         private bool UniverseDMXColumnSelectionMade = false;
         private bool UniverseNumberFormatSelectionMade = false;
 
+        private FORM_UserParameterEntry_Help helpWindow = new FORM_UserParameterEntry_Help();
+
         public FORM_UserParameterEntry()
         {
             InitializeComponent();
@@ -24,6 +26,8 @@ namespace Dimmer_Labels_Wizard
 
         private void FORM_UserParameterEntry_Load(object sender, EventArgs e)
         {
+            helpWindow.ShowInTaskbar = false;
+
             UniverseColumnSelectPanel.Enabled = false;
             DistroNumberPrefixPanel.Enabled = false;
             DimmerRangeInput.Enabled = false;
@@ -60,6 +64,8 @@ namespace Dimmer_Labels_Wizard
         
         private void ContinueButton_Click(object sender, EventArgs e)
         {
+            helpWindow.Close();
+
             // Sanity Checks User Inputs, Displays Error messages for incorrect input.
             if (CheckUserInputSanity() == true)
             {
@@ -481,6 +487,11 @@ namespace Dimmer_Labels_Wizard
         }
 
         #endregion
+
+        private void HelpButton_Click(object sender, EventArgs e)
+        {
+            helpWindow.Show();
+        }
 
 
     }

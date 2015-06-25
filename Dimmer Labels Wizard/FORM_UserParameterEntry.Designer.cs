@@ -46,6 +46,8 @@
             this.UniverseColumnLabel = new System.Windows.Forms.Label();
             this.CSVColumnMappingLabel = new System.Windows.Forms.Label();
             this.CSVColumnMappingPanel = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.DimmerNumberMappingComboBox = new System.Windows.Forms.ComboBox();
             this.DimmerNumberMappingLabel = new System.Windows.Forms.Label();
             this.PositionMappingComboBox = new System.Windows.Forms.ComboBox();
@@ -70,6 +72,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.label8 = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.HelpButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.FirstDistroNumberSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LastDistroNumberSelector)).BeginInit();
             this.UniverseColumnSelectPanel.SuspendLayout();
@@ -134,7 +137,7 @@
             // 
             // ContinueButton
             // 
-            this.ContinueButton.Location = new System.Drawing.Point(703, 313);
+            this.ContinueButton.Location = new System.Drawing.Point(703, 344);
             this.ContinueButton.Name = "ContinueButton";
             this.ContinueButton.Size = new System.Drawing.Size(75, 23);
             this.ContinueButton.TabIndex = 12;
@@ -263,13 +266,15 @@
             this.CSVColumnMappingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.CSVColumnMappingLabel.Location = new System.Drawing.Point(328, 161);
             this.CSVColumnMappingLabel.Name = "CSVColumnMappingLabel";
-            this.CSVColumnMappingLabel.Size = new System.Drawing.Size(165, 20);
+            this.CSVColumnMappingLabel.Size = new System.Drawing.Size(182, 20);
             this.CSVColumnMappingLabel.TabIndex = 18;
-            this.CSVColumnMappingLabel.Text = "CSV Column Mapping";
+            this.CSVColumnMappingLabel.Text = "3. CSV Column Mapping";
             // 
             // CSVColumnMappingPanel
             // 
             this.CSVColumnMappingPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CSVColumnMappingPanel.Controls.Add(this.label9);
+            this.CSVColumnMappingPanel.Controls.Add(this.label5);
             this.CSVColumnMappingPanel.Controls.Add(this.DimmerNumberMappingComboBox);
             this.CSVColumnMappingPanel.Controls.Add(this.DimmerNumberMappingLabel);
             this.CSVColumnMappingPanel.Controls.Add(this.PositionMappingComboBox);
@@ -282,13 +287,33 @@
             this.CSVColumnMappingPanel.Controls.Add(this.ChannelMappingLabel);
             this.CSVColumnMappingPanel.Location = new System.Drawing.Point(326, 184);
             this.CSVColumnMappingPanel.Name = "CSVColumnMappingPanel";
-            this.CSVColumnMappingPanel.Size = new System.Drawing.Size(276, 150);
+            this.CSVColumnMappingPanel.Size = new System.Drawing.Size(276, 183);
             this.CSVColumnMappingPanel.TabIndex = 19;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label9.Location = new System.Drawing.Point(128, 5);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(86, 17);
+            this.label9.TabIndex = 30;
+            this.label9.Text = "CSV Column";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.label5.Location = new System.Drawing.Point(24, 5);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(77, 17);
+            this.label5.TabIndex = 29;
+            this.label5.Text = "Label Field";
             // 
             // DimmerNumberMappingComboBox
             // 
             this.DimmerNumberMappingComboBox.FormattingEnabled = true;
-            this.DimmerNumberMappingComboBox.Location = new System.Drawing.Point(136, 36);
+            this.DimmerNumberMappingComboBox.Location = new System.Drawing.Point(131, 61);
             this.DimmerNumberMappingComboBox.Name = "DimmerNumberMappingComboBox";
             this.DimmerNumberMappingComboBox.Size = new System.Drawing.Size(121, 21);
             this.DimmerNumberMappingComboBox.TabIndex = 28;
@@ -297,7 +322,7 @@
             // DimmerNumberMappingLabel
             // 
             this.DimmerNumberMappingLabel.AutoSize = true;
-            this.DimmerNumberMappingLabel.Location = new System.Drawing.Point(24, 39);
+            this.DimmerNumberMappingLabel.Location = new System.Drawing.Point(19, 64);
             this.DimmerNumberMappingLabel.Name = "DimmerNumberMappingLabel";
             this.DimmerNumberMappingLabel.Size = new System.Drawing.Size(82, 13);
             this.DimmerNumberMappingLabel.TabIndex = 27;
@@ -306,7 +331,7 @@
             // PositionMappingComboBox
             // 
             this.PositionMappingComboBox.FormattingEnabled = true;
-            this.PositionMappingComboBox.Location = new System.Drawing.Point(136, 117);
+            this.PositionMappingComboBox.Location = new System.Drawing.Point(131, 142);
             this.PositionMappingComboBox.Name = "PositionMappingComboBox";
             this.PositionMappingComboBox.Size = new System.Drawing.Size(121, 21);
             this.PositionMappingComboBox.TabIndex = 26;
@@ -315,7 +340,7 @@
             // MulticoreNameMappingComboBox
             // 
             this.MulticoreNameMappingComboBox.FormattingEnabled = true;
-            this.MulticoreNameMappingComboBox.Location = new System.Drawing.Point(136, 90);
+            this.MulticoreNameMappingComboBox.Location = new System.Drawing.Point(131, 115);
             this.MulticoreNameMappingComboBox.Name = "MulticoreNameMappingComboBox";
             this.MulticoreNameMappingComboBox.Size = new System.Drawing.Size(121, 21);
             this.MulticoreNameMappingComboBox.TabIndex = 25;
@@ -324,7 +349,7 @@
             // InstrumentNameMappingComboBox
             // 
             this.InstrumentNameMappingComboBox.FormattingEnabled = true;
-            this.InstrumentNameMappingComboBox.Location = new System.Drawing.Point(136, 63);
+            this.InstrumentNameMappingComboBox.Location = new System.Drawing.Point(131, 88);
             this.InstrumentNameMappingComboBox.Name = "InstrumentNameMappingComboBox";
             this.InstrumentNameMappingComboBox.Size = new System.Drawing.Size(121, 21);
             this.InstrumentNameMappingComboBox.TabIndex = 24;
@@ -333,7 +358,7 @@
             // ChannelMappingComboBox
             // 
             this.ChannelMappingComboBox.FormattingEnabled = true;
-            this.ChannelMappingComboBox.Location = new System.Drawing.Point(136, 9);
+            this.ChannelMappingComboBox.Location = new System.Drawing.Point(131, 34);
             this.ChannelMappingComboBox.Name = "ChannelMappingComboBox";
             this.ChannelMappingComboBox.Size = new System.Drawing.Size(121, 21);
             this.ChannelMappingComboBox.TabIndex = 23;
@@ -342,7 +367,7 @@
             // PositionMappingLabel
             // 
             this.PositionMappingLabel.AutoSize = true;
-            this.PositionMappingLabel.Location = new System.Drawing.Point(59, 120);
+            this.PositionMappingLabel.Location = new System.Drawing.Point(54, 145);
             this.PositionMappingLabel.Name = "PositionMappingLabel";
             this.PositionMappingLabel.Size = new System.Drawing.Size(44, 13);
             this.PositionMappingLabel.TabIndex = 22;
@@ -351,7 +376,7 @@
             // MulticoreNameMappingLabel
             // 
             this.MulticoreNameMappingLabel.AutoSize = true;
-            this.MulticoreNameMappingLabel.Location = new System.Drawing.Point(24, 93);
+            this.MulticoreNameMappingLabel.Location = new System.Drawing.Point(19, 118);
             this.MulticoreNameMappingLabel.Name = "MulticoreNameMappingLabel";
             this.MulticoreNameMappingLabel.Size = new System.Drawing.Size(81, 13);
             this.MulticoreNameMappingLabel.TabIndex = 21;
@@ -360,7 +385,7 @@
             // InstrumentNameMappingLabel
             // 
             this.InstrumentNameMappingLabel.AutoSize = true;
-            this.InstrumentNameMappingLabel.Location = new System.Drawing.Point(18, 66);
+            this.InstrumentNameMappingLabel.Location = new System.Drawing.Point(13, 91);
             this.InstrumentNameMappingLabel.Name = "InstrumentNameMappingLabel";
             this.InstrumentNameMappingLabel.Size = new System.Drawing.Size(87, 13);
             this.InstrumentNameMappingLabel.TabIndex = 20;
@@ -369,7 +394,7 @@
             // ChannelMappingLabel
             // 
             this.ChannelMappingLabel.AutoSize = true;
-            this.ChannelMappingLabel.Location = new System.Drawing.Point(59, 12);
+            this.ChannelMappingLabel.Location = new System.Drawing.Point(54, 37);
             this.ChannelMappingLabel.Name = "ChannelMappingLabel";
             this.ChannelMappingLabel.Size = new System.Drawing.Size(46, 13);
             this.ChannelMappingLabel.TabIndex = 19;
@@ -413,13 +438,13 @@
             this.Panel8.Controls.Add(this.DimmerRangeInput);
             this.Panel8.Location = new System.Drawing.Point(16, 39);
             this.Panel8.Name = "Panel8";
-            this.Panel8.Size = new System.Drawing.Size(303, 295);
+            this.Panel8.Size = new System.Drawing.Size(303, 328);
             this.Panel8.TabIndex = 21;
             // 
             // CreateDistroLabelsCheckBox
             // 
             this.CreateDistroLabelsCheckBox.AutoSize = true;
-            this.CreateDistroLabelsCheckBox.Location = new System.Drawing.Point(201, 199);
+            this.CreateDistroLabelsCheckBox.Location = new System.Drawing.Point(201, 208);
             this.CreateDistroLabelsCheckBox.Name = "CreateDistroLabelsCheckBox";
             this.CreateDistroLabelsCheckBox.Size = new System.Drawing.Size(91, 17);
             this.CreateDistroLabelsCheckBox.TabIndex = 29;
@@ -453,7 +478,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.Location = new System.Drawing.Point(3, 198);
+            this.label1.Location = new System.Drawing.Point(3, 207);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(108, 17);
             this.label1.TabIndex = 26;
@@ -466,7 +491,7 @@
             this.DistroNumberPanel.Controls.Add(this.LastDistroNumberSelector);
             this.DistroNumberPanel.Controls.Add(this.FirstDistroNumberSelector);
             this.DistroNumberPanel.Controls.Add(this.label4);
-            this.DistroNumberPanel.Location = new System.Drawing.Point(3, 219);
+            this.DistroNumberPanel.Location = new System.Drawing.Point(3, 228);
             this.DistroNumberPanel.Name = "DistroNumberPanel";
             this.DistroNumberPanel.Size = new System.Drawing.Size(289, 54);
             this.DistroNumberPanel.TabIndex = 25;
@@ -486,9 +511,9 @@
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.label7.Location = new System.Drawing.Point(12, 11);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(108, 20);
+            this.label7.Size = new System.Drawing.Size(125, 20);
             this.label7.TabIndex = 10;
-            this.label7.Text = "Label Ranges";
+            this.label7.Text = "1. Label Ranges";
             // 
             // panel2
             // 
@@ -509,15 +534,27 @@
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.label8.Location = new System.Drawing.Point(321, 11);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(97, 20);
+            this.label8.Size = new System.Drawing.Size(114, 20);
             this.label8.TabIndex = 23;
-            this.label8.Text = "CSV Format";
+            this.label8.Text = "2. CSV Format";
+            // 
+            // HelpButton
+            // 
+            this.HelpButton.BackgroundImage = global::Dimmer_Labels_Wizard.Properties.Resources.help_circled_24_000000;
+            this.HelpButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.HelpButton.Location = new System.Drawing.Point(738, 4);
+            this.HelpButton.Name = "HelpButton";
+            this.HelpButton.Size = new System.Drawing.Size(37, 34);
+            this.HelpButton.TabIndex = 24;
+            this.HelpButton.UseVisualStyleBackColor = true;
+            this.HelpButton.Click += new System.EventHandler(this.HelpButton_Click);
             // 
             // FORM_UserParameterEntry
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(790, 348);
+            this.ClientSize = new System.Drawing.Size(790, 379);
+            this.Controls.Add(this.HelpButton);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.label7);
@@ -591,5 +628,8 @@
         private System.Windows.Forms.CheckBox CreateDistroLabelsCheckBox;
         private System.Windows.Forms.CheckBox CreateDimmerLabelsCheckBox;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Button HelpButton;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label5;
     }
 }
