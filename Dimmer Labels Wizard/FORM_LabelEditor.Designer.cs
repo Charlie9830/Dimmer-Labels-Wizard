@@ -76,9 +76,6 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pageSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printDialog = new System.Windows.Forms.PrintDialog();
             this.CanvasPanel = new System.Windows.Forms.Panel();
             this.StartTipLabel = new System.Windows.Forms.Label();
@@ -549,8 +546,7 @@
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1048, 24);
@@ -569,36 +565,16 @@
             // printSettingsToolStripMenuItem
             // 
             this.printSettingsToolStripMenuItem.Name = "printSettingsToolStripMenuItem";
-            this.printSettingsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.printSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.printSettingsToolStripMenuItem.Text = "Print Settings";
             this.printSettingsToolStripMenuItem.Click += new System.EventHandler(this.printSettingsToolStripMenuItem_Click);
             // 
             // pageSettingsToolStripMenuItem
             // 
             this.pageSettingsToolStripMenuItem.Name = "pageSettingsToolStripMenuItem";
-            this.pageSettingsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.pageSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.pageSettingsToolStripMenuItem.Text = "Page Setup";
             this.pageSettingsToolStripMenuItem.Click += new System.EventHandler(this.pageSettingsToolStripMenuItem_Click);
-            // 
-            // helpToolStripMenuItem
-            // 
-            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem2,
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem.Text = "Help";
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(104, 6);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.aboutToolStripMenuItem.Text = "About";
             // 
             // printDialog
             // 
@@ -781,9 +757,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel ViewControlPanel;
         private System.Windows.Forms.Button MagnifyPlusButton;

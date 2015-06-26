@@ -95,7 +95,10 @@ namespace Dimmer_Labels_Wizard
             TableObjectTracking[e.RowIndex].DimmerNumberText = (string) UnparseableDataGridView.Rows[e.RowIndex].Cells[1].Value;
 
             // Add it to the list.
-            UserChangedData.Add(TableObjectTracking[e.RowIndex]);
+            if (UserChangedData.Contains(TableObjectTracking[e.RowIndex]) == false)
+            {
+                UserChangedData.Add(TableObjectTracking[e.RowIndex]);
+            }
         }
 
 

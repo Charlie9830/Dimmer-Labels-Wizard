@@ -389,6 +389,13 @@ namespace Dimmer_Labels_Wizard
             if (DimmerFormatSanity().SanityCheck == false)
             {
                 MessageBox.Show(DimmerFormatSanity().ErrorMessage);
+                return false;
+            }
+
+            if (CreateLabelsSanity().SanityCheck == false)
+            {
+                MessageBox.Show(CreateLabelsSanity().ErrorMessage);
+                return false;
             }
 
             return true;
@@ -478,7 +485,7 @@ namespace Dimmer_Labels_Wizard
                 DimmerFormatSelectionMade == false)
             {
                 returnValue = false;
-                errorMessage = "You have elected to create Dimmer Labels, but have no selected a Dimmer Number Format.";
+                errorMessage = "You have elected to create Dimmer Labels, but have not selected a Dimmer Number Format.";
                 return new Globals.BoolString(returnValue, errorMessage);
             }
 
@@ -491,6 +498,21 @@ namespace Dimmer_Labels_Wizard
                 returnValue = false;
                 errorMessage = "You have selected a Dimmer Format that requires external Universe Data" +
                    "Please select a Universe Column and Number Format or elect to not import Universe Data";
+            }
+
+            return new Globals.BoolString(returnValue, errorMessage);
+        }
+
+        private Globals.BoolString CreateLabelsSanity()
+        {
+            bool returnValue = true;
+            string errorMessage = "";
+
+            if (CreateDimmerLabelsCheckBox.Checked == false &&
+                CreateDistroLabelsCheckBox.Checked == false)
+            {
+                returnValue = false;
+                errorMessage = "Cannot continue. No 'Create Label' selections have been made";
             }
 
             return new Globals.BoolString(returnValue, errorMessage);

@@ -61,15 +61,15 @@ namespace Dimmer_Labels_Wizard
                 // Setup Mock User Paramater Inputs.
                 #region Hardcoded User Paramaters.
                 UserParameters.CreateDimmerObjects = true;
-                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 12));
-                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(2, 1, 24));
+                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 24));
                 UserParameters.DimmerRanges.Sort();
 
-                UserParameters.CreateDistroObjects = false;
-                UserParameters.StartDistroNumber = 1001; //1001;
-                UserParameters.EndDistroNumber = 1024; //1024;
-                UserParameters.DistroImportFormat = ImportFormatting.Format2;
-                UserParameters.DimmerImportFormat = ImportFormatting.Format1;
+                UserParameters.CreateDistroObjects = true;
+                UserParameters.StartDistroNumber = 1;
+                UserParameters.EndDistroNumber = 24; 
+                UserParameters.DistroImportFormat = ImportFormatting.Format1;
+                UserParameters.DistroNumberPrefix = "N";
+                UserParameters.DimmerImportFormat = ImportFormatting.Format2;
 
                 UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
 
@@ -79,8 +79,8 @@ namespace Dimmer_Labels_Wizard
                 UserParameters.MulticoreNameColumnIndex = 3;
                 UserParameters.PositionColumnIndex = 4;
 
-                UserParameters.LabelWidthInMM = 20;
-                UserParameters.LabelHeightInMM = 20;
+                UserParameters.LabelWidthInMM = 16;
+                UserParameters.LabelHeightInMM = 18;
                 #endregion
 
                 UserParameters.GenerateDistroRange();
@@ -91,6 +91,11 @@ namespace Dimmer_Labels_Wizard
                 {
                     FORM_UnparseableDataDisplay UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
                     UnparseableDataDisplay.ShowDialog();
+                }
+
+                foreach (var element in Globals.ClashingRangeData)
+                {
+                    Console.WriteLine("Clashing Data Dimmer Text {0}", element.DimmerNumberText);
                 }
 
                 Console.WriteLine("Sanitation Starting");

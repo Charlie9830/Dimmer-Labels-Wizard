@@ -107,6 +107,7 @@
     <Compile Include="FontStyleControl.Designer.cs">
       <DependentUpon>FontStyleControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms.cs" />
     <Compile Include="FORM_GlobalApplyWarning.cs">
       <SubType>Form</SubType>
     </Compile>
