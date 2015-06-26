@@ -142,5 +142,9 @@ namespace Dimmer_Labels_Wizard
                 }
             }
         }
+
+        private void BackButton_Click(object sender, EventArgs e)
+        {
+        }
     }
 }

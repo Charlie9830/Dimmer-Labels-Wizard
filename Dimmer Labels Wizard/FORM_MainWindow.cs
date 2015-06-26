@@ -43,6 +43,10 @@ namespace Dimmer_Labels_Wizard
         private void NextButton_Click(object sender, EventArgs e)
         {
             Globals.DebugActive = DebugModeCheckBox.Checked;
+            this.Hide();
+            Forms.UserParameterEntry = new FORM_UserParameterEntry();
+            Forms.UserParameterEntry.Show();
+
         }
     }
 }

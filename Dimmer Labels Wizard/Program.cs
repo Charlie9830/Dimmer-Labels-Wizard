@@ -16,14 +16,15 @@ namespace Dimmer_Labels_Wizard
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
-
-            FORM_MainWindow mainWindow = new FORM_MainWindow();
-            mainWindow.ShowDialog();
+            Forms.MainWindow = new FORM_MainWindow();
+            Application.Run(Forms.MainWindow);
+            
+            MessageBox.Show("Fallen Back to Main Program");
 
             if (Globals.DebugActive == false)
             {
-                FORM_UserParameterEntry UserParamEntry = new FORM_UserParameterEntry();
-                UserParamEntry.ShowDialog();
+                Forms.UserParameterEntry = new FORM_UserParameterEntry();
+                Forms.UserParameterEntry.ShowDialog();
 
                 UserParameters.GenerateDistroRange();
 
@@ -31,8 +32,8 @@ namespace Dimmer_Labels_Wizard
 
                 if (Globals.UnParseableData.Count > 0)
                 {
-                    FORM_UnparseableDataDisplay UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
-                    UnparseableDataDisplay.ShowDialog();
+                    Forms.UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
+                    Forms.UnparseableDataDisplay.ShowDialog();
                 }
 
                 foreach (var element in Globals.ClashingRangeData)
@@ -44,16 +45,16 @@ namespace Dimmer_Labels_Wizard
                 DataHandling.SanitizeDimDistroUnits();
                 Console.WriteLine("Sanitation Complete");
 
-                FORM_InstrumentNameEntry instrumentNameEntry = new FORM_InstrumentNameEntry();
-                instrumentNameEntry.ShowDialog();
+                Forms.InstrumentNameEntry = new FORM_InstrumentNameEntry();
+                Forms.InstrumentNameEntry.ShowDialog();
 
-                FORM_LabelSetup labelSetup = new FORM_LabelSetup();
-                labelSetup.ShowDialog();
+                Forms.LabelSetup = new FORM_LabelSetup();
+                Forms.LabelSetup.ShowDialog();
 
                 UserParameters.SetDefaultRackLabelSettings();
 
-                FORM_LabelEditor NextWindow = new FORM_LabelEditor();
-                NextWindow.ShowDialog();
+                Forms.LabelEditor = new FORM_LabelEditor();
+                Forms.LabelEditor.ShowDialog();
             }
 
             else
@@ -117,6 +118,7 @@ namespace Dimmer_Labels_Wizard
 
                 FORM_LabelEditor NextWindow = new FORM_LabelEditor();
                 NextWindow.ShowDialog();
+             
             }
         }
     }

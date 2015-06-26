@@ -525,6 +525,12 @@ namespace Dimmer_Labels_Wizard
             helpWindow.Show();
         }
 
+        private void BackButton_Click(object sender, EventArgs e)
+        {
+            Forms.MainWindow.Show();
+            this.Close();
+        }
+
 
     }
 }
