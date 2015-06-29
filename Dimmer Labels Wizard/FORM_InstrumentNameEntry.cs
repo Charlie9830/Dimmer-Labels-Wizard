@@ -110,7 +110,18 @@ namespace Dimmer_Labels_Wizard
         private void ContinueButton_Click(object sender, EventArgs e)
         {
             UpdateInstrumentNames();
-            this.Close();
+            this.Hide();
+            Forms.LabelSetup = new FORM_LabelSetup();
+            Forms.LabelSetup.Show();
+        }
+
+        private void BackButton_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to go Back?", "Warning", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            {
+                this.Close();
+                Forms.UserParameterEntry.Show();
+            }
         }
     }
 }

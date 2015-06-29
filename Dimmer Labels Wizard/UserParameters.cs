@@ -21,6 +21,10 @@ namespace Dimmer_Labels_Wizard
         public static int MulticoreNameColumnIndex { get; set; }
         public static int PositionColumnIndex { get; set; }
         public static int UniverseDataColumnIndex { get; set; }
+        public static int UserField1ColumnIndex { get; set; }
+        public static int UserField2ColumnIndex { get; set; }
+        public static int UserField3ColumnIndex { get; set; }
+        public static int UserField4ColumnIndex { get; set; }
 
         public static bool CreateDistroObjects { get; set; }
         public static bool CreateDimmerObjects { get; set; }
@@ -34,8 +38,15 @@ namespace Dimmer_Labels_Wizard
         public static List<DistroRack> DistroRacks = new List<DistroRack>();
         public static List<DimmerRack> DimmerRacks = new List<DimmerRack>();
 
-        public static int LabelWidthInMM { get; set; } 
-        public static int LabelHeightInMM { get; set; } 
+        public static int DimmerLabelWidthInMM { get; set; } 
+        public static int DimmerLabelHeightInMM { get; set; }
+
+        public static int DistroLabelWidthInMM { get; set; }
+        public static int DistroLabelHeightInMM { get; set; }
+
+        // Label Type
+        public static bool SingleLabel = false;
+        public static bool HeaderBackGroundColourOnly = false;
 
         // Label Field Assignments
         public static LabelField HeaderField { get; set; }
@@ -140,8 +151,17 @@ namespace Dimmer_Labels_Wizard
                 // Set Default Fonts,FontStyles and StringFormat Alignments.
                 for (int listIndex = 0; listIndex < element.Headers.Count; listIndex++)
                 {
-                    element.Headers[listIndex].Font = new System.Drawing.Font("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-                    element.Headers[listIndex].Format = centerStringFormat;
+                    if (SingleLabel == true)
+                    {
+                        element.Headers[listIndex].Font = new System.Drawing.Font("Arial", 5, FontStyle.Bold, GraphicsUnit.Pixel);
+                        element.Headers[listIndex].Format = centerStringFormat;
+                    }
+
+                    else
+                    {
+                        element.Headers[listIndex].Font = new System.Drawing.Font("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
+                        element.Headers[listIndex].Format = centerStringFormat;
+                    }
 
                     element.Footers[listIndex].TopFont = new System.Drawing.Font("Arial", 6, GraphicsUnit.Pixel);
                     element.Footers[listIndex].TopFormat = nearStringFormat;
@@ -154,9 +174,6 @@ namespace Dimmer_Labels_Wizard
 
 
                 }
-
-                element.LabelHeightInMM = UserParameters.LabelHeightInMM;
-                element.LabelWidthInMM = UserParameters.LabelWidthInMM;
             }
         }
     }

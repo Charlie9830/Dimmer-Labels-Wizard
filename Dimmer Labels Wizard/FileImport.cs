@@ -48,6 +48,21 @@ namespace Dimmer_Labels_Wizard
             int multicoreNameColumn = UserParameters.MulticoreNameColumnIndex;
             int positionColumn = UserParameters.PositionColumnIndex;
             int DMXaddressColumn = UserParameters.UniverseDataColumnIndex;
+            int userField1Column = UserParameters.UserField1ColumnIndex;
+            int userField2Column = UserParameters.UserField2ColumnIndex;
+            int userField3Column = UserParameters.UserField3ColumnIndex;
+            int userField4Column = UserParameters.UserField4ColumnIndex;
+
+            // Clear DimmerDistroUnits and Unparseable Data Lists if they have already been Populated.
+            if (Globals.DimmerDistroUnits.Count > 0)
+            {
+                Globals.DimmerDistroUnits.Clear();
+            }
+
+            if (Globals.UnParseableData.Count > 0)
+            {
+                Globals.UnParseableData.Clear();
+            }
 
             while (!file.EndOfData)
             {
@@ -67,6 +82,10 @@ namespace Dimmer_Labels_Wizard
                     Globals.DimmerDistroUnits[index].InstrumentName = instrumentNameColumn == -1 ? "" : fields[instrumentNameColumn];
                     Globals.DimmerDistroUnits[index].MulticoreName = multicoreNameColumn == -1 ? "" : fields[multicoreNameColumn];
                     Globals.DimmerDistroUnits[index].Position = positionColumn == -1 ? "" : fields[positionColumn];
+                    Globals.DimmerDistroUnits[index].UserField1 = userField1Column == -1 ? "" : fields[userField1Column];
+                    Globals.DimmerDistroUnits[index].UserField2 = userField2Column == -1 ? "" : fields[userField2Column];
+                    Globals.DimmerDistroUnits[index].UserField3 = userField3Column == -1 ? "" : fields[userField3Column];
+                    Globals.DimmerDistroUnits[index].UserField4 = userField4Column == -1 ? "" : fields[userField4Column];
 
                     // Application running data.
                     Globals.DimmerDistroUnits[index].ImportIndex = index;

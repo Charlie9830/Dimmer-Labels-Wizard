@@ -42,6 +42,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.BackButton = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.DimmerFormatLabel = new System.Windows.Forms.Label();
+            this.DistroFormatLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.UnparseableDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -139,7 +143,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 111);
+            this.label3.Location = new System.Drawing.Point(12, 93);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(355, 78);
             this.label3.TabIndex = 5;
@@ -150,7 +154,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 245);
+            this.label4.Location = new System.Drawing.Point(12, 196);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(253, 26);
             this.label4.TabIndex = 6;
@@ -166,11 +170,55 @@
             this.BackButton.UseVisualStyleBackColor = true;
             this.BackButton.Click += new System.EventHandler(this.BackButton_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(12, 273);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(144, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Selected Dimmer Format";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(227, 273);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(136, 13);
+            this.label6.TabIndex = 9;
+            this.label6.Text = "Selected Distro Format";
+            // 
+            // DimmerFormatLabel
+            // 
+            this.DimmerFormatLabel.AutoSize = true;
+            this.DimmerFormatLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DimmerFormatLabel.Location = new System.Drawing.Point(13, 298);
+            this.DimmerFormatLabel.Name = "DimmerFormatLabel";
+            this.DimmerFormatLabel.Size = new System.Drawing.Size(122, 13);
+            this.DimmerFormatLabel.TabIndex = 10;
+            this.DimmerFormatLabel.Text = "Selected Dimmer Format";
+            // 
+            // DistroFormatLabel
+            // 
+            this.DistroFormatLabel.AutoSize = true;
+            this.DistroFormatLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DistroFormatLabel.Location = new System.Drawing.Point(227, 298);
+            this.DistroFormatLabel.Name = "DistroFormatLabel";
+            this.DistroFormatLabel.Size = new System.Drawing.Size(122, 13);
+            this.DistroFormatLabel.TabIndex = 11;
+            this.DistroFormatLabel.Text = "Selected Dimmer Format";
+            // 
             // FORM_UnparseableDataDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1009, 443);
+            this.Controls.Add(this.DistroFormatLabel);
+            this.Controls.Add(this.DimmerFormatLabel);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.BackButton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -204,5 +252,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button BackButton;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label DimmerFormatLabel;
+        private System.Windows.Forms.Label DistroFormatLabel;
     }
 }

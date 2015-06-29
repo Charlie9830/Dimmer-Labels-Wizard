@@ -18,7 +18,8 @@ namespace Dimmer_Labels_Wizard
         }
 
         private string[] ShowFields = {"Channel Number", "Instrument Name", "Multicore Name",
-                                           "Position" };
+                                           "Position" , "User Field 1", "User Field 2",
+                                      "User Field 3", "User Field 4"};
 
         private List<string> Items = new List<string>();
 
@@ -61,6 +62,14 @@ namespace Dimmer_Labels_Wizard
                     return LabelField.MulticoreName;
                 case 3:
                     return LabelField.Position;
+                case 4:
+                    return LabelField.UserField1;
+                case 5:
+                    return LabelField.UserField2;
+                case 6:
+                    return LabelField.UserField3;
+                case 7:
+                    return LabelField.UserField4;
                 default:
                     return LabelField.NoAssignment;
             }
@@ -83,9 +92,6 @@ namespace Dimmer_Labels_Wizard
                 if (GetColor(element,showField) != Color.Transparent)
                 {
                     ColorTable.Rows[rowIndex].Cells[colorDisplayColumnIndex].Style.BackColor = GetColor(element,showField);
-
-                    // Update Table. Gets Called kinda Recursively causing a Stack Overflow.
-                    // PopulateColorTable(GetShowField(ShowFieldsComboBox.SelectedIndex));
                 }
             }
         }
@@ -124,6 +130,30 @@ namespace Dimmer_Labels_Wizard
                             if (Items.Contains(footer.PreviousReference.Position) != true)
                             {
                                 Items.Add(footer.PreviousReference.Position);
+                            }
+                            break;
+                        case LabelField.UserField1:
+                            if (Items.Contains(footer.PreviousReference.UserField1) != true)
+                            {
+                                Items.Add(footer.PreviousReference.UserField1);
+                            }
+                            break;
+                        case LabelField.UserField2:
+                            if (Items.Contains(footer.PreviousReference.UserField2) != true)
+                            {
+                                Items.Add(footer.PreviousReference.UserField2);
+                            }
+                            break;
+                        case LabelField.UserField3:
+                            if (Items.Contains(footer.PreviousReference.UserField3) != true)
+                            {
+                                Items.Add(footer.PreviousReference.UserField3);
+                            }
+                            break;
+                        case LabelField.UserField4:
+                            if (Items.Contains(footer.PreviousReference.UserField4) != true)
+                            {
+                                Items.Add(footer.PreviousReference.UserField4);
                             }
                             break;
                         default:
@@ -213,6 +243,30 @@ namespace Dimmer_Labels_Wizard
                                 footer.BackgroundColor = new SolidBrush(color);
                             }
                             break;
+                        case LabelField.UserField1:
+                            if (footer.PreviousReference.UserField1 == item)
+                            {
+                                footer.BackgroundColor = new SolidBrush(color);
+                            }
+                            break;
+                        case LabelField.UserField2:
+                            if (footer.PreviousReference.UserField2 == item)
+                            {
+                                footer.BackgroundColor = new SolidBrush(color);
+                            }
+                            break;
+                        case LabelField.UserField3:
+                            if (footer.PreviousReference.UserField3 == item)
+                            {
+                                footer.BackgroundColor = new SolidBrush(color);
+                            }
+                            break;
+                        case LabelField.UserField4:
+                            if (footer.PreviousReference.UserField4 == item)
+                            {
+                                footer.BackgroundColor = new SolidBrush(color);
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -244,6 +298,30 @@ namespace Dimmer_Labels_Wizard
                             break;
                         case LabelField.Position:
                             if (header.PreviousReference.Position == item)
+                            {
+                                header.BackgroundColor = new SolidBrush(color);
+                            }
+                            break;
+                        case LabelField.UserField1:
+                            if (header.PreviousReference.UserField1 == item)
+                            {
+                                header.BackgroundColor = new SolidBrush(color);
+                            }
+                            break;
+                        case LabelField.UserField2:
+                            if (header.PreviousReference.UserField2 == item)
+                            {
+                                header.BackgroundColor = new SolidBrush(color);
+                            }
+                            break;
+                        case LabelField.UserField3:
+                            if (header.PreviousReference.UserField3 == item)
+                            {
+                                header.BackgroundColor = new SolidBrush(color);
+                            }
+                            break;
+                        case LabelField.UserField4:
+                            if (header.PreviousReference.UserField4 == item)
                             {
                                 header.BackgroundColor = new SolidBrush(color);
                             }
@@ -293,6 +371,30 @@ namespace Dimmer_Labels_Wizard
                                     footer.BackgroundColor = new SolidBrush(color);
                                 }
                                 break;
+                            case LabelField.UserField1:
+                                if (footer.PreviousReference.UserField1 == item)
+                                {
+                                    footer.BackgroundColor = new SolidBrush(color);
+                                }
+                                break;
+                            case LabelField.UserField2:
+                                if (footer.PreviousReference.UserField2 == item)
+                                {
+                                    footer.BackgroundColor = new SolidBrush(color);
+                                }
+                                break;
+                            case LabelField.UserField3:
+                                if (footer.PreviousReference.UserField3 == item)
+                                {
+                                    footer.BackgroundColor = new SolidBrush(color);
+                                }
+                                break;
+                            case LabelField.UserField4:
+                                if (footer.PreviousReference.UserField4 == item)
+                                {
+                                    footer.BackgroundColor = new SolidBrush(color);
+                                }
+                                break;
                             default:
                                 break;
                         }
@@ -324,6 +426,30 @@ namespace Dimmer_Labels_Wizard
                                 break;
                             case LabelField.Position:
                                 if (header.PreviousReference.Position == item)
+                                {
+                                    header.BackgroundColor = new SolidBrush(color);
+                                }
+                                break;
+                            case LabelField.UserField1:
+                                if (header.PreviousReference.UserField1 == item)
+                                {
+                                    header.BackgroundColor = new SolidBrush(color);
+                                }
+                                break;
+                            case LabelField.UserField2:
+                                if (header.PreviousReference.UserField2 == item)
+                                {
+                                    header.BackgroundColor = new SolidBrush(color);
+                                }
+                                break;
+                            case LabelField.UserField3:
+                                if (header.PreviousReference.UserField3 == item)
+                                {
+                                    header.BackgroundColor = new SolidBrush(color);
+                                }
+                                break;
+                            case LabelField.UserField4:
+                                if (header.PreviousReference.UserField4 == item)
                                 {
                                     header.BackgroundColor = new SolidBrush(color);
                                 }
@@ -361,6 +487,22 @@ namespace Dimmer_Labels_Wizard
                     case LabelField.Position:
                         searchResult = labelStrip.Footers.Find(searchItem =>
                             searchItem.PreviousReference.Position == item);
+                        break;
+                    case LabelField.UserField1:
+                        searchResult = labelStrip.Footers.Find(searchItem =>
+                            searchItem.PreviousReference.UserField1 == item);
+                        break;
+                    case LabelField.UserField2:
+                        searchResult = labelStrip.Footers.Find(searchItem =>
+                            searchItem.PreviousReference.UserField2 == item);
+                        break;
+                    case LabelField.UserField3:
+                        searchResult = labelStrip.Footers.Find(searchItem =>
+                            searchItem.PreviousReference.UserField3 == item);
+                        break;
+                    case LabelField.UserField4:
+                        searchResult = labelStrip.Footers.Find(searchItem =>
+                            searchItem.PreviousReference.UserField4 == item);
                         break;
                     default:
                         break;

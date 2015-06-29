@@ -18,46 +18,8 @@ namespace Dimmer_Labels_Wizard
             Application.EnableVisualStyles();
             Forms.MainWindow = new FORM_MainWindow();
             Application.Run(Forms.MainWindow);
-            
-            MessageBox.Show("Fallen Back to Main Program");
 
-            if (Globals.DebugActive == false)
-            {
-                Forms.UserParameterEntry = new FORM_UserParameterEntry();
-                Forms.UserParameterEntry.ShowDialog();
-
-                UserParameters.GenerateDistroRange();
-
-                FileImport.ImportFile();
-
-                if (Globals.UnParseableData.Count > 0)
-                {
-                    Forms.UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
-                    Forms.UnparseableDataDisplay.ShowDialog();
-                }
-
-                foreach (var element in Globals.ClashingRangeData)
-                {
-                    Console.WriteLine("Clashing Data Dimmer Text {0}", element.DimmerNumberText);
-                }
-
-                Console.WriteLine("Sanitation Starting");
-                DataHandling.SanitizeDimDistroUnits();
-                Console.WriteLine("Sanitation Complete");
-
-                Forms.InstrumentNameEntry = new FORM_InstrumentNameEntry();
-                Forms.InstrumentNameEntry.ShowDialog();
-
-                Forms.LabelSetup = new FORM_LabelSetup();
-                Forms.LabelSetup.ShowDialog();
-
-                UserParameters.SetDefaultRackLabelSettings();
-
-                Forms.LabelEditor = new FORM_LabelEditor();
-                Forms.LabelEditor.ShowDialog();
-            }
-
-            else
+            if (Globals.DebugActive == true)
             {
                 // Setup Mock User Paramater Inputs.
                 #region Hardcoded User Paramaters.
@@ -80,8 +42,8 @@ namespace Dimmer_Labels_Wizard
                 UserParameters.MulticoreNameColumnIndex = 3;
                 UserParameters.PositionColumnIndex = 4;
 
-                UserParameters.LabelWidthInMM = 16;
-                UserParameters.LabelHeightInMM = 18;
+                UserParameters.DimmerLabelWidthInMM = 16;
+                UserParameters.DimmerLabelHeightInMM = 18;
                 #endregion
 
                 UserParameters.GenerateDistroRange();
@@ -118,7 +80,6 @@ namespace Dimmer_Labels_Wizard
 
                 FORM_LabelEditor NextWindow = new FORM_LabelEditor();
                 NextWindow.ShowDialog();
-             
             }
         }
     }

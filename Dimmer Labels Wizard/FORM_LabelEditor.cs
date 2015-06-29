@@ -56,10 +56,20 @@ namespace Dimmer_Labels_Wizard
         private PrinterSettings UserPrinterSettings = new PrinterSettings();
 
         // List of Lists to Hold each "Page".
-        private List<List<LabelStrip>> Pages;
+        private List<List<LabelStrip>> Pages = new List<List<LabelStrip>>();
+
+        // List to Track User Labelstrips selected for Printing. Holds Rack Numbers.
+        private List<int> DimmerRacksForPrinting = new List<int>();
+        private List<int> DistroRacksForPrinting = new List<int>();
+
+        // SubList of Globals.LabelStrips based off Print Selections. Populated by GeneratePages().
+        private List<LabelStrip> LabelStripsForPrinting = new List<LabelStrip>();
+
         // Tracks the current page Required for Printing.
         int PrintPageIndex = 0;
-        
+
+        int LabelSeperation = 10;
+
         // Mouse Tracking
         private Point OldMousePosition = new Point();
         private Point NewMousePosition = new Point();
@@ -300,34 +310,7 @@ namespace Dimmer_Labels_Wizard
 
             Point printLocation = new Point(printOrigin.X,printOrigin.Y);
 
-            int totalLabelStripHeight = (int)Math.Round((UserParameters.LabelHeightInMM * 2) + (UserParameters.LabelHeightInMM * 0.5f));
-            int labelSeperation = 10;
-            
-            int maxLabelStripsPerPage = (int)Math.Floor((e.MarginBounds.Height * 0.254d) / (totalLabelStripHeight + labelSeperation));
-            int requiredPageQTY = (int)Math.Ceiling((float)Globals.LabelStrips.Count / maxLabelStripsPerPage);
-
-            // Create the List of Pages if it hasn't already been created.
-            if (Pages == null)
-            {
-                // Make a 2D List of LabelStrips Dimensioned by Pages.
-                Pages = new List<List<LabelStrip>>();
-
-                int lowerIndex = 0;
-                for (int index = 0; index < requiredPageQTY; index++)
-                {
-                    // count will equal maxLabelStripsPerPage unless that will place it out of Range.
-                    // in that case it will equal the ammount of remaining LabelStrips. (Should always be less than
-                    // maxLabelStripsPerPage).
-                    int count = maxLabelStripsPerPage;
-                    count = lowerIndex + maxLabelStripsPerPage >= Globals.LabelStrips.Count ?
-                        Globals.LabelStrips.Count - lowerIndex : maxLabelStripsPerPage;
-
-                    Pages.Insert(index, new List<LabelStrip>());
-                    Pages[index].AddRange(Globals.LabelStrips.GetRange(lowerIndex, count));
-
-                    lowerIndex = lowerIndex + count;
-                }
-            }
+            int totalLabelStripHeight = TotalLabelStripHeight();
 
             // Don't keep Printing forever.
             while (PrintPageIndex < Pages.Count)
@@ -335,9 +318,17 @@ namespace Dimmer_Labels_Wizard
                 // Print the Current Page.
                 foreach (var element in Pages[PrintPageIndex])
                 {
-                    element.RenderToPrinter(e.Graphics, printLocation);
+                    if (UserParameters.SingleLabel == true)
+                    {
+                        element.RenderToPrinterSingleLabel(e.Graphics, printLocation);
+                    }
 
-                    printLocation.Y += totalLabelStripHeight + labelSeperation;
+                    else
+                    {
+                        element.RenderToPrinter(e.Graphics, printLocation);
+                    }
+
+                    printLocation.Y += totalLabelStripHeight + LabelSeperation;
                 }
 
                 e.HasMorePages = true;
@@ -354,15 +345,31 @@ namespace Dimmer_Labels_Wizard
 
         private void PrintButton_Click(object sender, EventArgs e)
         {
-            PrintDialog printSettingsDialog = new PrintDialog();
-            printSettingsDialog.PrinterSettings = UserPrinterSettings;
+            FORM_PrintRangeDialog printRangeDialog = new FORM_PrintRangeDialog();
 
-            if (printSettingsDialog.ShowDialog() == DialogResult.OK)
+            if (printRangeDialog.ShowDialog() == DialogResult.OK)
             {
-                printDocument.DefaultPageSettings = UserPageSettings;
-                printDocument.DocumentName = "Labels";
-                printDocument.PrinterSettings = UserPrinterSettings;
-                printDocument.Print();
+                DimmerRacksForPrinting.Clear();
+                DimmerRacksForPrinting.AddRange(printRangeDialog.DimmerPrintRange);
+
+                DistroRacksForPrinting.Clear();
+                DistroRacksForPrinting.AddRange(printRangeDialog.DistroPrintRange);
+
+                PrintDialog printSettingsDialog = new PrintDialog();
+                printSettingsDialog.PrinterSettings = UserPrinterSettings;
+
+                if (printSettingsDialog.ShowDialog() == DialogResult.OK)
+                {
+                    printDocument.DefaultPageSettings = UserPageSettings;
+                    printDocument.DocumentName = "Labels";
+                    printDocument.PrinterSettings = UserPrinterSettings;
+
+                    // Process LabelStrips into Printable Pages.
+                    GeneratePagesList(CalculateRequiredPages(printDocument));
+
+                    PrintPageIndex = 0;
+                    printDocument.Print();
+                }
             }
         }
 
@@ -378,8 +385,75 @@ namespace Dimmer_Labels_Wizard
             PageSetupDialog pageSetup = new PageSetupDialog();
             pageSetup.PageSettings = UserPageSettings;
             pageSetup.PrinterSettings = UserPrinterSettings;
-
             pageSetup.ShowDialog();
+        }
+
+        private void GeneratePagesList(int requiredPageQTY)
+        {
+            if (Pages.Count == 0)
+            {
+                LabelStripsForPrinting.Clear();
+
+                // Generate the List of SelectedLabelstrips
+                foreach (var rackNumber in DistroRacksForPrinting)
+                {
+                    LabelStripsForPrinting.Add(Globals.LabelStrips.Find(item => item.RackNumber == rackNumber &&
+                        item.RackUnitType == RackType.Distro));
+                }
+
+                foreach (var rackNumber in DimmerRacksForPrinting)
+                {
+                    LabelStripsForPrinting.Add(Globals.LabelStrips.Find(item => item.RackNumber == rackNumber &&
+                        item.RackUnitType == RackType.Dimmer));
+                }
+
+                // Make a 2D List of LabelStrips Dimensioned by Pages.
+                int maxLabelStripsPerPage = CalculateMaxLabelStripsPerPage();
+                int lowerIndex = 0;
+                for (int index = 0; index < requiredPageQTY; index++)
+                {
+                    // count will equal maxLabelStripsPerPage unless that will place it out of Range.
+                    // in that case it will equal the ammount of remaining LabelStrips. (Should always be less than
+                    // maxLabelStripsPerPage).
+                    int count = maxLabelStripsPerPage;
+                    count = lowerIndex + maxLabelStripsPerPage >= LabelStripsForPrinting.Count ?
+                        LabelStripsForPrinting.Count - lowerIndex : maxLabelStripsPerPage;
+
+                    Pages.Insert(index, new List<LabelStrip>());
+                    Pages[index].AddRange(LabelStripsForPrinting.GetRange(lowerIndex, count));
+
+                    lowerIndex = lowerIndex + count;
+                }
+            }
+        }
+
+        private int CalculateRequiredPages(PrintDocument printDocument)
+        {
+            int maxLabelStripsPerPage = CalculateMaxLabelStripsPerPage();
+
+            int requiredPageQty = (int)Math.Ceiling((float)Globals.LabelStrips.Count / maxLabelStripsPerPage);
+
+            return requiredPageQty;
+        }
+
+        private int CalculateMaxLabelStripsPerPage()
+        {
+            int totalLabelStripHeight = TotalLabelStripHeight();
+            int pageHeight = printDocument.DefaultPageSettings.Bounds.Height -
+                printDocument.DefaultPageSettings.Margins.Top - printDocument.DefaultPageSettings.Margins.Bottom;
+
+            int maxLabelStripsPerPage = (int)Math.Floor((pageHeight * 0.254d) / 
+                (totalLabelStripHeight + LabelSeperation));
+
+            return maxLabelStripsPerPage;
+        }
+
+        private int TotalLabelStripHeight()
+        {
+            int labelStripHeight = Math.Max(UserParameters.DistroLabelHeightInMM, UserParameters.DimmerLabelHeightInMM);
+            int totalLabelStripHeight = (int)Math.Round((labelStripHeight * 2) + (labelStripHeight * 0.5f));
+
+            return totalLabelStripHeight;
         }
 
         private void BackgroundColorButton_Click(object sender, EventArgs e)
@@ -436,10 +510,19 @@ namespace Dimmer_Labels_Wizard
                 ActiveLabelStrip.RenderedHeaders.Clear();
                 ActiveLabelStrip.RenderedFooters.Clear();
 
+                UserLabelSelection userSelections = new UserLabelSelection();
                 // Render to Display and Collect Outline Rectangles.
-                UserLabelSelection userSelections = label.RenderToDisplay(CanvasGraphics,
+                if (UserParameters.SingleLabel == true)
+                {
+                    userSelections = label.RenderToDisplaySingleLabel(CanvasGraphics,
                     RenderOrigin, zoomRatio);
+                }
 
+                else
+                {
+                    userSelections = label.RenderToDisplay(CanvasGraphics,
+                        RenderOrigin, zoomRatio);
+                }
                 // Return Objects of RenderToDisplay().
                 ActiveLabelStrip.RenderedHeaders.AddRange(userSelections.HeaderSelections);
                 ActiveLabelStrip.RenderedFooters.AddRange(userSelections.FooterSelections);
@@ -1271,7 +1354,10 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, EventArgs e)
         {
-            Console.WriteLine();
+            printDocument.PrinterSettings = UserPrinterSettings;
+            printDocument.DefaultPageSettings = UserPageSettings;
+
+            Console.WriteLine(CalculateRequiredPages(printDocument));
             CollectRackLabels();
         }
 
@@ -1328,6 +1414,18 @@ namespace Dimmer_Labels_Wizard
         private void LineWeightComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateCellAppearance();
+        }
+
+        private void BackButton_Click(object sender, EventArgs e)
+        {
+            string messageBoxText = "Are you sure you want to go Back? If you go back now, you will loose the Changes " +
+            "you have made in the Label Editor Window";
+
+            if (MessageBox.Show(messageBoxText,"Warning",MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+            {
+                this.Close();
+                Forms.LabelSetup.Show();
+            }
         }
     }
 }

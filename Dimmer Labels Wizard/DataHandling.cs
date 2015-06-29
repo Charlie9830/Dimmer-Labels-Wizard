@@ -86,7 +86,7 @@ namespace Dimmer_Labels_Wizard
             // Make a list of Integers spanning from the first DistroNumber to the Last DistroNumber.
             int[] distroNumbers = GenerateNumberArray(firstDimmerNumber, lastDimmerNumber);
 
-            // Find the index of the First Distro Unit in DimmerDistroUnits.
+            // Find the count of the First Distro Unit in DimmerDistroUnits.
             int firstDistroIndex = Globals.DimmerDistroUnits.FindIndex(item => item.RackUnitType == RackType.Distro);
 
             if (firstDistroIndex == -1)
@@ -131,7 +131,7 @@ namespace Dimmer_Labels_Wizard
          // Make a list of Integers spanning from the first DimmerNumber to the Last DimmerNumber.
             int[] dimmerNumbers = GenerateNumberArray(firstDimmerNumber, lastDimmerNumber);
 
-            // Find the index of the First and Last Dimmer Items within the parameter Universe in DimmerDistroUnits.
+            // Find the count of the First and Last Dimmer Items within the parameter Universe in DimmerDistroUnits.
             int firstDimmerIndex = Globals.DimmerDistroUnits.FindIndex(item => item.RackUnitType == RackType.Dimmer &&
                 item.UniverseNumber == universeNumber);
             int lastDimmerIndex = Globals.DimmerDistroUnits.FindLastIndex(item => item.RackUnitType == RackType.Dimmer &&

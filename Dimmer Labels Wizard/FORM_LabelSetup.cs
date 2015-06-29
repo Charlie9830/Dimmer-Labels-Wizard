@@ -33,13 +33,38 @@ namespace Dimmer_Labels_Wizard
                 Part1.Visible = false;
                 Output.ExportToRackLabel();
                 Part2.RenderControl();
+                Part2.Visible = true;
             }
 
             else if (Part2.Visible == true)
             {
                 // Set any Undefined Colors to White
                 Part2.SetUndefinedColors();
+
+                this.Hide();
+
+                UserParameters.SetDefaultRackLabelSettings();
+                Forms.LabelEditor = new FORM_LabelEditor();
+                Forms.LabelEditor.Show();
+            }
+        }
+
+        private void BackButton_Click(object sender, EventArgs e)
+        {
+            if (Part1.Visible == true)
+            {
                 this.Close();
+                Forms.InstrumentNameEntry.Show();
+            }
+
+            else if (Part2.Visible == true)
+            {
+                if (MessageBox.Show("Are you sure you want to go back? Going back now will cause you to lose your Colour selections."
+                    , "Warning", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    Part2.Visible = false;
+                    Part1.Visible = true;
+                }
             }
         }
     }

@@ -139,6 +139,12 @@
     <Compile Include="FORM_MainWindow.Designer.cs">
       <DependentUpon>FORM_MainWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="FORM_PrintRangeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORM_PrintRangeDialog.Designer.cs">
+      <DependentUpon>FORM_PrintRangeDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="FORM_SplitCellDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +187,12 @@
       <DependentUpon>LabelSetupPart2.cs</DependentUpon>
     </Compile>
     <Compile Include="Output.cs" />
+    <Compile Include="PrintRangeSelection.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PrintRangeSelection.Designer.cs">
+      <DependentUpon>PrintRangeSelection.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LabelStrip.cs" />
@@ -252,6 +264,9 @@
     <EmbeddedResource Include="FORM_MainWindow.resx">
       <DependentUpon>FORM_MainWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FORM_PrintRangeDialog.resx">
+      <DependentUpon>FORM_PrintRangeDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FORM_SplitCellDialog.resx">
       <DependentUpon>FORM_SplitCellDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -269,6 +284,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LabelSetupPart2.resx">
       <DependentUpon>LabelSetupPart2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PrintRangeSelection.resx">
+      <DependentUpon>PrintRangeSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -340,6 +358,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\help-circled-24-000000.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Single Label Preview.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

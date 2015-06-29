@@ -23,7 +23,18 @@ namespace Dimmer_Labels_Wizard
 
         private void FORM_UnparseableDataDisplay_Load(object sender, EventArgs e)
         {
+            // Cancel out of Form if it is not required.
+            if (Globals.UnParseableData.Count == 0)
+            {
+                // Hide and Continue.
+                this.Close();
+                DataHandling.SanitizeDimDistroUnits();
+                Forms.InstrumentNameEntry = new FORM_InstrumentNameEntry();
+                Forms.InstrumentNameEntry.Show();
+            }
+
             PopulateUnparseableDataGridView();
+            SetImportFormatLabels();
 
             // Assign Event Handles to Events.
             UnparseableDataGridView.CellValueChanged += UnparseableDataGridView_CellValueChanged;
@@ -116,7 +127,10 @@ namespace Dimmer_Labels_Wizard
 
             else
             {
-                this.Close();
+                this.Hide();
+                DataHandling.SanitizeDimDistroUnits();
+                Forms.InstrumentNameEntry = new FORM_InstrumentNameEntry();
+                Forms.InstrumentNameEntry.Show();
             }
         }
 
@@ -145,6 +159,57 @@ namespace Dimmer_Labels_Wizard
 
         private void BackButton_Click(object sender, EventArgs e)
         {
+            this.Close();
+            Forms.UserParameterEntry.Show();
+        }
+
+        private void SetImportFormatLabels()
+        {
+            // Dimmer Import
+            switch (UserParameters.DimmerImportFormat)
+            {
+                case ImportFormatting.Format1:
+                    DimmerFormatLabel.Text = "#/###";
+                    break;
+                case ImportFormatting.Format2:
+                    DimmerFormatLabel.Text = "###";
+                    break;
+                case ImportFormatting.Format3:
+                    DimmerFormatLabel.Text = "A###";
+                    break;
+                case ImportFormatting.Format4:
+                    DimmerFormatLabel.Text = "A/###";
+                    break;
+                case ImportFormatting.NoAssignment:
+                    DimmerFormatLabel.Text = "None";
+                    break;
+                default:
+                    DimmerFormatLabel.Text = "";
+                    break;
+            }
+
+            // Distro Import
+            switch (UserParameters.DistroImportFormat)
+            {
+                case ImportFormatting.Format1:
+                    DistroFormatLabel.Text = "A### or AA###";
+                    break;
+                case ImportFormatting.Format2:
+                    DistroFormatLabel.Text = "###";
+                    break;
+                case ImportFormatting.Format3:
+                    DistroFormatLabel.Text = "#/###";
+                    break;
+                case ImportFormatting.Format4:
+                    DistroFormatLabel.Text = "A/###";
+                    break;
+                case ImportFormatting.NoAssignment:
+                    DistroFormatLabel.Text = "None";
+                    break;
+                default:
+                    DistroFormatLabel.Text = "";
+                    break;
+            }
         }
     }
 }

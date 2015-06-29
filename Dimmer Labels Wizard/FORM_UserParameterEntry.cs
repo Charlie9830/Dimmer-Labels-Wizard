@@ -60,7 +60,6 @@ namespace Dimmer_Labels_Wizard
             toolTip.SetToolTip(CSVColumnMappingPanel, "Map available Label Fields to CSV file Column Headers");
             #endregion
         }
-
         
         private void ContinueButton_Click(object sender, EventArgs e)
         {
@@ -70,7 +69,12 @@ namespace Dimmer_Labels_Wizard
             if (CheckUserInputSanity() == true)
             {
                 UpdateUserParameters();
-                this.Close();
+                UserParameters.GenerateDistroRange();
+                FileImport.ImportFile();
+                Forms.UnparseableDataDisplay = new FORM_UnparseableDataDisplay();
+                Forms.UnparseableDataDisplay.Show();
+                this.Hide();
+                
             }
 
             else
@@ -88,6 +92,12 @@ namespace Dimmer_Labels_Wizard
 
             UserParameters.CreateDimmerObjects = CreateDimmerLabelsCheckBox.Checked;
             UserParameters.CreateDistroObjects = CreateDistroLabelsCheckBox.Checked;
+
+            // If this Form has been Shown Again. Clear the Current Dimmer Ranges.
+            if (UserParameters.DimmerRanges.Count > 0)
+            {
+                UserParameters.DimmerRanges.Clear();
+            }
 
             foreach (var element in DimmerRangeInput.Selectors)
             {
@@ -109,6 +119,10 @@ namespace Dimmer_Labels_Wizard
             UserParameters.InstrumentTypeColumnIndex = InstrumentNameMappingComboBox.SelectedIndex - 1;
             UserParameters.MulticoreNameColumnIndex = MulticoreNameMappingComboBox.SelectedIndex - 1;
             UserParameters.PositionColumnIndex = PositionMappingComboBox.SelectedIndex - 1;
+            UserParameters.UserField1ColumnIndex = UserField1MappingComboBox.SelectedIndex - 1;
+            UserParameters.UserField2ColumnIndex = UserField2MappingComboBox.SelectedIndex - 1;
+            UserParameters.UserField3ColumnIndex = UserField3MappingComboBox.SelectedIndex - 1;
+            UserParameters.UserField4ColumnIndex = UserField4MappingComboBox.SelectedIndex - 1;
 
             if (UniverseColumnSelectPanel.Enabled == true)
             {
@@ -236,6 +250,10 @@ namespace Dimmer_Labels_Wizard
             InstrumentNameMappingComboBox.Items.AddRange(headers);
             MulticoreNameMappingComboBox.Items.AddRange(headers);
             PositionMappingComboBox.Items.AddRange(headers);
+            UserField1MappingComboBox.Items.AddRange(headers);
+            UserField2MappingComboBox.Items.AddRange(headers);
+            UserField3MappingComboBox.Items.AddRange(headers);
+            UserField4MappingComboBox.Items.AddRange(headers);
 
             // Choose Most likely column and set as current option.
 
@@ -288,6 +306,12 @@ namespace Dimmer_Labels_Wizard
                     break;
                 }
             }
+
+            // User Fields
+            UserField1MappingComboBox.SelectedIndex = 0;
+            UserField2MappingComboBox.SelectedIndex = 0;
+            UserField3MappingComboBox.SelectedIndex = 0;
+            UserField4MappingComboBox.SelectedIndex = 0;
         }
 
         private void NoUniverseDataCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -531,6 +555,9 @@ namespace Dimmer_Labels_Wizard
             this.Close();
         }
 
+        private void DistroNumberFormatLabel_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }

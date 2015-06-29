@@ -69,7 +69,6 @@
             this.FooterMiddleDataTextBox = new System.Windows.Forms.TextBox();
             this.FooterBottomDataTextBox = new System.Windows.Forms.TextBox();
             this.RackLabelSelector = new System.Windows.Forms.TreeView();
-            this.PerformanceTestButton = new System.Windows.Forms.Button();
             this.PrintButton = new System.Windows.Forms.Button();
             this.printDocument = new System.Drawing.Printing.PrintDocument();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -89,6 +88,8 @@
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.SplitCellButton = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.BackButton = new System.Windows.Forms.Button();
+            this.PerformanceTestButton = new System.Windows.Forms.Button();
             this.LowerPanel.SuspendLayout();
             this.GeneralControlsPanel.SuspendLayout();
             this.HeaderControlsPanel.SuspendLayout();
@@ -101,7 +102,7 @@
             // 
             // DebugButton
             // 
-            this.DebugButton.Location = new System.Drawing.Point(952, 304);
+            this.DebugButton.Location = new System.Drawing.Point(952, 298);
             this.DebugButton.Name = "DebugButton";
             this.DebugButton.Size = new System.Drawing.Size(75, 23);
             this.DebugButton.TabIndex = 5;
@@ -522,19 +523,9 @@
             this.RackLabelSelector.TabIndex = 6;
             this.RackLabelSelector.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.RackLabelSelector_AfterSelect);
             // 
-            // PerformanceTestButton
-            // 
-            this.PerformanceTestButton.Location = new System.Drawing.Point(952, 490);
-            this.PerformanceTestButton.Name = "PerformanceTestButton";
-            this.PerformanceTestButton.Size = new System.Drawing.Size(75, 48);
-            this.PerformanceTestButton.TabIndex = 22;
-            this.PerformanceTestButton.Text = "Performance Test";
-            this.PerformanceTestButton.UseVisualStyleBackColor = true;
-            this.PerformanceTestButton.Click += new System.EventHandler(this.PerformanceTestButton_Click);
-            // 
             // PrintButton
             // 
-            this.PrintButton.Location = new System.Drawing.Point(952, 333);
+            this.PrintButton.Location = new System.Drawing.Point(965, 726);
             this.PrintButton.Name = "PrintButton";
             this.PrintButton.Size = new System.Drawing.Size(75, 23);
             this.PrintButton.TabIndex = 7;
@@ -673,12 +664,33 @@
             this.SplitCellButton.UseVisualStyleBackColor = true;
             this.SplitCellButton.Click += new System.EventHandler(this.SplitCellButton_Click);
             // 
+            // BackButton
+            // 
+            this.BackButton.Location = new System.Drawing.Point(884, 726);
+            this.BackButton.Name = "BackButton";
+            this.BackButton.Size = new System.Drawing.Size(75, 23);
+            this.BackButton.TabIndex = 34;
+            this.BackButton.Text = "Back";
+            this.BackButton.UseVisualStyleBackColor = true;
+            this.BackButton.Click += new System.EventHandler(this.BackButton_Click);
+            // 
+            // PerformanceTestButton
+            // 
+            this.PerformanceTestButton.Location = new System.Drawing.Point(952, 327);
+            this.PerformanceTestButton.Name = "PerformanceTestButton";
+            this.PerformanceTestButton.Size = new System.Drawing.Size(75, 48);
+            this.PerformanceTestButton.TabIndex = 22;
+            this.PerformanceTestButton.Text = "Performance Test";
+            this.PerformanceTestButton.UseVisualStyleBackColor = true;
+            this.PerformanceTestButton.Click += new System.EventHandler(this.PerformanceTestButton_Click);
+            // 
             // FORM_LabelEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(1048, 759);
+            this.Controls.Add(this.BackButton);
             this.Controls.Add(this.ToolsPanel);
             this.Controls.Add(this.ViewControlPanel);
             this.Controls.Add(this.label5);
@@ -752,7 +764,6 @@
         private FontStyleControl HeaderFontStyleSelector;
         private System.Windows.Forms.ComboBox HeaderFontSizeComboBox;
         private System.Windows.Forms.ComboBox HeaderFontComboBox;
-        private System.Windows.Forms.Button PerformanceTestButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -774,5 +785,7 @@
         private System.Windows.Forms.CheckBox LineWeightGlobalApplyCheckBox;
         private System.Windows.Forms.ComboBox LineWeightComboBox;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Button BackButton;
+        private System.Windows.Forms.Button PerformanceTestButton;
     }
 }

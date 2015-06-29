@@ -13,6 +13,10 @@ namespace Dimmer_Labels_Wizard
         public string InstrumentName { get; set; }
         public string MulticoreName { get; set; }
         public string Position { get; set; }
+        public string UserField1 { get; set; }
+        public string UserField2 { get; set; }
+        public string UserField3 { get; set; }
+        public string UserField4 { get; set; }
 
         // Imported Temporary Data
         public string DimmerNumberText { get; set; }

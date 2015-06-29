@@ -17,7 +17,7 @@ namespace Dimmer_Labels_Wizard
     public enum ImportFormatting { Format1, Format2, Format3, Format4, NoUniverseData, NoAssignment }
 
 
-    public enum LabelField { ChannelNumber, InstrumentName, MulticoreName, Position, NoAssignment}
+    public enum LabelField { ChannelNumber, InstrumentName, MulticoreName, Position, UserField1 ,UserField2, UserField3, UserField4, NoAssignment}
 }
 
 

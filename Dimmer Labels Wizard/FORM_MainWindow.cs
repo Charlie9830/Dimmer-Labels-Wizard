@@ -30,6 +30,9 @@ namespace Dimmer_Labels_Wizard
             openFileDialog.InitialDirectory = @"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\";
             openFileDialog.Multiselect = false;
             openFileDialog.CheckPathExists = true;
+            openFileDialog.Title = "Browse";
+            openFileDialog.DefaultExt = ".csv";
+            openFileDialog.FileName = "";
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -47,6 +50,22 @@ namespace Dimmer_Labels_Wizard
             Forms.UserParameterEntry = new FORM_UserParameterEntry();
             Forms.UserParameterEntry.Show();
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            for (int count = 0; count < 12; count++)
+            {
+                Globals.LabelStrips.Add(new LabelStrip());
+            }
+
+            foreach (var element in Globals.LabelStrips)
+            {
+                element.RackUnitType = RackType.Dimmer;
+            }
+
+            FORM_PrintRangeDialog test = new FORM_PrintRangeDialog();
+            test.ShowDialog();
         }
     }
 }
