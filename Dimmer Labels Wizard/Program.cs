@@ -15,6 +15,8 @@ namespace Dimmer_Labels_Wizard
         [STAThread]
         static void Main(string[] args)
         {
+            LabelStrip testLabelStrip = new LabelStrip();
+
             Application.EnableVisualStyles();
             Forms.MainWindow = new FORM_MainWindow();
             Application.Run(Forms.MainWindow);

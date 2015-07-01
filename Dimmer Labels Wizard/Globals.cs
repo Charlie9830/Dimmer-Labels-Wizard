@@ -27,10 +27,6 @@ namespace Dimmer_Labels_Wizard
         // and reside in the same Range.
         public static List<DimmerDistroUnit> ClashingRangeData = new List<DimmerDistroUnit>();
 
-        #region Serialization
-
-        #endregion
-
         // Represents DMX Addresses.
         public struct DMX
         {

@@ -1427,5 +1427,11 @@ namespace Dimmer_Labels_Wizard
                 Forms.LabelSetup.Show();
             }
         }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            Storage storage = new Storage();
+            storage.SaveToFile(@"Test.bin");
+        }
     }
 }

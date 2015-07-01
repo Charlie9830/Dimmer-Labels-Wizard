@@ -202,6 +202,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Racks.cs" />
+    <Compile Include="Storage.cs" />
     <Compile Include="UserParameters.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -90,6 +90,9 @@
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.BackButton = new System.Windows.Forms.Button();
             this.PerformanceTestButton = new System.Windows.Forms.Button();
+            this.SaveButton = new System.Windows.Forms.Button();
+            this.LoadButton = new System.Windows.Forms.Button();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.LowerPanel.SuspendLayout();
             this.GeneralControlsPanel.SuspendLayout();
             this.HeaderControlsPanel.SuspendLayout();
@@ -556,14 +559,14 @@
             // printSettingsToolStripMenuItem
             // 
             this.printSettingsToolStripMenuItem.Name = "printSettingsToolStripMenuItem";
-            this.printSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.printSettingsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.printSettingsToolStripMenuItem.Text = "Print Settings";
             this.printSettingsToolStripMenuItem.Click += new System.EventHandler(this.printSettingsToolStripMenuItem_Click);
             // 
             // pageSettingsToolStripMenuItem
             // 
             this.pageSettingsToolStripMenuItem.Name = "pageSettingsToolStripMenuItem";
-            this.pageSettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pageSettingsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pageSettingsToolStripMenuItem.Text = "Page Setup";
             this.pageSettingsToolStripMenuItem.Click += new System.EventHandler(this.pageSettingsToolStripMenuItem_Click);
             // 
@@ -684,12 +687,33 @@
             this.PerformanceTestButton.UseVisualStyleBackColor = true;
             this.PerformanceTestButton.Click += new System.EventHandler(this.PerformanceTestButton_Click);
             // 
+            // SaveButton
+            // 
+            this.SaveButton.Location = new System.Drawing.Point(952, 408);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(75, 23);
+            this.SaveButton.TabIndex = 35;
+            this.SaveButton.Text = "Save";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            // 
+            // LoadButton
+            // 
+            this.LoadButton.Location = new System.Drawing.Point(952, 437);
+            this.LoadButton.Name = "LoadButton";
+            this.LoadButton.Size = new System.Drawing.Size(75, 23);
+            this.LoadButton.TabIndex = 36;
+            this.LoadButton.Text = "Load";
+            this.LoadButton.UseVisualStyleBackColor = true;
+            // 
             // FORM_LabelEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(1048, 759);
+            this.Controls.Add(this.LoadButton);
+            this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.BackButton);
             this.Controls.Add(this.ToolsPanel);
             this.Controls.Add(this.ViewControlPanel);
@@ -787,5 +811,8 @@
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Button BackButton;
         private System.Windows.Forms.Button PerformanceTestButton;
+        private System.Windows.Forms.Button SaveButton;
+        private System.Windows.Forms.Button LoadButton;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
