@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Shapes;
+using System.Drawing;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -12,14 +11,17 @@ namespace Dimmer_Labels_Wizard
     {
         // Top Line Properties
         public string TopData { get; set; }
-        public FontFamily TopFont { get; set; }
+        public Font TopFont { get; set; }
+        public StringFormat TopFormat { get; set; }
 
         // Middle Line Properties
         public string MiddleData { get; set; }
-        public FontFamily MiddleFont { get; set; }
+        public Font MiddleFont { get; set; }
+        public StringFormat MiddleFormat { get; set; }
 
         //Bottom line Properties
         public string BottomData { get; set; }
-        public FontFamily BottomFont { get; set; }
+        public Font BottomFont { get; set; }
+        public StringFormat BottomFormat { get; set; }
     }
 }
