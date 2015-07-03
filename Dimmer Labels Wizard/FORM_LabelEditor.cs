@@ -503,7 +503,7 @@ namespace Dimmer_Labels_Wizard
             Render(ActiveLabelStrip.LabelStrip);
         }
 
-        // Control Method for RenderToDisplay. Renders to labelCanvas Panel and collects Header and Cell Outlines.
+        // Control Method for RenderToDisplay. Renders to Canvas Panel and collects Header and Cell Outlines.
         private void Render(LabelStrip label)
         {
             if (ActiveLabelStrip != null)
