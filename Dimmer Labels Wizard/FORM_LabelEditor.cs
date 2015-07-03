@@ -2,18 +2,23 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Printing;
 using System.Diagnostics;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using System.Windows.Controls;
 
 namespace Dimmer_Labels_Wizard
 {
     public partial class FORM_LabelEditor : Form
     {
+        // WPF Class, Provides Surface to Render To.
+        public LabelCanvas LabelCanvas = new LabelCanvas();
+
         // Currently Selected LabelStrip. Initialized by RackLabelSelect_AfterSelect().
         private LabelStripSelection ActiveLabelStrip;
 
@@ -93,14 +98,12 @@ namespace Dimmer_Labels_Wizard
         {
             InitializeComponent();
 
+            // Assign the LabelCanvas object to the WPF ElementHost.
+            CanvasHost.Child = LabelCanvas;
+
             this.printDocument.PrintPage +=
                 new System.Drawing.Printing.PrintPageEventHandler(this.printDocument_PrintPage);
-            CanvasPanel.MouseDown += new MouseEventHandler(this.CanvasPanel_MouseDown);
-            CanvasPanel.MouseClick += new MouseEventHandler(this.CanvasPanel_MouseClick);
-            CanvasPanel.MouseUp += new MouseEventHandler(this.CanvasPanel_MouseUp);
-            CanvasPanel.MouseMove += new MouseEventHandler(this.CanvasPanel_MouseMove);
             
-
             HeaderTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
             FooterTopDataTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
             FooterMiddleDataTextBox.KeyDown += new KeyEventHandler(this.TextBoxes_KeyDown);
@@ -122,8 +125,6 @@ namespace Dimmer_Labels_Wizard
         private void FORM_LabelEditor_Load(object sender, EventArgs e)
         {
             // Generate Graphics Object
-            CanvasGraphics = CanvasPanel.CreateGraphics();
-            CanvasGraphics.PageUnit = GraphicsUnit.Pixel;
 
             zoomRatio = 3;
 

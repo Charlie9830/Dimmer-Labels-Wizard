@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -14,10 +15,10 @@ namespace Dimmer_Labels_Wizard
         public float Height { get; set; }
         public float Width { get; set; }
 
-        protected SolidBrush _textColor;
-        protected SolidBrush _backgroundColor;
+        protected SolidColorBrush _textColor;
+        protected SolidColorBrush _backgroundColor;
 
-        public SolidBrush TextColor
+        public SolidColorBrush TextColor
         {
             get
             {
@@ -30,7 +31,7 @@ namespace Dimmer_Labels_Wizard
             }
         }
         
-        public SolidBrush BackgroundColor
+        public SolidColorBrush BackgroundColor
         {
             get
             {
@@ -42,12 +43,12 @@ namespace Dimmer_Labels_Wizard
                     // Calculate Luminance of Color and set _textColor to White or Black based on this luminance result.
                     if ((0.299 * value.Color.R) + (0.587 * value.Color.G) + (0.114 * value.Color.B) > 128)
                     {
-                        _textColor = new SolidBrush(Color.Black);
+                        _textColor = new SolidColorBrush(Colors.Black);
                     }
 
                     else
                     {
-                        _textColor = new SolidBrush(Color.White);
+                        _textColor = new SolidColorBrush(Colors.White);
                     }
 
                     _backgroundColor = value;
