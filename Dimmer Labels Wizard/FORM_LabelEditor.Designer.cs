@@ -76,8 +76,6 @@
             this.printSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pageSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.printDialog = new System.Windows.Forms.PrintDialog();
-            this.CanvasPanel = new System.Windows.Forms.Panel();
-            this.StartTipLabel = new System.Windows.Forms.Label();
             this.backgroundColorDialog = new System.Windows.Forms.ColorDialog();
             this.fontDialog = new System.Windows.Forms.FontDialog();
             this.label5 = new System.Windows.Forms.Label();
@@ -93,12 +91,12 @@
             this.SaveButton = new System.Windows.Forms.Button();
             this.LoadButton = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.CanvasHost = new System.Windows.Forms.Integration.ElementHost();
             this.LowerPanel.SuspendLayout();
             this.GeneralControlsPanel.SuspendLayout();
             this.HeaderControlsPanel.SuspendLayout();
             this.FooterControlsPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.CanvasPanel.SuspendLayout();
             this.ViewControlPanel.SuspendLayout();
             this.ToolsPanel.SuspendLayout();
             this.SuspendLayout();
@@ -574,26 +572,6 @@
             // 
             this.printDialog.UseEXDialog = true;
             // 
-            // CanvasPanel
-            // 
-            this.CanvasPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.CanvasPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.CanvasPanel.Controls.Add(this.StartTipLabel);
-            this.CanvasPanel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.CanvasPanel.Location = new System.Drawing.Point(12, 52);
-            this.CanvasPanel.Name = "CanvasPanel";
-            this.CanvasPanel.Size = new System.Drawing.Size(1015, 242);
-            this.CanvasPanel.TabIndex = 8;
-            // 
-            // StartTipLabel
-            // 
-            this.StartTipLabel.AutoSize = true;
-            this.StartTipLabel.Location = new System.Drawing.Point(400, 112);
-            this.StartTipLabel.Name = "StartTipLabel";
-            this.StartTipLabel.Size = new System.Drawing.Size(215, 13);
-            this.StartTipLabel.TabIndex = 0;
-            this.StartTipLabel.Text = "To begin, Select a Label from the Rack List.";
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -706,19 +684,28 @@
             this.LoadButton.Text = "Load";
             this.LoadButton.UseVisualStyleBackColor = true;
             // 
+            // CanvasHost
+            // 
+            this.CanvasHost.Location = new System.Drawing.Point(12, 48);
+            this.CanvasHost.Name = "CanvasHost";
+            this.CanvasHost.Size = new System.Drawing.Size(1015, 242);
+            this.CanvasHost.TabIndex = 37;
+            this.CanvasHost.Text = "elementHost1";
+            this.CanvasHost.Child = null;
+            // 
             // FORM_LabelEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(1048, 759);
+            this.Controls.Add(this.CanvasHost);
             this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.BackButton);
             this.Controls.Add(this.ToolsPanel);
             this.Controls.Add(this.ViewControlPanel);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.CanvasPanel);
             this.Controls.Add(this.PerformanceTestButton);
             this.Controls.Add(this.LowerPanel);
             this.Controls.Add(this.menuStrip1);
@@ -739,8 +726,6 @@
             this.FooterControlsPanel.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.CanvasPanel.ResumeLayout(false);
-            this.CanvasPanel.PerformLayout();
             this.ViewControlPanel.ResumeLayout(false);
             this.ToolsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -760,7 +745,6 @@
         private System.Windows.Forms.ToolStripMenuItem printSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pageSettingsToolStripMenuItem;
         private System.Windows.Forms.PrintDialog printDialog;
-        private System.Windows.Forms.Panel CanvasPanel;
         private System.Windows.Forms.Button FooterBackgroundColorButton;
         private System.Windows.Forms.Label FooterBackgroundColorLabel;
         private System.Windows.Forms.ColorDialog backgroundColorDialog;
@@ -798,7 +782,6 @@
         private System.Windows.Forms.Button MagnifyMinusButton;
         private System.Windows.Forms.Button CenterViewButton;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label StartTipLabel;
         private System.Windows.Forms.Button SplitCellButton;
         private System.Windows.Forms.Panel ToolsPanel;
         private System.Windows.Forms.CheckBox HeaderGlobalApplyCheckBox;
@@ -814,5 +797,6 @@
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Button LoadButton;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.Integration.ElementHost CanvasHost;
     }
 }

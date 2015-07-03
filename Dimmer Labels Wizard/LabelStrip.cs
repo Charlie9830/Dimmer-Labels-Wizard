@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
+using System.Globalization;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -85,6 +86,19 @@ namespace Dimmer_Labels_Wizard
         // Render Header and Footers to Display
         public void RenderToDisplay(Canvas canvas, Point origin)
         {
+            // Resources.
+            SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
+            Thickness headerOutlineThickness = new Thickness(2);
+
+            double labelWidth = this.LabelWidthInMM;
+            double labelHeight = this.LabelHeightInMM;
+
+            double headerXOffset = origin.X;
+            int rightBoundPosition = 1;
+
+            char stringDelimiter = ' ';
+
+            // Clear Lists.
             if (HeaderOutlines.Count > 0)
             {
                 HeaderOutlines.Clear();
@@ -95,15 +109,150 @@ namespace Dimmer_Labels_Wizard
                 FooterOutlines.Clear();
             }
 
-            // Resources.
-            SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
+            // Header Rendering.
+            for (int index = 0; index < Headers.Count; index++)
+            {
+                Canvas textCanvas = new Canvas();
+                List<TextBlock> textBlocks = new List<TextBlock>();
 
-            double labelWidth = this.LabelWidthInMM;
-            double labelHeight = this.LabelHeightInMM;
+                HeaderOutlines.Add(new Border());
 
+                // Determine Right Bound Position.
+                string currentData = Headers[index].Data;
+                for (int j = index + 1; j < Headers.Count; j++)
+                {
+                    if (currentData == Headers[j].Data)
+                    {
+                        rightBoundPosition++;
+                    }
+
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                // Set HeaderOutline Size.
+                HeaderOutlines[index].Width = labelWidth * rightBoundPosition;
+                HeaderOutlines[index].Height = labelHeight;
+
+                // Set HeaderOutline Position.
+                if (index == 0)
+                {
+                    Canvas.SetTop(HeaderOutlines[index], origin.X);
+                    Canvas.SetLeft(HeaderOutlines[index], origin.Y);
+                }
+
+                else
+                {
+                    Canvas.SetTop(HeaderOutlines[index], headerXOffset);
+                    Canvas.SetLeft(HeaderOutlines[index], origin.Y);
+                }
+
+                // Set Colors.
+                HeaderOutlines[index].Background = Headers[index].BackgroundColor;
+                HeaderOutlines[index].BorderBrush = outlineColor;
+
+                // Set Outline Thickness.
+                HeaderOutlines[index].BorderThickness = headerOutlineThickness;
+
+                // Setup Text.
+                textCanvas.Width = HeaderOutlines[index].Width - HeaderOutlines[index].BorderThickness.Left -
+                    HeaderOutlines[index].BorderThickness.Right;
+                textCanvas.Height = HeaderOutlines[index].Height - HeaderOutlines[index].BorderThickness.Top -
+                    HeaderOutlines[index].BorderThickness.Bottom;
+
+                Size textCanvasSize = new Size(textCanvas.Width, textCanvas.Height);
+
+                string headerData = Headers[index].Data;
+                Typeface headerTypeface = Headers[index].Font;
+                double headerFontSize = Headers[index].FontSize;
+
+                // Measure the string.
+                Size downSizeRatio = MeasureText(headerData, headerTypeface, headerFontSize);
+
+                // Can the string Fit into onto the Canvas as is?
+                if (downSizeRatio.Width == 1)
+                {
+                    // GenerateTextBlock()
+                }
+
+                else
+                {
+                    // Is the String Splitable
+                    string[] splitStrings = headerData.Split(stringDelimiter);
+
+                    if (splitStrings.Length > 1)
+                    {
+                        // Check If Vertical Downsizing is required.
+                            // Apply Downsize back to HeaderCell.
+
+                        // Generate TextBlocks.
+                    }
+
+                    else
+                    {
+                        Headers[index].FontSize *= downSizeRatio.Width;
+
+                        // Generate TextBlocks.
+                    }
+                }
+
+                // Add to canvas.
+                canvas.Children.Add(HeaderOutlines[index]);
+
+                // Iterate and Reset.
+                headerXOffset += HeaderOutlines[index].Width;
+                index += rightBoundPosition;
+                rightBoundPosition = 1;
+            }
 
         }
       
+        private Size MeasureText(string text,Typeface typeface, double emSize)
+        {
+            FormattedText formatter = new FormattedText(text, CultureInfo.CurrentCulture,FlowDirection.LeftToRight,
+                typeface,emSize,Brushes.Black);
+
+            Size returnSize = new Size(formatter.Width, formatter.Height);
+
+            return returnSize;
+        }
+
+        private Size GetDifferenceRatio(Size textSize, Size containerSize)
+        {
+            Size returnSize = new Size();
+
+            // Width
+            if (textSize.Width > containerSize.Width)
+            {
+                returnSize.Width = containerSize.Width / textSize.Width;
+            }
+
+            else
+            {
+                returnSize.Width = 1;
+            }
+
+            // Height
+            if (textSize.Height > containerSize.Height)
+            {
+                returnSize.Height = containerSize.Height / textSize.Height;
+            }
+
+            else
+            {
+                returnSize.Height = 1;
+            }
+
+            return returnSize;
+        }
+
+        private TextBlock[] GenerateTextBlocks(Canvas canvas, string[] strings, Typeface typeface, Size fontSize)
+        {
+            List<TextBlock> textBlocks = new List<TextBlock>();
+
+        }
 
         // Helper Method for Render. Determines if a String is too large to fit within a rectangle.
         // Returns SizeF Ratio.

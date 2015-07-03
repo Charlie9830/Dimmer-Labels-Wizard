@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
-
+using System.Windows.Media;
+using System.Windows.Shapes;
+using System.Windows;
 namespace Dimmer_Labels_Wizard
 {
     public class FooterCell : LabelCell
     {
         // Top Line Properties
         public string TopData { get; set; }
-        public Font TopFont { get; set; }
-        public StringFormat TopFormat { get; set; }
+        public Typeface TopFont { get; set; }
+        public double TopFontSize { get; set; }
 
         // Middle Line Properties
         public string MiddleData { get; set; }
-        public Font MiddleFont { get; set; }
-        public StringFormat MiddleFormat { get; set; }
-
+        public Typeface MiddleFont { get; set; }
+        public double MiddleFontSize { get; set; }
         //Bottom line Properties
         public string BottomData { get; set; }
-        public Font BottomFont { get; set; }
-        public StringFormat BottomFormat { get; set; }
+        public Typeface BottomFont { get; set; }
+        public double BottomFontSize { get; set; }
     }
 }
