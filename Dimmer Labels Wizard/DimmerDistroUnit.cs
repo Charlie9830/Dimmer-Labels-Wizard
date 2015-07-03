@@ -8,7 +8,6 @@ namespace Dimmer_Labels_Wizard
 {
     public class DimmerDistroUnit : IComparable<DimmerDistroUnit>
     {
-        // Test Source Test
         // Imported Data
         public string ChannelNumber { get; set; }
         public string InstrumentName { get; set; }

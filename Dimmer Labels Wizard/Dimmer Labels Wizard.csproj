@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dimmer_Labels_Wizard</RootNamespace>
     <AssemblyName>Dimmer Labels Wizard</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>C:\Users\Charlie Samsung\Desktop\DimmerLabelsWizard\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -38,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,6 +49,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>F8E4AD325D0A1CBB43196C076C62B3D3F37C5158</ManifestCertificateThumbprint>
@@ -106,6 +109,12 @@
     </Compile>
     <Compile Include="FontStyleControl.Designer.cs">
       <DependentUpon>FontStyleControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FORMRenderingTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMRenderingTest.Designer.cs">
+      <DependentUpon>FORMRenderingTest.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms.cs" />
     <Compile Include="FORM_GlobalApplyWarning.cs">
@@ -172,6 +181,9 @@
     <Compile Include="Globals.cs" />
     <Compile Include="HeaderCell.cs" />
     <Compile Include="FileImport.cs" />
+    <Compile Include="LabelCanvas.xaml.cs">
+      <DependentUpon>LabelCanvas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LabelCell.cs" />
     <Compile Include="Label Strip Selection Handling.cs" />
     <Compile Include="LabelSetupPart1.cs">
@@ -249,6 +261,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FontStyleControl.resx">
       <DependentUpon>FontStyleControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMRenderingTest.resx">
+      <DependentUpon>FORMRenderingTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FORM_GlobalApplyWarning.resx">
       <DependentUpon>FORM_GlobalApplyWarning.cs</DependentUpon>
@@ -362,6 +377,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Single Label Preview.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="LabelCanvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
