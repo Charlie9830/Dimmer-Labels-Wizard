@@ -12,9 +12,6 @@ namespace Dimmer_Labels_Wizard
 {
     public partial class LabelSetupPart2 : UserControl
     {
-        private int FirstDisplayedRow;
-        private int CurrentRowIndex;
-
         public LabelSetupPart2()
         {
             InitializeComponent();
@@ -97,13 +94,6 @@ namespace Dimmer_Labels_Wizard
                     ColorTable.Rows[rowIndex].Cells[colorDisplayColumnIndex].Style.BackColor = GetColor(element,showField);
                 }
             }
-
-            // Scroll Table back to last position.
-
-                ColorTable.CurrentCell = ColorTable.Rows[CurrentRowIndex].Cells[itemColumnIndex];
-                ColorTable.FirstDisplayedScrollingRowIndex = FirstDisplayedRow;
-
-            
         }
 
         // Called by PopulateColorTable
@@ -176,20 +166,12 @@ namespace Dimmer_Labels_Wizard
 
         private void ShowFieldsComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FirstDisplayedRow = 0;
-            CurrentRowIndex = 0;
             PopulateColorTable(GetShowField(ShowFieldsComboBox.SelectedIndex));
         }
 
         private void ColorSelectButton_Click(object sender, EventArgs e)
         {
-            ShowColorDialog();
-        }
-
-        private void ShowColorDialog()
-        {
-            FirstDisplayedRow = ColorTable.FirstDisplayedScrollingRowIndex;
-            CurrentRowIndex = ColorTable.CurrentCell.RowIndex;
+            Console.WriteLine(ColorTable.SelectedCells.Count);
 
             if (ColorTable.SelectedCells.Count == 1)
             {

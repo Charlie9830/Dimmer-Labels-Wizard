@@ -1419,7 +1419,7 @@ namespace Dimmer_Labels_Wizard
 
         private void BackButton_Click(object sender, EventArgs e)
         {
-            string messageBoxText = "Are you sure you want to go Back? If you go back now, you may loose the Changes " +
+            string messageBoxText = "Are you sure you want to go Back? If you go back now, you will loose the Changes " +
             "you have made in the Label Editor Window";
 
             if (MessageBox.Show(messageBoxText,"Warning",MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
