@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Globalization;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -57,31 +59,19 @@ namespace Dimmer_Labels_Wizard
         }
 
         // Sets the Background Colour of Each Header and Footer Cell
-        public void SetBackgroundColor(System.Drawing.Color desiredColor)
+        public void SetBackgroundColor(Color desiredColor)
         {
             foreach (var element in Headers)
             {
-                element.BackgroundColor = new SolidBrush(desiredColor);
+                element.BackgroundColor = new SolidColorBrush(desiredColor);
             }
 
             foreach (var element in Footers)
             {
-                element.BackgroundColor = new SolidBrush(desiredColor);
+                element.BackgroundColor = new SolidColorBrush(desiredColor);
             }
         }
 
-        // Overload: Sets the Background Color of Header and Cell Cells Matching a Multicore Name
-        public void SetBackgroundColor(string multicoreName, System.Drawing.Color desiredColor)
-        {
-            for (int list_index = 0; list_index < 12; list_index++)
-            {
-                if (Headers[list_index].Data == multicoreName)
-                {
-                    Headers[list_index].BackgroundColor = new SolidBrush(desiredColor);
-                    Footers[list_index].BackgroundColor = new SolidBrush(desiredColor);
-                }
-            }
-        }
 
         // Render Header and Footers to Display
         public void RenderToDisplay(Canvas canvas, Point origin)
@@ -169,12 +159,14 @@ namespace Dimmer_Labels_Wizard
                 double headerFontSize = Headers[index].FontSize;
 
                 // Measure the string.
-                Size downSizeRatio = MeasureText(headerData, headerTypeface, headerFontSize);
+                Size fontDimensions = MeasureText(headerData, headerTypeface, headerFontSize);
+                Size downSizeRatio = GetDifferenceRatio(fontDimensions, textCanvasSize);
 
                 // Can the string Fit into onto the Canvas as is?
                 if (downSizeRatio.Width == 1)
                 {
-                    // GenerateTextBlock()
+                    textCanvas.Children.Add
+                        (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,headerFontSize,fontDimensions));
                 }
 
                 else
@@ -184,17 +176,35 @@ namespace Dimmer_Labels_Wizard
 
                     if (splitStrings.Length > 1)
                     {
-                        // Check If Vertical Downsizing is required.
-                            // Apply Downsize back to HeaderCell.
+                        // Check if Vertical Downsizing is required.
+                        double verticalDownsizeRatio = textCanvas.Height > fontDimensions.Height * splitStrings.Length ?
+                            1 : textCanvas.Height / (fontDimensions.Height * splitStrings.Length);
 
+                        if (verticalDownsizeRatio > 1)
+                        {
+                            // Downsize Further.
+                            Headers[index].FontSize *= verticalDownsizeRatio;
+                        }
+
+                        // Recalulate Font Dimnesions.
+                        Size verticallyDownsizedFontDimensions = MeasureText(splitStrings.First(),headerTypeface,Headers[index].FontSize);
+                        
                         // Generate TextBlocks.
+                        TextBlock[] textBlockQueue = GenerateTextBlocks(textCanvasSize,splitStrings,headerTypeface,
+                            Headers[index].FontSize, verticallyDownsizedFontDimensions);
+
+                        foreach (var element in textBlockQueue)
+                        {
+                            textCanvas.Children.Add(element);
+                        }
                     }
 
                     else
                     {
                         Headers[index].FontSize *= downSizeRatio.Width;
 
-                        // Generate TextBlocks.
+                        textCanvas.Children.Add
+                        (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,Headers[index].FontSize,fontDimensions));
                     }
                 }
 
@@ -207,12 +217,14 @@ namespace Dimmer_Labels_Wizard
                 rightBoundPosition = 1;
             }
 
+            // Footer Rendering.
+
         }
-      
-        private Size MeasureText(string text,Typeface typeface, double emSize)
+
+        private Size MeasureText(string text, Typeface typeface, double emSize)
         {
-            FormattedText formatter = new FormattedText(text, CultureInfo.CurrentCulture,FlowDirection.LeftToRight,
-                typeface,emSize,Brushes.Black);
+            FormattedText formatter = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                typeface, emSize, Brushes.Black);
 
             Size returnSize = new Size(formatter.Width, formatter.Height);
 
@@ -247,11 +259,59 @@ namespace Dimmer_Labels_Wizard
 
             return returnSize;
         }
-
-        private TextBlock[] GenerateTextBlocks(Canvas canvas, string[] strings, Typeface typeface, Size fontSize)
+        
+        private TextBlock[] GenerateTextBlocks(Size canvasSize, string[] strings, Typeface typeface, double fontSize, 
+            Size fontDimensions)
         {
             List<TextBlock> textBlocks = new List<TextBlock>();
 
+            int textBlockQTY = strings.Length;
+
+            double topOffset = (canvasSize.Height - fontDimensions.Height * textBlockQTY) / 2;
+
+            for (int count = 1; count <= textBlockQTY; count++)
+            {
+                textBlocks.Add(new TextBlock());
+                Canvas.SetTop(textBlocks.Last(), topOffset * count);
+            }
+
+            // Add Text and set Parameters.
+            int index = 0;
+            foreach (var element in textBlocks)
+            {
+                element.Text = strings[index];
+                element.TextAlignment = TextAlignment.Center;
+                element.FontFamily = typeface.FontFamily;
+                element.FontStyle = typeface.Style;
+                element.FontStretch = typeface.Stretch;
+                element.FontWeight = typeface.Weight;
+                element.FontSize = fontSize;
+
+            }
+
+            return textBlocks.ToArray();
+        }
+
+        // Overload, For Single String use.
+        private TextBlock GenerateTextBlocks(Size canvasSize, string text, Typeface typeface, double fontSize,
+            Size fontDimensions)
+        {
+            TextBlock returnBlock = new TextBlock();
+
+            double topOffset = (canvasSize.Height - fontDimensions.Height) / 2;
+
+            Canvas.SetTop(returnBlock, topOffset);
+
+            // Add Text and set Parameters.
+            returnBlock.Text = text;
+            returnBlock.TextAlignment = TextAlignment.Center;
+            returnBlock.FontFamily = typeface.FontFamily;
+            returnBlock.FontStyle = typeface.Style;
+            returnBlock.FontStretch = typeface.Stretch;
+            returnBlock.FontWeight = typeface.Weight;
+            returnBlock.FontSize = fontSize;
+
+            return returnBlock;
         }
 
         // Helper Method for Render. Determines if a String is too large to fit within a rectangle.

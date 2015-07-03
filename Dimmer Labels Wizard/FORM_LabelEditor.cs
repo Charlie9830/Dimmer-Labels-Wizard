@@ -24,7 +24,6 @@ namespace Dimmer_Labels_Wizard
         public static List<Rectangle> HeaderSelectionBounds = new List<Rectangle>();
         public static List<Rectangle> FooterSelectionBounds = new List<Rectangle>();
 
-        private Graphics CanvasGraphics;
         private Point RenderOrigin;
         private Point CanvasPanelCenter;
 
@@ -99,8 +98,8 @@ namespace Dimmer_Labels_Wizard
 
             CanvasHost.Child = labelCanvas;
 
-            this.printDocument.PrintPage +=
-                new System.Drawing.Printing.PrintPageEventHandler(this.printDocument_PrintPage);
+            //this.printDocument.PrintPage +=
+            //    new System.Drawing.Printing.PrintPageEventHandler(this.printDocument_PrintPage);
 
             
 
@@ -132,8 +131,8 @@ namespace Dimmer_Labels_Wizard
             RenderOrigin.X = 20;
             RenderOrigin.Y = 10;
 
-            CanvasPanelCenter.X = CanvasPanel.Width / 2;
-            CanvasPanelCenter.Y = CanvasPanel.Height / 2;
+            CanvasPanelCenter.X = labelCanvas.Width / 2;
+            CanvasPanelCenter.Y = labelCanvas.Height / 2;
 
             CollectRackLabels();
             PopulateRackLabelSelector();
@@ -141,7 +140,6 @@ namespace Dimmer_Labels_Wizard
 
             LineWeightComboBox.Items.AddRange(lineWeights);
 
-            StartTipLabel.Visible = true;
             GlobalApplyDialogShow = true;
 
             // Print Defualts
@@ -190,62 +188,62 @@ namespace Dimmer_Labels_Wizard
             SelectorRackLabels[dimmerDimension].AddRange(Globals.LabelStrips.FindAll(label => label.RackUnitType == RackType.Dimmer));
         }
 
-        private void RenderCellSeperators()
-        {
-            List<Point> availableSplitPoints = ActiveLabelStrip.DetermineCellSplitPoints();
+        //private void RenderCellSeperators()
+        //{
+        //    List<Point> availableSplitPoints = ActiveLabelStrip.DetermineCellSplitPoints();
 
-            int splitIndexCounter = 0;
-            // Create and Position CellSeperators.
-            foreach (var splitPoint in availableSplitPoints)
-            {
-                cellSeperators.Add(new CellSeperator(splitIndexCounter));
+        //    int splitIndexCounter = 0;
+        //    // Create and Position CellSeperators.
+        //    foreach (var splitPoint in availableSplitPoints)
+        //    {
+        //        cellSeperators.Add(new CellSeperator(splitIndexCounter));
 
-                if (splitPoint.IsEmpty == true)
-                {
-                    cellSeperators[splitIndexCounter].Enabled = false;
-                    cellSeperators[splitIndexCounter].Visible = false;
-                }
+        //        if (splitPoint.X == 0 && splitPoint.Y == 0)
+        //        {
+        //            cellSeperators[splitIndexCounter].Enabled = false;
+        //            cellSeperators[splitIndexCounter].Visible = false;
+        //        }
 
-                else
-                {
-                    cellSeperators[splitIndexCounter].Parent = CanvasPanel;
-                }
-                cellSeperators[splitIndexCounter].Location = availableSplitPoints[splitIndexCounter];
+        //        else
+        //        {
+        //            cellSeperators[splitIndexCounter].Parent = labelCanvas;
+        //        }
+        //        cellSeperators[splitIndexCounter].Location = availableSplitPoints[splitIndexCounter];
 
-                splitIndexCounter++;
-            }
+        //        splitIndexCounter++;
+        //    }
 
-            // Wire Up Events.
-            foreach (var element in cellSeperators)
-            {
-                element.CellSeperatorSelectEvent += new CellSeperator.CellSeperatorEventHandler(CellSeperator_Select);
-            }
-        }
+        //    // Wire Up Events.
+        //    foreach (var element in cellSeperators)
+        //    {
+        //        element.CellSeperatorSelectEvent += new CellSeperator.CellSeperatorEventHandler(CellSeperator_Select);
+        //    }
+        //}
 
-        private void DeRenderCellSeperators()
-        {
-            // Hide Seperators and Disconnect Events.
-            foreach (var element in cellSeperators)
-            {
-                element.Visible = false;
-                element.CellSeperatorSelectEvent -= CellSeperator_Select;
-            }
+        //private void DeRenderCellSeperators()
+        //{
+        //    // Hide Seperators and Disconnect Events.
+        //    foreach (var element in cellSeperators)
+        //    {
+        //        element.Visible = false;
+        //        element.CellSeperatorSelectEvent -= CellSeperator_Select;
+        //    }
 
-            // Clear the Cell Seperator List.
-            cellSeperators.Clear();
-        }
+        //    // Clear the Cell Seperator List.
+        //    cellSeperators.Clear();
+        //}
 
-        private void CellSeperator_Select(object sender, CellSeperatorSelectEventArgs e)
-        {
-            ActiveLabelStrip.SelectedSplitIndex = e.SplitIndex;
-            FORM_SplitCellDialog splitCellDialog = new FORM_SplitCellDialog(ActiveLabelStrip, e.SplitIndex);
+        //private void CellSeperator_Select(object sender, CellSeperatorSelectEventArgs e)
+        //{
+        //    ActiveLabelStrip.SelectedSplitIndex = e.SplitIndex;
+        //    FORM_SplitCellDialog splitCellDialog = new FORM_SplitCellDialog(ActiveLabelStrip, e.SplitIndex);
             
-            if (splitCellDialog.ShowDialog() == DialogResult.OK)
-            {
-                DeRenderCellSeperators();
-                Render(ActiveLabelStrip.LabelStrip);
-            }
-        }
+        //    if (splitCellDialog.ShowDialog() == DialogResult.OK)
+        //    {
+        //        DeRenderCellSeperators();
+        //        Render(ActiveLabelStrip.LabelStrip);
+        //    }
+        //}
 
        
         // Populate RackLabelSelector Treeview. Add Tracking KeyPairs to UserSelectionDict.
@@ -285,7 +283,6 @@ namespace Dimmer_Labels_Wizard
             {
                 UserSelectionDict.TryGetValue(RackLabelSelector.SelectedNode, out label);
 
-                StartTipLabel.Visible = false;
                 ActiveLabelStrip = new LabelStripSelection();
                 ActiveLabelStrip.LabelStrip = label;
                 ActiveLabelStrip.ClearSelections();
@@ -304,163 +301,169 @@ namespace Dimmer_Labels_Wizard
             }   
         }
 
-        private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
-        {
-            Point printOrigin = new Point();
-            printOrigin.X = (int)Math.Round(e.MarginBounds.X * 0.254d);
-            printOrigin.Y = (int)Math.Round(e.MarginBounds.Y * 0.254d);
+        //private void printDocument_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        //{
+        //    Point printOrigin = new Point();
+        //    printOrigin.X = (int)Math.Round(e.MarginBounds.X * 0.254d);
+        //    printOrigin.Y = (int)Math.Round(e.MarginBounds.Y * 0.254d);
 
-            Point printLocation = new Point(printOrigin.X,printOrigin.Y);
+        //    Point printLocation = new Point(printOrigin.X,printOrigin.Y);
 
-            int totalLabelStripHeight = TotalLabelStripHeight();
+        //    int totalLabelStripHeight = TotalLabelStripHeight();
 
-            // Don't keep Printing forever.
-            while (PrintPageIndex < Pages.Count)
-            {
-                // Print the Current Page.
-                foreach (var element in Pages[PrintPageIndex])
-                {
-                    if (UserParameters.SingleLabel == true)
-                    {
-                        element.RenderToPrinterSingleLabel(e.Graphics, printLocation);
-                    }
+        //    // Don't keep Printing forever.
+        //    while (PrintPageIndex < Pages.Count)
+        //    {
+        //        // Print the Current Page.
+        //        foreach (var element in Pages[PrintPageIndex])
+        //        {
+        //            if (UserParameters.SingleLabel == true)
+        //            {
+        //                element.RenderToPrinterSingleLabel(e.Graphics, printLocation);
+        //            }
 
-                    else
-                    {
-                        element.RenderToPrinter(e.Graphics, printLocation);
-                    }
+        //            else
+        //            {
+        //                element.RenderToPrinter(e.Graphics, printLocation);
+        //            }
 
-                    printLocation.Y += totalLabelStripHeight + LabelSeperation;
-                }
+        //            printLocation.Y += totalLabelStripHeight + LabelSeperation;
+        //        }
 
-                e.HasMorePages = true;
-                printLocation.Y = printOrigin.Y;
-                PrintPageIndex++;
+        //        e.HasMorePages = true;
+        //        printLocation.Y = printOrigin.Y;
+        //        PrintPageIndex++;
                 
-                // "return" triggers the PrintPage Event again if e.HasMorePages = true.
-                return;
-            }
+        //        // "return" triggers the PrintPage Event again if e.HasMorePages = true.
+        //        return;
+        //    }
 
-            // No more Printing required
-            e.HasMorePages = false;
-        }
+        //    // No more Printing required
+        //    e.HasMorePages = false;
+        //}
 
-        private void PrintButton_Click(object sender, EventArgs e)
-        {
-            FORM_PrintRangeDialog printRangeDialog = new FORM_PrintRangeDialog();
+        //private void PrintButton_Click(object sender, EventArgs e)
+        //{
+        //    FORM_PrintRangeDialog printRangeDialog = new FORM_PrintRangeDialog();
 
-            if (printRangeDialog.ShowDialog() == DialogResult.OK)
-            {
-                DimmerRacksForPrinting.Clear();
-                DimmerRacksForPrinting.AddRange(printRangeDialog.DimmerPrintRange);
+        //    if (printRangeDialog.ShowDialog() == DialogResult.OK)
+        //    {
+        //        DimmerRacksForPrinting.Clear();
+        //        DimmerRacksForPrinting.AddRange(printRangeDialog.DimmerPrintRange);
 
-                DistroRacksForPrinting.Clear();
-                DistroRacksForPrinting.AddRange(printRangeDialog.DistroPrintRange);
+        //        DistroRacksForPrinting.Clear();
+        //        DistroRacksForPrinting.AddRange(printRangeDialog.DistroPrintRange);
 
-                PrintDialog printSettingsDialog = new PrintDialog();
-                printSettingsDialog.PrinterSettings = UserPrinterSettings;
+        //        PrintDialog printSettingsDialog = new PrintDialog();
+        //        printSettingsDialog.PrinterSettings = UserPrinterSettings;
 
-                if (printSettingsDialog.ShowDialog() == DialogResult.OK)
-                {
-                    printDocument.DefaultPageSettings = UserPageSettings;
-                    printDocument.DocumentName = "Labels";
-                    printDocument.PrinterSettings = UserPrinterSettings;
+        //        if (printSettingsDialog.ShowDialog() == DialogResult.OK)
+        //        {
+        //            printDocument.DefaultPageSettings = UserPageSettings;
+        //            printDocument.DocumentName = "Labels";
+        //            printDocument.PrinterSettings = UserPrinterSettings;
 
-                    // Process LabelStrips into Printable Pages.
-                    GeneratePagesList(CalculateRequiredPages(printDocument));
+        //            // Process LabelStrips into Printable Pages.
+        //            GeneratePagesList(CalculateRequiredPages(printDocument));
 
-                    PrintPageIndex = 0;
-                    printDocument.Print();
-                }
-            }
-        }
+        //            PrintPageIndex = 0;
+        //            printDocument.Print();
+        //        }
+        //    }
+        //}
 
-        private void printSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PrintDialog printSettingsDialog = new PrintDialog();
-            printSettingsDialog.PrinterSettings = UserPrinterSettings;
-            printSettingsDialog.ShowDialog();
-        }
+        //private void printSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    PrintDialog printSettingsDialog = new PrintDialog();
+        //    printSettingsDialog.PrinterSettings = UserPrinterSettings;
+        //    printSettingsDialog.ShowDialog();
+        //}
 
-        private void pageSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PageSetupDialog pageSetup = new PageSetupDialog();
-            pageSetup.PageSettings = UserPageSettings;
-            pageSetup.PrinterSettings = UserPrinterSettings;
-            pageSetup.ShowDialog();
-        }
+        //private void pageSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    PageSetupDialog pageSetup = new PageSetupDialog();
+        //    pageSetup.PageSettings = UserPageSettings;
+        //    pageSetup.PrinterSettings = UserPrinterSettings;
+        //    pageSetup.ShowDialog();
+        //}
 
-        private void GeneratePagesList(int requiredPageQTY)
-        {
-            if (Pages.Count == 0)
-            {
-                LabelStripsForPrinting.Clear();
+        //private void GeneratePagesList(int requiredPageQTY)
+        //{
+        //    if (Pages.Count == 0)
+        //    {
+        //        LabelStripsForPrinting.Clear();
 
-                // Generate the List of SelectedLabelstrips
-                foreach (var rackNumber in DistroRacksForPrinting)
-                {
-                    LabelStripsForPrinting.Add(Globals.LabelStrips.Find(item => item.RackNumber == rackNumber &&
-                        item.RackUnitType == RackType.Distro));
-                }
+        //        // Generate the List of SelectedLabelstrips
+        //        foreach (var rackNumber in DistroRacksForPrinting)
+        //        {
+        //            LabelStripsForPrinting.Add(Globals.LabelStrips.Find(item => item.RackNumber == rackNumber &&
+        //                item.RackUnitType == RackType.Distro));
+        //        }
 
-                foreach (var rackNumber in DimmerRacksForPrinting)
-                {
-                    LabelStripsForPrinting.Add(Globals.LabelStrips.Find(item => item.RackNumber == rackNumber &&
-                        item.RackUnitType == RackType.Dimmer));
-                }
+        //        foreach (var rackNumber in DimmerRacksForPrinting)
+        //        {
+        //            LabelStripsForPrinting.Add(Globals.LabelStrips.Find(item => item.RackNumber == rackNumber &&
+        //                item.RackUnitType == RackType.Dimmer));
+        //        }
 
-                // Make a 2D List of LabelStrips Dimensioned by Pages.
-                int maxLabelStripsPerPage = CalculateMaxLabelStripsPerPage();
-                int lowerIndex = 0;
-                for (int index = 0; index < requiredPageQTY; index++)
-                {
-                    // count will equal maxLabelStripsPerPage unless that will place it out of Range.
-                    // in that case it will equal the ammount of remaining LabelStrips. (Should always be less than
-                    // maxLabelStripsPerPage).
-                    int count = maxLabelStripsPerPage;
-                    count = lowerIndex + maxLabelStripsPerPage >= LabelStripsForPrinting.Count ?
-                        LabelStripsForPrinting.Count - lowerIndex : maxLabelStripsPerPage;
+        //        // Make a 2D List of LabelStrips Dimensioned by Pages.
+        //        int maxLabelStripsPerPage = CalculateMaxLabelStripsPerPage();
+        //        int lowerIndex = 0;
+        //        for (int index = 0; index < requiredPageQTY; index++)
+        //        {
+        //            // count will equal maxLabelStripsPerPage unless that will place it out of Range.
+        //            // in that case it will equal the ammount of remaining LabelStrips. (Should always be less than
+        //            // maxLabelStripsPerPage).
+        //            int count = maxLabelStripsPerPage;
+        //            count = lowerIndex + maxLabelStripsPerPage >= LabelStripsForPrinting.Count ?
+        //                LabelStripsForPrinting.Count - lowerIndex : maxLabelStripsPerPage;
 
-                    Pages.Insert(index, new List<LabelStrip>());
-                    Pages[index].AddRange(LabelStripsForPrinting.GetRange(lowerIndex, count));
+        //            Pages.Insert(index, new List<LabelStrip>());
+        //            Pages[index].AddRange(LabelStripsForPrinting.GetRange(lowerIndex, count));
 
-                    lowerIndex = lowerIndex + count;
-                }
-            }
-        }
+        //            lowerIndex = lowerIndex + count;
+        //        }
+        //    }
+        //}
 
-        private int CalculateRequiredPages(PrintDocument printDocument)
-        {
-            int maxLabelStripsPerPage = CalculateMaxLabelStripsPerPage();
+        //private int CalculateRequiredPages(PrintDocument printDocument)
+        //{
+        //    int maxLabelStripsPerPage = CalculateMaxLabelStripsPerPage();
 
-            int requiredPageQty = (int)Math.Ceiling((float)Globals.LabelStrips.Count / maxLabelStripsPerPage);
+        //    int requiredPageQty = (int)Math.Ceiling((float)Globals.LabelStrips.Count / maxLabelStripsPerPage);
 
-            return requiredPageQty;
-        }
+        //    return requiredPageQty;
+        //}
 
-        private int CalculateMaxLabelStripsPerPage()
-        {
-            int totalLabelStripHeight = TotalLabelStripHeight();
-            int pageHeight = printDocument.DefaultPageSettings.Bounds.Height -
-                printDocument.DefaultPageSettings.Margins.Top - printDocument.DefaultPageSettings.Margins.Bottom;
+        //private int CalculateMaxLabelStripsPerPage()
+        //{
+        //    int totalLabelStripHeight = TotalLabelStripHeight();
+        //    int pageHeight = printDocument.DefaultPageSettings.Bounds.Height -
+        //        printDocument.DefaultPageSettings.Margins.Top - printDocument.DefaultPageSettings.Margins.Bottom;
 
-            int maxLabelStripsPerPage = (int)Math.Floor((pageHeight * 0.254d) / 
-                (totalLabelStripHeight + LabelSeperation));
+        //    int maxLabelStripsPerPage = (int)Math.Floor((pageHeight * 0.254d) / 
+        //        (totalLabelStripHeight + LabelSeperation));
 
-            return maxLabelStripsPerPage;
-        }
+        //    return maxLabelStripsPerPage;
+        //}
 
-        private int TotalLabelStripHeight()
-        {
-            int labelStripHeight = Math.Max(UserParameters.DistroLabelHeightInMM, UserParameters.DimmerLabelHeightInMM);
-            int totalLabelStripHeight = (int)Math.Round((labelStripHeight * 2) + (labelStripHeight * 0.5f));
+        //private int TotalLabelStripHeight()
+        //{
+        //    int labelStripHeight = Math.Max(UserParameters.DistroLabelHeightInMM, UserParameters.DimmerLabelHeightInMM);
+        //    int totalLabelStripHeight = (int)Math.Round((labelStripHeight * 2) + (labelStripHeight * 0.5f));
 
-            return totalLabelStripHeight;
-        }
+        //    return totalLabelStripHeight;
+        //}
 
         private void BackgroundColorButton_Click(object sender, EventArgs e)
         {
-            backgroundColorDialog.Color = ActiveLabelStrip.LabelStrip.Footers[0].BackgroundColor.Color;
+            byte A = ActiveLabelStrip.LabelStrip.Footers[0].BackgroundColor.Color.A;
+            byte R = ActiveLabelStrip.LabelStrip.Footers[0].BackgroundColor.Color.R;
+            byte G = ActiveLabelStrip.LabelStrip.Footers[0].BackgroundColor.Color.G;
+            byte B = ActiveLabelStrip.LabelStrip.Footers[0].BackgroundColor.Color.B;
+
+            backgroundColorDialog.Color = System.Drawing.Color.FromArgb(A, R, G, B);
+                
 
             if (BackgroundColorGlobalApplyCheckBox.Checked == false)
             {
@@ -468,14 +471,18 @@ namespace Dimmer_Labels_Wizard
                 {
                     foreach (var element in ActiveLabelStrip.SelectedFooters)
                     {
-                        element.Cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                        element.Cell.BackgroundColor = new SolidColorBrush(Color.FromArgb(
+                            backgroundColorDialog.Color.A, backgroundColorDialog.Color.R, backgroundColorDialog.Color.G,
+                            backgroundColorDialog.Color.B));
                     }
 
                     foreach (var element in ActiveLabelStrip.SelectedHeaders)
                     {
                         foreach (var cell in element.Cells)
                         {
-                            cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                            cell.BackgroundColor = new SolidColorBrush(Color.FromArgb(
+                            backgroundColorDialog.Color.A, backgroundColorDialog.Color.R, backgroundColorDialog.Color.G,
+                            backgroundColorDialog.Color.B));
                         }
                     }
                 }
@@ -489,12 +496,16 @@ namespace Dimmer_Labels_Wizard
                     {
                         foreach (var cell in labelStrip.Headers)
                         {
-                            cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                            cell.BackgroundColor = new SolidColorBrush(Color.FromArgb(
+                            backgroundColorDialog.Color.A, backgroundColorDialog.Color.R, backgroundColorDialog.Color.G,
+                            backgroundColorDialog.Color.B));
                         }
 
                         foreach (var cell in labelStrip.Footers)
                         {
-                            cell.BackgroundColor = new SolidBrush(backgroundColorDialog.Color);
+                            cell.BackgroundColor = new SolidColorBrush(Color.FromArgb(
+                            backgroundColorDialog.Color.A, backgroundColorDialog.Color.R, backgroundColorDialog.Color.G,
+                            backgroundColorDialog.Color.B));
                         }
                     }
                 }
@@ -508,158 +519,12 @@ namespace Dimmer_Labels_Wizard
         {
             if (ActiveLabelStrip != null)
             {
-                // Clear the Current Selection Rectangles.
-                ActiveLabelStrip.RenderedHeaders.Clear();
-                ActiveLabelStrip.RenderedFooters.Clear();
-
-                UserLabelSelection userSelections = new UserLabelSelection();
-                // Render to Display and Collect Outline Rectangles.
-                if (UserParameters.SingleLabel == true)
-                {
-                    userSelections = label.RenderToDisplaySingleLabel(CanvasGraphics,
-                    RenderOrigin, zoomRatio);
-                }
-
-                else
-                {
-                    userSelections = label.RenderToDisplay(CanvasGraphics,
-                        RenderOrigin, zoomRatio);
-                }
-                // Return Objects of RenderToDisplay().
-                ActiveLabelStrip.RenderedHeaders.AddRange(userSelections.HeaderSelections);
-                ActiveLabelStrip.RenderedFooters.AddRange(userSelections.FooterSelections);
-
-                // Add the Selection Rectangles (Headers and Footer Concatenated).
-                ActiveLabelStrip.HeaderStripOutline = new RectangleF(userSelections.HeaderSelections.First().Outline.X,
-                    userSelections.HeaderSelections.First().Outline.Y, userSelections.HeaderSelections.Last().Outline.Right -
-                    userSelections.HeaderSelections.First().Outline.Left, userSelections.HeaderSelections.First().Outline.Height);
-
-                ActiveLabelStrip.FooterStripOutline = new RectangleF(userSelections.FooterSelections.First().Outline.X,
-                    userSelections.FooterSelections.First().Outline.Y, userSelections.FooterSelections.Last().Outline.Right -
-                    userSelections.FooterSelections.First().Outline.Left, userSelections.FooterSelections.First().Outline.Height);
-
-                // Render Selection Outlines.
-                RenderSelectionRectangles(CanvasGraphics);
-
-                RenderCount++;
-
-                Console.WriteLine("RENDERED");
-            }
-        }
-
-        private void RenderSelectionRectangles(Graphics graphics)
-        {
-
-            // Fill Color. Full Blue. 50% Opacity.
-            SolidBrush fillBrush = new SolidBrush(Color.FromArgb(128,0,0,255));
-
-            if (ActiveLabelStrip.SelectedHeaders.Count != 0)
-            {
-                foreach (var header in ActiveLabelStrip.SelectedHeaders)
-                {
-                    graphics.FillRectangle(fillBrush, header.Outline);
-                }
-            }
-
-            if (ActiveLabelStrip.SelectedFooters.Count != 0)
-            {
-                foreach (var footer in ActiveLabelStrip.SelectedFooters)
-                {
-                    graphics.FillRectangle(fillBrush, footer.Outline);
-                }
-            }
-        }
-
-        private void CanvasPanel_MouseClick(object sender, MouseEventArgs e)
-        {
-            Point lastClickLocation = new Point();
-
-            // Left Mouse Button Click
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                if (ActiveLabelStrip != null)
-                {
-                    // User has selected a Header.
-                    if (ActiveLabelStrip.HeaderStripOutline.Contains(e.Location) == true)
-                    {
-                            lastClickLocation = e.Location;
-                            ActiveLabelStrip.SelectHeaderCells(e.Location);
-                            RenderHeaderCellControls();
-                            Render(ActiveLabelStrip.LabelStrip);
-                            DeRenderCellSeperators();
-                            RenderAppearanceControls();
-                        
-                    }
-
-                    // User has Selected a Footer.
-                    else if (ActiveLabelStrip.FooterStripOutline.Contains(e.Location) == true)
-                    {
-                        lastClickLocation = e.Location;
-                        ActiveLabelStrip.SelectFooterCells(e.Location);
-                        Render(ActiveLabelStrip.LabelStrip);
-                        RenderFooterCellControls();
-                        RenderAppearanceControls();
-                    }
-
-                    // User has Clicked the area outside the Header and Footer Labels.
-                    else
-                    {
-                        ActiveLabelStrip.ClearSelections();
-
-                        if (cellSeperators.Count != 0)
-                        {
-                            DeRenderCellSeperators();
-                        }
-
-                        Render(ActiveLabelStrip.LabelStrip);
-                        RenderFooterCellControls();
-                        RenderHeaderCellControls();
-                        RenderAppearanceControls();
-                    }
-                }
-            }
-
-            // Right Mouse Button Click
-            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-
-            }
-        }
-
-        private void CanvasPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-                OldMousePosition = e.Location;
-            }
-        }
-
-        private void CanvasPanel_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (MouseButtons.HasFlag(MouseButtons.Right))
-            {
                 
             }
         }
 
-        private void CanvasPanel_MouseUp(object sender, MouseEventArgs e)
+        private void RenderSelectionRectangles()
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-                NewMousePosition = e.Location;
-
-                if (ActiveLabelStrip.HeaderStripOutline.Contains(OldMousePosition) || ActiveLabelStrip.HeaderStripOutline.Contains(NewMousePosition))
-                {
-                    ActiveLabelStrip.SelectHeaderCells(OldMousePosition, NewMousePosition);
-                }
-
-                else
-                {
-                    ActiveLabelStrip.SelectFooterCells(OldMousePosition, NewMousePosition);
-                }
-
-                RenderSelectionRectangles(CanvasGraphics);
-            }
         }
 
 

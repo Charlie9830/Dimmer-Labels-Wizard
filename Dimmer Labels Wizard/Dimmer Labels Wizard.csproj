@@ -172,8 +172,10 @@
     <Compile Include="Globals.cs" />
     <Compile Include="HeaderCell.cs" />
     <Compile Include="FileImport.cs" />
+    <Compile Include="LabelCanvas.xaml.cs">
+      <DependentUpon>LabelCanvas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LabelCell.cs" />
-    <Compile Include="Label Strip Selection Handling.cs" />
     <Compile Include="LabelSetupPart1.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -362,6 +364,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Single Label Preview.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="LabelCanvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
