@@ -44,8 +44,8 @@ namespace Dimmer_Labels_Wizard
                 this.Hide();
 
                 UserParameters.SetDefaultRackLabelSettings();
-                Forms.LabelEditor = new FORM_LabelEditor();
-                Forms.LabelEditor.Show();
+                Forms.LabelEditorHost = new FORM_LabelEditorHost();
+                Forms.LabelEditorHost.Show();
             }
         }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
 using System.IO;
+using System.Windows.Media;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -25,9 +26,9 @@ namespace Dimmer_Labels_Wizard
             {
                 // Setup Mock User Paramater Inputs.
                 #region Hardcoded User Paramaters.
-                UserParameters.CreateDimmerObjects = true;
-                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 24));
-                UserParameters.DimmerRanges.Sort();
+                UserParameters.CreateDimmerObjects = false;
+                //UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 24));
+                // UserParameters.DimmerRanges.Sort();
 
                 UserParameters.CreateDistroObjects = true;
                 UserParameters.StartDistroNumber = 1;
@@ -44,8 +45,15 @@ namespace Dimmer_Labels_Wizard
                 UserParameters.MulticoreNameColumnIndex = 3;
                 UserParameters.PositionColumnIndex = 4;
 
-                UserParameters.DimmerLabelWidthInMM = 16;
-                UserParameters.DimmerLabelHeightInMM = 18;
+                UserParameters.DimmerLabelWidthInMM = 25;
+                UserParameters.DimmerLabelHeightInMM = 35;
+
+                UserParameters.DistroLabelWidthInMM = 40;
+                UserParameters.DistroLabelHeightInMM = 60;
+
+                UserParameters.HeaderField = LabelField.MulticoreName;
+                UserParameters.FooterMiddleField = LabelField.ChannelNumber;
+                UserParameters.FooterBottomField = LabelField.InstrumentName;
                 #endregion
 
                 UserParameters.GenerateDistroRange();
@@ -67,20 +75,16 @@ namespace Dimmer_Labels_Wizard
                 DataHandling.SanitizeDimDistroUnits();
                 Console.WriteLine("Sanitation Complete");
 
-                UserParameters.HeaderField = LabelField.Position;
-                UserParameters.FooterMiddleField = LabelField.ChannelNumber;
-                UserParameters.FooterBottomField = LabelField.InstrumentName;
-
                 Output.ExportToRackLabel();
 
                 foreach (var element in Globals.LabelStrips)
                 {
-                    element.SetBackgroundColor(System.Drawing.Color.White);
+                    element.SetBackgroundColor(Colors.White);
                 }
 
                 UserParameters.SetDefaultRackLabelSettings();
 
-                FORM_LabelEditor NextWindow = new FORM_LabelEditor();
+                FORM_LabelEditorHost NextWindow = new FORM_LabelEditorHost();
                 NextWindow.ShowDialog();
             }
         }

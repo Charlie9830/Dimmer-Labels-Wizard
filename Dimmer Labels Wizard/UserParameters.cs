@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
+using System.Windows;
+using System.Windows.Media;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -134,18 +135,6 @@ namespace Dimmer_Labels_Wizard
 
             foreach (var element in Globals.LabelStrips)
             {
-                System.Drawing.StringFormat nearStringFormat = new System.Drawing.StringFormat();
-                nearStringFormat.Alignment = System.Drawing.StringAlignment.Center;
-                nearStringFormat.LineAlignment = System.Drawing.StringAlignment.Near;
-
-                System.Drawing.StringFormat centerStringFormat = new System.Drawing.StringFormat();
-                centerStringFormat.Alignment = System.Drawing.StringAlignment.Center;
-                centerStringFormat.LineAlignment = System.Drawing.StringAlignment.Center;
-
-                System.Drawing.StringFormat farStringFormat = new System.Drawing.StringFormat();
-                farStringFormat.Alignment = System.Drawing.StringAlignment.Center;
-                farStringFormat.LineAlignment = System.Drawing.StringAlignment.Far;
-
                 element.LineWeight = 1.25f;
 
                 // Set Default Fonts,FontStyles and StringFormat Alignments.
@@ -153,26 +142,25 @@ namespace Dimmer_Labels_Wizard
                 {
                     if (SingleLabel == true)
                     {
-                        element.Headers[listIndex].Font = new System.Drawing.Font("Arial", 5, FontStyle.Bold, GraphicsUnit.Pixel);
-                        element.Headers[listIndex].Format = centerStringFormat;
+                        element.Headers[listIndex].Font = new Typeface("Arial");
+                        element.Headers[listIndex].FontSize = 24;
                     }
 
                     else
                     {
-                        element.Headers[listIndex].Font = new System.Drawing.Font("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-                        element.Headers[listIndex].Format = centerStringFormat;
+  
+                        element.Headers[listIndex].Font = new Typeface("Arial");
+                        element.Headers[listIndex].FontSize = 24;
                     }
 
-                    element.Footers[listIndex].TopFont = new System.Drawing.Font("Arial", 6, GraphicsUnit.Pixel);
-                    element.Footers[listIndex].TopFormat = nearStringFormat;
+                    element.Footers[listIndex].TopFont = new Typeface("Arial");
+                    element.Footers[listIndex].TopFontSize = 12;
 
-                    element.Footers[listIndex].MiddleFont = new System.Drawing.Font("Arial", 8, System.Drawing.FontStyle.Bold, GraphicsUnit.Pixel);
-                    element.Footers[listIndex].MiddleFormat = centerStringFormat;
+                    element.Footers[listIndex].MiddleFont = new Typeface("Arial");
+                    element.Footers[listIndex].MiddleFontSize = 16;
 
-                    element.Footers[listIndex].BottomFont = new System.Drawing.Font("Arial", 6, GraphicsUnit.Pixel);
-                    element.Footers[listIndex].BottomFormat = farStringFormat;
-
-
+                    element.Footers[listIndex].BottomFont = new Typeface("Arial");
+                    element.Footers[listIndex].BottomFontSize = 14;
                 }
             }
         }

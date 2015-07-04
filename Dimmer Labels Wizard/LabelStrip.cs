@@ -8,8 +8,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Globalization;
-using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -73,8 +71,17 @@ namespace Dimmer_Labels_Wizard
         }
 
 
-        // Render Header and Footers to Display
-        public void RenderToDisplay(Canvas canvas, Point origin)
+        // Control Method for Render Methods.
+        public void RenderToDisplay(Canvas canvas, Point offset)
+        {
+            RenderHeader(canvas, offset);
+
+            offset.Y += this.LabelHeightInMM * 1.5;
+
+            RenderFooters(canvas, offset);
+        }
+
+        private void RenderHeader(Canvas canvas, Point offset)
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
@@ -83,23 +90,18 @@ namespace Dimmer_Labels_Wizard
             double labelWidth = this.LabelWidthInMM;
             double labelHeight = this.LabelHeightInMM;
 
-            double headerXOffset = origin.X;
+            double headerXOffset = offset.X;
             int rightBoundPosition = 1;
 
             char stringDelimiter = ' ';
 
-            // Clear Lists.
+            // Clear List.
             if (HeaderOutlines.Count > 0)
             {
                 HeaderOutlines.Clear();
             }
 
-            if (FooterOutlines.Count > 0)
-            {
-                FooterOutlines.Clear();
-            }
-
-            // Header Rendering.
+            // Header Rendering Loop.
             for (int index = 0; index < Headers.Count; index++)
             {
                 Canvas textCanvas = new Canvas();
@@ -123,34 +125,35 @@ namespace Dimmer_Labels_Wizard
                 }
 
                 // Set HeaderOutline Size.
-                HeaderOutlines[index].Width = labelWidth * rightBoundPosition;
-                HeaderOutlines[index].Height = labelHeight;
+                HeaderOutlines.Last().Width = labelWidth * rightBoundPosition;
+                HeaderOutlines.Last().Height = labelHeight;
 
                 // Set HeaderOutline Position.
                 if (index == 0)
                 {
-                    Canvas.SetTop(HeaderOutlines[index], origin.X);
-                    Canvas.SetLeft(HeaderOutlines[index], origin.Y);
+                    Canvas.SetTop(HeaderOutlines.Last(), offset.Y);
+                    Canvas.SetLeft(HeaderOutlines.Last(), offset.X);
                 }
 
                 else
                 {
-                    Canvas.SetTop(HeaderOutlines[index], headerXOffset);
-                    Canvas.SetLeft(HeaderOutlines[index], origin.Y);
+                    Canvas.SetTop(HeaderOutlines.Last(), offset.Y);
+                    Canvas.SetLeft(HeaderOutlines.Last(), headerXOffset);
                 }
 
                 // Set Colors.
-                HeaderOutlines[index].Background = Headers[index].BackgroundColor;
-                HeaderOutlines[index].BorderBrush = outlineColor;
+                HeaderOutlines.Last().Background = Headers[index].BackgroundColor;
+                HeaderOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
-                HeaderOutlines[index].BorderThickness = headerOutlineThickness;
+                HeaderOutlines.Last().BorderThickness = headerOutlineThickness;
 
                 // Setup Text.
-                textCanvas.Width = HeaderOutlines[index].Width - HeaderOutlines[index].BorderThickness.Left -
-                    HeaderOutlines[index].BorderThickness.Right;
-                textCanvas.Height = HeaderOutlines[index].Height - HeaderOutlines[index].BorderThickness.Top -
-                    HeaderOutlines[index].BorderThickness.Bottom;
+                textCanvas.Width = HeaderOutlines.Last().Width - HeaderOutlines.Last().BorderThickness.Left -
+                    HeaderOutlines.Last().BorderThickness.Right;
+
+                textCanvas.Height = HeaderOutlines.Last().Height - HeaderOutlines.Last().BorderThickness.Top -
+                    HeaderOutlines.Last().BorderThickness.Bottom;
 
                 Size textCanvasSize = new Size(textCanvas.Width, textCanvas.Height);
 
@@ -166,7 +169,8 @@ namespace Dimmer_Labels_Wizard
                 if (downSizeRatio.Width == 1)
                 {
                     textCanvas.Children.Add
-                        (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,headerFontSize,fontDimensions));
+                        (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,headerFontSize,
+                        Headers[index].TextColor,fontDimensions));
                 }
 
                 else
@@ -191,7 +195,7 @@ namespace Dimmer_Labels_Wizard
                         
                         // Generate TextBlocks.
                         TextBlock[] textBlockQueue = GenerateTextBlocks(textCanvasSize,splitStrings,headerTypeface,
-                            Headers[index].FontSize, verticallyDownsizedFontDimensions);
+                            Headers[index].FontSize, Headers[index].TextColor, verticallyDownsizedFontDimensions);
 
                         foreach (var element in textBlockQueue)
                         {
@@ -204,25 +208,158 @@ namespace Dimmer_Labels_Wizard
                         Headers[index].FontSize *= downSizeRatio.Width;
 
                         textCanvas.Children.Add
-                        (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,Headers[index].FontSize,fontDimensions));
+                        (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,Headers[index].FontSize,
+                        Headers[index].TextColor,fontDimensions));
                     }
                 }
 
                 // Add to canvas.
-                canvas.Children.Add(HeaderOutlines[index]);
+                HeaderOutlines.Last().Child = textCanvas;
+                canvas.Children.Add(HeaderOutlines.Last());
 
                 // Iterate and Reset.
-                headerXOffset += HeaderOutlines[index].Width;
-                index += rightBoundPosition;
+                headerXOffset += HeaderOutlines.Last().Width;
+                index += rightBoundPosition - 1;
                 rightBoundPosition = 1;
             }
+        }
 
-            // Footer Rendering.
+        private void RenderFooters(Canvas canvas, Point offset)
+        {
+            // Resources.
+            SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
+            Thickness footerOutlineThickness = new Thickness(2);
+
+            double labelWidth = this.LabelWidthInMM;
+            double labelHeight = this.LabelHeightInMM;
+
+            double footerXOffset = offset.X;
+
+            // Clear List.
+            if (FooterOutlines.Count > 0)
+            {
+                FooterOutlines.Clear();
+            }
+
+            // Footer Rendering Loop.
+            for (int index = 0; index < Footers.Count; index++)
+            {
+                Canvas textCanvas = new Canvas();
+
+                FooterOutlines.Add(new Border());
+
+                // Set FooterOutline Size.
+                FooterOutlines.Last().Width = labelWidth;
+                FooterOutlines.Last().Height = labelHeight;
+
+                // Set FooterOutline Position.
+                if (index == 0)
+                {
+                    Canvas.SetTop(FooterOutlines.Last(), offset.Y);
+                    Canvas.SetLeft(FooterOutlines.Last(), offset.X);
+                }
+
+                else
+                {
+                    Canvas.SetTop(FooterOutlines.Last(), offset.Y);
+                    Canvas.SetLeft(FooterOutlines.Last(), footerXOffset);
+                }
+
+                // Set Colors.
+                FooterOutlines.Last().Background = Footers[index].BackgroundColor;
+                FooterOutlines.Last().BorderBrush = outlineColor;
+
+                // Set Outline Thickness.
+                FooterOutlines.Last().BorderThickness = footerOutlineThickness;
+
+                // Setup Text Canvas.
+                textCanvas.Width = FooterOutlines.Last().Width - FooterOutlines.Last().BorderThickness.Left -
+                    FooterOutlines.Last().BorderThickness.Right;
+
+                textCanvas.Height = FooterOutlines.Last().Height - FooterOutlines.Last().BorderThickness.Top -
+                    FooterOutlines.Last().BorderThickness.Bottom;
+
+                // Analyze and Minimize Fonts if Requried.
+                Size textCanvasSize = new Size(textCanvas.Width,textCanvas.Height);
+
+                Size topDifferenceRatio = GetDifferenceRatio(MeasureText(Footers[index].TopData, Footers[index].TopFont,
+                    Footers[index].TopFontSize), textCanvasSize);
+
+                Size middleDifferenceRatio = GetDifferenceRatio(MeasureText(Footers[index].MiddleData, Footers[index].MiddleFont,
+                    Footers[index].MiddleFontSize), textCanvasSize);
+
+                Size bottomDifferenceRatio = GetDifferenceRatio(MeasureText(Footers[index].BottomData, Footers[index].BottomFont,
+                    Footers[index].BottomFontSize), textCanvasSize);
+                
+                // Scale Down widths if Required.
+                if (topDifferenceRatio.Width != 1)
+                {
+                    Footers[index].TopFontSize *= topDifferenceRatio.Width;
+                }
+
+                if (middleDifferenceRatio.Width != 1)
+                {
+                    Footers[index].MiddleFontSize *= middleDifferenceRatio.Width;
+                }
+
+                if (bottomDifferenceRatio.Width != 1)
+                {
+                    Footers[index].BottomFontSize *= bottomDifferenceRatio.Width;
+                }
+
+                // Generate blank TextBlocks.
+                TextBlock[] textBlocks = GenerateFooterTextBlocks(textCanvas,Footers[index].TextColor);
+
+                TextBlock topTextBlock = textBlocks[0];
+                TextBlock middleTextBlock = textBlocks[1];
+                TextBlock bottomTextBlock = textBlocks[2];
+
+                // Populate TextBlocks.
+                topTextBlock.Text = Footers[index].TopData;
+                topTextBlock.FontFamily = Footers[index].TopFont.FontFamily;
+                topTextBlock.FontSize = Footers[index].TopFontSize;
+                topTextBlock.FontStyle = Footers[index].TopFont.Style;
+                topTextBlock.FontWeight = Footers[index].TopFont.Weight;
+                topTextBlock.FontStretch = Footers[index].TopFont.Stretch;
+
+                middleTextBlock.Text = Footers[index].MiddleData;
+                middleTextBlock.FontFamily = Footers[index].MiddleFont.FontFamily;
+                middleTextBlock.FontSize = Footers[index].MiddleFontSize;
+                middleTextBlock.FontStyle = Footers[index].MiddleFont.Style;
+                middleTextBlock.FontWeight = Footers[index].MiddleFont.Weight;
+                middleTextBlock.FontStretch = Footers[index].MiddleFont.Stretch;
+
+                bottomTextBlock.Text = Footers[index].BottomData;
+                bottomTextBlock.FontFamily = Footers[index].BottomFont.FontFamily;
+                bottomTextBlock.FontSize = Footers[index].BottomFontSize;
+                bottomTextBlock.FontStyle = Footers[index].BottomFont.Style;
+                bottomTextBlock.FontWeight = Footers[index].BottomFont.Weight;
+                bottomTextBlock.FontStretch = Footers[index].BottomFont.Stretch;
+
+                // Add TextBlocks to textCanvas.
+                textCanvas.Children.Add(topTextBlock);
+                textCanvas.Children.Add(middleTextBlock);
+                textCanvas.Children.Add(bottomTextBlock);
+
+                // Add Canvas to Outline.
+                FooterOutlines.Last().Child = textCanvas;
+
+                // Add Outline to Label Canvas.
+                canvas.Children.Add(FooterOutlines.Last());
+
+                // Iterate and Reset.
+                footerXOffset += FooterOutlines.Last().Width;
+            }
 
         }
 
         private Size MeasureText(string text, Typeface typeface, double emSize)
         {
+            if (text == null)
+            {
+                return new Size(1, 1);
+            }
+
             FormattedText formatter = new FormattedText(text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
                 typeface, emSize, Brushes.Black);
 
@@ -261,18 +398,26 @@ namespace Dimmer_Labels_Wizard
         }
         
         private TextBlock[] GenerateTextBlocks(Size canvasSize, string[] strings, Typeface typeface, double fontSize, 
-            Size fontDimensions)
+            SolidColorBrush textColor, Size fontDimensions)
         {
             List<TextBlock> textBlocks = new List<TextBlock>();
 
             int textBlockQTY = strings.Length;
 
             double topOffset = (canvasSize.Height - fontDimensions.Height * textBlockQTY) / 2;
+            double leftOffset = (canvasSize.Width - fontDimensions.Width) / 2;
 
             for (int count = 1; count <= textBlockQTY; count++)
             {
                 textBlocks.Add(new TextBlock());
+
+                textBlocks.Last().Width = canvasSize.Width;
+                textBlocks.Last().Height = fontDimensions.Height;
+
+                textBlocks.Last().TextAlignment = TextAlignment.Center;
+
                 Canvas.SetTop(textBlocks.Last(), topOffset * count);
+                Canvas.SetLeft(textBlocks.Last(), leftOffset);
             }
 
             // Add Text and set Parameters.
@@ -280,12 +425,12 @@ namespace Dimmer_Labels_Wizard
             foreach (var element in textBlocks)
             {
                 element.Text = strings[index];
-                element.TextAlignment = TextAlignment.Center;
                 element.FontFamily = typeface.FontFamily;
                 element.FontStyle = typeface.Style;
                 element.FontStretch = typeface.Stretch;
                 element.FontWeight = typeface.Weight;
                 element.FontSize = fontSize;
+                element.Foreground = textColor;
 
             }
 
@@ -294,13 +439,15 @@ namespace Dimmer_Labels_Wizard
 
         // Overload, For Single String use.
         private TextBlock GenerateTextBlocks(Size canvasSize, string text, Typeface typeface, double fontSize,
-            Size fontDimensions)
+            SolidColorBrush textColor, Size fontDimensions)
         {
             TextBlock returnBlock = new TextBlock();
 
-            double topOffset = (canvasSize.Height - fontDimensions.Height) / 2;
+            double yOffset = (canvasSize.Height - fontDimensions.Height) / 2;
+            double xOffset = (canvasSize.Width - fontDimensions.Width) / 2;
 
-            Canvas.SetTop(returnBlock, topOffset);
+            Canvas.SetTop(returnBlock, yOffset);
+            Canvas.SetLeft(returnBlock, xOffset);
 
             // Add Text and set Parameters.
             returnBlock.Text = text;
@@ -310,8 +457,41 @@ namespace Dimmer_Labels_Wizard
             returnBlock.FontStretch = typeface.Stretch;
             returnBlock.FontWeight = typeface.Weight;
             returnBlock.FontSize = fontSize;
+            returnBlock.Foreground = textColor;
 
             return returnBlock;
+        }
+
+        // Generates Blank TextBlocks for Footer Rendering. Top to Bottom.
+        private TextBlock[] GenerateFooterTextBlocks(Canvas canvas, SolidColorBrush textColor)
+        {
+            List<TextBlock> textBlocks = new List<TextBlock>();
+
+            double textBlockWidth = canvas.Width;
+            double textBlockHeight = canvas.Height / 3;
+
+            for (int count = 0; count < 3; count++)
+            {
+                textBlocks.Add(new TextBlock());
+
+                textBlocks.Last().Width = textBlockWidth;
+                textBlocks.Last().Height = textBlockHeight;
+
+                textBlocks.Last().TextAlignment = TextAlignment.Center;
+
+                if (count == 0)
+                {
+                    Canvas.SetTop(textBlocks.Last(), 0);
+                }
+
+                else
+                {
+                    Canvas.SetTop(textBlocks.Last(), textBlockHeight * count);
+                }
+            }
+
+            return textBlocks.ToArray();
+            
         }
 
         // Helper Method for Render. Determines if a String is too large to fit within a rectangle.

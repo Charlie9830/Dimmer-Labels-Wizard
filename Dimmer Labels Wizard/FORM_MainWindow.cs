@@ -20,7 +20,6 @@ namespace Dimmer_Labels_Wizard
 
         private void FORM_MainWindow_Load(object sender, EventArgs e)
         {
-            // NextButton.Enabled = false;
             FileNameLabel.Visible = false;
         }
 
@@ -54,18 +53,8 @@ namespace Dimmer_Labels_Wizard
 
         private void button1_Click(object sender, EventArgs e)
         {
-            for (int count = 0; count < 12; count++)
-            {
-                Globals.LabelStrips.Add(new LabelStrip());
-            }
-
-            foreach (var element in Globals.LabelStrips)
-            {
-                element.RackUnitType = RackType.Dimmer;
-            }
-
-            FORM_PrintRangeDialog test = new FORM_PrintRangeDialog();
-            test.ShowDialog();
+            Globals.DebugActive = true;
+            this.Close();
         }
     }
 }

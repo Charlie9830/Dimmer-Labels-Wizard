@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dimmer_Labels_Wizard</RootNamespace>
     <AssemblyName>Dimmer Labels Wizard</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <PublishUrl>C:\Users\Charlie Samsung\Desktop\DimmerLabelsWizard\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -38,6 +39,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,6 +49,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>F8E4AD325D0A1CBB43196C076C62B3D3F37C5158</ManifestCertificateThumbprint>
@@ -101,12 +104,6 @@
       <DependentUpon>DimmerRangeSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="Enums.cs" />
-    <Compile Include="FontStyleControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FontStyleControl.Designer.cs">
-      <DependentUpon>FontStyleControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms.cs" />
     <Compile Include="FORM_GlobalApplyWarning.cs">
       <SubType>Form</SubType>
@@ -120,13 +117,13 @@
     <Compile Include="FORM_InstrumentNameEntry.Designer.cs">
       <DependentUpon>FORM_InstrumentNameEntry.cs</DependentUpon>
     </Compile>
-    <Compile Include="FORM_LabelEditor.cs">
+    <Compile Include="FooterCell.cs" />
+    <Compile Include="FORM_LabelEditorHost.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FORM_LabelEditor.Designer.cs">
-      <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
+    <Compile Include="FORM_LabelEditorHost.Designer.cs">
+      <DependentUpon>FORM_LabelEditorHost.cs</DependentUpon>
     </Compile>
-    <Compile Include="FooterCell.cs" />
     <Compile Include="FORM_LabelSetup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,6 +173,9 @@
       <DependentUpon>LabelCanvas.xaml</DependentUpon>
     </Compile>
     <Compile Include="LabelCell.cs" />
+    <Compile Include="LabelEditor.xaml.cs">
+      <DependentUpon>LabelEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LabelSetupPart1.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -188,6 +188,7 @@
     <Compile Include="LabelSetupPart2.Designer.cs">
       <DependentUpon>LabelSetupPart2.cs</DependentUpon>
     </Compile>
+    <Compile Include="LabelStripSelection.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="PrintRangeSelection.cs">
       <SubType>UserControl</SubType>
@@ -249,17 +250,14 @@
     <EmbeddedResource Include="DimmerRangeSelector.resx">
       <DependentUpon>DimmerRangeSelector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FontStyleControl.resx">
-      <DependentUpon>FontStyleControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FORM_GlobalApplyWarning.resx">
       <DependentUpon>FORM_GlobalApplyWarning.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FORM_InstrumentNameEntry.resx">
       <DependentUpon>FORM_InstrumentNameEntry.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FORM_LabelEditor.resx">
-      <DependentUpon>FORM_LabelEditor.cs</DependentUpon>
+    <EmbeddedResource Include="FORM_LabelEditorHost.resx">
+      <DependentUpon>FORM_LabelEditorHost.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FORM_LabelSetup.resx">
       <DependentUpon>FORM_LabelSetup.cs</DependentUpon>
@@ -367,6 +365,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="LabelCanvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LabelEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
