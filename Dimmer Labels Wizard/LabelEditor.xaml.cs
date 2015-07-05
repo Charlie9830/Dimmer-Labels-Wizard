@@ -38,6 +38,8 @@ namespace Dimmer_Labels_Wizard
 
             this.Loaded += LabelEditor_Loaded;
             RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
+
+            LabelCanvas.MouseDown +=LabelCanvas_MouseDown;
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
@@ -51,8 +53,43 @@ namespace Dimmer_Labels_Wizard
             {
                 LabelCanvas.Children.Clear();
                 ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20));
+                CollectSelectionEvents();
             }
         }
+
+        void CollectSelectionEvents()
+        {
+            foreach (var element in LabelCanvas.Children)
+            {
+                Border outline = (Border)element;
+
+                outline.MouseDown += outline_MouseDown;
+            }
+        }
+
+        void outline_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            Console.WriteLine("Border Clicked");
+            ActiveLabelStrip.MakeSelection(sender);
+        }
+
+        void LabelCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Handled != true)
+            {
+                Console.WriteLine("Clicked");
+
+                foreach (var element in LabelCanvas.Children)
+                {
+                    Border child = (Border)element;
+
+                    child.BorderBrush = new SolidColorBrush(Colors.Black);
+                }
+                ActiveLabelStrip.ClearSelections();
+            }
+        }
+
 
         private void PopulateRackLabelSelector()
         {
@@ -102,13 +139,19 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            LabelCanvasScaleTransform.ScaleX += 0.10;
-            LabelCanvasScaleTransform.ScaleY += 0.10;
-
-            Console.WriteLine(ActiveLabelStrip.LabelStrip.Footers.First().TopFontSize);
+            foreach (var element in ActiveLabelStrip.SelectedHeaders)
+            {
+                Console.WriteLine(element.Data);
+            }
         }
 
-        private void ZoomOutButton_Click(object sender, RoutedEventArgs e)
+        private void MagnifyPlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            LabelCanvasScaleTransform.ScaleX += 0.10;
+            LabelCanvasScaleTransform.ScaleY += 0.10;
+        }
+
+        private void MagnifyMinusButton_Click(object sender, RoutedEventArgs e)
         {
             LabelCanvasScaleTransform.ScaleX -= 0.10;
             LabelCanvasScaleTransform.ScaleY -= 0.10;

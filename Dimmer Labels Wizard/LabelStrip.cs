@@ -180,17 +180,32 @@ namespace Dimmer_Labels_Wizard
 
                     if (splitStrings.Length > 1)
                     {
+                        // Find the Longest String, Check if it Fits within the Canvas Width.
+                        int longestStringIndex = GetLongestStringIndex(splitStrings, headerTypeface, Headers[index].FontSize);
+
+                        // Is Width Downsizing Required?
+                        double horizontalDownSizeRatio = GetDifferenceRatio(MeasureText(splitStrings[longestStringIndex], headerTypeface, Headers[index].FontSize),
+                            textCanvasSize).Width;
+                        if (horizontalDownSizeRatio != 1)
+                        {
+                            Headers[index].FontSize *= horizontalDownSizeRatio;
+                        }
+
+                        // (re)measure string based off Tallest Index. Any strings that are too long have been Downsized at this point.
+                        int tallestStringIndex = GetTallestStringIndex(splitStrings, headerTypeface, Headers[index].FontSize);
+                        fontDimensions = MeasureText(splitStrings[tallestStringIndex], headerTypeface, Headers[index].FontSize);
+
                         // Check if Vertical Downsizing is required.
                         double verticalDownsizeRatio = textCanvas.Height > fontDimensions.Height * splitStrings.Length ?
                             1 : textCanvas.Height / (fontDimensions.Height * splitStrings.Length);
 
-                        if (verticalDownsizeRatio > 1)
+                        if (verticalDownsizeRatio != 1)
                         {
                             // Downsize Further.
                             Headers[index].FontSize *= verticalDownsizeRatio;
                         }
 
-                        // Recalulate Font Dimnesions.
+                        // Recalulate Font Dimensions.
                         Size verticallyDownsizedFontDimensions = MeasureText(splitStrings.First(),headerTypeface,Headers[index].FontSize);
                         
                         // Generate TextBlocks.
@@ -207,11 +222,17 @@ namespace Dimmer_Labels_Wizard
                     {
                         Headers[index].FontSize *= downSizeRatio.Width;
 
+                        // Recalculate Font Dimensions.
+                        fontDimensions = MeasureText(headerData, headerTypeface, Headers[index].FontSize);
+
                         textCanvas.Children.Add
                         (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,Headers[index].FontSize,
                         Headers[index].TextColor,fontDimensions));
                     }
                 }
+
+                // Tag the HeaderOutline.
+                HeaderOutlines.Last().Tag = Headers[index];
 
                 // Add to canvas.
                 HeaderOutlines.Last().Child = textCanvas;
@@ -291,7 +312,7 @@ namespace Dimmer_Labels_Wizard
                 Size bottomDifferenceRatio = GetDifferenceRatio(MeasureText(Footers[index].BottomData, Footers[index].BottomFont,
                     Footers[index].BottomFontSize), textCanvasSize);
                 
-                // Scale Down widths if Required.
+                // Scale Down heights if Required.
                 if (topDifferenceRatio.Width != 1)
                 {
                     Footers[index].TopFontSize *= topDifferenceRatio.Width;
@@ -344,12 +365,44 @@ namespace Dimmer_Labels_Wizard
                 // Add Canvas to Outline.
                 FooterOutlines.Last().Child = textCanvas;
 
+                // Tag Outline.
+                FooterOutlines.Last().Tag = Footers[index];
+
                 // Add Outline to Label Canvas.
                 canvas.Children.Add(FooterOutlines.Last());
 
                 // Iterate and Reset.
                 footerXOffset += FooterOutlines.Last().Width;
             }
+
+        }
+
+        // Returns the index of the Longest String in an Array. (Typeface Measurements).
+        private int GetLongestStringIndex(string[] strings, Typeface typeface, double emSize)
+        {
+            List<double> widths = new List<double>();
+            List<string> stringList = strings.ToList();
+
+            foreach (var element in stringList)
+            {
+                widths.Add(MeasureText(element, typeface, emSize).Width);
+            }
+
+            return widths.IndexOf(widths.Max());
+            
+        }
+
+        private int GetTallestStringIndex(string[] strings, Typeface typeface, double emSize)
+        {
+            List<double> heights = new List<double>();
+            List<string> stringList = strings.ToList();
+
+            foreach (var element in stringList)
+            {
+                heights.Add(MeasureText(element, typeface, emSize).Height);
+            }
+
+            return heights.IndexOf(heights.Max());
 
         }
 
@@ -404,10 +457,11 @@ namespace Dimmer_Labels_Wizard
 
             int textBlockQTY = strings.Length;
 
-            double topOffset = (canvasSize.Height - fontDimensions.Height * textBlockQTY) / 2;
-            double leftOffset = (canvasSize.Width - fontDimensions.Width) / 2;
+            // TopOffset is resolving to a Negative Number. When multiplied by Count, Generates more Negative Numbers.
+            double topOffset = 1;//(canvasSize.Height - (fontDimensions.Height * textBlockQTY)) / 2;
+            double leftOffset = 0; // 0 Because Textblock.Width is set to CanvasSize.Width.
 
-            for (int count = 1; count <= textBlockQTY; count++)
+            for (int count = 0; count < textBlockQTY; count++)
             {
                 textBlocks.Add(new TextBlock());
 
@@ -416,8 +470,17 @@ namespace Dimmer_Labels_Wizard
 
                 textBlocks.Last().TextAlignment = TextAlignment.Center;
 
-                Canvas.SetTop(textBlocks.Last(), topOffset * count);
-                Canvas.SetLeft(textBlocks.Last(), leftOffset);
+                if (count == 0)
+                {
+                    Canvas.SetTop(textBlocks.Last(), topOffset);
+                    Canvas.SetLeft(textBlocks.Last(), leftOffset);
+                }
+
+                else
+                {
+                    Canvas.SetTop(textBlocks.Last(), textBlocks.Last().Height * count);
+                    Canvas.SetLeft(textBlocks.Last(), leftOffset);
+                }
             }
 
             // Add Text and set Parameters.
@@ -432,6 +495,7 @@ namespace Dimmer_Labels_Wizard
                 element.FontSize = fontSize;
                 element.Foreground = textColor;
 
+                index++;
             }
 
             return textBlocks.ToArray();
