@@ -12,6 +12,6 @@
         <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="945,332,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
         <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="216" Margin="10,274,0,0" VerticalAlignment="Top" Width="100"/>
         <Button x:Name="MagnifyPlusButton" Content="+" HorizontalAlignment="Left" Margin="921,257,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyPlusButton_Click"/>
-        <Button x:Name="MagnifyMinusButton" Content="+" HorizontalAlignment="Left" Margin="950,257,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyMinusButton_Click"/>
+        <Button x:Name="MagnifyMinusButton" Content="-" HorizontalAlignment="Left" Margin="950,257,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyMinusButton_Click"/>
     </Grid>
 </UserControl>
