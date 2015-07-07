@@ -39,13 +39,14 @@ namespace Dimmer_Labels_Wizard
             this.Loaded += LabelEditor_Loaded;
             RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
 
-            LabelCanvas.MouseDown +=LabelCanvas_MouseDown;
+            LabelCanvas.MouseDown += LabelCanvas_MouseDown;
+
+            HeaderCellControl.PropertyChanged += HeaderCellControl_PropertyChanged;
+
+            ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
         }
 
-        void LabelEditor_Loaded(object sender, RoutedEventArgs e)
-        {
- 	        PopulateRackLabelSelector();
-        }
+
 
         void ForceRender()
         {
@@ -54,6 +55,29 @@ namespace Dimmer_Labels_Wizard
                 LabelCanvas.Children.Clear();
                 ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20));
                 CollectSelectionEvents();
+            }
+        }
+
+        void PopulateHeaderCellControls()
+        {
+            if (ActiveLabelStrip.SelectedHeaders.Count > 0)
+            {
+                // Header Cell
+                List<string> headerData = new List<string>();
+                List<Typeface> headerTypefaces = new List<Typeface>();
+                List<double> headerFontSizes = new List<double>();
+
+                foreach (var element in ActiveLabelStrip.SelectedHeaders)
+                {
+                    headerData.Add(element.Data);
+                    headerTypefaces.Add(element.Font);
+                    headerFontSizes.Add(element.FontSize);
+                }
+
+                HeaderCellControl.Data = headerData.ToArray();
+                HeaderCellControl.Typefaces = headerTypefaces.ToArray();
+                HeaderCellControl.FontSizes = headerFontSizes.ToArray();
+                HeaderCellControl.RenderControl();
             }
         }
 
@@ -66,30 +90,6 @@ namespace Dimmer_Labels_Wizard
                 outline.MouseDown += outline_MouseDown;
             }
         }
-
-        void outline_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = true;
-            Console.WriteLine("Border Clicked");
-            ActiveLabelStrip.MakeSelection(sender);
-        }
-
-        void LabelCanvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.Handled != true)
-            {
-                Console.WriteLine("Clicked");
-
-                foreach (var element in LabelCanvas.Children)
-                {
-                    Border child = (Border)element;
-
-                    child.BorderBrush = new SolidColorBrush(Colors.Black);
-                }
-                ActiveLabelStrip.ClearSelections();
-            }
-        }
-
 
         private void PopulateRackLabelSelector()
         {
@@ -125,6 +125,29 @@ namespace Dimmer_Labels_Wizard
             RackSelector.Items.Add(DimmersNode);
         }
 
+
+
+        #region Event Handling
+        void outline_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            ActiveLabelStrip.MakeSelection(sender);
+        }
+
+        void LabelCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Handled != true)
+            {
+                foreach (var element in LabelCanvas.Children)
+                {
+                    Border child = (Border)element;
+
+                    child.BorderBrush = new SolidColorBrush(Colors.Black);
+                }
+                ActiveLabelStrip.ClearSelections();
+            }
+        }
+
         void RackSelector_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             TreeViewItem selectedItem = (TreeViewItem)e.NewValue;
@@ -134,7 +157,6 @@ namespace Dimmer_Labels_Wizard
             ActiveLabelStrip.LabelStrip = selectedLabelStrip;
 
             ForceRender();
-
         }
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
@@ -143,6 +165,11 @@ namespace Dimmer_Labels_Wizard
             {
                 Console.WriteLine(element.Data);
             }
+        }
+
+        void LabelEditor_Loaded(object sender, RoutedEventArgs e)
+        {
+            PopulateRackLabelSelector();
         }
 
         private void MagnifyPlusButton_Click(object sender, RoutedEventArgs e)
@@ -156,5 +183,27 @@ namespace Dimmer_Labels_Wizard
             LabelCanvasScaleTransform.ScaleX -= 0.10;
             LabelCanvasScaleTransform.ScaleY -= 0.10;
         }
+
+        void HeaderCellControl_PropertyChanged(object sender, EventArgs e)
+        {
+            int index = 0;
+            foreach (var element in ActiveLabelStrip.SelectedHeaders)
+            {
+                element.Data = HeaderCellControl.Data[index];
+                element.Font = HeaderCellControl.Typefaces[index];
+                element.FontSize = HeaderCellControl.FontSizes[index];
+
+                index++;
+            }
+
+            ForceRender();
+        }
+
+        void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
+        {
+            PopulateHeaderCellControls();
+        }
+
+        #endregion
     }
 }

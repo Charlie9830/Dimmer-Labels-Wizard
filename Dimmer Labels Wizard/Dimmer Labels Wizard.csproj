@@ -82,6 +82,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CellControl.xaml.cs">
+      <DependentUpon>CellControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CellSeperator.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -364,6 +367,10 @@
     <None Include="Resources\Single Label Preview.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CellControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="LabelCanvas.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

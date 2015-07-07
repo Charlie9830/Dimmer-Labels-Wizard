@@ -377,7 +377,7 @@ namespace Dimmer_Labels_Wizard
 
         }
 
-        // Returns the index of the Longest String in an Array. (Typeface Measurements).
+        // Returns the index of the Longest String in an Array. (Typefaces Measurements).
         private int GetLongestStringIndex(string[] strings, Typeface typeface, double emSize)
         {
             List<double> widths = new List<double>();

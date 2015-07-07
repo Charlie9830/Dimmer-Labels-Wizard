@@ -36,6 +36,8 @@ namespace Dimmer_Labels_Wizard
                     SelectedHeaders.Remove(headerCell);
                     outline.BorderBrush = new SolidColorBrush(Colors.Black);
                 }
+
+                OnSelectedHeadersChanged(new EventArgs());
             }
 
             if (outline.Tag.GetType() == typeof(FooterCell))
@@ -55,13 +57,33 @@ namespace Dimmer_Labels_Wizard
                     SelectedFooters.Remove(footerCell);
                     outline.BorderBrush = new SolidColorBrush(Colors.Black);
                 }
+
+                OnSelectedFootersChanged(new EventArgs());
             }
         }
 
         public void ClearSelections()
         {
             SelectedHeaders.Clear();
+            OnSelectedHeadersChanged(new EventArgs());
+
             SelectedFooters.Clear();
+            OnSelectedFootersChanged(new EventArgs());
         }
+
+        #region External Events
+        public event EventHandler SelectedHeadersChanged;
+        //public event EventHandler SelectedFootersChanged;
+
+        protected void OnSelectedHeadersChanged(EventArgs e)
+        {
+            SelectedHeadersChanged(this, e);
+        }
+
+        protected void OnSelectedFootersChanged(EventArgs e)
+        {
+            //SelectedFootersChanged(this, e);
+        }
+        #endregion
     }
 }
