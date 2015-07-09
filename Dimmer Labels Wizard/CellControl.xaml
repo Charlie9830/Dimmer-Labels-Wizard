@@ -3,14 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="67" Width="319">
+             mc:Ignorable="d" Height="89" Width="319">
     <Grid Background="White">
-        <ComboBox x:Name="FontComboBox" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="162" IsReadOnly="True"/>
-        <ComboBox x:Name="SizeComboBox" HorizontalAlignment="Left" Margin="177,10,0,0" VerticalAlignment="Top" Width="50" IsEditable="True"/>
-        <TextBox x:Name="DataTextBox" HorizontalAlignment="Left" Height="23" Margin="10,37,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="273"/>
-        <ToggleButton x:Name="GlobalApplyToggleButton" Width="22" Height="22" Margin="287,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="O"/>
-        <ToggleButton x:Name="BoldToggleButton" Width="22" Height="22" Margin="232,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="B" Background="#FFDDDDDD"/>
-        <ToggleButton x:Name="ItalicsToggleButton" Width="22" Height="22" Margin="259,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="I"/>
-        <ToggleButton x:Name="UnderlineToggleButton" Width="22" Height="22" Margin="287,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="U"/>
+        <ComboBox x:Name="FontComboBox" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Width="162" IsReadOnly="True"/>
+        <ComboBox x:Name="SizeComboBox" HorizontalAlignment="Left" Margin="177,31,0,0" VerticalAlignment="Top" Width="50" IsEditable="True" TextBoxBase.TextChanged="SizeComboBox_TextChanged"/>
+        <TextBox x:Name="DataTextBox" HorizontalAlignment="Left" Height="23" Margin="10,58,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="299"/>
+        <ToggleButton x:Name="GlobalApplyToggleButton" Width="22" Height="22" Margin="287,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="O"/>
+        <ToggleButton x:Name="BoldToggleButton" Width="22" Height="22" Margin="232,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="B" Background="#FFDDDDDD"/>
+        <ToggleButton x:Name="ItalicsToggleButton" Width="22" Height="22" Margin="259,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="I"/>
+        <ToggleButton x:Name="UnderlineToggleButton" Width="22" Height="22" Margin="287,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="U"/>
+        <Label x:Name="TitleLabel" Content="Label" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.605,-0.385" FontSize="16"/>
     </Grid>
 </UserControl>

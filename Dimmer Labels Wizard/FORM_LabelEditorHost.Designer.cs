@@ -35,7 +35,7 @@
             // 
             this.ElementHost.Location = new System.Drawing.Point(12, 12);
             this.ElementHost.Name = "ElementHost";
-            this.ElementHost.Size = new System.Drawing.Size(1030, 500);
+            this.ElementHost.Size = new System.Drawing.Size(1030, 550);
             this.ElementHost.TabIndex = 0;
             this.ElementHost.Text = "elementHost1";
             this.ElementHost.Child = null;
@@ -44,7 +44,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1055, 527);
+            this.ClientSize = new System.Drawing.Size(1055, 573);
             this.Controls.Add(this.ElementHost);
             this.Name = "FORM_LabelEditorHost";
             this.Text = "FORM_LabelEditorHost";

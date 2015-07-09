@@ -45,11 +45,11 @@ namespace Dimmer_Labels_Wizard
                 UserParameters.MulticoreNameColumnIndex = 3;
                 UserParameters.PositionColumnIndex = 4;
 
-                UserParameters.DimmerLabelWidthInMM = 25;
-                UserParameters.DimmerLabelHeightInMM = 35;
+                UserParameters.DimmerLabelWidthInMM = 16;
+                UserParameters.DimmerLabelHeightInMM = 18;
 
-                UserParameters.DistroLabelWidthInMM = 40;
-                UserParameters.DistroLabelHeightInMM = 60;
+                UserParameters.DistroLabelWidthInMM = 16;
+                UserParameters.DistroLabelHeightInMM = 18;
 
                 UserParameters.HeaderField = LabelField.MulticoreName;
                 UserParameters.FooterMiddleField = LabelField.ChannelNumber;

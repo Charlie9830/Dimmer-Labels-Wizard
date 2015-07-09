@@ -30,30 +30,36 @@ namespace Dimmer_Labels_Wizard
         public RackType RackUnitType { get; set; } // Imported from DimmerDistroUnit or User Selection of Labels.
         public int RackNumber { get; set; } // Imported from DimDistroUnit for User selection of Labels.
 
-        // Methods.
-        public void PrintToConsole()
+        private double unitConversionRatio = 96d / 25.4d;
+
+        // Updates HeaderCell Data that is Associated with the input headerCell, so Cells don't split unexpectatly.
+        public void UpdateHeaderData(string newData, HeaderCell headerCell)
         {
-            int count = 0;
-            for (int i = 0; i < Headers.Count; i++)
-            {
-                Console.Write(Headers[i].Data);
-                Console.Write(" | ");
-                count++;
-            }
-            Console.Write("    ");
-            Console.Write(count);
-            count = 0;
+            // Determine headerCell Index.
+            int headerCellIndex = Headers.IndexOf(headerCell);
+            // Init a List of headerCells to Update.
+            List<HeaderCell> headersToUpdate = new List<HeaderCell>();
 
-            Console.WriteLine();
+            // Itterate Forward through Headers. If Data matches old Data, add it to Update List.
+            for (int index = headerCellIndex; index < Headers.Count; index++)
+        {
+                if (Headers[index].Data == headerCell.Data)
+                {
+                    headersToUpdate.Add(Headers[index]);
+                }
 
-            for (int i = 0; i < Footers.Count; i++)
-            {
-                Console.Write(Footers[i].MiddleData);
-                Console.Write(" | ");
-                count++;
+                else
+                {
+                    break;
+                }
+                
             }
-            Console.Write("    ");
-            Console.Write(count);
+            
+            // Apply Updates to everything in the Updates List.
+            foreach (var element in headersToUpdate)
+            {
+                element.Data = newData;
+            }
         }
 
         // Sets the Background Colour of Each Header and Footer Cell
@@ -76,7 +82,7 @@ namespace Dimmer_Labels_Wizard
         {
             RenderHeader(canvas, offset);
 
-            offset.Y += this.LabelHeightInMM * 1.5;
+            offset.Y += (this.LabelHeightInMM * unitConversionRatio) * 1.5;
 
             RenderFooters(canvas, offset);
         }
@@ -87,8 +93,9 @@ namespace Dimmer_Labels_Wizard
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
             Thickness headerOutlineThickness = new Thickness(2);
 
-            double labelWidth = this.LabelWidthInMM;
-            double labelHeight = this.LabelHeightInMM;
+            // Convert to WPF Units (Inches)
+            double labelWidth = this.LabelWidthInMM * unitConversionRatio;
+            double labelHeight = this.LabelHeightInMM * unitConversionRatio;
 
             double headerXOffset = offset.X;
             int rightBoundPosition = 1;
@@ -168,9 +175,21 @@ namespace Dimmer_Labels_Wizard
                 // Can the string Fit into onto the Canvas as is?
                 if (downSizeRatio.Width == 1)
                 {
-                    textCanvas.Children.Add
-                        (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,headerFontSize,
-                        Headers[index].TextColor,fontDimensions));
+                    if (downSizeRatio.Height == 1)
+                    {
+                        textCanvas.Children.Add
+                            (GenerateTextBlocks(textCanvasSize, headerData, headerTypeface, headerFontSize,
+                            Headers[index].TextColor, fontDimensions));
+                    }
+
+                    else
+                    {
+                        // Downsize Vertically and Send to Canvas.
+                        Headers[index].FontSize *= downSizeRatio.Height;
+                        textCanvas.Children.Add
+                            (GenerateTextBlocks(textCanvasSize, headerData, headerTypeface, headerFontSize,
+                            Headers[index].TextColor, fontDimensions));
+                    }
                 }
 
                 else
@@ -234,7 +253,7 @@ namespace Dimmer_Labels_Wizard
                 // Tag the HeaderOutline.
                 HeaderOutlines.Last().Tag = Headers[index];
 
-                // Add to canvas.
+                // Add to labelCanvas.
                 HeaderOutlines.Last().Child = textCanvas;
                 canvas.Children.Add(HeaderOutlines.Last());
 
@@ -251,8 +270,9 @@ namespace Dimmer_Labels_Wizard
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
             Thickness footerOutlineThickness = new Thickness(2);
 
-            double labelWidth = this.LabelWidthInMM;
-            double labelHeight = this.LabelHeightInMM;
+            // Convert to WPF Units (inches).
+            double labelWidth = this.LabelWidthInMM * unitConversionRatio;
+            double labelHeight = this.LabelHeightInMM * unitConversionRatio;
 
             double footerXOffset = offset.X;
 
@@ -457,9 +477,9 @@ namespace Dimmer_Labels_Wizard
 
             int textBlockQTY = strings.Length;
 
-            // TopOffset is resolving to a Negative Number. When multiplied by Count, Generates more Negative Numbers.
-            double topOffset = 1;//(canvasSize.Height - (fontDimensions.Height * textBlockQTY)) / 2;
-            double leftOffset = 0; // 0 Because Textblock.Width is set to CanvasSize.Width.
+            
+            double topOffset = 1;
+            double leftOffset = 0;
 
             for (int count = 0; count < textBlockQTY; count++)
             {

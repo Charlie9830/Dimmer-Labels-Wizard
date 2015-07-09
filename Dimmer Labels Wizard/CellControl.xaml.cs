@@ -43,7 +43,8 @@ namespace Dimmer_Labels_Wizard
             FontComboBox.SelectionChanged += FontComboBox_SelectionChanged;
             BoldToggleButton.Click += BoldToggleButton_Click;
             ItalicsToggleButton.Click += ItalicsToggleButton_Click;
-            SizeComboBox.SelectionChanged += SizeComboBox_SelectionChanged;
+            // SizeComboBox.TextChanged event Initialied in XAML.
+
             DataTextBox.TextChanged += DataTextBox_TextChanged;
         }
 
@@ -75,7 +76,7 @@ namespace Dimmer_Labels_Wizard
             // Urnary Expression throws Compile time error. Cannot Differentiate null from Double.
             if (CheckFontSizeEquality() == true)
             {
-                SizeComboBox.SelectedItem = FontSizes.First();
+                SizeComboBox.Text = Convert.ToString(FontSizes.First());
             }
 
             else
@@ -84,6 +85,24 @@ namespace Dimmer_Labels_Wizard
             }
 
             UpdatingUI = false;
+        }
+
+        public void ResetControl()
+        {
+            UpdatingUI = true;
+
+            FontComboBox.SelectedIndex = -1;
+            SizeComboBox.SelectedIndex = -1;
+            BoldToggleButton.IsChecked = false;
+            ItalicsToggleButton.IsChecked = false;
+            DataTextBox.Text = null;
+
+            UpdatingUI = false;
+        }
+
+        public void SetTitle(string title)
+        {
+            TitleLabel.Content = title;
         }
 
         private bool CheckDataEquality()
@@ -105,7 +124,7 @@ namespace Dimmer_Labels_Wizard
         {
             Typeface referenceTypeface = Typefaces.First();
 
-            if (Typefaces.All(item => item == referenceTypeface) == true)
+            if (Typefaces.All(item => item.FontFamily.Source == referenceTypeface.FontFamily.Source) == true)
             {
                 return true;
             }
@@ -191,12 +210,11 @@ namespace Dimmer_Labels_Wizard
                 List<double> outgoingFontSize = new List<double>();
                 int entryQTY = FontSizes.Length;
 
-                double selectedValue = Convert.ToDouble(SizeComboBox.SelectedValue.ToString());
-
+                double selectedValue = Convert.ToDouble(SizeComboBox.Text.ToString());
+                Console.WriteLine(selectedValue);
                 for (int count = 1; count <= entryQTY; count++)
                 {
                     outgoingFontSize.Add(selectedValue);
-
                 }
 
                 FontSizes = outgoingFontSize.ToArray();
@@ -259,7 +277,7 @@ namespace Dimmer_Labels_Wizard
             OnPropertyChanged(new EventArgs());
         }
 
-        void SizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SizeComboBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateFontSize();
             OnPropertyChanged(new EventArgs());
@@ -267,8 +285,11 @@ namespace Dimmer_Labels_Wizard
 
         void DataTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UpdateData();
-            OnPropertyChanged(new EventArgs());
+            if (UpdatingUI == false)
+            {
+                UpdateData();
+                OnPropertyChanged(new EventArgs());
+            }
         }
         #endregion
 

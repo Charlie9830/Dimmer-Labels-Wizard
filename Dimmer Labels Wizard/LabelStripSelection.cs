@@ -15,7 +15,7 @@ namespace Dimmer_Labels_Wizard
         public List<HeaderCell> SelectedHeaders = new List<HeaderCell>();
         public List<FooterCell> SelectedFooters = new List<FooterCell>();
 
-        public void MakeSelection(object selectionOutline)
+        public void MakeSelection(object selectionOutline, Canvas labelCanvas)
         {
             Border outline = (Border)selectionOutline;
 
@@ -27,14 +27,12 @@ namespace Dimmer_Labels_Wizard
                 {
                     // Add it as a Selection.
                     SelectedHeaders.Add(headerCell);
-                    outline.BorderBrush = SystemColors.HighlightBrush;
                 }
 
                 else
                 {
                     // Remove it from Selections.
                     SelectedHeaders.Remove(headerCell);
-                    outline.BorderBrush = new SolidColorBrush(Colors.Black);
                 }
 
                 OnSelectedHeadersChanged(new EventArgs());
@@ -48,17 +46,52 @@ namespace Dimmer_Labels_Wizard
                 {
                     // Add it as a Selection.
                     SelectedFooters.Add(footerCell);
-                    outline.BorderBrush = SystemColors.HighlightBrush;
                 }
 
                 else
                 {
                     // Remove it from Selections.
                     SelectedFooters.Remove(footerCell);
-                    outline.BorderBrush = new SolidColorBrush(Colors.Black);
                 }
 
                 OnSelectedFootersChanged(new EventArgs());
+            }
+
+            RenderSelections(labelCanvas);
+        }
+
+        public void RenderSelections(Canvas labelCanvas)
+        {
+            foreach (var element in labelCanvas.Children)
+            {
+                Border outline = (Border)element;
+                if (outline.Tag.GetType() == typeof(HeaderCell))
+                {
+                    if (SelectedHeaders.Contains(outline.Tag))
+                    {
+                        outline.BorderBrush = SystemColors.HighlightBrush;
+                    }
+
+                    else
+                    {
+                        outline.BorderBrush = new SolidColorBrush(Colors.Black);
+                    }
+                }
+
+                if (outline.Tag.GetType() == typeof(FooterCell))
+                {
+                    if (SelectedFooters.Contains(outline.Tag))
+                    {
+                        outline.BorderBrush = SystemColors.HighlightBrush;
+                    }
+
+                    else
+                    {
+                        outline.BorderBrush = new SolidColorBrush(Colors.Black);
+                    }
+                }
+
+
             }
         }
 
@@ -73,7 +106,7 @@ namespace Dimmer_Labels_Wizard
 
         #region External Events
         public event EventHandler SelectedHeadersChanged;
-        //public event EventHandler SelectedFootersChanged;
+        public event EventHandler SelectedFootersChanged;
 
         protected void OnSelectedHeadersChanged(EventArgs e)
         {
@@ -82,7 +115,7 @@ namespace Dimmer_Labels_Wizard
 
         protected void OnSelectedFootersChanged(EventArgs e)
         {
-            //SelectedFootersChanged(this, e);
+            SelectedFootersChanged(this, e);
         }
         #endregion
     }

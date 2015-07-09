@@ -42,19 +42,23 @@ namespace Dimmer_Labels_Wizard
             LabelCanvas.MouseDown += LabelCanvas_MouseDown;
 
             HeaderCellControl.PropertyChanged += HeaderCellControl_PropertyChanged;
+            FooterTopCellControl.PropertyChanged += FooterTopCellControl_PropertyChanged;
+            FooterMiddleCellControl.PropertyChanged += FooterMiddleCellControl_PropertyChanged;
+            FooterBottomCellControl.PropertyChanged += FooterBottomCellControl_PropertyChanged;
 
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
+            ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
         }
-
-
 
         void ForceRender()
         {
             if (ActiveLabelStrip.LabelStrip != null)
             {
                 LabelCanvas.Children.Clear();
+                // Offset Point is given in WPF Pixels (Inches).
                 ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20));
                 CollectSelectionEvents();
+                ActiveLabelStrip.RenderSelections(LabelCanvas);
             }
         }
 
@@ -78,6 +82,70 @@ namespace Dimmer_Labels_Wizard
                 HeaderCellControl.Typefaces = headerTypefaces.ToArray();
                 HeaderCellControl.FontSizes = headerFontSizes.ToArray();
                 HeaderCellControl.RenderControl();
+            }
+
+            else
+            {
+                HeaderCellControl.ResetControl();
+            }
+        }
+
+        void PopulateFooterCellsControls()
+        {
+            if (ActiveLabelStrip.SelectedFooters.Count > 0)
+            {
+                // Top
+                List<string> topData = new List<string>();
+                List<Typeface> topTypefaces = new List<Typeface>();
+                List<double> topFontSizes = new List<double>();
+
+                // Middle
+                List<string> middleData = new List<string>();
+                List<Typeface> middleTypefaces = new List<Typeface>();
+                List<double> middleFontSizes = new List<double>();
+
+                // Bottom
+                List<string> bottomData = new List<string>();
+                List<Typeface> bottomTypefaces = new List<Typeface>();
+                List<double> bottomFontSizes = new List<double>();
+
+                foreach (var element in ActiveLabelStrip.SelectedFooters)
+                {
+                    topData.Add(element.TopData);
+                    topTypefaces.Add(element.TopFont);
+                    topFontSizes.Add(element.TopFontSize);
+
+                    middleData.Add(element.MiddleData);
+                    middleTypefaces.Add(element.MiddleFont);
+                    middleFontSizes.Add(element.MiddleFontSize);
+
+                    bottomData.Add(element.BottomData);
+                    bottomTypefaces.Add(element.BottomFont);
+                    bottomFontSizes.Add(element.BottomFontSize);
+                }
+
+                FooterTopCellControl.Data = topData.ToArray();
+                FooterTopCellControl.Typefaces = topTypefaces.ToArray();
+                FooterTopCellControl.FontSizes = topFontSizes.ToArray();
+                FooterTopCellControl.RenderControl();
+
+                FooterMiddleCellControl.Data = middleData.ToArray();
+                FooterMiddleCellControl.Typefaces = middleTypefaces.ToArray();
+                FooterMiddleCellControl.FontSizes = middleFontSizes.ToArray();
+                FooterMiddleCellControl.RenderControl();
+
+                FooterBottomCellControl.Data = bottomData.ToArray();
+                FooterBottomCellControl.Typefaces = bottomTypefaces.ToArray();
+                FooterBottomCellControl.FontSizes = bottomFontSizes.ToArray();
+                FooterBottomCellControl.RenderControl();
+
+            }
+
+            else
+            {
+                FooterTopCellControl.ResetControl();
+                FooterMiddleCellControl.ResetControl();
+                FooterBottomCellControl.ResetControl();
             }
         }
 
@@ -131,7 +199,7 @@ namespace Dimmer_Labels_Wizard
         void outline_MouseDown(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            ActiveLabelStrip.MakeSelection(sender);
+            ActiveLabelStrip.MakeSelection(sender,LabelCanvas);
         }
 
         void LabelCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -170,6 +238,10 @@ namespace Dimmer_Labels_Wizard
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
         {
             PopulateRackLabelSelector();
+            HeaderCellControl.SetTitle("Header Text");
+            FooterTopCellControl.SetTitle("Footer Top Text");
+            FooterMiddleCellControl.SetTitle("Footer Middle Text");
+            FooterBottomCellControl.SetTitle("Footer Bottom Text");
         }
 
         private void MagnifyPlusButton_Click(object sender, RoutedEventArgs e)
@@ -187,9 +259,11 @@ namespace Dimmer_Labels_Wizard
         void HeaderCellControl_PropertyChanged(object sender, EventArgs e)
         {
             int index = 0;
+
+            // Update LabelStrip Values.
             foreach (var element in ActiveLabelStrip.SelectedHeaders)
             {
-                element.Data = HeaderCellControl.Data[index];
+                ActiveLabelStrip.LabelStrip.UpdateHeaderData(HeaderCellControl.Data[index], element);
                 element.Font = HeaderCellControl.Typefaces[index];
                 element.FontSize = HeaderCellControl.FontSizes[index];
 
@@ -199,9 +273,66 @@ namespace Dimmer_Labels_Wizard
             ForceRender();
         }
 
+        void FooterTopCellControl_PropertyChanged(object sender, EventArgs e)
+        {
+            int index = 0;
+
+            // Update LabelStrip Values.
+            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            {
+                element.TopData = FooterTopCellControl.Data[index];
+                element.TopFont = FooterTopCellControl.Typefaces[index];
+                element.TopFontSize = FooterTopCellControl.FontSizes[index];
+
+                index++;
+            }
+
+            ForceRender();
+        }
+
+        void FooterMiddleCellControl_PropertyChanged(object sender, EventArgs e)
+        {
+            int index = 0;
+
+            // Update LabelStrip Values.
+            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            {
+                element.MiddleData = FooterMiddleCellControl.Data[index];
+                element.MiddleFont = FooterMiddleCellControl.Typefaces[index];
+                element.MiddleFontSize = FooterMiddleCellControl.FontSizes[index];
+
+                index++;
+            }
+
+            ForceRender();
+        }
+
+        void FooterBottomCellControl_PropertyChanged(object sender, EventArgs e)
+        {
+            int index = 0;
+
+            // Update LabelStrip Values.
+            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            {
+                element.BottomData = FooterBottomCellControl.Data[index];
+                element.BottomFont = FooterBottomCellControl.Typefaces[index];
+                element.BottomFontSize = FooterBottomCellControl.FontSizes[index];
+
+                index++;
+            }
+
+            ForceRender();
+        }
+
+
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
         {
             PopulateHeaderCellControls();
+        }
+
+        void ActiveLabelStrip_SelectedFootersChanged(object sender, EventArgs e)
+        {
+            PopulateFooterCellsControls();
         }
 
         #endregion

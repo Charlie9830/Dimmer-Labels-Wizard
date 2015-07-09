@@ -70,23 +70,5 @@ namespace Dimmer_Labels_Wizard
                 
             }
         }
-
-        public static void PrintRackLabelsToConsole()
-        {
-            foreach (var element in Globals.LabelStrips)
-            {
-                Console.WriteLine();
-                Console.WriteLine("---------------------------------------------");
-
-                element.PrintToConsole();
-                
-                Console.WriteLine();
-                Console.WriteLine("---------------------------------------------");
-                Console.WriteLine();
-                
-               
-            }
-        }
-
     }
 }
