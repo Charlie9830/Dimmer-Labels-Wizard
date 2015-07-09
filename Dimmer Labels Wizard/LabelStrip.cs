@@ -251,7 +251,16 @@ namespace Dimmer_Labels_Wizard
                 }
 
                 // Tag the HeaderOutline.
-                HeaderOutlines.Last().Tag = Headers[index];
+                HeaderCellWrapper wrapper = new HeaderCellWrapper();
+
+                int wrapperIndex = index;
+                for (int count = 1; count <= rightBoundPosition; count++ )
+                {
+                    wrapper.Cells.Add(Headers[wrapperIndex]);
+                    wrapperIndex++;
+                }
+
+                HeaderOutlines.Last().Tag = wrapper;
 
                 // Add to labelCanvas.
                 HeaderOutlines.Last().Child = textCanvas;

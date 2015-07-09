@@ -3,15 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="89" Width="319">
+             xmlns:local="clr-namespace:Dimmer_Labels_Wizard"
+             mc:Ignorable="d" Height="89" Width="319"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    
     <Grid Background="White">
-        <ComboBox x:Name="FontComboBox" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Width="162" IsReadOnly="True"/>
-        <ComboBox x:Name="SizeComboBox" HorizontalAlignment="Left" Margin="177,31,0,0" VerticalAlignment="Top" Width="50" IsEditable="True" TextBoxBase.TextChanged="SizeComboBox_TextChanged"/>
-        <TextBox x:Name="DataTextBox" HorizontalAlignment="Left" Height="23" Margin="10,58,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="299"/>
+        <ComboBox x:Name="FontComboBox" ItemsSource="{Binding Path=ViewModel.SystemFonts}" SelectedItem="{Binding Path=ViewModel.FontFamily}" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Width="162" IsReadOnly="True"/>
+        <ComboBox x:Name="SizeComboBox" ItemsSource="{Binding Path=ViewModel.FontSizes}" Text="{Binding Path=ViewModel.FontSize}" HorizontalAlignment="Left" Margin="177,31,0,0" VerticalAlignment="Top" Width="50" IsEditable="True"/>
+        <TextBox x:Name="DataTextBox" Text="{Binding Path=ViewModel.Data}" HorizontalAlignment="Left" Height="23" Margin="10,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299"/>
         <ToggleButton x:Name="GlobalApplyToggleButton" Width="22" Height="22" Margin="287,4,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="O"/>
-        <ToggleButton x:Name="BoldToggleButton" Width="22" Height="22" Margin="232,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="B" Background="#FFDDDDDD"/>
-        <ToggleButton x:Name="ItalicsToggleButton" Width="22" Height="22" Margin="259,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="I"/>
+        <ToggleButton x:Name="BoldToggleButton" IsChecked="{Binding Path=ViewModel.IsBold}" Width="22" Height="22" Margin="232,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="B" Background="#FFDDDDDD"/>
+        <ToggleButton x:Name="ItalicsToggleButton" IsChecked="{Binding Path=ViewModel.IsItalics}" Width="22" Height="22" Margin="259,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="I"/>
         <ToggleButton x:Name="UnderlineToggleButton" Width="22" Height="22" Margin="287,31,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="U"/>
-        <Label x:Name="TitleLabel" Content="Label" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.605,-0.385" FontSize="16"/>
+        <Label x:Name="TitleLabel" Content="{Binding Path=ViewModel.ControlTitle}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.605,-0.385" FontSize="16"/>
+
     </Grid>
 </UserControl>

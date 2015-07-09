@@ -85,6 +85,7 @@
     <Compile Include="CellControl.xaml.cs">
       <DependentUpon>CellControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CellControlViewModel.cs" />
     <Compile Include="CellSeperator.cs">
       <SubType>UserControl</SubType>
     </Compile>

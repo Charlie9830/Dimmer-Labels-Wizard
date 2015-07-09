@@ -15,4 +15,10 @@ namespace Dimmer_Labels_Wizard
         public Typeface Font { get; set; }
         public double FontSize { get; set; }
     }
+
+    public class HeaderCellWrapper
+    {
+        // Wraps a List of HeaderCells so they can be Tagged to outlines during Rendering.
+        public List<HeaderCell> Cells = new List<HeaderCell>();
+    }
 }

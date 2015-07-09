@@ -19,20 +19,24 @@ namespace Dimmer_Labels_Wizard
         {
             Border outline = (Border)selectionOutline;
 
-            if (outline.Tag.GetType() == typeof(HeaderCell))
+            if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
             {
-                HeaderCell headerCell = (HeaderCell)outline.Tag;
+                HeaderCellWrapper wrapper = (HeaderCellWrapper)outline.Tag;
+                List<HeaderCell> headerCells = wrapper.Cells;
 
-                if (SelectedHeaders.Contains(headerCell) == false)
+                foreach (var element in headerCells)
                 {
-                    // Add it as a Selection.
-                    SelectedHeaders.Add(headerCell);
-                }
+                    if (SelectedHeaders.Contains(element) == false)
+                    {
+                        // Add it as a Selection.
+                        SelectedHeaders.Add(element);
+                    }
 
-                else
-                {
-                    // Remove it from Selections.
-                    SelectedHeaders.Remove(headerCell);
+                    else
+                    {
+                        // Remove it from Selections.
+                        SelectedHeaders.Remove(element);
+                    }
                 }
 
                 OnSelectedHeadersChanged(new EventArgs());
@@ -65,9 +69,13 @@ namespace Dimmer_Labels_Wizard
             foreach (var element in labelCanvas.Children)
             {
                 Border outline = (Border)element;
-                if (outline.Tag.GetType() == typeof(HeaderCell))
+                if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
                 {
-                    if (SelectedHeaders.Contains(outline.Tag))
+                    HeaderCellWrapper wrapper = (HeaderCellWrapper)outline.Tag;
+                    List<HeaderCell> headerCells = wrapper.Cells;
+
+                    foreach (var cell in headerCells)
+                    if (SelectedHeaders.Contains(cell))
                     {
                         outline.BorderBrush = SystemColors.HighlightBrush;
                     }
