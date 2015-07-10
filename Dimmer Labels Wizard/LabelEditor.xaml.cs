@@ -44,7 +44,9 @@ namespace Dimmer_Labels_Wizard
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
 
-            HeaderCellControl.ViewModel.RenderRequested += HeaderCellControl_ViewModel_RenderRequested;
+            HeaderCellControl.HeaderViewModel.RenderRequested += HeaderCellControl_ViewModel_RenderRequested;
+
+            //HeaderCellControl.DataContext = HeaderCellControl.HeaderViewModel;
         }
 
         void ForceRender()
@@ -61,11 +63,11 @@ namespace Dimmer_Labels_Wizard
 
         void PopulateHeaderCellControls()
         {
-            HeaderCellControl.ViewModel.HeaderCells.Clear();
+            HeaderCellControl.HeaderViewModel.HeaderCells.Clear();
 
             foreach(var element in ActiveLabelStrip.SelectedHeaders)
             {
-                HeaderCellControl.ViewModel.HeaderCells.Add(element);
+                HeaderCellControl.HeaderViewModel.HeaderCells.Add(element);
             }
         }
 
@@ -167,6 +169,7 @@ namespace Dimmer_Labels_Wizard
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
         {
             PopulateRackLabelSelector();
+            HeaderCellControl.HeaderViewModel.ControlTitle = "test";
         }
 
         private void MagnifyPlusButton_Click(object sender, RoutedEventArgs e)

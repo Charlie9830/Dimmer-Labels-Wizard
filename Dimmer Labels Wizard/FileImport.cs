@@ -38,7 +38,7 @@ namespace Dimmer_Labels_Wizard
             // Read the First line to Throw out Coloum headerCell values.
             file.ReadLine();
 
-            // Keep track of and Assign HeaderCells/FooterCells list Indices
+            // Keep track of and Assign FooterCells/FooterCells list Indices
             int index = 0;
 
             // Collect Column Indexes

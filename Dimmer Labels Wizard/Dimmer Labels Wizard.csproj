@@ -85,7 +85,7 @@
     <Compile Include="CellControl.xaml.cs">
       <DependentUpon>CellControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CellControlViewModel.cs" />
+    <Compile Include="CellControlViewModels.cs" />
     <Compile Include="CellSeperator.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -211,6 +211,7 @@
     <Compile Include="Racks.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="UserParameters.cs" />
+    <Compile Include="ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

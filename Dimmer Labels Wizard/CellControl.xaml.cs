@@ -20,18 +20,57 @@ namespace Dimmer_Labels_Wizard
     /// </summary>
     public partial class CellControl : UserControl
     {
-        public CellControlViewModel ViewModel
+        public HeaderCellControlViewModel HeaderViewModel
         {
             get
             {
-                return _ViewModel;
+                return _HeaderViewModel;
             }
             set
             {
-                _ViewModel = value;
+                _HeaderViewModel = value;
             }
         }
-        protected CellControlViewModel _ViewModel = new CellControlViewModel();
+        protected HeaderCellControlViewModel _HeaderViewModel = new HeaderCellControlViewModel();
+
+        public FooterTopCellControlViewModel FooterTopViewModel
+        {
+            get
+            {
+                return _FooterTopViewModel;
+            }
+            set
+            {
+                _FooterTopViewModel = value;
+            }
+        }
+        protected FooterTopCellControlViewModel _FooterTopViewModel = new FooterTopCellControlViewModel();
+
+        public FooterMiddleCellControlViewModel FooterMiddleViewModel
+        {
+            get
+            {
+                return _FooterMiddleViewModel;
+            }
+            set
+            {
+                _FooterMiddleViewModel = value;
+            }
+        }
+        protected FooterMiddleCellControlViewModel _FooterMiddleViewModel = new FooterMiddleCellControlViewModel();
+
+        public FooterBottomCellControlViewModel FooterBottomViewModel
+        {
+            get
+            {
+                return _FooterBottomViewModel;
+            }
+            set
+            {
+                _FooterBottomViewModel = value;
+            }
+        }
+        protected FooterBottomCellControlViewModel _FooterBottomViewModel = new FooterBottomCellControlViewModel();
 
         public CellControl()
         {

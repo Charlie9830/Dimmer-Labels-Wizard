@@ -18,7 +18,7 @@ namespace Dimmer_Labels_Wizard
 
     public class HeaderCellWrapper
     {
-        // Wraps a List of HeaderCells so they can be Tagged to outlines during Rendering.
+        // Wraps a List of FooterCells so they can be Tagged to outlines during Rendering.
         public List<HeaderCell> Cells = new List<HeaderCell>();
     }
 }
