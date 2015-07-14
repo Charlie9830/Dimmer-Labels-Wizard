@@ -39,11 +39,11 @@ namespace Dimmer_Labels_Wizard
         public static List<DistroRack> DistroRacks = new List<DistroRack>();
         public static List<DimmerRack> DimmerRacks = new List<DimmerRack>();
 
-        public static int DimmerLabelWidthInMM { get; set; } 
-        public static int DimmerLabelHeightInMM { get; set; }
+        public static double DimmerLabelWidthInMM { get; set; } 
+        public static double DimmerLabelHeightInMM { get; set; }
 
-        public static int DistroLabelWidthInMM { get; set; }
-        public static int DistroLabelHeightInMM { get; set; }
+        public static double DistroLabelWidthInMM { get; set; }
+        public static double DistroLabelHeightInMM { get; set; }
 
         // Label Type
         public static bool SingleLabel = false;

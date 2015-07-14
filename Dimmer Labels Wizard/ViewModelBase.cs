@@ -19,5 +19,15 @@ namespace Dimmer_Labels_Wizard
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
+        public event EventHandler RenderRequested;
+
+        protected virtual void OnRenderRequested()
+        {
+            if (RenderRequested != null)
+            {
+                RenderRequested(this, new EventArgs());
+            }
+        }
     }
 }

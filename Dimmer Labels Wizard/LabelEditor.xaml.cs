@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Xceed.Wpf.Toolkit;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -25,6 +26,7 @@ namespace Dimmer_Labels_Wizard
 
         // View Controls
         private ScaleTransform LabelCanvasScaleTransform = new ScaleTransform();
+
 
         public LabelEditor()
         {
@@ -44,9 +46,18 @@ namespace Dimmer_Labels_Wizard
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
 
-            HeaderCellControl.HeaderViewModel.RenderRequested += HeaderCellControl_ViewModel_RenderRequested;
+            HeaderCellControl.HeaderViewModel.RenderRequested += Control_RenderRequested;
+            FooterTopCellControl.FooterTopViewModel.RenderRequested += Control_RenderRequested;
+            FooterMiddleCellControl.FooterMiddleViewModel.RenderRequested += Control_RenderRequested;
+            FooterBottomCellControl.FooterBottomViewModel.RenderRequested += Control_RenderRequested;
 
-            //HeaderCellControl.DataContext = HeaderCellControl.HeaderViewModel;
+            ColorControl.ViewModel.RenderRequested += Control_RenderRequested;
+
+            // Set Data Contexts for Cell Control Binding.
+            HeaderCellControl.DataContext = HeaderCellControl.HeaderViewModel;
+            FooterTopCellControl.DataContext = FooterTopCellControl.FooterTopViewModel;
+            FooterMiddleCellControl.DataContext = FooterMiddleCellControl.FooterMiddleViewModel;
+            FooterBottomCellControl.DataContext = FooterBottomCellControl.FooterBottomViewModel;
         }
 
         void ForceRender()
@@ -73,7 +84,32 @@ namespace Dimmer_Labels_Wizard
 
         void PopulateFooterCellsControls()
         {
-         
+            FooterTopCellControl.FooterTopViewModel.FooterCells.Clear();
+            FooterMiddleCellControl.FooterMiddleViewModel.FooterCells.Clear();
+            FooterBottomCellControl.FooterBottomViewModel.FooterCells.Clear();
+
+            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            {
+                FooterTopCellControl.FooterTopViewModel.FooterCells.Add(element);
+                FooterMiddleCellControl.FooterMiddleViewModel.FooterCells.Add(element);
+                FooterBottomCellControl.FooterBottomViewModel.FooterCells.Add(element);
+            }
+        }
+
+        void PopulateColorControl()
+        {
+            ColorControl.ViewModel.SelectedHeaderCells.Clear();
+            ColorControl.ViewModel.SelectedFooterCells.Clear();
+
+            foreach (var element in ActiveLabelStrip.SelectedHeaders)
+            {
+                ColorControl.ViewModel.SelectedHeaderCells.Add(element);
+            }
+
+            foreach (var element in ActiveLabelStrip.SelectedFooters)
+            {
+                ColorControl.ViewModel.SelectedFooterCells.Add(element);
+            }
         }
 
         void CollectSelectionEvents()
@@ -124,7 +160,13 @@ namespace Dimmer_Labels_Wizard
 
         #region Event Handling
 
-        void HeaderCellControl_ViewModel_RenderRequested(object sender, EventArgs e)
+        void InvokePrint(object sender, RoutedEventArgs e)
+        {
+            PrintWindow printWindow = new PrintWindow();
+            printWindow.Show();
+        }
+
+        void Control_RenderRequested(object sender, EventArgs e)
         {
             ForceRender();
         }
@@ -163,13 +205,17 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
         {
             PopulateRackLabelSelector();
-            HeaderCellControl.HeaderViewModel.ControlTitle = "test";
+            HeaderCellControl.HeaderViewModel.SetTitle("Header Text");
+
+            FooterTopCellControl.FooterTopViewModel.SetTitle("Footer Top Text");
+            FooterMiddleCellControl.FooterMiddleViewModel.SetTitle("Footer Middle Text");
+            FooterBottomCellControl.FooterBottomViewModel.SetTitle("Footer Bottom Text");
+
         }
 
         private void MagnifyPlusButton_Click(object sender, RoutedEventArgs e)
@@ -187,11 +233,13 @@ namespace Dimmer_Labels_Wizard
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
         {
             PopulateHeaderCellControls();
+            PopulateColorControl();
         }
 
         void ActiveLabelStrip_SelectedFootersChanged(object sender, EventArgs e)
         {
             PopulateFooterCellsControls();
+            PopulateColorControl();
         }
 
         #endregion

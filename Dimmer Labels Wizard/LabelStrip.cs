@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Globalization;
+using System.Printing;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -22,15 +23,16 @@ namespace Dimmer_Labels_Wizard
         public List<Border> HeaderOutlines = new List<Border>();
         public List<Border> FooterOutlines = new List<Border>();
 
-        public int LabelWidthInMM { get; set; } // Width of each Cell in Millimeters
-        public int LabelHeightInMM { get; set; } // Height of each Cell in Millimeters
+        public double LabelWidthInMM { get; set; } // Width of each Cell in Millimeters
+        public double LabelHeightInMM { get; set; } // Height of each Cell in Millimeters
 
         public float LineWeight { get; set; }
 
         public RackType RackUnitType { get; set; } // Imported from DimmerDistroUnit or User Selection of Labels.
         public int RackNumber { get; set; } // Imported from DimDistroUnit for User selection of Labels.
 
-        private double unitConversionRatio = 96d / 25.4d;
+        private static double unitConversionRatio = 96d / 25.4d;
+        private static double labelStripOffsetMultiplier = 1.5d; // Applied to Label Height to Offset Footer label From Header Label.
 
         // Updates HeaderCell Data that is Associated with the input headerCell, so Cells don't split unexpectatly.
         public void UpdateHeaderData(string newData, HeaderCell headerCell)
@@ -76,18 +78,66 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
-
+        #region Rendering Control Methods
         // Control Method for Render Methods.
         public void RenderToDisplay(Canvas canvas, Point offset)
         {
             RenderHeader(canvas, offset);
 
-            offset.Y += (this.LabelHeightInMM * unitConversionRatio) * 1.5;
+            offset.Y += (this.LabelHeightInMM * unitConversionRatio) * labelStripOffsetMultiplier;
 
             RenderFooters(canvas, offset);
         }
 
-        private void RenderHeader(Canvas canvas, Point offset)
+        public static List<Canvas> RenderToPrinter(List<LabelStrip> stripsToPrint, double printableWidth, double printableHeight)
+        {
+            double pageHeight = printableHeight;
+            double pageWidth = printableWidth;
+
+            double labelWidth = GetMaxLabelStripDimensions().Width;
+            double labelHeight = GetMaxLabelStripDimensions().Height;
+            double labelStripOffset = labelHeight * labelStripOffsetMultiplier;
+            double totalLabelStripHeight = (labelHeight * 2) + labelStripOffset;
+
+            int labelStripPageQty = (int)Math.Floor(pageHeight / totalLabelStripHeight);
+            int requiredPageQty = (int)Math.Ceiling(stripsToPrint.Count / (double)labelStripPageQty);
+
+            int listIndex = 0;
+            List<Canvas> returnList = new List<Canvas>();
+
+            // Rendering Loop.
+            for (int count = 1; count <= requiredPageQty; count++)
+            {
+                returnList.Add(new Canvas());
+                returnList.Last().Width = pageWidth;
+                returnList.Last().Height = pageHeight;
+                returnList.Last().Background = new SolidColorBrush(Colors.White);
+
+                for (int stripCounter = 0; stripCounter < labelStripPageQty && listIndex < stripsToPrint.Count; stripCounter++)
+                {
+                    if (stripCounter == 0)
+                    {
+                        stripsToPrint[listIndex].RenderHeader(returnList.Last(), new Point(0, 0));
+                        stripsToPrint[listIndex].RenderFooters(returnList.Last(), new Point(0, labelStripOffset));
+                    }
+
+                    else
+                    {
+                        stripsToPrint[listIndex].RenderHeader(returnList.Last(), new Point(0, totalLabelStripHeight * stripCounter));
+                        stripsToPrint[listIndex].RenderFooters(returnList.Last(), new Point(0, (totalLabelStripHeight * stripCounter) +
+                            labelStripOffset));
+                    }
+
+                    listIndex++;
+                }
+            }
+
+            return returnList;
+        }
+        #endregion
+
+        #region Rendering
+        public void RenderHeader(Canvas canvas, Point offset)
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
@@ -273,7 +323,7 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
-        private void RenderFooters(Canvas canvas, Point offset)
+        public void RenderFooters(Canvas canvas, Point offset)
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
@@ -364,6 +414,16 @@ namespace Dimmer_Labels_Wizard
                 TextBlock middleTextBlock = textBlocks[1];
                 TextBlock bottomTextBlock = textBlocks[2];
 
+                // Measure Font Sizes.
+                Size topFontSize = MeasureText(Footers[index].TopData,
+                    Footers[index].TopFont, Footers[index].TopFontSize);
+
+                Size middleFontSize = MeasureText(Footers[index].MiddleData,
+                    Footers[index].MiddleFont,Footers[index].MiddleFontSize);
+
+                Size bottomFontSize = MeasureText(Footers[index].BottomData,
+                    Footers[index].BottomFont, Footers[index].BottomFontSize);
+
                 // Populate TextBlocks.
                 topTextBlock.Text = Footers[index].TopData;
                 topTextBlock.FontFamily = Footers[index].TopFont.FontFamily;
@@ -372,6 +432,9 @@ namespace Dimmer_Labels_Wizard
                 topTextBlock.FontWeight = Footers[index].TopFont.Weight;
                 topTextBlock.FontStretch = Footers[index].TopFont.Stretch;
 
+                double bottomPadding = GetTextPadding(topTextBlock, topFontSize).Bottom;
+                topTextBlock.Padding = new Thickness(0, 0, 0, bottomPadding);
+
                 middleTextBlock.Text = Footers[index].MiddleData;
                 middleTextBlock.FontFamily = Footers[index].MiddleFont.FontFamily;
                 middleTextBlock.FontSize = Footers[index].MiddleFontSize;
@@ -379,12 +442,19 @@ namespace Dimmer_Labels_Wizard
                 middleTextBlock.FontWeight = Footers[index].MiddleFont.Weight;
                 middleTextBlock.FontStretch = Footers[index].MiddleFont.Stretch;
 
+                Thickness middleBlockPadding = GetTextPadding(middleTextBlock, middleFontSize);
+                middleTextBlock.Padding = new Thickness(0, 0, 0, middleBlockPadding.Top);
+
                 bottomTextBlock.Text = Footers[index].BottomData;
                 bottomTextBlock.FontFamily = Footers[index].BottomFont.FontFamily;
                 bottomTextBlock.FontSize = Footers[index].BottomFontSize;
                 bottomTextBlock.FontStyle = Footers[index].BottomFont.Style;
                 bottomTextBlock.FontWeight = Footers[index].BottomFont.Weight;
                 bottomTextBlock.FontStretch = Footers[index].BottomFont.Stretch;
+
+                double topPadding = GetTextPadding(bottomTextBlock, bottomFontSize).Top;
+                bottomTextBlock.Padding = new Thickness(0, topPadding, 0, 0);
+                
 
                 // Add TextBlocks to textCanvas.
                 textCanvas.Children.Add(topTextBlock);
@@ -404,6 +474,28 @@ namespace Dimmer_Labels_Wizard
                 footerXOffset += FooterOutlines.Last().Width;
             }
 
+        }
+
+        #endregion
+
+        #region Rendering Helper Methods
+        // Calculates the required Padding for Text in order for that Text to "Hug" It's Closest Border.
+        private Thickness GetTextPadding(TextBlock textBlock, Size fontSize)
+        {
+            Thickness returnThickness = new Thickness();
+
+            returnThickness.Top = textBlock.Height - fontSize.Height;
+            returnThickness.Bottom = returnThickness.Top;
+
+            returnThickness.Left = textBlock.Width - fontSize.Width;
+            returnThickness.Right = returnThickness.Left;
+
+            returnThickness.Top = returnThickness.Top > 0 ? returnThickness.Top : 0;
+            returnThickness.Bottom = returnThickness.Bottom > 0 ? returnThickness.Bottom : 0;
+            returnThickness.Left = returnThickness.Left > 0 ? returnThickness.Left : 0;
+            returnThickness.Right = returnThickness.Right > 0 ? returnThickness.Right : 0;
+
+            return returnThickness;
         }
 
         // Returns the index of the Longest String in an Array. (Typefaces Measurements).
@@ -587,265 +679,23 @@ namespace Dimmer_Labels_Wizard
             
         }
 
-        // Helper Method for Render. Determines if a String is too large to fit within a rectangle.
-        // Returns SizeF Ratio.
-        //private SizeF StringRatio(string inputText, Font inputFont, Rectangle inputRec, Graphics graphics)
-        //{
-        //    var returnValue = new SizeF();
+        #endregion
 
-        //    // Measure the width and height of the string.
-        //    SizeF stringSize = graphics.MeasureString(inputText, inputFont);
+        #region Print Helper Methods
+        static Size GetMaxLabelStripDimensions()
+        {
+            double topHeight = Math.Max(UserParameters.DistroLabelHeightInMM * unitConversionRatio,
+                UserParameters.DimmerLabelHeightInMM * unitConversionRatio);
 
-        //    // Determine Width Ratio.
-        //    if (stringSize.Width > inputRec.Width)
-        //    {
-        //        // It's too big. Calculate the ratio.
-        //        returnValue.Width = inputRec.Width / stringSize.Width;
-                
-        //    }
+            double topWidth = Math.Max(UserParameters.DistroLabelWidthInMM * unitConversionRatio,
+                UserParameters.DimmerLabelWidthInMM * unitConversionRatio);
 
-        //    else
-        //    {
-        //        returnValue.Width = 1;
-        //    }
+            Size returnSize = new Size(topWidth * 12, topHeight);
 
-        //    // Determine Height Ratio
-        //    if (stringSize.Height > inputRec.Height)
-        //    {
-        //        // It's too big. Calculate the Ratio.
-        //        returnValue.Height = inputRec.Height / stringSize.Height;
-        //    }
+            return returnSize;
+        }
 
-        //    else
-        //    {
-        //        returnValue.Height = 1;
-        //    }
-
-        //    return returnValue;
-        //}
-
-        // Helper Method for Render. Provides advanced String Drawing functionality. Truncates Split strings to Max
-        // of 3 lines currently. Only Suitable for Header Cell Text Rendering.
-        //private void RenderText(HeaderCell cell, Rectangle rectangle, Graphics graphics,float scaleRatio)
-        //{
-        //    // String Formating Positions.
-        //    StringFormat topPosition = new StringFormat();
-        //    topPosition.Alignment = StringAlignment.Center;
-        //    topPosition.LineAlignment = StringAlignment.Near;
-        //    topPosition.FormatFlags = StringFormatFlags.NoWrap;
-
-        //    StringFormat middlePosition = new StringFormat();
-        //    middlePosition.Alignment = StringAlignment.Center;
-        //    middlePosition.LineAlignment = StringAlignment.Center;
-        //    middlePosition.FormatFlags = StringFormatFlags.NoWrap;
-
-        //    StringFormat bottomPosition = new StringFormat();
-        //    bottomPosition.Alignment = StringAlignment.Center;
-        //    bottomPosition.LineAlignment = StringAlignment.Far;
-        //    bottomPosition.FormatFlags = StringFormatFlags.NoWrap;
-
-        //    char[] stringDelimiter = {' '};
-
-        //    // Collect Font Value and apply Scaling Ratio.
-        //    var fontBuffer = new Font(cell.Font.Name, cell.Font.Size * scaleRatio, cell.Font.Style, graphics.PageUnit);
-
-        //    // Determine Difference Ratio of the String.
-        //    SizeF differenceRatio = StringRatio(cell.Data, fontBuffer, rectangle, graphics); // REFACTOR ME TO widthDifferenceRatio
-            
-        //    // Does the String Width fit within the rectangle?
-        //    if (differenceRatio.Width != 1)
-        //    {
-        //        // Can the String be Split?
-        //        string[] splitStrings = cell.Data.Split(stringDelimiter);
-        //        if (splitStrings.Length > 1)
-        //        {
-        //            int numberOfLines = splitStrings.Length;
-
-        //            // Determine differenceRatios of multiple strings.
-        //            float[] widthDifferenceRatios = new float[splitStrings.Length];
-
-        //            for (int index = 0; index < splitStrings.Length; index++)
-        //            {
-        //                widthDifferenceRatios[index] = StringRatio(splitStrings[index], fontBuffer, rectangle, graphics).Width;
-        //            }
-
-        //            int widthDownsizeIndex = DetermineDownsizingIndex(widthDifferenceRatios);
-
-        //            if (widthDownsizeIndex == -1)
-        //            {
-        //                // Check if Vertical downsizing is required
-        //                if (graphics.MeasureString(cell.Data, fontBuffer).Height * numberOfLines > rectangle.Height)
-        //                {
-        //                    // Measure the Size of the text
-        //                    SizeF textSize = graphics.MeasureString(cell.Data, fontBuffer);
-
-        //                    // Determine the difference ratio.
-        //                    float verticalDownsizeRatio = rectangle.Height / (textSize.Height * numberOfLines);
-
-        //                    // Initialize a new smaller font.
-        //                    Font verticallyDownsizedFont = new Font(fontBuffer.Name, fontBuffer.Size * verticalDownsizeRatio, fontBuffer.Style, graphics.PageUnit);
-
-        //                    // Generate Text Rectangles.
-        //                    Rectangle[] textRectangles = GenerateTextRectangles(splitStrings, cell.Data, verticallyDownsizedFont, rectangle, graphics);
-
-        //                    // Draw Text to Rectangles.
-        //                    for (int index = 0; index < splitStrings.Length; index++)
-        //                    {
-        //                        graphics.DrawString(splitStrings[index], verticallyDownsizedFont, cell.TextColor, textRectangles[index], middlePosition);
-        //                    }
-        //                }
-
-        //                // Otherwise Draw the text with current Font Size.
-        //                else
-        //                {
-        //                    // Generate Text Rectangles.
-        //                    Rectangle[] textRectangles = GenerateTextRectangles(splitStrings, cell.Data, fontBuffer, rectangle, graphics);
-
-        //                    // Draw Text to Rectangles.
-        //                    for (int index = 0; index < splitStrings.Length; index++)
-        //                    {
-        //                        graphics.DrawString(splitStrings[index], fontBuffer, cell.TextColor, textRectangles[index], middlePosition);
-        //                    }
-        //                }
-        //            }
-
-        //            else
-        //            {
-        //                // Initialize a new downsized Font.
-        //                var downsizedFont = new Font(fontBuffer.Name, fontBuffer.Size * widthDifferenceRatios[widthDownsizeIndex], fontBuffer.Style, graphics.PageUnit);
-
-        //                SizeF textSize = graphics.MeasureString(cell.Data, downsizedFont);
-
-        //                // Check if Vertical Downsizing is required.
-        //                if (textSize.Height * numberOfLines > rectangle.Height)
-        //                {
-        //                    // Determine the Ratio
-        //                    float verticalDownsizeRatio = rectangle.Height / (textSize.Height * numberOfLines);
-
-        //                    // Initialize a new further downsized font.
-        //                    Font verticallyDownsizedFont = new Font(downsizedFont.Name, downsizedFont.Size * verticalDownsizeRatio, downsizedFont.Style, GraphicsUnit.Pixel);
-        //                    // Generate Text Rectangles.
-        //                    Rectangle[] textRectangles = GenerateTextRectangles(splitStrings, cell.Data, verticallyDownsizedFont, rectangle, graphics);
-
-        //                    // Draw text to Rectangles.
-        //                    for (int index = 0; index < splitStrings.Length; index++)
-        //                    {
-        //                        graphics.DrawString(splitStrings[index], verticallyDownsizedFont, cell.TextColor, textRectangles[index], middlePosition);
-        //                    }
-        //                }
-
-        //                else
-        //                {
-        //                    // Generate Text Rectangles.
-        //                    Rectangle[] textRectangles = GenerateTextRectangles(splitStrings, cell.Data, downsizedFont, rectangle, graphics);
-
-        //                    // Draw text to Rectangles.
-        //                    for (int index = 0; index < splitStrings.Length; index++)
-        //                    {
-        //                        graphics.DrawString(splitStrings[index], downsizedFont, cell.TextColor, textRectangles[index], middlePosition);
-        //                    }
-        //                }
-        //            }
-
-        //        }
-        //        // String Cannot be Split.
-        //        else
-        //        {
-        //            var downsizedFont = new Font(fontBuffer.Name, fontBuffer.Size * differenceRatio.Width, fontBuffer.Style, graphics.PageUnit);
-        //            graphics.DrawString(splitStrings[0], downsizedFont, cell.TextColor, rectangle, middlePosition);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        graphics.DrawString(cell.Data, fontBuffer, cell.TextColor, rectangle, cell.Format);
-        //    }
-
-        //}
-
-        // Helper Method for RenderText. Determines if strings need to be downsized. Returns -1 if no downsizing is
-        // needed, if downsizing is required, will return the count of the largest ratio from the array parameter.
-        //private int DetermineDownsizingIndex(float[] differenceRatios)
-        //{
-        //    bool widthDownsizingRequried = false;
-
-        //    // Determine if downsizing of Length is required.
-        //    for (int index = 0; index < differenceRatios.Length; index++)
-        //    {
-        //        // Is Downsizing of any of the Strings required?
-        //        if (differenceRatios[index] != 1)
-        //        {
-        //            widthDownsizingRequried = true;
-        //            break;
-        //        }
-        //    }
-
-        //    if (widthDownsizingRequried == true)
-        //    {
-        //        // Determine the Largest Ratio and returns the Index of that Ratio.
-        //        return Array.IndexOf(differenceRatios, differenceRatios.Min());
-        //    }
-
-        //    return -1;
-        //}
-
-        // Helper Method for RenderText. Returns an Array of Rectangles, positioned and sized to fit within the paramter rectangle.
-        //private Rectangle[] GenerateTextRectangles(string[] inputStrings, string cellData, Font font, Rectangle labelRectangle, Graphics graphics)
-        //{
-        //    int numberOfRectangles = inputStrings.Length;
-        //    double textHeight = graphics.MeasureString(cellData, font).Height;
-
-        //    Rectangle[] textRectangles = new Rectangle[numberOfRectangles];
-
-        //    // Even Number of Rectangles.
-        //    if (numberOfRectangles % 2 == 0)
-        //    {
-        //        // Determine Y Cordinate of first textRectangle.
-        //        int yPos = (int)Math.Floor((double)(((labelRectangle.Height - (textHeight * numberOfRectangles)) / numberOfRectangles) + labelRectangle.Y));
-
-        //        // Position and Store Rectangles.
-        //        for (int i = 0; i < numberOfRectangles; i++)
-        //        {
-        //            // On First Iteration.
-        //            if (i == 0)
-        //            {
-        //                textRectangles[i] = new Rectangle(labelRectangle.X, yPos, labelRectangle.Width, (int)Math.Floor(textHeight));
-        //            }
-
-        //            // Subsequent Iterations.
-        //            else
-        //            {
-        //                textRectangles[i] = new Rectangle(labelRectangle.X, yPos + (textRectangles[i - 1].Height * i), labelRectangle.Width, (int)Math.Floor(textHeight));
-        //            }
-
-        //        }
-
-
-        //    }
-        //    // Odd number of Rectangles.
-        //    else
-        //    {
-        //        int yPos = (int)Math.Floor((double)(((labelRectangle.Height - (textHeight * numberOfRectangles)) / numberOfRectangles) + labelRectangle.Y));
-
-        //        // Position and Store Rectangles.
-        //        for (int i = 0; i < numberOfRectangles; i++)
-        //        {
-        //            // On First Iteration.
-        //            if (i == 0)
-        //            {
-        //                textRectangles[i] = new Rectangle(labelRectangle.X, yPos, labelRectangle.Width, (int)Math.Floor(textHeight));
-        //            }
-
-        //            // Subsequent Iterations.
-        //            else
-        //            {
-        //                textRectangles[i] = new Rectangle(labelRectangle.X, yPos + (textRectangles[i - 1].Height * i), labelRectangle.Width, (int)Math.Floor(textHeight));
-        //            }
-
-        //        }
-        //    }
-        //    return textRectangles;
-        //}
-
+        #endregion
 
         public int CompareTo(LabelStrip other)
         {

@@ -243,6 +243,12 @@
             // 
             // DistroLabelHeightSelector
             // 
+            this.DistroLabelHeightSelector.DecimalPlaces = 1;
+            this.DistroLabelHeightSelector.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
             this.DistroLabelHeightSelector.Location = new System.Drawing.Point(87, 133);
             this.DistroLabelHeightSelector.Minimum = new decimal(new int[] {
             1,
@@ -260,6 +266,12 @@
             // 
             // DistroLabelWidthSelector
             // 
+            this.DistroLabelWidthSelector.DecimalPlaces = 1;
+            this.DistroLabelWidthSelector.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
             this.DistroLabelWidthSelector.Location = new System.Drawing.Point(87, 107);
             this.DistroLabelWidthSelector.Minimum = new decimal(new int[] {
             1,
@@ -315,6 +327,12 @@
             // 
             // DimmerLabelHeightSelector
             // 
+            this.DimmerLabelHeightSelector.DecimalPlaces = 1;
+            this.DimmerLabelHeightSelector.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
             this.DimmerLabelHeightSelector.Location = new System.Drawing.Point(87, 47);
             this.DimmerLabelHeightSelector.Minimum = new decimal(new int[] {
             1,
@@ -332,6 +350,12 @@
             // 
             // DimmerLabelWidthSelector
             // 
+            this.DimmerLabelWidthSelector.DecimalPlaces = 1;
+            this.DimmerLabelWidthSelector.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
             this.DimmerLabelWidthSelector.Location = new System.Drawing.Point(87, 21);
             this.DimmerLabelWidthSelector.Minimum = new decimal(new int[] {
             1,
