@@ -4,9 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             mc:Ignorable="d" Height="55.824" Width="171">
-    
-    <Grid Margin="0,0,0,0" Background="White">
-        <xctk:ColorPicker x:Name="ColorPicker" SelectedColor="{Binding Path=SelectedColor}" StandardColors="{Binding Path=StandardColorItems}" Width="135" Height="20" AvailableColorsSortingMode="HueSaturationBrightness" DisplayColorAndName="True" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,20,0,0"/>
-    </Grid>
+             mc:Ignorable="d" Height="190.824" Width="187">
+    <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"> 
+        <Grid Margin="0,0,0,0" Background="White">
+            <xctk:ColorPicker x:Name="ColorPicker" SelectedColor="{Binding Path=SelectedColor}" StandardColors="{Binding Path=StandardColorItems}" Width="172" Height="20" AvailableColorsSortingMode="HueSaturationBrightness" DisplayColorAndName="True" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,31,0,0"/>
+            <Label Content="Background Colour" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Top" FontSize="16"/>
+            <ToggleButton x:Name="BackgroundColorGlobalApplyButton" IsChecked="{Binding Path=BackgroundColorGlobalApply}" Width="22" Height="22" Content="O" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="159,6,0,0"/>
+            <Label Content="Line Weight" HorizontalAlignment="Left" Margin="8,69,0,0" VerticalAlignment="Top" FontSize="16"/>
+            <ToggleButton x:Name="LineWeightGlobalApplyButton" Width="22" Height="22" Content="O" IsChecked="{Binding Path=LineWeightGlobalApply}"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="159,78,0,0"/>
+            <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding Path=StandardLineWeights}" Text="{Binding Path=LineWeight}" Margin="10,105,0,0" VerticalAlignment="Top" Width="171" IsEditable="True"/>
+        </Grid>
+    </Border>
 </UserControl>

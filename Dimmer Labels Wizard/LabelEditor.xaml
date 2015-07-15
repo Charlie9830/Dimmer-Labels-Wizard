@@ -4,23 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:custom ="clr-namespace:Dimmer_Labels_Wizard"
-             mc:Ignorable="d" d:DesignWidth="1030" Height="550">
+             mc:Ignorable="d" d:DesignWidth="1030" Height="588.889">
 
-    <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}">
+    <Grid Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}">
 
-        <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Margin="10,10,10,10">
+        <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Margin="10,10,10,10" 
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1">
             <Canvas x:Name="LabelCanvas" HorizontalAlignment="Left" Height="242" VerticalAlignment="Top" Width="1015" Background="White" Margin="0,0,0,0"/>
         </Border>
 
         <custom:CellControl x:Name="HeaderCellControl" Margin="296,262,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"></custom:CellControl>
         <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="945,315,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
-        <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="278" Margin="10,261,0,0" VerticalAlignment="Top" Width="100"/>
+        <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="311" Margin="10,261,0,0" VerticalAlignment="Top" Width="100"/>
         <Button x:Name="MagnifyPlusButton" Content="+" HorizontalAlignment="Left" Margin="967,261,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyPlusButton_Click" FontWeight="ExtraBold" FontSize="14"/>
         <Button x:Name="MagnifyMinusButton" Content="-" HorizontalAlignment="Left" Margin="996,261,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyMinusButton_Click" FontWeight="ExtraBold" RenderTransformOrigin="0.528,0.514" FontSize="14"/>
         <custom:CellControl x:Name="FooterTopCellControl" Margin="620,262,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <custom:CellControl x:Name="FooterMiddleCellControl" Margin="620,356,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <custom:CellControl x:Name="FooterBottomCellControl" Margin="620,450,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <custom:ColorControl x:Name="ColorControl" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="115,262,0,0" />
+        <custom:CellControl x:Name="FooterMiddleCellControl" Margin="620,367,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <custom:CellControl x:Name="FooterBottomCellControl" Margin="620,472,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <custom:ColorControl x:Name="ColorControl" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="388,372,0,0" Height="164" />
         <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="945,342,0,0" VerticalAlignment="Top" Width="75" Click="InvokePrint"/>
 
     </Grid>

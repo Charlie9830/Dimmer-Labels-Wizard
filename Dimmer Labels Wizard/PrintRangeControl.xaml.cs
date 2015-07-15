@@ -12,34 +12,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Xceed.Wpf.Toolkit;
 
 namespace Dimmer_Labels_Wizard
 {
     /// <summary>
-    /// Interaction logic for ColorControl.xaml
+    /// Interaction logic for PrintRangeControl.xaml
     /// </summary>
-    public partial class ColorControl : UserControl
+    public partial class PrintRangeControl : UserControl
     {
-        public ColorControl()
+        public PrintRangeControlViewModel ViewModel = new PrintRangeControlViewModel();
+   
+        public PrintRangeControl()
         {
             InitializeComponent();
             this.DataContext = this.ViewModel;
         }
 
-        protected ColorControlViewModel _ViewModel = new ColorControlViewModel();
-
-        public ColorControlViewModel ViewModel
-        {
-            get
-            {
-                return _ViewModel;
-            }
-            set
-            {
-                _ViewModel = value;
-            }
-        }
 
     }
 }

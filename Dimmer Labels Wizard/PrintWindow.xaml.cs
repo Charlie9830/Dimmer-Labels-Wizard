@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Printing;
-using System.Windows.Documents;
 using System.Windows.Markup;
 
 namespace Dimmer_Labels_Wizard
@@ -23,45 +22,73 @@ namespace Dimmer_Labels_Wizard
     /// </summary>
     public partial class PrintWindow : Window
     {
-        public PrintWindowViewModel ViewModel = new PrintWindowViewModel();
-
         public PrintWindow()
         {
             InitializeComponent();
-           
+            DistroPrintRangeControl.ViewModel.SetupControl(Globals.LabelStrips, RackType.Distro,"A");
+            DimmerPrintRangeControl.ViewModel.SetupControl(Globals.LabelStrips, RackType.Dimmer,"B");
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            List<LabelStrip> printStrips = new List<LabelStrip>();
+            bool distroValidationResult;
+            bool dimmerValidationResult;
             
+            printStrips.AddRange(DistroPrintRangeControl.ViewModel.GetPrintRange(out distroValidationResult));
+            printStrips.AddRange(DimmerPrintRangeControl.ViewModel.GetPrintRange(out dimmerValidationResult));
 
-            PrintDialog pDialog = new PrintDialog();
-            if (pDialog.ShowDialog() == true)
+            if (distroValidationResult == false)
             {
-                Size pageSize = new Size(pDialog.PrintableAreaWidth, pDialog.PrintableAreaHeight);
-                FixedDocument printDocument = new FixedDocument();
-                printDocument.DocumentPaginator.PageSize = pageSize;
-
-                List<Canvas> pageCanvases = LabelStrip.RenderToPrinter(Globals.LabelStrips, pDialog.PrintableAreaWidth,
-                    pDialog.PrintableAreaHeight);
-
-                foreach (var canvas in pageCanvases)
-                {
-                    FixedPage page = new FixedPage();
-                    page.Width = pageSize.Width;
-                    page.Height = pageSize.Height;
-
-                    page.Children.Add(canvas);
-
-                    PageContent pageContent = new PageContent();
-                    ((IAddChild)pageContent).AddChild(page);
-
-                    printDocument.Pages.Add(pageContent);
-                }
-
-
-                pDialog.PrintDocument(printDocument.DocumentPaginator, "Labels");
+                MessageBox.Show("Distro Print Range could not be verified.");
             }
+
+            if (dimmerValidationResult == false)
+            {
+                MessageBox.Show("Dimmer Print Range could not be verified.");
+            }
+
+            if (distroValidationResult && dimmerValidationResult)
+            {
+
+                PrintDialog pDialog = new PrintDialog();
+                if (pDialog.ShowDialog() == true)
+                {
+                    double halfInch = 48;
+                    Thickness safePrintingMargin = new Thickness(halfInch);
+                    Size printableArea = new Size(pDialog.PrintableAreaWidth,
+                        pDialog.PrintableAreaHeight);
+                    PageMediaSize totalPageSize = pDialog.PrintTicket.PageMediaSize;
+                    
+                    FixedDocument printDocument = new FixedDocument();
+                    printDocument.DocumentPaginator.PageSize = printableArea;
+
+                    List<Canvas> pageCanvases = LabelStrip.RenderToPrinter(printStrips, pDialog.PrintableAreaWidth,
+                        pDialog.PrintableAreaHeight);
+                    
+
+                    foreach (var canvas in pageCanvases)
+                    {
+                        FixedPage page = new FixedPage();
+                        page.Width = printableArea.Width;
+                        page.Height = printableArea.Height;
+                        page.Margin = safePrintingMargin;
+
+                        page.Children.Add(canvas);
+
+                        PageContent pageContent = new PageContent();
+                        ((IAddChild)pageContent).AddChild(page);
+
+                        printDocument.Pages.Add(pageContent);
+                    }
+                    pDialog.PrintDocument(printDocument.DocumentPaginator, "Labels");
+                }
+            }
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

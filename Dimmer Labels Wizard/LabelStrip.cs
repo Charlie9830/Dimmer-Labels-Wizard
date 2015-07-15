@@ -26,7 +26,7 @@ namespace Dimmer_Labels_Wizard
         public double LabelWidthInMM { get; set; } // Width of each Cell in Millimeters
         public double LabelHeightInMM { get; set; } // Height of each Cell in Millimeters
 
-        public float LineWeight { get; set; }
+        public double LineWeight { get; set; }
 
         public RackType RackUnitType { get; set; } // Imported from DimmerDistroUnit or User Selection of Labels.
         public int RackNumber { get; set; } // Imported from DimDistroUnit for User selection of Labels.
@@ -141,7 +141,7 @@ namespace Dimmer_Labels_Wizard
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
-            Thickness headerOutlineThickness = new Thickness(2);
+            Thickness headerOutlineThickness = new Thickness(LineWeight);
 
             // Convert to WPF Units (Inches)
             double labelWidth = this.LabelWidthInMM * unitConversionRatio;
@@ -327,7 +327,7 @@ namespace Dimmer_Labels_Wizard
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
-            Thickness footerOutlineThickness = new Thickness(2);
+            Thickness footerOutlineThickness = new Thickness(LineWeight);
 
             // Convert to WPF Units (inches).
             double labelWidth = this.LabelWidthInMM * unitConversionRatio;

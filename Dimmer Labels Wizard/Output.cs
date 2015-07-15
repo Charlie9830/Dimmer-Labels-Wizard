@@ -30,7 +30,7 @@ namespace Dimmer_Labels_Wizard
                     // Create the Header Object.
                     Globals.LabelStrips[outputIndex].Headers.Insert(j, new HeaderCell());
 
-                    // Assign the RackUnitType and Rack Numbers
+                    // Assign the rackUnitType and Rack Numbers
                     Globals.LabelStrips[outputIndex].RackUnitType = Globals.DimmerDistroUnits[inputIndex + j].RackUnitType;
                     Globals.LabelStrips[outputIndex].RackNumber = Globals.DimmerDistroUnits[inputIndex + j].RackNumber;
 
@@ -246,13 +246,11 @@ namespace Dimmer_Labels_Wizard
         {
             DimmerDistroUnit referenceUnit = Globals.DimmerDistroUnits[startingIndex];
 
-            // Searches DimmerDistroUnits for all objects with Rack, Universe and RackUnitType matching the Reference
+            // Searches DimmerDistroUnits for all objects with Rack, Universe and rackUnitType matching the Reference
             // Unit, then return the amount of units found.
             int cellCount = Globals.DimmerDistroUnits.FindAll(item => item.RackNumber == referenceUnit.RackNumber
                 && item.UniverseNumber == referenceUnit.UniverseNumber &&
                 item.RackUnitType == referenceUnit.RackUnitType).Count;
-
-            Console.WriteLine("Debug: Cell Amount {0}", cellCount);
 
             return cellCount;
         }

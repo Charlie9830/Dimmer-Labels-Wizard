@@ -135,7 +135,7 @@ namespace Dimmer_Labels_Wizard
 
             foreach (var element in Globals.LabelStrips)
             {
-                element.LineWeight = 1.25f;
+                element.LineWeight = 1.25d;
 
                 // Set Default Fonts,FontStyles and StringFormat Alignments.
                 for (int listIndex = 0; listIndex < element.Headers.Count; listIndex++)

@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Forms.Integration;
 using Xceed.Wpf.Toolkit;
+
 
 namespace Dimmer_Labels_Wizard
 {
@@ -110,6 +112,8 @@ namespace Dimmer_Labels_Wizard
             {
                 ColorControl.ViewModel.SelectedFooterCells.Add(element);
             }
+
+            ColorControl.ViewModel.ActiveLabelStrip = ActiveLabelStrip.LabelStrip;
         }
 
         void CollectSelectionEvents()
@@ -163,6 +167,7 @@ namespace Dimmer_Labels_Wizard
         void InvokePrint(object sender, RoutedEventArgs e)
         {
             PrintWindow printWindow = new PrintWindow();
+            ElementHost.EnableModelessKeyboardInterop(printWindow);
             printWindow.Show();
         }
 

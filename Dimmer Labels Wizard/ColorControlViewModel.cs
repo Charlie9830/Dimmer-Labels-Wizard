@@ -17,6 +17,14 @@ namespace Dimmer_Labels_Wizard
         protected ObservableCollection<ColorItem> _StandardColorItems = new ObservableCollection<ColorItem>();
         protected Color _SelectedColor = new Color();
 
+        protected bool _BackgroundColorGlobalApply = false;
+        protected bool _LineWeightGlobalApply = false;
+
+        protected double[] _StandardLineWeights = { 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25 };
+        protected double _LineWeight = 1.25d;
+
+        protected LabelStrip _ActiveLabelStrip;
+
         public ColorControlViewModel()
         {
             PopulateStandardColorItems();
@@ -71,6 +79,70 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
+        public bool BackgroundColorGlobalApply
+        {
+            get
+            {
+                return _BackgroundColorGlobalApply;
+            }
+            set
+            {
+                _BackgroundColorGlobalApply = value;
+                OnPropertyChanged("BackgroundColorGlobalApply");
+            }
+        }
+
+        public bool LineWeightGlobalApply
+        {
+            get
+            {
+                return _LineWeightGlobalApply;
+            }
+            set
+            {
+                _LineWeightGlobalApply = value;
+                OnPropertyChanged("LineWeightGlobalApply");
+            }
+        }
+
+        public double[] StandardLineWeights
+        {
+            get
+            {
+                return _StandardLineWeights;
+            }
+        }
+
+        public double LineWeight
+        {
+            get
+            {
+                return _LineWeight;
+            }
+            set
+            {
+                _LineWeight = value;
+                UpdateLineWeight();
+                OnPropertyChanged("LineWeight");
+            }
+        }
+
+        public LabelStrip ActiveLabelStrip
+        {
+            get
+            {
+                return _ActiveLabelStrip;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _ActiveLabelStrip = value;
+                    SetLineWeightSelection();
+                }
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -78,15 +150,35 @@ namespace Dimmer_Labels_Wizard
         {
             bool updateOccured = false;
 
-            foreach (var element in _SelectedHeaderCells)
+            if (_BackgroundColorGlobalApply == false)
             {
-                element.BackgroundColor = new SolidColorBrush(_SelectedColor);
-                updateOccured = true;
+                foreach (var element in _SelectedHeaderCells)
+                {
+                    element.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                    updateOccured = true;
+                }
+
+                foreach (var element in _SelectedFooterCells)
+                {
+                    element.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                    updateOccured = true;
+                }
             }
-            
-            foreach (var element in _SelectedFooterCells)
+
+            else
             {
-                element.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    foreach (var header in labelStrip.Headers)
+                    {
+                        header.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                    }
+
+                    foreach (var footer in labelStrip.Footers)
+                    {
+                        footer.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                    }
+                }
                 updateOccured = true;
             }
 
@@ -94,6 +186,30 @@ namespace Dimmer_Labels_Wizard
             {
                 OnRenderRequested();
             }
+        }
+
+        void UpdateLineWeight()
+        {
+            if (_LineWeightGlobalApply == false)
+            {
+                ActiveLabelStrip.LineWeight = _LineWeight;
+            }
+
+            else
+            {
+                foreach (var labelStrip in Globals.LabelStrips)
+                {
+                    labelStrip.LineWeight = _LineWeight;
+                }
+            }
+
+            OnRenderRequested();
+        }
+
+        void SetLineWeightSelection()
+        {
+            _LineWeight = ActiveLabelStrip.LineWeight;
+            OnPropertyChanged("LineWeight");
         }
 
         void PopulateStandardColorItems()

@@ -35,7 +35,9 @@ namespace Dimmer_Labels_Wizard
                 UserParameters.EndDistroNumber = 60; 
                 UserParameters.DistroImportFormat = ImportFormatting.Format1;
                 UserParameters.DistroNumberPrefix = "N";
-                UserParameters.DimmerImportFormat = ImportFormatting.Format2;
+                UserParameters.DimmerImportFormat = ImportFormatting.Format3;
+
+                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 48));
 
                 UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
 
@@ -46,10 +48,10 @@ namespace Dimmer_Labels_Wizard
                 UserParameters.PositionColumnIndex = 4;
 
                 UserParameters.DimmerLabelWidthInMM = 16;
-                UserParameters.DimmerLabelHeightInMM = 36;
+                UserParameters.DimmerLabelHeightInMM = 18;
 
                 UserParameters.DistroLabelWidthInMM = 16;
-                UserParameters.DistroLabelHeightInMM = 24;
+                UserParameters.DistroLabelHeightInMM = 18;
 
                 UserParameters.HeaderField = LabelField.MulticoreName;
                 UserParameters.FooterMiddleField = LabelField.ChannelNumber;

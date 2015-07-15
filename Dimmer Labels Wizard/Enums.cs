@@ -16,6 +16,8 @@ namespace Dimmer_Labels_Wizard
     // NoUniverseData is used only as a Format2 Overide. SHould be referenced only by UserParameters.DMXAddresColumnFormatting.
     public enum ImportFormatting { Format1, Format2, Format3, Format4, NoUniverseData, NoAssignment }
     public enum LabelField { ChannelNumber, InstrumentName, MulticoreName, Position, UserField1 ,UserField2, UserField3, UserField4, NoAssignment}
+
+    public enum RadioButtonSelection { None, All, Rack, Selection };
 }
 
 

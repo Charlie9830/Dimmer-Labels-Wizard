@@ -170,12 +170,6 @@
     <Compile Include="FORM_MainWindow.Designer.cs">
       <DependentUpon>FORM_MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="FORM_PrintRangeDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FORM_PrintRangeDialog.Designer.cs">
-      <DependentUpon>FORM_PrintRangeDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="FORM_SplitCellDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,12 +218,10 @@
     </Compile>
     <Compile Include="LabelStripSelection.cs" />
     <Compile Include="Output.cs" />
-    <Compile Include="PrintRangeSelection.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="PrintRangeControl.xaml.cs">
+      <DependentUpon>PrintRangeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PrintRangeSelection.Designer.cs">
-      <DependentUpon>PrintRangeSelection.cs</DependentUpon>
-    </Compile>
+    <Compile Include="PrintRangeControlViewModel.cs" />
     <Compile Include="PrintWindow.xaml.cs">
       <DependentUpon>PrintWindow.xaml</DependentUpon>
     </Compile>
@@ -304,9 +296,6 @@
     <EmbeddedResource Include="FORM_MainWindow.resx">
       <DependentUpon>FORM_MainWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FORM_PrintRangeDialog.resx">
-      <DependentUpon>FORM_PrintRangeDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FORM_SplitCellDialog.resx">
       <DependentUpon>FORM_SplitCellDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -324,9 +313,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LabelSetupPart2.resx">
       <DependentUpon>LabelSetupPart2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PrintRangeSelection.resx">
-      <DependentUpon>PrintRangeSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -417,6 +403,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LabelEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PrintRangeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
