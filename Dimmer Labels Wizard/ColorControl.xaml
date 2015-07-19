@@ -4,15 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             mc:Ignorable="d" Height="190.824" Width="187">
-    <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"> 
-        <Grid Margin="0,0,0,0" Background="White">
-            <xctk:ColorPicker x:Name="ColorPicker" SelectedColor="{Binding Path=SelectedColor}" StandardColors="{Binding Path=StandardColorItems}" Width="172" Height="20" AvailableColorsSortingMode="HueSaturationBrightness" DisplayColorAndName="True" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,31,0,0"/>
-            <Label Content="Background Colour" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Top" FontSize="16"/>
-            <ToggleButton x:Name="BackgroundColorGlobalApplyButton" IsChecked="{Binding Path=BackgroundColorGlobalApply}" Width="22" Height="22" Content="O" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="159,6,0,0"/>
-            <Label Content="Line Weight" HorizontalAlignment="Left" Margin="8,69,0,0" VerticalAlignment="Top" FontSize="16"/>
-            <ToggleButton x:Name="LineWeightGlobalApplyButton" Width="22" Height="22" Content="O" IsChecked="{Binding Path=LineWeightGlobalApply}"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="159,78,0,0"/>
-            <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding Path=StandardLineWeights}" Text="{Binding Path=LineWeight}" Margin="10,105,0,0" VerticalAlignment="Top" Width="171" IsEditable="True"/>
+             mc:Ignorable="d" Height="200" Width="187">
+    
+    <UserControl.Resources>
+        <Image x:Key="earth24" Source="Resources/earth24.png"/>
+        <Image x:Key="earth24x" Source="Resources/earth24.png"/>
+    </UserControl.Resources>
+    
+    <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
+        <Grid Margin="0,0,0,0">
+            <Grid.Background>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+            </Grid.Background>
+            <xctk:ColorPicker x:Name="ColorPicker" SelectedColor="{Binding Path=SelectedColor}" StandardColors="{Binding Path=StandardColorItems}" Width="172" Height="22" AvailableColorsSortingMode="HueSaturationBrightness" DisplayColorAndName="True" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="7,43,0,0"/>
+            <Label Content="Background Colour" HorizontalAlignment="Left" Margin="5,12,0,0" VerticalAlignment="Top" FontSize="16"/>
+            <ToggleButton x:Name="BackgroundColorGlobalApplyButton" IsChecked="{Binding Path=BackgroundColorGlobalApply}" Width="22" Height="22" Content="{StaticResource earth24}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="156,18,0,0"/>
+            <Label Content="Line Weight" HorizontalAlignment="Left" Margin="5,106,0,0" VerticalAlignment="Top" FontSize="16"/>
+            <ToggleButton x:Name="LineWeightGlobalApplyButton" Width="22" Height="22" Content="{StaticResource earth24x}" IsChecked="{Binding Path=LineWeightGlobalApply}"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="156,115,0,0"/>
+            <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding Path=StandardLineWeights}" Text="{Binding Path=LineWeight}" Margin="7,142,0,0" VerticalAlignment="Top" Width="171" IsEditable="True"/>
         </Grid>
     </Border>
 </UserControl>

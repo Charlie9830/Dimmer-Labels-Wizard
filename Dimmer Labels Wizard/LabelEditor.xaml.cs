@@ -27,8 +27,9 @@ namespace Dimmer_Labels_Wizard
         public LabelStripSelection ActiveLabelStrip = new LabelStripSelection();
 
         // View Controls
+        private TransformGroup LabelCanvasTransformGroup = new TransformGroup();
         private ScaleTransform LabelCanvasScaleTransform = new ScaleTransform();
-
+        private TranslateTransform LabelCanvasTranslateTransform = new TranslateTransform();
 
         public LabelEditor()
         {
@@ -36,9 +37,17 @@ namespace Dimmer_Labels_Wizard
 
             // View Setup
             CanvasBorder.ClipToBounds = true;
+
             LabelCanvasScaleTransform.ScaleX = 1;
             LabelCanvasScaleTransform.ScaleY = 1;
-            LabelCanvas.RenderTransform = LabelCanvasScaleTransform;
+
+            LabelCanvasTranslateTransform.X = 0;
+            LabelCanvasTranslateTransform.Y = 0;
+
+            LabelCanvasTransformGroup.Children.Add(LabelCanvasScaleTransform);
+            LabelCanvasTransformGroup.Children.Add(LabelCanvasTranslateTransform);
+
+            LabelCanvas.RenderTransform = LabelCanvasTransformGroup;
 
             this.Loaded += LabelEditor_Loaded;
             RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
@@ -160,6 +169,28 @@ namespace Dimmer_Labels_Wizard
             RackSelector.Items.Add(DimmersNode);
         }
 
+        protected Border GetSplitCellOutline(HeaderCell headerCell)
+        {
+            foreach (var element in LabelCanvas.Children)
+            {
+                Border outline = (Border)element;
+                if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
+                {
+                    HeaderCellWrapper wrapper = (HeaderCellWrapper)outline.Tag;
+
+                    foreach (var cell in wrapper.Cells)
+                    {
+                        if (headerCell == cell)
+                        {
+                            return outline;
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
 
 
         #region Event Handling
@@ -210,6 +241,7 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
+
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
@@ -235,6 +267,39 @@ namespace Dimmer_Labels_Wizard
             LabelCanvasScaleTransform.ScaleY -= 0.10;
         }
 
+        private void CenterViewButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ActiveLabelStrip.LabelStrip != null)
+            {
+                List<Border> headerOutlines = new List<Border>();
+
+                foreach (var element in LabelCanvas.Children)
+                {
+                    Border outline = element as Border;
+                    if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
+                    {
+                        headerOutlines.Add(outline);
+                    }
+                }
+
+                double renderedWidth = 1;
+                double renderedHeight = ((headerOutlines.First().Height * LabelCanvasScaleTransform.ScaleY) * 2) 
+                    * LabelStrip.LabelStripOffsetMultiplier;
+
+                foreach (var element in headerOutlines)
+                {
+                    renderedWidth += element.Width * LabelCanvasScaleTransform.ScaleX;
+                }
+
+                LabelCanvasTranslateTransform.X = (LabelCanvas.Width - renderedWidth) / 2;
+                LabelCanvasTranslateTransform.Y = (LabelCanvas.Height - renderedHeight) / 2;
+
+                Console.WriteLine("Actual Width {0}", renderedWidth);
+
+            }
+        }
+
+
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
         {
             PopulateHeaderCellControls();
@@ -247,6 +312,31 @@ namespace Dimmer_Labels_Wizard
             PopulateColorControl();
         }
 
+        private void SplitCellsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ActiveLabelStrip.LabelStrip != null &&
+                ActiveLabelStrip.SelectedHeaders.Count > 0)
+            {
+                SplitCellWindow SplitCellDialog = new SplitCellWindow();
+                SplitCellDialog.ViewModel.LabelStrip = ActiveLabelStrip.LabelStrip;
+                Border outline = GetSplitCellOutline(ActiveLabelStrip.SelectedHeaders.First());
+
+                if (outline != null)
+                {
+                    LabelCanvas.Children.Remove(outline);
+                    outline.MouseDown -= outline_MouseDown;
+                    SplitCellDialog.ViewModel.Outline = outline;
+                    SplitCellDialog.ShowDialog();
+
+                    ForceRender();
+
+                }
+            }
+        }
+
         #endregion
+
+
+
     }
 }

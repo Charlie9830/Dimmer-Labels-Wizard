@@ -235,6 +235,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Racks.cs" />
+    <Compile Include="SplitCellViewModel.cs" />
+    <Compile Include="SplitCellWindow.xaml.cs">
+      <DependentUpon>SplitCellWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Storage.cs" />
     <Compile Include="UserParameters.cs" />
     <Compile Include="ViewModelBase.cs" />
@@ -322,43 +326,9 @@
   <ItemGroup>
     <None Include="Dimmer Labels Wizard_TemporaryKey.pfx" />
     <None Include="packages.config" />
-    <None Include="Resources\text-bold-16-000000.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Bold.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\text-bold-36-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\text-bold-24-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\text-italic-16-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\text-underline-16-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\corner-16-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnify-add-16-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnify-minus-16-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\crosshair-16-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Split-16-000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\earth-16-000000.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Minus-Sign-12.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Plus-Sign-12.png" />
@@ -414,6 +384,20 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SplitCellWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\underline24.png" />
+    <Resource Include="Resources\italic24.png" />
+    <Resource Include="Resources\bold24.png" />
+    <Resource Include="Resources\magnifyPlus24.png" />
+    <Resource Include="Resources\magnifyMinus24.png" />
+    <Resource Include="Resources\earth24.png" />
+    <Resource Include="Resources\crosshair24.png" />
+    <Content Include="Resources\Minus-Sign-12.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -118,52 +118,95 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="earth-16-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\earth-16-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Plus-Sign-12" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Plus-Sign-12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="magnify-add-16-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\magnify-add-16-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="corner-16-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\corner-16-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="magnify-minus-16-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\magnify-minus-16-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="text-italic-16-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\text-italic-16-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="help-circled-24-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\help-circled-24-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="text_bold_24_000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\text-bold-24-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Label Preview" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Label Preview.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Split-16-000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Split-16-000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="text-underline-16-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\text-underline-16-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="text-bold-16-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\text-bold-16-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="text_bold_36_000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\text-bold-36-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Minus-Sign-12" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Minus-Sign-12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="crosshair-16-000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\crosshair-16-000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Single Label Preview" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Single Label Preview.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="earth24" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+</value>
+  </data>
+  <data name="magnifyMinus24" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAktJREFUSEut
+        lMurTWEYh7e7EKnjMlAYOI6xksEZmEpR1OmUyFBRJvwRJxz+DsXA4IgBUgYil5TSKR0k15RL7rfnqfXb
+        fWvvtdtbnV89fWu96/1+3+1dX2sAzavaBTAGU/AafsIPeAEXYBfMqUifvkriVrgNf+FP1ZYkdhWGQfUd
+        JAn7wNmWRl/gCczAtyqWbx9hB6ieg8yt2lHQ/BfY+RkchnXgli2EDXAc3kIG+QBboFHuobLzA7CDXIOV
+        oJKj8uyg9yH5l6FR86v2ECR5GmLuwC7dVYrPi0C5mjeQfruhS9meS5DEAwZQBm9Svp2A9DtnoFSWuwws
+        P5Pc2yFQa3qwFlaD2gSWr309s5oy+/VgpZh01wDS4BV8hU/wucKq0fAx5OA1tu93qCkDuJcamXTHAHKm
+        Ghsr/4XfVfscNHcQy9eYA9eULVoBL8EkZ+273zaD5TfSgTG3RpWTc5u7lFX4V5okew2gQQ75CKTfRQOd
+        SuJRSOI9WAyuwpLsVaar4Cmk3zh0KSuwct5Bks+De6wcqES5jdch+Tch39oykPvjNJjogeaqeAh7YClE
+        Gu8H7yZzzPVwt0FNpfkZMDkVYutAqR4P/hZ4w2aVyfXu8oJU8Ws0NzGmPr8H401k4EewHdRA5ra+n4Il
+        cAxugPeNpSiW8xU4CDnstrnKy1loMp8EVR7YctgI1rzXSlROtqYcaC9zO1ldlnCqrFS+lZNo6yT0M+/s
+        6Lum0mhayn1MlcTcs1BN5v+t3HypdQ9UzYq52gm52CYMoFkyb7X+AU4jyrCiFQJRAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="magnifyPlus24" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAmdJREFUSEut
+        lNuLjlEUhz9nIZJzFC6QXCopLtyiRlFSIpdTlBvzR8gM83dMceGCuEDKleM0NSXlmBxTmMhxPE+9v6/9
+        zvdO36j51dP+vrXXXmvtvde7W1PQrGqcA4fhCryDX/ATXsMl2A8zKrKmq+K4He7COPytxpLYbsBmUF2T
+        xOEQWG0Z6Bs8gxfwo7Jl7gvsATVpkpnVuBsM/htc/BJ6YS24eDZsgDPwAZLkM2yFRnmGai4MgwvkJiwF
+        ZQHOS4pZB48g/tegUValTkCcn0CCqy3wBh7DKkgSd/Mesq4HOhTnqxDHYxqQFSu3r/0rmEBlrg+ybkhD
+        qRzPIrD9dPJsl4NaA0vAu0mCbbAMkmgT2L7Oe2c1pfr1YKfo9EADWglvQfsYOOelmsSAHpffijsxsPN2
+        WE3lWX4Hne5pQFZosAR2lD/V+AoMbpLnlc3ENeWIPAYvUSer9r9znv1G2AfOuZNd4LHkAyuL85g7lF34
+        VeokBzWgpkv26FTmTkLWXdYwUWnTUxDHhzAf8mWawLtwl158iloBft1ZdwQ6FGc75yPE+SKkSotYDVaf
+        pB7jLYj/HciRt6UhCwZARy80T8UIHICFEBn4KDwFffT1cndATWXwC6BzOsTRROken2tf1/uQXcbXt8sH
+        UiVeY3AdE9Tfn0B7E0k8CjtBTSm4o//7YQGchtvge2Mrihd9HY7DPFDt4Cp/BqEp+HlQ5YUtBr8He95n
+        JSqLrSkXOllwF9lddk+6rFTmyiLaOgfdgk9c6H+DSmPQUp5juiTBvQvVFPy/lZcvve6FqmkJrvZCHraz
+        GtA0BW+1/gExz9cp5CxgxwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="bold24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bold24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="italic24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\italic24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="underline24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\underline24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crosshair24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crosshair24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

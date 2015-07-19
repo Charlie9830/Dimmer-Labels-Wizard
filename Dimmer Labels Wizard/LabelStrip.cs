@@ -19,7 +19,7 @@ namespace Dimmer_Labels_Wizard
         public List<HeaderCell> Headers = new List<HeaderCell>();
         public List<FooterCell> Footers = new List<FooterCell>();
 
-        // Render Outlines.
+        // DrawToCanvas Outlines.
         public List<Border> HeaderOutlines = new List<Border>();
         public List<Border> FooterOutlines = new List<Border>();
 
@@ -32,7 +32,7 @@ namespace Dimmer_Labels_Wizard
         public int RackNumber { get; set; } // Imported from DimDistroUnit for User selection of Labels.
 
         private static double unitConversionRatio = 96d / 25.4d;
-        private static double labelStripOffsetMultiplier = 1.5d; // Applied to Label Height to Offset Footer label From Header Label.
+        public static double LabelStripOffsetMultiplier = 1.5d; // Applied to Label Height to Offset Footer label From Header Label.
 
         // Updates HeaderCell Data that is Associated with the input headerCell, so Cells don't split unexpectatly.
         public void UpdateHeaderData(string newData, HeaderCell headerCell)
@@ -79,12 +79,13 @@ namespace Dimmer_Labels_Wizard
         }
 
         #region Rendering Control Methods
-        // Control Method for Render Methods.
+        // Control Method for DrawToCanvas Methods.
         public void RenderToDisplay(Canvas canvas, Point offset)
         {
+
             RenderHeader(canvas, offset);
 
-            offset.Y += (this.LabelHeightInMM * unitConversionRatio) * labelStripOffsetMultiplier;
+            offset.Y += (this.LabelHeightInMM * unitConversionRatio) * LabelStripOffsetMultiplier;
 
             RenderFooters(canvas, offset);
         }
@@ -96,7 +97,7 @@ namespace Dimmer_Labels_Wizard
 
             double labelWidth = GetMaxLabelStripDimensions().Width;
             double labelHeight = GetMaxLabelStripDimensions().Height;
-            double labelStripOffset = labelHeight * labelStripOffsetMultiplier;
+            double labelStripOffset = labelHeight * LabelStripOffsetMultiplier;
             double totalLabelStripHeight = (labelHeight * 2) + labelStripOffset;
 
             int labelStripPageQty = (int)Math.Floor(pageHeight / totalLabelStripHeight);

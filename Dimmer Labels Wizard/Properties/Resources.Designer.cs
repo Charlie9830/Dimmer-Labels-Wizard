@@ -63,9 +63,9 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap corner_16_000000 {
+        internal static System.Drawing.Bitmap bold24 {
             get {
-                object obj = ResourceManager.GetObject("corner-16-000000", resourceCulture);
+                object obj = ResourceManager.GetObject("bold24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap crosshair_16_000000 {
+        internal static System.Drawing.Bitmap crosshair24 {
             get {
-                object obj = ResourceManager.GetObject("crosshair-16-000000", resourceCulture);
+                object obj = ResourceManager.GetObject("crosshair24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap earth_16_000000 {
+        internal static System.Drawing.Bitmap earth24 {
             get {
-                object obj = ResourceManager.GetObject("earth-16-000000", resourceCulture);
+                object obj = ResourceManager.GetObject("earth24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,6 +103,16 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap italic24 {
+            get {
+                object obj = ResourceManager.GetObject("italic24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Label_Preview {
             get {
                 object obj = ResourceManager.GetObject("Label Preview", resourceCulture);
@@ -113,9 +123,9 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap magnify_add_16_000000 {
+        internal static System.Drawing.Bitmap magnifyMinus24 {
             get {
-                object obj = ResourceManager.GetObject("magnify-add-16-000000", resourceCulture);
+                object obj = ResourceManager.GetObject("magnifyMinus24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +133,9 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap magnify_minus_16_000000 {
+        internal static System.Drawing.Bitmap magnifyPlus24 {
             get {
-                object obj = ResourceManager.GetObject("magnify-minus-16-000000", resourceCulture);
+                object obj = ResourceManager.GetObject("magnifyPlus24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,59 +173,9 @@ namespace Dimmer_Labels_Wizard.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Split_16_000 {
+        internal static System.Drawing.Bitmap underline24 {
             get {
-                object obj = ResourceManager.GetObject("Split-16-000", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap text_bold_16_000000 {
-            get {
-                object obj = ResourceManager.GetObject("text-bold-16-000000", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap text_bold_24_000000 {
-            get {
-                object obj = ResourceManager.GetObject("text_bold_24_000000", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap text_bold_36_000000 {
-            get {
-                object obj = ResourceManager.GetObject("text_bold_36_000000", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap text_italic_16_000000 {
-            get {
-                object obj = ResourceManager.GetObject("text-italic-16-000000", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap text_underline_16_000000 {
-            get {
-                object obj = ResourceManager.GetObject("text-underline-16-000000", resourceCulture);
+                object obj = ResourceManager.GetObject("underline24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
