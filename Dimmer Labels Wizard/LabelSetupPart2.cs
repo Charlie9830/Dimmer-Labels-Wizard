@@ -13,6 +13,8 @@ namespace Dimmer_Labels_Wizard
 {
     public partial class LabelSetupPart2 : UserControl
     {
+        private int currentRowIndex = -1;
+
         public LabelSetupPart2()
         {
             InitializeComponent();
@@ -103,6 +105,10 @@ namespace Dimmer_Labels_Wizard
                     ColorTable.Rows[rowIndex].Cells[colorDisplayColumnIndex].Style.BackColor = GDIColor;
                 }
             }
+            if (currentRowIndex != -1)
+            {
+                ColorTable.FirstDisplayedScrollingRowIndex = currentRowIndex;
+            }
         }
 
         // Called by PopulateColorTable
@@ -180,8 +186,6 @@ namespace Dimmer_Labels_Wizard
 
         private void ColorSelectButton_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(ColorTable.SelectedCells.Count);
-
             if (ColorTable.SelectedCells.Count == 1)
             {
                 // Collect Physical row Index.
@@ -202,6 +206,8 @@ namespace Dimmer_Labels_Wizard
                     color.B = B;
 
                     AssignColor(item, GetShowField(ShowFieldsComboBox.SelectedIndex), color);
+
+                    currentRowIndex = ColorTable.FirstDisplayedScrollingRowIndex;
 
                     // Update and Re Draw Table.
                     PopulateColorTable(GetShowField(ShowFieldsComboBox.SelectedIndex));
@@ -233,12 +239,16 @@ namespace Dimmer_Labels_Wizard
                     color.B = B;
                     
                     AssignColor(items.ToArray(), GetShowField(ShowFieldsComboBox.SelectedIndex),color);
+                    
+                    currentRowIndex = ColorTable.FirstDisplayedScrollingRowIndex;
 
                     // Update and Re Draw Table.
                     PopulateColorTable(GetShowField(ShowFieldsComboBox.SelectedIndex));
                 }
                 
             }
+
+            
         }
 
         private void AssignColor(string item, LabelField showField, Color color)
