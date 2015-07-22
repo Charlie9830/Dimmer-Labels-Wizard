@@ -5,23 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dimmer_Labels_Wizard"
              mc:Ignorable="d" Height="100" Width="319">
-    
+
     <UserControl.Resources>
-        <Image x:Key="earth24" Source="Resources/earth24.png"/>
-        <Image x:Key="bold24" Source="Resources/bold24.png"/>
-        <Image x:Key="italic24" Source="Resources/italic24.png"/>
-        <Image x:Key="underline24" Source="Resources/underline24.png"/>
+        <Image x:Key="earth24" Source="Resources/earth24.png" Stretch="Uniform"/>
+        <Image x:Key="bold24" Source="Resources/bold24.png" Stretch="Uniform"/>
+        <Image x:Key="italic24" Source="Resources/italic24.png" Stretch="Uniform"/>
+        <Image x:Key="underline24" Source="Resources/underline24.png" Stretch="Uniform"/>
     </UserControl.Resources>
-    
+
     <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1">
         <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
             <ComboBox x:Name="FontComboBox" ItemsSource="{Binding Path=SystemFonts}" SelectedItem="{Binding Path=FontFamily}" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="162" IsReadOnly="True"/>
-            <ComboBox x:Name="SizeComboBox" ItemsSource="{Binding Path=FontSizes}" Text="{Binding Path=FontSize}" HorizontalAlignment="Left" Margin="177,38,0,0" VerticalAlignment="Top" Width="50" IsEditable="True"/>
-            <TextBox x:Name="DataTextBox" Text="{Binding Path=Data}" HorizontalAlignment="Left" Height="23" Margin="10,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299"/>
+            <ComboBox x:Name="SizeComboBox" ItemsSource="{Binding Path=FontSizes}" Text="{Binding Path=FontSize}" HorizontalAlignment="Left" Margin="177,38,0,0" VerticalAlignment="Top" Width="63" IsEditable="True"/>
+            <TextBox x:Name="DataTextBox" Text="{Binding Path=Data}" FontSize="15" HorizontalAlignment="Left" Height="23" Margin="10,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Cursor="IBeam"/>
             <ToggleButton x:Name="GlobalApplyToggleButton" IsChecked="{Binding Path=GlobalApply}" Width="22" Height="22" Margin="287,11,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource earth24}"/>
-            <ToggleButton x:Name="BoldToggleButton" IsChecked="{Binding Path=IsBold}" Width="22" Height="22" Margin="232,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource bold24}" Background="#FFDDDDDD"/>
-            <ToggleButton x:Name="ItalicsToggleButton" IsChecked="{Binding Path=IsItalics}" Width="22" Height="22" Margin="259,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource italic24}"/>
-            <ToggleButton x:Name="UnderlineToggleButton" Width="22" Height="22" Margin="287,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource underline24}"/>
+            <ToggleButton x:Name="BoldToggleButton" IsChecked="{Binding Path=IsBold}" Width="20" Height="20" Margin="245,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource bold24}" Background="#FFDDDDDD"/>
+            <ToggleButton x:Name="ItalicsToggleButton" IsChecked="{Binding Path=IsItalics}" Width="20" Height="20" Margin="267,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource italic24}"/>
+            <ToggleButton x:Name="UnderlineToggleButton" Width="20" Height="20" Margin="289,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource underline24}"/>
             <Label x:Name="TitleLabel" Content="{Binding Path=ControlTitle}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.605,-0.385" FontSize="16" Height="38" Width="271"/>
         </Grid>
     </Border>

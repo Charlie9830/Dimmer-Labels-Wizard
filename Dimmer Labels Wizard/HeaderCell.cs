@@ -11,9 +11,23 @@ namespace Dimmer_Labels_Wizard
 {
     public class HeaderCell : LabelCell
     {
+        protected double _FontSize;
+
         public string Data { get; set; }
         public Typeface Font { get; set; }
-        public double FontSize { get; set; }
+        public double FontSize 
+        {
+            get
+            {
+                return _FontSize;
+            }
+
+            set
+            {
+                // Round to 1 decimal place.
+                _FontSize = Math.Round(value, 2);
+            }
+        }
     }
 
     public class HeaderCellWrapper

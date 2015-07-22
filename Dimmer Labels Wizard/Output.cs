@@ -226,7 +226,7 @@ namespace Dimmer_Labels_Wizard
                             Globals.LabelStrips[outputIndex].Footers[j].BottomData = null;
                             break;
                         default:
-                            Globals.LabelStrips[outputIndex].Footers[j].BottomData = "Defualt Switch Case";
+                            Globals.LabelStrips[outputIndex].Footers[j].BottomData = "Default Switch Case";
                             break;
                     }
                     #endregion

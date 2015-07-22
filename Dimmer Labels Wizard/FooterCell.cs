@@ -19,6 +19,7 @@ namespace Dimmer_Labels_Wizard
         public string MiddleData { get; set; }
         public Typeface MiddleFont { get; set; }
         public double MiddleFontSize { get; set; }
+
         //Bottom line Properties
         public string BottomData { get; set; }
         public Typeface BottomFont { get; set; }

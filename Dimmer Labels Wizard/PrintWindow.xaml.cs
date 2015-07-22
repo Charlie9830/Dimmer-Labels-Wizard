@@ -64,7 +64,7 @@ namespace Dimmer_Labels_Wizard
                     printDocument.DocumentPaginator.PageSize = printableArea;
 
                     List<Canvas> pageCanvases = LabelStrip.RenderToPrinter(printStrips, pDialog.PrintableAreaWidth,
-                        pDialog.PrintableAreaHeight);
+                        pDialog.PrintableAreaHeight,UserParameters.SingleLabel);
                     
 
                     foreach (var canvas in pageCanvases)

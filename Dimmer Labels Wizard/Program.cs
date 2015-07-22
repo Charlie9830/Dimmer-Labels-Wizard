@@ -16,8 +16,6 @@ namespace Dimmer_Labels_Wizard
         [STAThread]
         static void Main(string[] args)
         {
-            LabelStrip testLabelStrip = new LabelStrip();
-
             Application.EnableVisualStyles();
             Forms.MainWindow = new FORM_MainWindow();
             Application.Run(Forms.MainWindow);
@@ -56,6 +54,8 @@ namespace Dimmer_Labels_Wizard
                 UserParameters.HeaderField = LabelField.MulticoreName;
                 UserParameters.FooterMiddleField = LabelField.ChannelNumber;
                 UserParameters.FooterBottomField = LabelField.InstrumentName;
+
+                UserParameters.SingleLabel = true;
                 #endregion
 
                 UserParameters.GenerateDistroRange();

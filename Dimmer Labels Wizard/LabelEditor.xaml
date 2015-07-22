@@ -11,17 +11,19 @@
         <Image x:Key="magnifyMinus24" Source="Resources/magnifyMinus24.png"/>
         <Image x:Key="earth24" Source="Resources/earth24.png"/>
         <Image x:Key="crosshair24" Source="Resources/crosshair24.png"/>
+        <Image x:Key="zoomToFit24" Source="Resources/zoomToFit24.png"/>
+
     </UserControl.Resources>
 
     <Grid Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}">
 
         <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Margin="10,10,10,10" 
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1">
-            <Canvas x:Name="LabelCanvas" HorizontalAlignment="Left" Height="242" VerticalAlignment="Top" Width="1015" Background="White" Margin="0,0,0,0"/>
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
+            <Canvas x:Name="LabelCanvas" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,0"/>
         </Border>
 
         <custom:CellControl x:Name="HeaderCellControl" Margin="126,262,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"></custom:CellControl>
-        <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="301" Margin="10,261,0,0" VerticalAlignment="Top" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="301" Margin="10,262,0,0" VerticalAlignment="Top" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
         <custom:CellControl x:Name="FooterTopCellControl" Margin="445,262,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <custom:CellControl x:Name="FooterMiddleCellControl" Margin="445,362,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <custom:CellControl x:Name="FooterBottomCellControl" Margin="445,462,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
@@ -34,15 +36,16 @@
             <Button x:Name="MagnifyPlusButton" Content="{StaticResource magnifyPlus24}" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyPlusButton_Click" FontWeight="ExtraBold" FontSize="14" Background="#FFDEDEDE"/>
             <Button x:Name="MagnifyMinusButton" Content="{StaticResource magnifyMinus24}" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyMinusButton_Click" FontWeight="ExtraBold" RenderTransformOrigin="0.528,0.514" FontSize="14" Grid.RowSpan="2"/>
             <Label Content="View" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16"/>
-            <Button x:Name="CenterViewButton" Content="{StaticResource crosshair24}" HorizontalAlignment="Left" Margin="10,18.111,0,0" VerticalAlignment="Top" Width="24" Click="CenterViewButton_Click" Grid.Row="1"/>
+            <Button x:Name="CenterViewButton" Content="{StaticResource crosshair24}" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Width="24" Click="CenterViewButton_Click" Grid.Row="1"/>
+            <Button x:Name="MagnifyToFitButton" Content="{StaticResource zoomToFit24}" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyToFitButton_Click" FontWeight="ExtraBold" FontSize="14" Background="#FFDEDEDE" Grid.Row="1"/>
         </Grid>
         <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="102" Margin="126,363,0,0" VerticalAlignment="Top" Width="131">
             <Button x:Name="SplitCellsButton" Content="Split Cell" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Click="SplitCellsButton_Click" Width="75" RenderTransformOrigin="0.513,-0.742"/>
             <Label Content="Tools" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" FontSize="16"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="40" Margin="854,522,0,0" VerticalAlignment="Top" Width="166">
-            <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="6,8,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
-            <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="86,8,0,0" VerticalAlignment="Top" Width="75" Click="InvokePrint"/>
+        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="75" Margin="926,487,0,0" VerticalAlignment="Top" Width="94">
+            <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
+            <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Width="75" Click="InvokePrint"/>
         </Grid>
 
     </Grid>

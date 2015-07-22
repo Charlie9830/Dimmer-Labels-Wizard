@@ -40,25 +40,20 @@ namespace Dimmer_Labels_Wizard
 
             set
             {    
-                    // Calculate Luminance of Color and set _textColor to White or Black based on this luminance result.
-                    if ((0.299 * value.Color.R) + (0.587 * value.Color.G) + (0.114 * value.Color.B) > 128)
-                    {
-                        _textColor = new SolidColorBrush(Colors.Black);
-                    }
+                // Calculate Luminance of Color and set _textColor to White or Black based on this luminance result.
+                if ((0.299 * value.Color.R) + (0.587 * value.Color.G) + (0.114 * value.Color.B) > 128)
+                {
+                    _textColor = new SolidColorBrush(Colors.Black);
+                }
 
-                    else
-                    {
-                        _textColor = new SolidColorBrush(Colors.White);
-                    }
+                else
+                {
+                    _textColor = new SolidColorBrush(Colors.White);
+                }
 
-                    _backgroundColor = value;
+                _backgroundColor = value;
                 
             }
         }
-
-        // Utilized by FORM_LabelSelector to Track selection of Individual Label Cells.
-        public bool IsSelected { get; set; }
-        
-
     }
 }

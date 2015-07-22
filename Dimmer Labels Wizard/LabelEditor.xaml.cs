@@ -77,7 +77,7 @@ namespace Dimmer_Labels_Wizard
             {
                 LabelCanvas.Children.Clear();
                 // Offset Point is given in WPF Pixels (Inches).
-                ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20));
+                ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20),UserParameters.SingleLabel);
                 CollectSelectionEvents();
                 ActiveLabelStrip.RenderSelections(LabelCanvas);
             }
@@ -87,7 +87,7 @@ namespace Dimmer_Labels_Wizard
         {
             HeaderCellControl.HeaderViewModel.HeaderCells.Clear();
 
-            foreach(var element in ActiveLabelStrip.SelectedHeaders)
+            foreach (var element in ActiveLabelStrip.SelectedHeaders)
             {
                 HeaderCellControl.HeaderViewModel.HeaderCells.Add(element);
             }
@@ -241,7 +241,8 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-
+            UserParameters.SingleLabel = !UserParameters.SingleLabel;
+            ForceRender();
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
@@ -271,31 +272,11 @@ namespace Dimmer_Labels_Wizard
         {
             if (ActiveLabelStrip.LabelStrip != null)
             {
-                List<Border> headerOutlines = new List<Border>();
+                double xOffset = (CanvasBorder.ActualWidth - (LabelCanvas.Width * LabelCanvasScaleTransform.ScaleX)) / 2;
+                double yOffset = (CanvasBorder.ActualHeight) - ((LabelCanvas.Height * LabelCanvasScaleTransform.ScaleY)) / 2;
 
-                foreach (var element in LabelCanvas.Children)
-                {
-                    Border outline = element as Border;
-                    if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
-                    {
-                        headerOutlines.Add(outline);
-                    }
-                }
-
-                double renderedWidth = 1;
-                double renderedHeight = ((headerOutlines.First().Height * LabelCanvasScaleTransform.ScaleY) * 2) 
-                    * LabelStrip.LabelStripOffsetMultiplier;
-
-                foreach (var element in headerOutlines)
-                {
-                    renderedWidth += element.Width * LabelCanvasScaleTransform.ScaleX;
-                }
-
-                LabelCanvasTranslateTransform.X = (LabelCanvas.Width - renderedWidth) / 2;
-                LabelCanvasTranslateTransform.Y = (LabelCanvas.Height - renderedHeight) / 2;
-
-                Console.WriteLine("Actual Width {0}", renderedWidth);
-
+                LabelCanvasTranslateTransform.X = 0;
+                LabelCanvasTranslateTransform.Y = 0;
             }
         }
 
@@ -334,8 +315,14 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
-        #endregion
+        private void MagnifyToFitButton_Click(object sender, RoutedEventArgs e)
+        {
+            double xRatio = CanvasBorder.Width / (LabelCanvas.Width * LabelCanvasScaleTransform.ScaleX);
+            LabelCanvasScaleTransform.ScaleX *= xRatio;
+            LabelCanvasScaleTransform.ScaleY *= xRatio;
+        }
 
+        #endregion
 
 
     }

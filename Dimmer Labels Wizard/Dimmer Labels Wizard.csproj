@@ -390,6 +390,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\zoomToFit24.png" />
     <Resource Include="Resources\underline24.png" />
     <Resource Include="Resources\italic24.png" />
     <Resource Include="Resources\bold24.png" />
