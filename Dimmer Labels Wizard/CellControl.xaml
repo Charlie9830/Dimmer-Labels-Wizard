@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dimmer_Labels_Wizard"
+             xmlns:vsm="clr-namespace:System.Windows;assembly=PresentationFramework"
              mc:Ignorable="d" Height="100" Width="319">
 
     <UserControl.Resources>
@@ -11,6 +12,7 @@
         <Image x:Key="bold24" Source="Resources/bold24.png" Stretch="Uniform"/>
         <Image x:Key="italic24" Source="Resources/italic24.png" Stretch="Uniform"/>
         <Image x:Key="underline24" Source="Resources/underline24.png" Stretch="Uniform"/>
+
     </UserControl.Resources>
 
     <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1">

@@ -24,8 +24,8 @@ namespace Dimmer_Labels_Wizard
 
             set
             {
-                // Round to 1 decimal place.
-                _FontSize = Math.Round(value, 2);
+                // Round to Nearest Quarter.
+                _FontSize = Math.Round(value * 4, MidpointRounding.AwayFromZero) / 4;
             }
         }
     }

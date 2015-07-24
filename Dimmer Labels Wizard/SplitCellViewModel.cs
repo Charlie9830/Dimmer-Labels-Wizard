@@ -20,6 +20,12 @@ namespace Dimmer_Labels_Wizard
         protected ObservableCollection<Canvas> _RenderCanvas = new ObservableCollection<Canvas>();
         protected string _Text = string.Empty;
 
+        protected ScaleTransform _ScaleTransform = new ScaleTransform();
+        protected TranslateTransform _TranslateTransform = new TranslateTransform();
+        protected TransformGroup _TransformGroup = new TransformGroup();
+        protected double _ItemsControlWidth = 0;
+        protected double _ItemsControlHeight = 0;
+
         #region InfoText
         protected string _InfoText = "Header Cells are automatically merged when their Text matches the text of it's " +
         "neighbouring cells. To split merged cells, Select the cells that you wish to change the text of above then enter " +
@@ -34,6 +40,10 @@ namespace Dimmer_Labels_Wizard
         public SplitCellViewModel()
         {
             _SelectedOutlines.CollectionChanged += _SelectedOutlines_CollectionChanged;
+
+            // Transformations.
+            _TransformGroup.Children.Add(_ScaleTransform);
+            _TransformGroup.Children.Add(_TranslateTransform);
         }
 
 
@@ -97,6 +107,47 @@ namespace Dimmer_Labels_Wizard
                 return _InfoText;
             }
         }
+
+        public TransformGroup TransformGroup
+        {
+            get
+            {
+                return _TransformGroup;
+            }
+
+            set
+            {
+                _TransformGroup = value;
+                OnPropertyChanged("TransformGroup");
+            }
+        }
+
+        public double ItemsControlWidth
+        {
+            get
+            {
+                return _ItemsControlWidth;
+            }
+            set
+            {
+                _ItemsControlWidth = value;
+                OnPropertyChanged("ItemsControlWidth");
+            }
+        }
+
+        public double ItemsControlHeight
+        {
+            get
+            {
+                return _ItemsControlHeight;
+            }
+            set
+            {
+                _ItemsControlHeight = value;
+                OnPropertyChanged("ItemsControlHeight");
+            }
+        }
+
         #endregion
 
         #region Update Methods
@@ -122,6 +173,8 @@ namespace Dimmer_Labels_Wizard
 
             DrawCellOutlines(_RenderCanvas.First());
 
+            FitToCanvas();
+
             OnPropertyChanged("RenderCanvas");
         }
 
@@ -132,7 +185,7 @@ namespace Dimmer_Labels_Wizard
             int cellQTY = wrapper.Cells.Count;
 
             double width = _LabelStrip.LabelWidthInMM * (96d / 25.4d);
-            double height = _LabelStrip.LabelHeightInMM * (96d / 25.4d);
+            double height = Outline.Height; //_LabelStrip.LabelHeightInMM * (96d / 25.4d);
 
             for (int count = 0; count < cellQTY; count++)
             {
@@ -166,6 +219,14 @@ namespace Dimmer_Labels_Wizard
             }
 
             HookupSelectionOutlineEvents();
+        }
+
+        void FitToCanvas()
+        {
+            // Center Objects.
+            _TranslateTransform.X = 0;
+            _TranslateTransform.Y = 0;
+
         }
 
         void HookupSelectionOutlineEvents()

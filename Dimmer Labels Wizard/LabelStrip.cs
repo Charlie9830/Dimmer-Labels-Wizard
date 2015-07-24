@@ -486,22 +486,12 @@ namespace Dimmer_Labels_Wizard
                     Footers[index].BottomFontSize *= bottomDifferenceRatio.Width;
                 }
 
-                // Generate blank TextBlocks.
-                TextBlock[] textBlocks = GenerateFooterTextBlocks(textCanvas,Footers[index].TextColor);
+                // Generate blank TextBlocks. (Only Generates a Positions 3 TextBlocks).
+                TextBlock[] textBlocks = GenerateFooterTextBlocks(textCanvas,Footers[index]);
 
                 TextBlock topTextBlock = textBlocks[0];
                 TextBlock middleTextBlock = textBlocks[1];
                 TextBlock bottomTextBlock = textBlocks[2];
-
-                // Measure Font Sizes.
-                Size topFontSize = MeasureText(Footers[index].TopData,
-                    Footers[index].TopFont, Footers[index].TopFontSize);
-
-                Size middleFontSize = MeasureText(Footers[index].MiddleData,
-                    Footers[index].MiddleFont,Footers[index].MiddleFontSize);
-
-                Size bottomFontSize = MeasureText(Footers[index].BottomData,
-                    Footers[index].BottomFont, Footers[index].BottomFontSize);
 
                 // Populate TextBlocks.
                 topTextBlock.Text = Footers[index].TopData;
@@ -512,9 +502,6 @@ namespace Dimmer_Labels_Wizard
                 topTextBlock.FontStretch = Footers[index].TopFont.Stretch;
                 topTextBlock.Foreground = Footers[index].TextColor;
 
-                double bottomPadding = GetTextPadding(topTextBlock, topFontSize).Bottom;
-                topTextBlock.Padding = new Thickness(0, 0, 0, bottomPadding);
-
                 middleTextBlock.Text = Footers[index].MiddleData;
                 middleTextBlock.FontFamily = Footers[index].MiddleFont.FontFamily;
                 middleTextBlock.FontSize = Footers[index].MiddleFontSize;
@@ -523,9 +510,6 @@ namespace Dimmer_Labels_Wizard
                 middleTextBlock.FontStretch = Footers[index].MiddleFont.Stretch;
                 middleTextBlock.Foreground = Footers[index].TextColor;
 
-                Thickness middleBlockPadding = GetTextPadding(middleTextBlock, middleFontSize);
-                middleTextBlock.Padding = new Thickness(0, 0, 0, middleBlockPadding.Top);
-
                 bottomTextBlock.Text = Footers[index].BottomData;
                 bottomTextBlock.FontFamily = Footers[index].BottomFont.FontFamily;
                 bottomTextBlock.FontSize = Footers[index].BottomFontSize;
@@ -533,10 +517,6 @@ namespace Dimmer_Labels_Wizard
                 bottomTextBlock.FontWeight = Footers[index].BottomFont.Weight;
                 bottomTextBlock.FontStretch = Footers[index].BottomFont.Stretch;
                 bottomTextBlock.Foreground = Footers[index].TextColor;
-
-                double topPadding = GetTextPadding(bottomTextBlock, bottomFontSize).Top;
-                bottomTextBlock.Padding = new Thickness(0, topPadding, 0, 0);
-                
 
                 // Add TextBlocks to textCanvas.
                 textCanvas.Children.Add(topTextBlock);
@@ -840,8 +820,8 @@ namespace Dimmer_Labels_Wizard
                     Footers[index].BottomFontSize *= bottomDifferenceRatio.Width;
                 }
 
-                // Generate blank TextBlocks.
-                TextBlock[] textBlocks = GenerateFooterTextBlocksSingleLabel(textCanvas, Footers[index].TextColor);
+                // Generate blank TextBlocks (Method will Generate a position only 2 TextBlocks).
+                TextBlock[] textBlocks = GenerateFooterTextBlocksSingleLabel(textCanvas, Footers[index]);
 
                 TextBlock middleTextBlock = textBlocks[0];
                 TextBlock bottomTextBlock = textBlocks[1];
@@ -862,9 +842,7 @@ namespace Dimmer_Labels_Wizard
                 middleTextBlock.FontStretch = Footers[index].MiddleFont.Stretch;
                 middleTextBlock.Foreground = UserParameters.HeaderBackGroundColourOnly ?
                     new SolidColorBrush(Colors.Black) : Footers[index].TextColor;
-
-                double middlePadding = GetTextPadding(middleTextBlock, middleFontSize).Bottom;
-                middleTextBlock.Padding = new Thickness(0, 0, 0, middlePadding);
+                // Border "Hugging" has been handled by GenerateTextBlocksSingleLabel().
 
                 bottomTextBlock.Text = Footers[index].BottomData;
                 bottomTextBlock.FontFamily = Footers[index].BottomFont.FontFamily;
@@ -874,10 +852,7 @@ namespace Dimmer_Labels_Wizard
                 bottomTextBlock.FontStretch = Footers[index].BottomFont.Stretch;
                 bottomTextBlock.Foreground = UserParameters.HeaderBackGroundColourOnly ?
                     new SolidColorBrush(Colors.Black) : Footers[index].TextColor;
-
-                double topPadding = GetTextPadding(bottomTextBlock, bottomFontSize).Top;
-                bottomTextBlock.Padding = new Thickness(0, topPadding, 0, 0);
-
+                // Border "Hugging" has been handled by GenerateTextBlocksSingleLabel().
 
                 // Add TextBlocks to textCanvas.
                 textCanvas.Children.Add(middleTextBlock);
@@ -901,15 +876,15 @@ namespace Dimmer_Labels_Wizard
         #endregion
 
         #region Rendering Helper Methods
-        // Calculates the required Padding for Text in order for that Text to "Hug" It's Closest Border.
-        private Thickness GetTextPadding(TextBlock textBlock, Size fontSize)
+        // Calculates the required Margin in order for a TextBlock to "Hug" It's Closest Border.
+        private Thickness GetTextBlockMargin(Canvas textCanvas, Size fontSize)
         {
             Thickness returnThickness = new Thickness();
 
-            returnThickness.Top = textBlock.Height - fontSize.Height;
+            returnThickness.Top = textCanvas.Height - fontSize.Height;
             returnThickness.Bottom = returnThickness.Top;
 
-            returnThickness.Left = textBlock.Width - fontSize.Width;
+            returnThickness.Left = textCanvas.Width - fontSize.Width;
             returnThickness.Right = returnThickness.Left;
 
             returnThickness.Top = returnThickness.Top > 0 ? returnThickness.Top : 0;
@@ -1000,7 +975,6 @@ namespace Dimmer_Labels_Wizard
 
             int textBlockQTY = strings.Length;
 
-            
             double topOffset = 1;
             double leftOffset = 0;
 
@@ -1070,91 +1044,57 @@ namespace Dimmer_Labels_Wizard
         }
 
         // Generates Blank TextBlocks for Footer Rendering. Top to Bottom.
-        private TextBlock[] GenerateFooterTextBlocks(Canvas canvas, SolidColorBrush textColor)
+        private TextBlock[] GenerateFooterTextBlocks(Canvas canvas, FooterCell footerCell)
         {
-            List<TextBlock> textBlocks = new List<TextBlock>();
-            int requiredTextBlockQty; // label Field Overidden by Data.
+            TextBlock[] textBlocks = {new TextBlock(), new TextBlock(), new TextBlock()};
 
-            double textBlockWidth = canvas.Width;
-            double textBlockHeight = canvas.Height / 3;
+            textBlocks[0].Height = MeasureText(footerCell.TopData, footerCell.TopFont,
+                footerCell.TopFontSize).Height;
+            textBlocks[0].Width = canvas.Width;
+            textBlocks[0].TextAlignment = TextAlignment.Center;
+            Canvas.SetTop(textBlocks[0], 0);
 
-            for (int count = 0; count < 3; count++)
-            {
-                textBlocks.Add(new TextBlock());
+            textBlocks[1].Height = MeasureText(footerCell.MiddleData, footerCell.MiddleFont,
+                footerCell.MiddleFontSize).Height;
+            textBlocks[1].Width = canvas.Width;
+            textBlocks[1].TextAlignment = TextAlignment.Center;
+            Canvas.SetTop(textBlocks[1], (canvas.Height / 2) - (textBlocks[1].Height / 2));
 
-                textBlocks.Last().Width = textBlockWidth;
-                textBlocks.Last().Height = textBlockHeight;
+            textBlocks[2].Height = MeasureText(footerCell.BottomData, footerCell.BottomFont,
+                footerCell.BottomFontSize).Height;
+            textBlocks[2].Width = canvas.Width;
+            textBlocks[2].TextAlignment = TextAlignment.Center;
+            Canvas.SetBottom(textBlocks[2], 0);
 
-                textBlocks.Last().TextAlignment = TextAlignment.Center;
-
-                if (count == 0)
-                {
-                    Canvas.SetTop(textBlocks.Last(), 0);
-                }
-
-                else
-                {
-                    Canvas.SetTop(textBlocks.Last(), textBlockHeight * count);
-                }
-            }
-
-            return textBlocks.ToArray();
+            return textBlocks;
        }
 
         // Generates Single Label Blank TextBlocks for Footer Rendering. Top to Bottom.
-        private TextBlock[] GenerateFooterTextBlocksSingleLabel(Canvas canvas, SolidColorBrush textColor)
+        private TextBlock[] GenerateFooterTextBlocksSingleLabel(Canvas canvas, FooterCell footerCell)
         {
-            List<TextBlock> textBlocks = new List<TextBlock>();
+            TextBlock[] textBlocks = { new TextBlock(), new TextBlock() };
 
-            double textBlockWidth = canvas.Width;
-            double textBlockHeight = canvas.Height / 2;
-
-
-            for (int count = 0; count < 2; count++)
-            {
-                textBlocks.Add(new TextBlock());
-
-                textBlocks.Last().Width = textBlockWidth;
-                textBlocks.Last().Height = textBlockHeight;
-
-                textBlocks.Last().TextAlignment = TextAlignment.Center;
-
-                if (count == 0)
-                {
-                    Canvas.SetTop(textBlocks.Last(), 0);
-                }
-
-                else
-                {
-                    Canvas.SetTop(textBlocks.Last(), textBlockHeight * count);
-                }
-            }
-
-            return textBlocks.ToArray();
-
-        }
-
-        // Determines How many LabelField Assignments have been made.
-        private int GetTextBlockQty()
-        {
-            int count = 0;
             
-            if (UserParameters.FooterTopField != LabelField.NoAssignment)
-            {
-                count++;
-            }
+            // Middle TextBlock.
+            textBlocks[0].Height = MeasureText(footerCell.MiddleData, footerCell.MiddleFont,
+                footerCell.MiddleFontSize).Height;
+            textBlocks[0].Width = canvas.Width;
+            textBlocks[0].TextAlignment = TextAlignment.Center;
 
-            if (UserParameters.FooterMiddleField != LabelField.NoAssignment)
-            {
-                count++;
-            }
+            // Bind TextBlock to top of Canvas.
+            Canvas.SetTop(textBlocks[0], 0);
 
-            if (UserParameters.FooterBottomField != LabelField.NoAssignment)
-            {
-                count++;
-            }
+            // Bottom TextBlock.
+            textBlocks[1].Height = MeasureText(footerCell.BottomData, footerCell.BottomFont,
+                footerCell.BottomFontSize).Height;
+            textBlocks[1].Width = canvas.Width;
+            textBlocks[1].TextAlignment = TextAlignment.Center;
 
-            return count;
+            // Bind TextBlock to bottom of Canvas.
+            Canvas.SetBottom(textBlocks[1], 0);
+
+            return textBlocks;
+
         }
 
         #endregion

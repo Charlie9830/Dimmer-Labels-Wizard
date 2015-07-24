@@ -52,7 +52,7 @@ namespace Dimmer_Labels_Wizard
             this.Loaded += LabelEditor_Loaded;
             RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
 
-            LabelCanvas.MouseDown += LabelCanvas_MouseDown;
+            CanvasBorder.MouseDown += CanvasBorder_MouseDown;
 
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
@@ -214,7 +214,7 @@ namespace Dimmer_Labels_Wizard
             ActiveLabelStrip.MakeSelection(sender,LabelCanvas);
         }
 
-        void LabelCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        void CanvasBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.Handled != true)
             {
@@ -227,6 +227,7 @@ namespace Dimmer_Labels_Wizard
                 ActiveLabelStrip.ClearSelections();
             }
         }
+
 
         void RackSelector_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -272,9 +273,6 @@ namespace Dimmer_Labels_Wizard
         {
             if (ActiveLabelStrip.LabelStrip != null)
             {
-                double xOffset = (CanvasBorder.ActualWidth - (LabelCanvas.Width * LabelCanvasScaleTransform.ScaleX)) / 2;
-                double yOffset = (CanvasBorder.ActualHeight) - ((LabelCanvas.Height * LabelCanvasScaleTransform.ScaleY)) / 2;
-
                 LabelCanvasTranslateTransform.X = 0;
                 LabelCanvasTranslateTransform.Y = 0;
             }
@@ -317,9 +315,12 @@ namespace Dimmer_Labels_Wizard
 
         private void MagnifyToFitButton_Click(object sender, RoutedEventArgs e)
         {
-            double xRatio = CanvasBorder.Width / (LabelCanvas.Width * LabelCanvasScaleTransform.ScaleX);
-            LabelCanvasScaleTransform.ScaleX *= xRatio;
-            LabelCanvasScaleTransform.ScaleY *= xRatio;
+            if (ActiveLabelStrip.LabelStrip != null)
+            {
+                double xRatio = CanvasBorder.Width / (LabelCanvas.Width * LabelCanvasScaleTransform.ScaleX);
+                LabelCanvasScaleTransform.ScaleX *= xRatio;
+                LabelCanvasScaleTransform.ScaleY *= xRatio;
+            }
         }
 
         #endregion

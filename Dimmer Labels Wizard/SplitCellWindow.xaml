@@ -8,7 +8,7 @@
     </Window.Resources>
     <Grid Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}">
         <Border BorderThickness="1" VerticalAlignment="Top" Height="150" Margin="0,10,0,100" BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
-            <ItemsControl VerticalAlignment="Top" Height="150" ItemsSource="{Binding Path=RenderCanvas}" Margin="0,0,0,0" Background="White"/>
+            <ItemsControl VerticalAlignment="Top" Height="150" ItemsSource="{Binding Path=RenderCanvas}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0,0" Background="White"/>
         </Border>
         <Button Content="Ok" HorizontalAlignment="Left" Margin="807,290,0,0" VerticalAlignment="Top" Width="75" Click="OkButton_Click"/>
         <Button Content="Cancel" Command="{Binding Path=Execute}" HorizontalAlignment="Left" Margin="727,290,0,0" VerticalAlignment="Top" Width="75" Click="CancelButton_Click"/>
