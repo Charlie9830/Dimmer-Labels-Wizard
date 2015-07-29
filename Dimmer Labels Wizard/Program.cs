@@ -86,7 +86,7 @@ namespace Dimmer_Labels_Wizard
 
                 UserParameters.SetDefaultRackLabelSettings();
 
-                FORM_LabelEditorHost NextWindow = new FORM_LabelEditorHost();
+                LabelEditor NextWindow = new LabelEditor();
                 NextWindow.ShowDialog();
             }
         }

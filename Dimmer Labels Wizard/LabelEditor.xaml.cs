@@ -21,7 +21,7 @@ namespace Dimmer_Labels_Wizard
     /// <summary>
     /// Interaction logic for LabelEditor.xaml
     /// </summary>
-    public partial class LabelEditor : UserControl
+    public partial class LabelEditor : Window
     {
         // Label Selection
         public LabelStripSelection ActiveLabelStrip = new LabelStripSelection();
@@ -242,8 +242,11 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            UserParameters.SingleLabel = !UserParameters.SingleLabel;
-            ForceRender();
+            AdornerLayer aLayer = AdornerLayer.GetAdornerLayer(LabelCanvas);
+            foreach (var element in LabelCanvas.Children)
+            {
+                aLayer.Add(new SelectionAdorner(element as UIElement));
+            }
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)

@@ -15,9 +15,6 @@ namespace Dimmer_Labels_Wizard
         public FORM_LabelEditorHost()
         {
             InitializeComponent();
-            LabelEditor labelEditor = new LabelEditor();
-
-            ElementHost.Child = labelEditor;
         }
     }
 }
