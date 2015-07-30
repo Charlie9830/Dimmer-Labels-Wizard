@@ -79,7 +79,7 @@ namespace Dimmer_Labels_Wizard
                 // Offset Point is given in WPF Pixels (Inches).
                 ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20),UserParameters.SingleLabel);
                 CollectSelectionEvents();
-                ActiveLabelStrip.RenderSelections(LabelCanvas);
+
             }
         }
 
@@ -191,8 +191,6 @@ namespace Dimmer_Labels_Wizard
             return null;
         }
 
-
-
         #region Event Handling
 
         void InvokePrint(object sender, RoutedEventArgs e)
@@ -235,18 +233,13 @@ namespace Dimmer_Labels_Wizard
             LabelStrip selectedLabelStrip = (LabelStrip)selectedItem.Tag;
 
             ActiveLabelStrip.ClearSelections();
-            ActiveLabelStrip.LabelStrip = selectedLabelStrip;
+            ActiveLabelStrip.SetSelectedLabelStrip(selectedLabelStrip, LabelCanvas);
 
             ForceRender();
         }
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            AdornerLayer aLayer = AdornerLayer.GetAdornerLayer(LabelCanvas);
-            foreach (var element in LabelCanvas.Children)
-            {
-                aLayer.Add(new SelectionAdorner(element as UIElement));
-            }
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
@@ -264,12 +257,16 @@ namespace Dimmer_Labels_Wizard
         {
             LabelCanvasScaleTransform.ScaleX += 0.10;
             LabelCanvasScaleTransform.ScaleY += 0.10;
+
+            ActiveLabelStrip.RefreshAdorners();
         }
 
         private void MagnifyMinusButton_Click(object sender, RoutedEventArgs e)
         {
             LabelCanvasScaleTransform.ScaleX -= 0.10;
             LabelCanvasScaleTransform.ScaleY -= 0.10;
+
+            ActiveLabelStrip.RefreshAdorners();
         }
 
         private void CenterViewButton_Click(object sender, RoutedEventArgs e)
@@ -278,8 +275,23 @@ namespace Dimmer_Labels_Wizard
             {
                 LabelCanvasTranslateTransform.X = 0;
                 LabelCanvasTranslateTransform.Y = 0;
+
+                ActiveLabelStrip.RefreshAdorners();
             }
         }
+
+        private void MagnifyToFitButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ActiveLabelStrip.LabelStrip != null)
+            {
+                double xRatio = CanvasBorder.Width / (LabelCanvas.Width * LabelCanvasScaleTransform.ScaleX);
+                LabelCanvasScaleTransform.ScaleX *= xRatio;
+                LabelCanvasScaleTransform.ScaleY *= xRatio;
+
+                ActiveLabelStrip.RefreshAdorners();
+            }
+        }
+
 
 
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
@@ -315,17 +327,6 @@ namespace Dimmer_Labels_Wizard
                 }
             }
         }
-
-        private void MagnifyToFitButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ActiveLabelStrip.LabelStrip != null)
-            {
-                double xRatio = CanvasBorder.Width / (LabelCanvas.Width * LabelCanvasScaleTransform.ScaleX);
-                LabelCanvasScaleTransform.ScaleX *= xRatio;
-                LabelCanvasScaleTransform.ScaleY *= xRatio;
-            }
-        }
-
         #endregion
 
 
