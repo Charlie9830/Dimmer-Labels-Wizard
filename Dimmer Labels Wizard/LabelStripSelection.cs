@@ -41,45 +41,48 @@ namespace Dimmer_Labels_Wizard
         {
             Border outline = (Border)selectionOutline;
 
-            if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
+            if (outline.Tag != null)
             {
-                HeaderCellWrapper wrapper = (HeaderCellWrapper)outline.Tag;
-                List<HeaderCell> headerCells = wrapper.Cells;
-
-                foreach (var element in headerCells)
+                if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
                 {
-                    if (SelectedHeaders.Contains(element) == false)
+                    HeaderCellWrapper wrapper = (HeaderCellWrapper)outline.Tag;
+                    List<HeaderCell> headerCells = wrapper.Cells;
+
+                    foreach (var element in headerCells)
+                    {
+                        if (SelectedHeaders.Contains(element) == false)
+                        {
+                            // Add it as a Selection.
+                            AddHeaderAdorner(outline);
+                            SelectedHeaders.Add(element);
+                        }
+
+                        else
+                        {
+                            // Remove it from Selections.
+                            RemoveHeaderAdorner(outline);
+                            SelectedHeaders.Remove(element);
+                        }
+                    }
+                }
+
+                if (outline.Tag.GetType() == typeof(FooterCell))
+                {
+                    FooterCell footerCell = (FooterCell)outline.Tag;
+
+                    if (SelectedFooters.Contains(footerCell) == false)
                     {
                         // Add it as a Selection.
-                        AddHeaderAdorner(outline);
-                        SelectedHeaders.Add(element);
+                        AddFooterAdorner(outline);
+                        SelectedFooters.Add(footerCell);
                     }
 
                     else
                     {
                         // Remove it from Selections.
-                        RemoveHeaderAdorner(outline);
-                        SelectedHeaders.Remove(element);
+                        RemoveFooterAdorner(outline);
+                        SelectedFooters.Remove(footerCell);
                     }
-                }
-            }
-
-            if (outline.Tag.GetType() == typeof(FooterCell))
-            {
-                FooterCell footerCell = (FooterCell)outline.Tag;
-
-                if (SelectedFooters.Contains(footerCell) == false)
-                {
-                    // Add it as a Selection.
-                    AddFooterAdorner(outline);
-                    SelectedFooters.Add(footerCell);
-                }
-
-                else
-                {
-                    // Remove it from Selections.
-                    RemoveFooterAdorner(outline);
-                    SelectedFooters.Remove(footerCell);
                 }
             }
         }

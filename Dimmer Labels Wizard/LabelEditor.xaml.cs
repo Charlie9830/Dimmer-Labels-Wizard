@@ -13,8 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms.Integration;
-using Xceed.Wpf.Toolkit;
-
 
 namespace Dimmer_Labels_Wizard
 {
@@ -30,6 +28,12 @@ namespace Dimmer_Labels_Wizard
         private TransformGroup LabelCanvasTransformGroup = new TransformGroup();
         private ScaleTransform LabelCanvasScaleTransform = new ScaleTransform();
         private TranslateTransform LabelCanvasTranslateTransform = new TranslateTransform();
+
+        // Drag Selection
+        private Point MouseDownLocation;
+        private const double DragThreshold = 10;
+        private bool isDragging = false;
+        private List<Border> selectedOutlines = new List<Border>();
 
         public LabelEditor()
         {
@@ -53,6 +57,8 @@ namespace Dimmer_Labels_Wizard
             RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
 
             CanvasBorder.MouseDown += CanvasBorder_MouseDown;
+            CanvasBorder.MouseMove += CanvasBorder_MouseMove;
+            CanvasBorder.MouseUp += CanvasBorder_MouseUp;
 
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
@@ -70,6 +76,8 @@ namespace Dimmer_Labels_Wizard
             FooterMiddleCellControl.DataContext = FooterMiddleCellControl.FooterMiddleViewModel;
             FooterBottomCellControl.DataContext = FooterBottomCellControl.FooterBottomViewModel;
         }
+
+
 
         void ForceRender()
         {
@@ -191,6 +199,86 @@ namespace Dimmer_Labels_Wizard
             return null;
         }
 
+        private void InitiateDragSelection(Point pointA, Point pointB)
+        {
+            if (isDragging == false)
+            {
+                isDragging = true;
+                DragCanvas.Visibility = Visibility.Visible;
+            }
+            
+            else
+            {
+                UpdateDragSelectionBorder(pointA, pointB);
+            }
+            
+        }
+
+        private void UpdateDragSelectionBorder(Point pointA, Point pointB)
+        {
+            double x;
+            double y;
+            double width;
+            double height;
+
+            if (pointB.X < pointA.X)
+            {
+                x = pointB.X;
+                width = pointA.X - pointB.X;
+            }
+            else
+            {
+                x = pointA.X;
+                width = pointB.X - pointA.X;
+            }
+
+            if (pointB.Y < pointA.Y)
+            {
+                y = pointB.Y;
+                height = pointA.Y - pointB.Y;
+            }
+            else
+            {
+                y = pointA.Y;
+                height = pointB.Y - pointA.Y;
+            }
+
+            Canvas.SetLeft(DragRectangle, x);
+            Canvas.SetTop(DragRectangle, y);
+
+            DragRectangle.Width = width;
+            DragRectangle.Height = height;
+
+        }
+
+        private void CompleteDragSelection()
+        {
+            DragCanvas.Visibility = Visibility.Collapsed;
+            isDragging = false;
+
+            GeometryHitTestParameters geometryHitTest = new GeometryHitTestParameters(DragRectangle.RenderedGeometry);
+            Console.WriteLine("Hit Test Starting");
+            VisualTreeHelper.HitTest(LabelAreaGrid, null, new HitTestResultCallback(ResultCallBack), geometryHitTest);
+            Console.WriteLine("Hit Test Complete");
+            foreach (var element in selectedOutlines)
+            {
+                ActiveLabelStrip.MakeSelection(element, LabelCanvas);
+            }
+            Console.WriteLine("Selection Complete");
+
+            selectedOutlines.Clear();
+        }
+
+        private HitTestResultBehavior ResultCallBack(HitTestResult result)
+        {
+            if (result.VisualHit.GetType() == typeof(Border))
+            {
+                selectedOutlines.Add(result.VisualHit as Border);
+            }
+
+            return HitTestResultBehavior.Continue;
+        }
+
         #region Event Handling
 
         void InvokePrint(object sender, RoutedEventArgs e)
@@ -216,13 +304,38 @@ namespace Dimmer_Labels_Wizard
         {
             if (e.Handled != true)
             {
-                foreach (var element in LabelCanvas.Children)
+                MouseDownLocation = e.GetPosition(CanvasBorder);
+                if (e.LeftButton == MouseButtonState.Pressed)
                 {
-                    Border child = (Border)element;
-
-                    child.BorderBrush = new SolidColorBrush(Colors.Black);
+                    ActiveLabelStrip.ClearSelections();
                 }
-                ActiveLabelStrip.ClearSelections();
+            }
+        }
+
+        private void CanvasBorder_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point currentLocation = e.GetPosition(CanvasBorder);
+
+                var dragDelta = currentLocation - MouseDownLocation;
+                double dragDistance = Math.Abs(dragDelta.Length);
+
+                if (dragDistance > DragThreshold)
+                {
+                    InitiateDragSelection(MouseDownLocation,currentLocation);
+                }
+            }
+        }
+
+        private void CanvasBorder_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Released)
+            {
+                if (isDragging == true)
+                {
+                    CompleteDragSelection();
+                }
             }
         }
 

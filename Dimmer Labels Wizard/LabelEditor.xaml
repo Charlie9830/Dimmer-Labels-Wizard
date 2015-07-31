@@ -17,10 +17,19 @@
 
     <Grid Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,0,0,0">
 
-        <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Margin="10,10,10,10" 
-                BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
-            <Canvas x:Name="LabelCanvas" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,0"/>
-        </Border>
+        <Grid x:Name="LabelAreaGrid" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10">
+            <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Margin="0" 
+                    BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
+                <Canvas x:Name="LabelCanvas" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,0"/>
+            </Border>
+            <Canvas x:Name="DragCanvas" Height="242" Width="1015" IsHitTestVisible="False" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Margin="10,10,10,10">
+                <Rectangle x:Name="DragRectangle" Height="0" Width="0" Stroke="Aqua" StrokeThickness="1">
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="#FF1700FF" Opacity="0.5"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </Canvas>
+        </Grid>
 
         <custom:CellControl x:Name="HeaderCellControl" Margin="126,262,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"></custom:CellControl>
         <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="301" Margin="10,262,0,0" VerticalAlignment="Top" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
