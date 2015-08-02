@@ -114,12 +114,6 @@
       <DependentUpon>CellControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CellControlViewModels.cs" />
-    <Compile Include="CellSeperator.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CellSeperator.Designer.cs">
-      <DependentUpon>CellSeperator.cs</DependentUpon>
-    </Compile>
     <Compile Include="ColorControl.xaml.cs">
       <DependentUpon>ColorControl.xaml</DependentUpon>
     </Compile>
@@ -195,6 +189,9 @@
     </Compile>
     <Compile Include="FORM_UserParameterEntry_Help.Designer.cs">
       <DependentUpon>FORM_UserParameterEntry_Help.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalApplyWarning.xaml.cs">
+      <DependentUpon>GlobalApplyWarning.xaml</DependentUpon>
     </Compile>
     <Compile Include="Globals.cs" />
     <Compile Include="HeaderCell.cs" />
@@ -278,9 +275,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CellSeperator.resx">
-      <DependentUpon>CellSeperator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="DimmerRangeInputControl.resx">
       <DependentUpon>DimmerRangeInputControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -367,6 +361,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ColorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GlobalApplyWarning.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

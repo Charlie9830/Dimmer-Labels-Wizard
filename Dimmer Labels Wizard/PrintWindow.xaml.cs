@@ -54,6 +54,7 @@ namespace Dimmer_Labels_Wizard
                 PrintDialog pDialog = new PrintDialog();
                 if (pDialog.ShowDialog() == true)
                 {
+                    pDialog.PrintTicket.PageOrientation = PageOrientation.Landscape;
                     double halfInch = 48;
                     Thickness safePrintingMargin = new Thickness(halfInch);
                     Size printableArea = new Size(pDialog.PrintableAreaWidth,

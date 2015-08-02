@@ -75,11 +75,21 @@ namespace Dimmer_Labels_Wizard
         public CellControl()
         {
             InitializeComponent();
+            DataTextBox.KeyUp += DataTextBox_KeyUp;
         }
 
         void CellControl_Loaded(object sender, RoutedEventArgs e)
         {
+            
+        }
 
+        private void DataTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                BindingExpression bindingExpression = DataTextBox.GetBindingExpression(TextBox.TextProperty);
+                bindingExpression.UpdateSource();
+            }
         }
     }
 }

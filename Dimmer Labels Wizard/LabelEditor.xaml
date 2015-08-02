@@ -17,12 +17,12 @@
 
     <Grid Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,0,0,0">
 
-        <Grid x:Name="LabelAreaGrid" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10">
+        <Grid x:Name="LabelAreaGrid" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10" Cursor="Cross">
             <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Margin="0" 
                     BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
-                <Canvas x:Name="LabelCanvas" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,0"/>
+                <Canvas x:Name="LabelCanvas" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" RenderTransformOrigin="0.5,0.5" Margin="0"/>
             </Border>
-            <Canvas x:Name="DragCanvas" Height="242" Width="1015" IsHitTestVisible="False" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Margin="10,10,10,10">
+            <Canvas x:Name="DragCanvas" Height="242" Width="1015" IsHitTestVisible="False" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Margin="0">
                 <Rectangle x:Name="DragRectangle" Height="0" Width="0" Stroke="Aqua" StrokeThickness="1">
                     <Rectangle.Fill>
                         <SolidColorBrush Color="#FF1700FF" Opacity="0.5"/>
@@ -37,24 +37,24 @@
         <custom:CellControl x:Name="FooterMiddleCellControl" Margin="445,362,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <custom:CellControl x:Name="FooterBottomCellControl" Margin="445,462,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <custom:ColorControl x:Name="ColorControl" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="258,362,0,0" Height="200" />
-        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="156" Margin="966,262,0,0" VerticalAlignment="Top" Width="46">
+        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="128" Margin="966,262,0,0" VerticalAlignment="Top" Width="46">
             <Grid.RowDefinitions>
                 <RowDefinition Height="77*"/>
                 <RowDefinition Height="79*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="MagnifyPlusButton" Content="{StaticResource magnifyPlus24}" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyPlusButton_Click" FontWeight="ExtraBold" FontSize="14" Background="#FFDEDEDE"/>
-            <Button x:Name="MagnifyMinusButton" Content="{StaticResource magnifyMinus24}" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyMinusButton_Click" FontWeight="ExtraBold" RenderTransformOrigin="0.528,0.514" FontSize="14" Grid.RowSpan="2"/>
-            <Label Content="View" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16"/>
-            <Button x:Name="CenterViewButton" Content="{StaticResource crosshair24}" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Width="24" Click="CenterViewButton_Click" Grid.Row="1"/>
-            <Button x:Name="MagnifyToFitButton" Content="{StaticResource zoomToFit24}" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyToFitButton_Click" FontWeight="ExtraBold" FontSize="14" Background="#FFDEDEDE" Grid.Row="1"/>
+            <Button x:Name="MagnifyToFitButton" Content="{StaticResource zoomToFit24}" HorizontalAlignment="Left" Margin="10,24,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyToFitButton_Click" FontWeight="ExtraBold" FontSize="14" Background="#FFDEDEDE" Grid.Row="1"/>
+            <Label Content="View" HorizontalAlignment="Left" FontSize="16" Margin="0,0,0,29"/>
+            <Button x:Name="MagnifyMinusButton" Content="{StaticResource magnifyMinus24}" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyMinusButton_Click" FontWeight="ExtraBold" RenderTransformOrigin="0.528,0.514" FontSize="14" Grid.RowSpan="2"/>
+            <Button x:Name="MagnifyPlusButton" Content="{StaticResource magnifyPlus24}" HorizontalAlignment="Left" Margin="10,29,0,10" Height="24" Width="24" Click="MagnifyPlusButton_Click" FontWeight="ExtraBold" FontSize="14" Background="#FFDEDEDE"/>
         </Grid>
         <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="102" Margin="126,363,0,0" VerticalAlignment="Top" Width="131">
             <Button x:Name="SplitCellsButton" Content="Split Cell" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Click="SplitCellsButton_Click" Width="75" RenderTransformOrigin="0.513,-0.742"/>
             <Label Content="Tools" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" FontSize="16"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="75" Margin="918,487,0,0" VerticalAlignment="Top" Width="94">
-            <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
-            <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top" Width="75" Click="InvokePrint"/>
+        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="75" Margin="800,487,0,0" VerticalAlignment="Top" Width="212">
+            <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="127,8,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
+            <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="127,43,0,0" VerticalAlignment="Top" Width="75" Click="InvokePrint"/>
+            <Button x:Name="BackButton" Content="Back" HorizontalAlignment="Left" Margin="47,43,0,0" VerticalAlignment="Top" Width="75" Click="BackButton_Click"/>
         </Grid>
 
     </Grid>

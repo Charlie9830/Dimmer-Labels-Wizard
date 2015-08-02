@@ -177,6 +177,7 @@ namespace Dimmer_Labels_Wizard
             {
                 _GlobalApply = value;
                 OnPropertyChanged("GlobalApply");
+                OnGlobalApplySelected();
             }
         }
 
@@ -398,6 +399,17 @@ namespace Dimmer_Labels_Wizard
         }
         #endregion
 
+        #region External Events
+        public event EventHandler GlobalApplySelected;
+
+        protected virtual void OnGlobalApplySelected()
+        {
+            if (GlobalApply == true)
+            {
+                GlobalApplySelected(this, new EventArgs());
+            }
+        }
+        #endregion
 
     }
 
@@ -568,6 +580,7 @@ namespace Dimmer_Labels_Wizard
             {
                 _GlobalApply = value;
                 OnPropertyChanged("GlobalApply");
+                OnGlobalApplySelected();
             }
         }
 
@@ -788,6 +801,18 @@ namespace Dimmer_Labels_Wizard
             }
         }
         #endregion
+
+        #region External Events
+        public event EventHandler GlobalApplySelected;
+
+        protected virtual void OnGlobalApplySelected()
+        {
+            if (GlobalApply == true)
+            {
+                GlobalApplySelected(this, new EventArgs());
+            }
+        }
+        #endregion
     }
 
     public class FooterMiddleCellControlViewModel : ViewModelBase
@@ -958,6 +983,7 @@ namespace Dimmer_Labels_Wizard
             {
                 _GlobalApply = value;
                 OnPropertyChanged("GlobalApply");
+                OnGlobalApplySelected();
             }
         }
 
@@ -1178,6 +1204,18 @@ namespace Dimmer_Labels_Wizard
             }
         }
         #endregion
+
+        #region External Events
+        public event EventHandler GlobalApplySelected;
+
+        protected virtual void OnGlobalApplySelected()
+        {
+            if (GlobalApply == true)
+            {
+                GlobalApplySelected(this, new EventArgs());
+            }
+        }
+        #endregion
     }
 
     public class FooterBottomCellControlViewModel : ViewModelBase
@@ -1348,6 +1386,7 @@ namespace Dimmer_Labels_Wizard
             {
                 _GlobalApply = value;
                 OnPropertyChanged("GlobalApply");
+                OnGlobalApplySelected();
             }
         }
 
@@ -1569,5 +1608,16 @@ namespace Dimmer_Labels_Wizard
         }
         #endregion
 
+        #region External Events
+        public event EventHandler GlobalApplySelected;
+
+        protected virtual void OnGlobalApplySelected()
+        {
+            if (GlobalApply == true)
+            {
+                GlobalApplySelected(this, new EventArgs());
+            }
+        }
+        #endregion
     }
 }

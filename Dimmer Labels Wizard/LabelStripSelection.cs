@@ -14,8 +14,8 @@ namespace Dimmer_Labels_Wizard
     public class LabelStripSelection
     {
         public LabelStrip LabelStrip;
-        public ObservableCollection<HeaderCell> SelectedHeaders = new ObservableCollection<HeaderCell>();
-        public ObservableCollection<FooterCell> SelectedFooters = new ObservableCollection<FooterCell>();
+        public List<HeaderCell> SelectedHeaders = new List<HeaderCell>();
+        public List<FooterCell> SelectedFooters = new List<FooterCell>();
 
         // These lists are expicitly linked and Tracking SelectedHeaders and SelectedFooters
         private List<SelectionAdorner> _HeaderAdorners = new List<SelectionAdorner>();
@@ -26,8 +26,6 @@ namespace Dimmer_Labels_Wizard
 
         public LabelStripSelection()
         {
-            SelectedHeaders.CollectionChanged += SelectedHeaders_CollectionChanged;
-            SelectedFooters.CollectionChanged += SelectedFooters_CollectionChanged;
         }
 
         public void SetSelectedLabelStrip(LabelStrip labelStrip, Canvas labelStripCanvas)
@@ -37,7 +35,7 @@ namespace Dimmer_Labels_Wizard
             _AdornerLayer = AdornerLayer.GetAdornerLayer(labelStripCanvas);
         }
 
-        public void MakeSelection(object selectionOutline, Canvas labelCanvas)
+        public void MakeSelection(object selectionOutline)
         {
             Border outline = (Border)selectionOutline;
 
@@ -64,6 +62,7 @@ namespace Dimmer_Labels_Wizard
                             SelectedHeaders.Remove(element);
                         }
                     }
+                    OnSelectedHeadersChanged(new EventArgs());
                 }
 
                 if (outline.Tag.GetType() == typeof(FooterCell))
@@ -83,7 +82,78 @@ namespace Dimmer_Labels_Wizard
                         RemoveFooterAdorner(outline);
                         SelectedFooters.Remove(footerCell);
                     }
+                    OnSelectedFootersChanged(new EventArgs());
                 }
+            }
+        }
+
+        public void MakeSelections(List<Border> selectionOutlines)
+        {
+            bool headerUpdateRequired = false;
+            bool footerUpdateRequired = false;
+
+            foreach (var selection in selectionOutlines)
+            {
+                Border outline = selection;
+
+                if (outline.Tag != null)
+                {
+                    if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
+                    {
+                        HeaderCellWrapper wrapper = (HeaderCellWrapper)outline.Tag;
+                        List<HeaderCell> headerCells = wrapper.Cells;
+
+                        foreach (var element in headerCells)
+                        {
+                            if (SelectedHeaders.Contains(element) == false)
+                            {
+                                // Add it as a Selection.
+                                AddHeaderAdorner(outline);
+                                SelectedHeaders.Add(element);
+                            }
+
+                            else
+                            {
+                                // Remove it from Selections.
+                                RemoveHeaderAdorner(outline);
+                                SelectedHeaders.Remove(element);
+                            }
+                        }
+
+                        headerUpdateRequired = true;
+                    }
+
+                    if (outline.Tag.GetType() == typeof(FooterCell))
+                    {
+                        FooterCell footerCell = (FooterCell)outline.Tag;
+
+                        if (SelectedFooters.Contains(footerCell) == false)
+                        {
+                            // Add it as a Selection.
+                            AddFooterAdorner(outline);
+                            SelectedFooters.Add(footerCell);
+                        }
+
+                        else
+                        {
+                            // Remove it from Selections.
+                            RemoveFooterAdorner(outline);
+                            SelectedFooters.Remove(footerCell);
+                        }
+
+                        footerUpdateRequired = true;
+                    }
+                }
+            }
+
+            if (headerUpdateRequired)
+            {
+                OnSelectedHeadersChanged(new EventArgs());
+            }
+
+            if (footerUpdateRequired)
+            {
+                OnSelectedFootersChanged(new EventArgs());
             }
         }
 
@@ -91,12 +161,46 @@ namespace Dimmer_Labels_Wizard
         {
             SelectedHeaders.Clear();
             ClearHeaderAdorners();
+            OnSelectedHeadersChanged(new EventArgs());
 
             SelectedFooters.Clear();
             ClearFooterAdorners();
+            OnSelectedFootersChanged(new EventArgs());
         }
 
         #region AdornerHandling
+        public void ReAttachAdorners(Canvas labelCanvas)
+        {
+            foreach (var child in labelCanvas.Children)
+            {
+                if (child.GetType() == typeof(Border))
+                {
+                    Border outline = child as Border;
+
+                    if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
+                    {
+                        HeaderCellWrapper wrapper = outline.Tag as HeaderCellWrapper;
+                        HeaderCell headerCell = wrapper.Cells.First();
+
+                        if (SelectedHeaders.Contains(headerCell))
+                        {
+                            AddHeaderAdorner(outline);
+                        }
+                    }
+
+                    if (outline.Tag.GetType() == typeof(FooterCell))
+                    {
+                        FooterCell footerCell = outline.Tag as FooterCell;
+
+                        if (SelectedFooters.Contains(footerCell))
+                        {
+                            AddFooterAdorner(outline);
+                        }
+                    }
+                }
+            }
+        }
+
         public void RefreshAdorners()
         {
             foreach (var element in _HeaderAdorners)
@@ -174,19 +278,6 @@ namespace Dimmer_Labels_Wizard
             _FooterAdorners.Clear();
         }
 
-        #endregion
-
-        #region Internal Events
-        private void SelectedHeaders_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OnSelectedHeadersChanged(new EventArgs());
-
-        }
-
-        private void SelectedFooters_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OnSelectedFootersChanged(new EventArgs());
-        }
         #endregion
 
         #region External Events

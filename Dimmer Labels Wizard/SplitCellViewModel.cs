@@ -23,19 +23,20 @@ namespace Dimmer_Labels_Wizard
         protected ScaleTransform _ScaleTransform = new ScaleTransform();
         protected TranslateTransform _TranslateTransform = new TranslateTransform();
         protected TransformGroup _TransformGroup = new TransformGroup();
-        protected double _ItemsControlWidth = 0;
-        protected double _ItemsControlHeight = 0;
 
         #region InfoText
-        protected string _InfoText = "Header Cells are automatically merged when their Text matches the text of it's " +
-        "neighbouring cells. To split merged cells, Select the cells that you wish to change the text of above then enter " +
-        "the new Text in the Textbox.";
+        protected string _InfoText = "Header Cells are automatically merged when their Text matches the text of " +
+        "neighbouring cells. To split currently merged cells, Select the Subcells that you wish to change the text of above then enter " +
+        "the new differing Text in the Textbox.";
         #endregion
 
         // No Public Access.
-        protected Point _RenderOffset = new Point(20, 20);
+        protected Point _RenderOffset = new Point(5,5);
         protected List<Border> _SelectionOutlines = new List<Border>();
         protected ObservableCollection<Border> _SelectedOutlines = new ObservableCollection<Border>();
+
+        private const double ItemsControlHeight = 150;
+        private const double ItemsControlWidth = 880;
 
         public SplitCellViewModel()
         {
@@ -44,6 +45,9 @@ namespace Dimmer_Labels_Wizard
             // Transformations.
             _TransformGroup.Children.Add(_ScaleTransform);
             _TransformGroup.Children.Add(_TranslateTransform);
+
+            _ScaleTransform.ScaleX = 1;
+            _ScaleTransform.ScaleY = 1;
         }
 
 
@@ -122,32 +126,6 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
-        public double ItemsControlWidth
-        {
-            get
-            {
-                return _ItemsControlWidth;
-            }
-            set
-            {
-                _ItemsControlWidth = value;
-                OnPropertyChanged("ItemsControlWidth");
-            }
-        }
-
-        public double ItemsControlHeight
-        {
-            get
-            {
-                return _ItemsControlHeight;
-            }
-            set
-            {
-                _ItemsControlHeight = value;
-                OnPropertyChanged("ItemsControlHeight");
-            }
-        }
-
         #endregion
 
         #region Update Methods
@@ -167,14 +145,34 @@ namespace Dimmer_Labels_Wizard
         {
             _RenderCanvas.Clear();
             _RenderCanvas.Add(new Canvas());
+            _RenderCanvas.First().Width = _Outline.Width + 10;
+            _RenderCanvas.First().Height = _Outline.Height + 10;
+            _RenderCanvas.First().Margin = new Thickness(0, (150 / 2) - (_Outline.Height / 2), 0, 0);
+            
             _RenderCanvas.First().Children.Add(_Outline);
-            Canvas.SetTop(_Outline, _RenderOffset.Y);
-            Canvas.SetLeft(_Outline, _RenderOffset.X);
+            Canvas.SetTop(_Outline,5);
+            Canvas.SetLeft(_Outline,5);
 
             DrawCellOutlines(_RenderCanvas.First());
 
             FitToCanvas();
+            _RenderCanvas.First().RenderTransformOrigin = new Point(0.5,0.5);
 
+            double scaleRatio = (ItemsControlWidth - 20) / _Outline.Width;
+
+            _ScaleTransform.ScaleX *= scaleRatio;
+            _ScaleTransform.ScaleY *= scaleRatio;
+
+            double verticalScaleRatio = (ItemsControlHeight - 10) / (_Outline.Height * _ScaleTransform.ScaleX);
+
+            if (verticalScaleRatio < 1)
+            {
+                _ScaleTransform.ScaleX *= verticalScaleRatio;
+                _ScaleTransform.ScaleY *= verticalScaleRatio;
+            }
+
+            _RenderCanvas.First().RenderTransform = _TransformGroup;
+            
             OnPropertyChanged("RenderCanvas");
         }
 
@@ -185,7 +183,7 @@ namespace Dimmer_Labels_Wizard
             int cellQTY = wrapper.Cells.Count;
 
             double width = _LabelStrip.LabelWidthInMM * (96d / 25.4d);
-            double height = Outline.Height; //_LabelStrip.LabelHeightInMM * (96d / 25.4d);
+            double height = Outline.Height;
 
             for (int count = 0; count < cellQTY; count++)
             {
@@ -200,15 +198,15 @@ namespace Dimmer_Labels_Wizard
                 // First Iteration.
                 if (count == 0)
                 {
-                    Canvas.SetTop(outline, _RenderOffset.Y);
-                    Canvas.SetLeft(outline, _RenderOffset.X);
+                    Canvas.SetTop(outline,5);
+                    Canvas.SetLeft(outline,5);
                 }
 
                 // Subsequent Iterations.
                 else
                 {
-                    Canvas.SetTop(outline, _RenderOffset.Y);
-                    Canvas.SetLeft(outline, (width * count) + _RenderOffset.X);
+                    Canvas.SetTop(outline,5);
+                    Canvas.SetLeft(outline, (width * count) + 5);
                 }
 
                 // Tag the Outline.

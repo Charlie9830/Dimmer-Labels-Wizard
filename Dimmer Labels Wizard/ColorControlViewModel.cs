@@ -89,6 +89,7 @@ namespace Dimmer_Labels_Wizard
             {
                 _BackgroundColorGlobalApply = value;
                 OnPropertyChanged("BackgroundColorGlobalApply");
+                OnGlobalApplySelected();
             }
         }
 
@@ -102,6 +103,7 @@ namespace Dimmer_Labels_Wizard
             {
                 _LineWeightGlobalApply = value;
                 OnPropertyChanged("LineWeightGlobalApply");
+                OnGlobalApplySelected();
             }
         }
 
@@ -287,6 +289,16 @@ namespace Dimmer_Labels_Wizard
             OnPropertyChanged("SelectedColor");
         }
 
+        #endregion
+
+        #region External Events
+        public event EventHandler GlobalApplySelected;
+
+        protected virtual void OnGlobalApplySelected()
+        {
+            GlobalApplySelected(this, new EventArgs());
+            
+        }
         #endregion
     }
 }

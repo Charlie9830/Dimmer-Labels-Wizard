@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -45,6 +46,7 @@ namespace Dimmer_Labels_Wizard
 
                 UserParameters.SetDefaultRackLabelSettings();
                 Forms.LabelEditor = new LabelEditor();
+                ElementHost.EnableModelessKeyboardInterop(Forms.LabelEditor);
                 Forms.LabelEditor.Show();
             }
         }
