@@ -37,6 +37,7 @@
             this.NextButton = new System.Windows.Forms.Button();
             this.DebugModeCheckBox = new System.Windows.Forms.CheckBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.LoadButton = new System.Windows.Forms.Button();
             this.WelcomeScreenPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -127,11 +128,22 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // LoadButton
+            // 
+            this.LoadButton.Location = new System.Drawing.Point(531, 136);
+            this.LoadButton.Name = "LoadButton";
+            this.LoadButton.Size = new System.Drawing.Size(75, 23);
+            this.LoadButton.TabIndex = 8;
+            this.LoadButton.Text = "Load";
+            this.LoadButton.UseVisualStyleBackColor = true;
+            this.LoadButton.Click += new System.EventHandler(this.LoadButton_Click);
+            // 
             // FORM_MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(618, 285);
+            this.Controls.Add(this.LoadButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.DebugModeCheckBox);
             this.Controls.Add(this.NextButton);
@@ -157,5 +169,6 @@
         private System.Windows.Forms.Label FileNameLabel;
         private System.Windows.Forms.CheckBox DebugModeCheckBox;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button LoadButton;
     }
 }

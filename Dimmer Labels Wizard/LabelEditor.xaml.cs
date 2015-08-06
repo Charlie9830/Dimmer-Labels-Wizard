@@ -395,9 +395,6 @@ namespace Dimmer_Labels_Wizard
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            UserParameters.SingleLabel = !UserParameters.SingleLabel;
-            ForceRender();
-
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
@@ -450,8 +447,6 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
-
-
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
         {
             PopulateHeaderCellControls();
@@ -494,6 +489,12 @@ namespace Dimmer_Labels_Wizard
             if (MessageBox.Show(message,caption,MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 this.Close();
+
+                if (Forms.LabelSetup == null)
+                {
+                    Forms.LabelSetup = new FORM_LabelSetup();
+                }
+
                 Forms.LabelSetup.ShowDialog();
             }
         }
@@ -509,6 +510,18 @@ namespace Dimmer_Labels_Wizard
                     GlobalApplyWarningShowAgain = (bool)!globalApplyDialog.DontShowDialogAgain;
                 }
             }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            Persistance test = new Persistance();
+            test.SaveToFile();
+        }
+
+        private void LoadButton_Click(object sender, RoutedEventArgs e)
+        {
+            Persistance test = new Persistance();
+            test.LoadFromFile();
         }
 
         #endregion

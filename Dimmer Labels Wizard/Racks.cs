@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard
 {
+    [Serializable()]
     public class DistroRack
     {
         public int RackNumber { get; set; }
@@ -15,6 +16,7 @@ namespace Dimmer_Labels_Wizard
 
     }
 
+    [Serializable()]
     public class DimmerRack
     {
         public int RackNumber { get; set; }

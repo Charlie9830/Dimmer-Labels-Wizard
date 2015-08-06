@@ -24,26 +24,24 @@ namespace Dimmer_Labels_Wizard
             {
                 // Setup Mock User Paramater Inputs.
                 #region Hardcoded User Paramaters.
-                UserParameters.CreateDimmerObjects = false;
-                //UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 24));
-                // UserParameters.DimmerRanges.Sort();
+                UserParameters.CreateDimmerObjects = true;
 
                 UserParameters.CreateDistroObjects = true;
                 UserParameters.StartDistroNumber = 1;
-                UserParameters.EndDistroNumber = 60; 
+                UserParameters.EndDistroNumber = 12; 
                 UserParameters.DistroImportFormat = ImportFormatting.Format1;
                 UserParameters.DistroNumberPrefix = "N";
                 UserParameters.DimmerImportFormat = ImportFormatting.Format3;
 
-                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 48));
+                UserParameters.DimmerRanges.Add(new Globals.DimmerRange(1, 1, 12));
 
                 UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
 
-                UserParameters.ChannelNumberColumnIndex = 0;
-                UserParameters.DimmerNumberColumnIndex = 1;
-                UserParameters.InstrumentTypeColumnIndex = 2;
-                UserParameters.MulticoreNameColumnIndex = 3;
-                UserParameters.PositionColumnIndex = 4;
+                UserParameters.ChannelNumberColumnIndex = 1;
+                UserParameters.DimmerNumberColumnIndex = 0;
+                UserParameters.InstrumentTypeColumnIndex = 4;
+                UserParameters.MulticoreNameColumnIndex = 2;
+                UserParameters.PositionColumnIndex = 3;
 
                 UserParameters.DimmerLabelWidthInMM = 16;
                 UserParameters.DimmerLabelHeightInMM = 18;

@@ -120,6 +120,10 @@ namespace Dimmer_Labels_Wizard
             if (MessageBox.Show("Are you sure you want to go Back?", "Warning", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
             {
                 this.Close();
+                if (Forms.UserParameterEntry == null)
+                {
+                    Forms.UserParameterEntry = new FORM_UserParameterEntry();
+                }
                 Forms.UserParameterEntry.Show();
             }
         }

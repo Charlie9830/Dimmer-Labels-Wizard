@@ -6,8 +6,37 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard
 {
+    [Serializable()]
     public class DimmerDistroUnit : IComparable<DimmerDistroUnit>
     {
+        public DimmerDistroUnit()
+        {
+
+        }
+
+        public DimmerDistroUnit(DimmerDistroUnitStorage storage)
+        {
+            ChannelNumber = storage.ChannelNumber;
+            InstrumentName = storage.InstrumentName;
+            MulticoreName = storage.MulticoreName;
+            Position = storage.Position;
+            UserField1 = storage.UserField1;
+            UserField2 = storage.UserField2;
+            UserField3 = storage.UserField3;
+            UserField4 = storage.UserField4;
+
+            DimmerNumberText = storage.DimmerNumberText;
+            DMXAddressText = storage.DMXAddressText;
+
+            ImportIndex = storage.ImportIndex;
+
+            RackUnitType = storage.RackUnitType;
+            UniverseNumber = storage.UniverseNumber;
+            AbsoluteDMXAddress = storage.AbsoluteDMXAddress;
+            DimmerNumber = storage.DimmerNumber;
+            RackNumber = storage.RackNumber;
+    }
+
         // Test Source Test
         // Imported Data
         public string ChannelNumber { get; set; }
@@ -566,5 +595,61 @@ namespace Dimmer_Labels_Wizard
                 return UserParameters.DimmerRanges.First().Universe;
             }
         }
+
+        #region Serialization
+        public DimmerDistroUnitStorage GenerateStorage()
+        {
+            DimmerDistroUnitStorage storage = new DimmerDistroUnitStorage();
+
+            storage.ChannelNumber = ChannelNumber;
+            storage.InstrumentName = InstrumentName;
+            storage.MulticoreName = MulticoreName;
+            storage.Position = Position;
+            storage.UserField1 = UserField1;
+            storage.UserField2 = UserField2;
+            storage.UserField3 = UserField3;
+            storage.UserField4 = UserField4;
+
+            storage.DimmerNumberText = DimmerNumberText;
+            storage.DMXAddressText = DMXAddressText;
+
+            storage.ImportIndex = ImportIndex;
+
+            storage.RackUnitType = RackUnitType;
+            storage.UniverseNumber = UniverseNumber;
+            storage.AbsoluteDMXAddress = AbsoluteDMXAddress;
+            storage.DimmerNumber = DimmerNumber;
+            storage.RackNumber = RackNumber;
+
+            return storage;
+
+        }
+        #endregion
+    }
+
+    [Serializable()]
+    public class DimmerDistroUnitStorage
+    {
+        public string ChannelNumber;
+        public string InstrumentName;
+        public string MulticoreName;
+        public string Position;
+        public string UserField1;
+        public string UserField2;
+        public string UserField3;
+        public string UserField4;
+
+        public string DimmerNumberText;
+        public string DMXAddressText;
+
+        public int ImportIndex;
+
+        public RackType RackUnitType;
+        public int UniverseNumber;
+        public int AbsoluteDMXAddress;
+        public int DimmerNumber;
+        public int RackNumber;
+
+
     }
 }

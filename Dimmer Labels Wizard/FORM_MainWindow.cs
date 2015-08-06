@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms.Integration;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -55,6 +56,16 @@ namespace Dimmer_Labels_Wizard
         {
             Globals.DebugActive = true;
             this.Close();
+        }
+
+        private void LoadButton_Click(object sender, EventArgs e)
+        {
+            Persistance test = new Persistance();
+            test.LoadFromFile();
+
+            Forms.LabelEditor = new LabelEditor();
+            ElementHost.EnableModelessKeyboardInterop(Forms.LabelEditor);
+            Forms.LabelEditor.Show();
         }
     }
 }

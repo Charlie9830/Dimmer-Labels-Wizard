@@ -56,6 +56,11 @@ namespace Dimmer_Labels_Wizard
             if (Part1.Visible == true)
             {
                 this.Close();
+                if (Forms.InstrumentNameEntry == null)
+                {
+                    Forms.InstrumentNameEntry = new FORM_InstrumentNameEntry();
+                }
+
                 Forms.InstrumentNameEntry.Show();
             }
 

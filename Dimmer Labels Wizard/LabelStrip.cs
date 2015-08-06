@@ -12,9 +12,31 @@ using System.Printing;
 
 namespace Dimmer_Labels_Wizard
 {
-    [Serializable]
     public class LabelStrip : IComparable<LabelStrip>
     {
+        public LabelStrip()
+        {
+        }
+
+        public LabelStrip(LabelStripStorage storage)
+        {
+            foreach (var element in storage.HeaderCells)
+            {
+                Headers.Add(new HeaderCell(element));
+            }
+
+            foreach (var element in storage.FooterCells)
+            {
+                Footers.Add(new FooterCell(element));
+            }
+
+            LabelWidthInMM = storage.LabelWidthInMM;
+            LabelHeightInMM = storage.LabelHeightInMM;
+            LineWeight = storage.LineWeight;
+            RackUnitType = storage.RackUnitType;
+            RackNumber = storage.RackNumber;
+        }
+
         // Properties.
         public List<HeaderCell> Headers = new List<HeaderCell>();
         public List<FooterCell> Footers = new List<FooterCell>();
@@ -69,12 +91,12 @@ namespace Dimmer_Labels_Wizard
         {
             foreach (var element in Headers)
             {
-                element.BackgroundColor = new SolidColorBrush(desiredColor);
+                element.BackgroundBrush = new SolidColorBrush(desiredColor);
             }
 
             foreach (var element in Footers)
             {
-                element.BackgroundColor = new SolidColorBrush(desiredColor);
+                element.BackgroundBrush = new SolidColorBrush(desiredColor);
             }
         }
 
@@ -268,7 +290,7 @@ namespace Dimmer_Labels_Wizard
                 }
 
                 // Set Colors.
-                HeaderOutlines.Last().Background = Headers[index].BackgroundColor;
+                HeaderOutlines.Last().Background = Headers[index].BackgroundBrush;
                 HeaderOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
@@ -298,7 +320,7 @@ namespace Dimmer_Labels_Wizard
                     {
                         textCanvas.Children.Add
                             (GenerateTextBlocks(textCanvasSize, headerData, headerTypeface, headerFontSize,
-                            Headers[index].TextColor, fontDimensions));
+                            Headers[index].TextBrush, fontDimensions));
                     }
 
                     else
@@ -311,7 +333,7 @@ namespace Dimmer_Labels_Wizard
                     
                         textCanvas.Children.Add
                             (GenerateTextBlocks(textCanvasSize, headerData, headerTypeface, Headers[index].FontSize,
-                            Headers[index].TextColor, downSizedFontDimensions));
+                            Headers[index].TextBrush, downSizedFontDimensions));
                     }
                 }
 
@@ -352,7 +374,7 @@ namespace Dimmer_Labels_Wizard
                         
                         // Generate TextBlocks.
                         TextBlock[] textBlockQueue = GenerateTextBlocks(textCanvasSize,splitStrings,headerTypeface,
-                            Headers[index].FontSize, Headers[index].TextColor, verticallyDownsizedFontDimensions);
+                            Headers[index].FontSize, Headers[index].TextBrush, verticallyDownsizedFontDimensions);
 
                         foreach (var element in textBlockQueue)
                         {
@@ -369,7 +391,7 @@ namespace Dimmer_Labels_Wizard
 
                         textCanvas.Children.Add
                         (GenerateTextBlocks(textCanvasSize,headerData,headerTypeface,Headers[index].FontSize,
-                        Headers[index].TextColor,fontDimensions));
+                        Headers[index].TextBrush,fontDimensions));
                     }
                 }
 
@@ -445,7 +467,7 @@ namespace Dimmer_Labels_Wizard
                 }
 
                 // Set Colors.
-                FooterOutlines.Last().Background = Footers[index].BackgroundColor;
+                FooterOutlines.Last().Background = Footers[index].BackgroundBrush;
                 FooterOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
@@ -500,7 +522,7 @@ namespace Dimmer_Labels_Wizard
                 topTextBlock.FontStyle = Footers[index].TopFont.Style;
                 topTextBlock.FontWeight = Footers[index].TopFont.Weight;
                 topTextBlock.FontStretch = Footers[index].TopFont.Stretch;
-                topTextBlock.Foreground = Footers[index].TextColor;
+                topTextBlock.Foreground = Footers[index].TextBrush;
 
                 middleTextBlock.Text = Footers[index].MiddleData;
                 middleTextBlock.FontFamily = Footers[index].MiddleFont.FontFamily;
@@ -508,7 +530,7 @@ namespace Dimmer_Labels_Wizard
                 middleTextBlock.FontStyle = Footers[index].MiddleFont.Style;
                 middleTextBlock.FontWeight = Footers[index].MiddleFont.Weight;
                 middleTextBlock.FontStretch = Footers[index].MiddleFont.Stretch;
-                middleTextBlock.Foreground = Footers[index].TextColor;
+                middleTextBlock.Foreground = Footers[index].TextBrush;
 
                 bottomTextBlock.Text = Footers[index].BottomData;
                 bottomTextBlock.FontFamily = Footers[index].BottomFont.FontFamily;
@@ -516,7 +538,7 @@ namespace Dimmer_Labels_Wizard
                 bottomTextBlock.FontStyle = Footers[index].BottomFont.Style;
                 bottomTextBlock.FontWeight = Footers[index].BottomFont.Weight;
                 bottomTextBlock.FontStretch = Footers[index].BottomFont.Stretch;
-                bottomTextBlock.Foreground = Footers[index].TextColor;
+                bottomTextBlock.Foreground = Footers[index].TextBrush;
 
                 // Add TextBlocks to textCanvas.
                 textCanvas.Children.Add(topTextBlock);
@@ -601,7 +623,7 @@ namespace Dimmer_Labels_Wizard
                 }
 
                 // Set Colors.
-                HeaderOutlines.Last().Background = Headers[index].BackgroundColor;
+                HeaderOutlines.Last().Background = Headers[index].BackgroundBrush;
                 HeaderOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
@@ -631,7 +653,7 @@ namespace Dimmer_Labels_Wizard
                     {
                         textCanvas.Children.Add
                             (GenerateTextBlocks(textCanvasSize, headerData, headerTypeface, headerFontSize,
-                            Headers[index].TextColor, fontDimensions));
+                            Headers[index].TextBrush, fontDimensions));
                     }
 
                     else
@@ -644,7 +666,7 @@ namespace Dimmer_Labels_Wizard
 
                         textCanvas.Children.Add
                             (GenerateTextBlocks(textCanvasSize, headerData, headerTypeface, Headers[index].FontSize,
-                            Headers[index].TextColor, downSizedFontDimensions));
+                            Headers[index].TextBrush, downSizedFontDimensions));
                     }
                 }
 
@@ -685,7 +707,7 @@ namespace Dimmer_Labels_Wizard
 
                         // Generate TextBlocks.
                         TextBlock[] textBlockQueue = GenerateTextBlocks(textCanvasSize, splitStrings, headerTypeface,
-                            Headers[index].FontSize, Headers[index].TextColor, verticallyDownsizedFontDimensions);
+                            Headers[index].FontSize, Headers[index].TextBrush, verticallyDownsizedFontDimensions);
 
                         foreach (var element in textBlockQueue)
                         {
@@ -702,7 +724,7 @@ namespace Dimmer_Labels_Wizard
 
                         textCanvas.Children.Add
                         (GenerateTextBlocks(textCanvasSize, headerData, headerTypeface, Headers[index].FontSize,
-                        Headers[index].TextColor, fontDimensions));
+                        Headers[index].TextBrush, fontDimensions));
                     }
                 }
 
@@ -785,7 +807,7 @@ namespace Dimmer_Labels_Wizard
 
                 else
                 {
-                    FooterOutlines.Last().Background = Footers[index].BackgroundColor;
+                    FooterOutlines.Last().Background = Footers[index].BackgroundBrush;
                 }
                 
                 FooterOutlines.Last().BorderBrush = outlineColor;
@@ -841,7 +863,7 @@ namespace Dimmer_Labels_Wizard
                 middleTextBlock.FontWeight = Footers[index].MiddleFont.Weight;
                 middleTextBlock.FontStretch = Footers[index].MiddleFont.Stretch;
                 middleTextBlock.Foreground = UserParameters.HeaderBackGroundColourOnly ?
-                    new SolidColorBrush(Colors.Black) : Footers[index].TextColor;
+                    new SolidColorBrush(Colors.Black) : Footers[index].TextBrush;
                 // Border "Hugging" has been handled by GenerateTextBlocksSingleLabel().
 
                 bottomTextBlock.Text = Footers[index].BottomData;
@@ -851,7 +873,7 @@ namespace Dimmer_Labels_Wizard
                 bottomTextBlock.FontWeight = Footers[index].BottomFont.Weight;
                 bottomTextBlock.FontStretch = Footers[index].BottomFont.Stretch;
                 bottomTextBlock.Foreground = UserParameters.HeaderBackGroundColourOnly ?
-                    new SolidColorBrush(Colors.Black) : Footers[index].TextColor;
+                    new SolidColorBrush(Colors.Black) : Footers[index].TextBrush;
                 // Border "Hugging" has been handled by GenerateTextBlocksSingleLabel().
 
                 // Add TextBlocks to textCanvas.
@@ -1115,6 +1137,31 @@ namespace Dimmer_Labels_Wizard
 
         #endregion
 
+        #region Serialization
+        public LabelStripStorage GenerateStorage()
+        {
+            LabelStripStorage storage = new LabelStripStorage();
+
+            foreach (var element in Headers)
+            {
+                storage.HeaderCells.Add(element.GenerateStorage());
+            }
+
+            foreach (var element in Footers)
+            {
+                storage.FooterCells.Add(element.GenerateStorage());
+            }
+
+            storage.LabelWidthInMM = LabelWidthInMM;
+            storage.LabelHeightInMM = LabelHeightInMM;
+            storage.RackUnitType = RackUnitType;
+            storage.RackNumber = RackNumber;
+            storage.LineWeight = LineWeight;
+
+            return storage;
+        }
+        #endregion
+
         #region Interface Implementations
         public int CompareTo(LabelStrip other)
         {
@@ -1126,5 +1173,20 @@ namespace Dimmer_Labels_Wizard
             return other.RackUnitType - RackUnitType;
         }
         #endregion
+    }
+
+    [Serializable()]
+    public class LabelStripStorage
+    {
+        public List<HeaderCellStorage> HeaderCells = new List<HeaderCellStorage>();
+        public List<FooterCellStorage> FooterCells = new List<FooterCellStorage>();
+
+        public double LabelWidthInMM;
+        public double LabelHeightInMM;
+
+        public double LineWeight;
+
+        public RackType RackUnitType;
+        public int RackNumber;
     }
 }

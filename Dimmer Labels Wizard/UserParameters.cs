@@ -164,5 +164,150 @@ namespace Dimmer_Labels_Wizard
                 }
             }
         }
+
+        #region Serialization
+        public static UserParametersStorage GenerateStorage()
+        {
+            UserParametersStorage storage = new UserParametersStorage();
+
+            storage.DimmerImportFormat = DimmerImportFormat;
+            storage.DMXAddressImportFormat = DMXAddressImportFormat;
+
+            storage.DistroImportFormat = DistroImportFormat;
+            storage.DistroNumberPrefix = DistroNumberPrefix;
+
+            storage.ChannelNumberColumnIndex = ChannelNumberColumnIndex;
+            storage.DimmerNumberColumnIndex = DimmerNumberColumnIndex;
+            storage.InstrumentTypeColumnIndex = InstrumentTypeColumnIndex;
+            storage.MulticoreNameColumnIndex = MulticoreNameColumnIndex;
+            storage.PositionColumnIndex = PositionColumnIndex;
+            storage.UniverseDataColumnIndex = UniverseDataColumnIndex;
+            storage.UserField1ColumnIndex = UserField1ColumnIndex;
+            storage.UserField2ColumnIndex = UserField2ColumnIndex;
+            storage.UserField3ColumnIndex = UserField3ColumnIndex;
+            storage.UserField4ColumnIndex = UserField4ColumnIndex;
+
+            storage.CreateDistroObjects = CreateDistroObjects;
+            storage.CreateDimmerObjects = CreateDimmerObjects;
+
+            storage.StartDistroNumber = StartDistroNumber;
+            storage.EndDistroNumber = EndDistroNumber;
+
+            storage.DimmerRanges.AddRange(DimmerRanges);
+
+            storage.DistroRacks.AddRange(DistroRacks);
+            storage.DimmerRacks.AddRange(DimmerRacks);
+
+            storage.DimmerLabelWidthInMM = DimmerLabelWidthInMM;
+            storage.DimmerLabelHeightInMM = DimmerLabelHeightInMM;
+
+            storage.DistroLabelWidthInMM = DistroLabelWidthInMM;
+            storage.DistroLabelHeightInMM = DistroLabelHeightInMM;
+
+            storage.SingleLabel = SingleLabel;
+            storage.HeaderBackGroundColourOnly = HeaderBackGroundColourOnly;
+                    
+            storage.HeaderField = HeaderField;
+            storage.FooterTopField = FooterTopField;
+            storage.FooterMiddleField = FooterMiddleField;
+            storage.FooterBottomField = FooterBottomField;
+
+            return storage;
     }
+
+        public static void Rebuild(UserParametersStorage storage)
+        {
+            DimmerImportFormat = storage.DimmerImportFormat;
+            DMXAddressImportFormat = storage.DMXAddressImportFormat;
+
+            DistroImportFormat = storage.DistroImportFormat;
+            DistroNumberPrefix = storage.DistroNumberPrefix;
+
+            ChannelNumberColumnIndex = storage.ChannelNumberColumnIndex;
+            DimmerNumberColumnIndex = storage.DimmerNumberColumnIndex;
+            InstrumentTypeColumnIndex = storage.InstrumentTypeColumnIndex;
+            MulticoreNameColumnIndex = storage.MulticoreNameColumnIndex;
+            PositionColumnIndex = storage.PositionColumnIndex;
+            UniverseDataColumnIndex = storage.UniverseDataColumnIndex;
+
+            UserField1ColumnIndex = storage.UserField1ColumnIndex;
+            UserField2ColumnIndex = storage.UserField2ColumnIndex;
+            UserField3ColumnIndex = storage.UserField3ColumnIndex;
+            UserField4ColumnIndex = storage.UserField4ColumnIndex;
+
+            CreateDistroObjects = storage.CreateDistroObjects;
+            CreateDimmerObjects = storage.CreateDimmerObjects;
+
+            StartDistroNumber = storage.StartDistroNumber;
+            EndDistroNumber = storage.EndDistroNumber;
+
+            DimmerRanges.AddRange(storage.DimmerRanges);
+
+            DistroRacks.AddRange(storage.DistroRacks);
+            DimmerRacks.AddRange(storage.DimmerRacks);
+
+            DimmerLabelWidthInMM = storage.DimmerLabelWidthInMM;
+            DimmerLabelHeightInMM = storage.DimmerLabelHeightInMM;
+
+            DistroLabelWidthInMM = storage.DistroLabelWidthInMM;
+            DistroLabelHeightInMM = storage.DistroLabelHeightInMM;
+
+            SingleLabel = storage.SingleLabel;
+            HeaderBackGroundColourOnly = storage.HeaderBackGroundColourOnly;
+
+            HeaderField = storage.HeaderField;
+            FooterTopField = storage.FooterTopField;
+            FooterMiddleField = storage.FooterMiddleField;
+            FooterBottomField = storage.FooterBottomField;
+        }
+
+        #endregion
+    }
+
+    [Serializable()]
+    public class UserParametersStorage
+    {
+        public ImportFormatting DimmerImportFormat;
+        public ImportFormatting DMXAddressImportFormat;
+
+        public ImportFormatting DistroImportFormat;
+        public string DistroNumberPrefix;
+
+        public int ChannelNumberColumnIndex;
+        public int DimmerNumberColumnIndex;
+        public int InstrumentTypeColumnIndex;
+        public int MulticoreNameColumnIndex;
+        public int PositionColumnIndex;
+        public int UniverseDataColumnIndex;
+        public int UserField1ColumnIndex;
+        public int UserField2ColumnIndex;
+        public int UserField3ColumnIndex;
+        public int UserField4ColumnIndex;
+
+        public bool CreateDistroObjects;
+        public bool CreateDimmerObjects;
+
+        public int StartDistroNumber;
+        public int EndDistroNumber;
+
+        public List<Globals.DimmerRange> DimmerRanges = new List<Globals.DimmerRange>();
+
+        public List<DistroRack> DistroRacks = new List<DistroRack>();
+        public List<DimmerRack> DimmerRacks = new List<DimmerRack>();
+
+        public double DimmerLabelWidthInMM;
+        public double DimmerLabelHeightInMM;
+
+        public double DistroLabelWidthInMM;
+        public double DistroLabelHeightInMM;
+
+        public bool SingleLabel;
+        public bool HeaderBackGroundColourOnly;
+
+        public LabelField HeaderField;
+        public LabelField FooterTopField;
+        public LabelField FooterMiddleField;
+        public LabelField FooterBottomField;
+    }
+
 }

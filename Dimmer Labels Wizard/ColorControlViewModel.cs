@@ -156,13 +156,13 @@ namespace Dimmer_Labels_Wizard
             {
                 foreach (var element in _SelectedHeaderCells)
                 {
-                    element.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                    element.BackgroundBrush = new SolidColorBrush(_SelectedColor);
                     updateOccured = true;
                 }
 
                 foreach (var element in _SelectedFooterCells)
                 {
-                    element.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                    element.BackgroundBrush = new SolidColorBrush(_SelectedColor);
                     updateOccured = true;
                 }
             }
@@ -173,12 +173,12 @@ namespace Dimmer_Labels_Wizard
                 {
                     foreach (var header in labelStrip.Headers)
                     {
-                        header.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                        header.BackgroundBrush = new SolidColorBrush(_SelectedColor);
                     }
 
                     foreach (var footer in labelStrip.Footers)
                     {
-                        footer.BackgroundColor = new SolidColorBrush(_SelectedColor);
+                        footer.BackgroundBrush = new SolidColorBrush(_SelectedColor);
                     }
                 }
                 updateOccured = true;
@@ -244,9 +244,9 @@ namespace Dimmer_Labels_Wizard
 
             if (cells.Count > 1)
             {
-                Color referenceColor = cells.First().BackgroundColor.Color;
+                Color referenceColor = cells.First().BackgroundBrush.Color;
 
-                if (cells.All(item => item.BackgroundColor.Color == referenceColor))
+                if (cells.All(item => item.BackgroundBrush.Color == referenceColor))
                 {
                     return true;
                 }
@@ -272,12 +272,12 @@ namespace Dimmer_Labels_Wizard
             {
                 if (_SelectedHeaderCells.Count > 0)
                 {
-                    _SelectedColor = _SelectedHeaderCells.First().BackgroundColor.Color;
+                    _SelectedColor = _SelectedHeaderCells.First().BackgroundBrush.Color;
                 }
 
                 if (_SelectedFooterCells.Count > 0)
                 {
-                    _SelectedColor = _SelectedFooterCells.First().BackgroundColor.Color;
+                    _SelectedColor = _SelectedFooterCells.First().BackgroundBrush.Color;
                 }
             }
 

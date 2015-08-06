@@ -234,11 +234,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Racks.cs" />
+    <Compile Include="SerialConversion.cs" />
     <Compile Include="SplitCellViewModel.cs" />
     <Compile Include="SplitCellWindow.xaml.cs">
       <DependentUpon>SplitCellWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Storage.cs" />
     <Compile Include="UserParameters.cs" />
     <Compile Include="ViewModelBase.cs" />
   </ItemGroup>

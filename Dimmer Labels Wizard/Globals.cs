@@ -27,12 +27,14 @@ namespace Dimmer_Labels_Wizard
         public static List<DimmerDistroUnit> ClashingRangeData = new List<DimmerDistroUnit>();
 
         // Represents DMX Addresses.
+        [Serializable()]
         public struct DMX
         {
             public int Universe;
             public int Channel;
         }
 
+        [Serializable()]
         public struct DimmerRange : IComparable<DimmerRange>
         {
             public DimmerRange(int universe, int firstChannel, int lastChannel)

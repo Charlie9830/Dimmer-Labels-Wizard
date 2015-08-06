@@ -263,49 +263,49 @@ namespace Dimmer_Labels_Wizard
                         case LabelField.ChannelNumber:
                             if (footer.PreviousReference.ChannelNumber == item)
                             {
-                                footer.BackgroundColor = new SolidColorBrush(color);
+                                footer.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.InstrumentName:
                             if (footer.PreviousReference.InstrumentName == item)
                             {
-                                footer.BackgroundColor = new SolidColorBrush(color);
+                                footer.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.MulticoreName:
                             if (footer.PreviousReference.MulticoreName == item)
                             {
-                                footer.BackgroundColor = new SolidColorBrush(color);
+                                footer.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.Position:
                             if (footer.PreviousReference.Position == item)
                             {
-                                footer.BackgroundColor = new SolidColorBrush(color);
+                                footer.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.UserField1:
                             if (footer.PreviousReference.UserField1 == item)
                             {
-                                footer.BackgroundColor = new SolidColorBrush(color);
+                                footer.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.UserField2:
                             if (footer.PreviousReference.UserField2 == item)
                             {
-                                footer.BackgroundColor = new SolidColorBrush(color);
+                                footer.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.UserField3:
                             if (footer.PreviousReference.UserField3 == item)
                             {
-                                footer.BackgroundColor = new SolidColorBrush(color);
+                                footer.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.UserField4:
                             if (footer.PreviousReference.UserField4 == item)
                             {
-                                footer.BackgroundColor = new SolidColorBrush(color);
+                                footer.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         default:
@@ -322,49 +322,49 @@ namespace Dimmer_Labels_Wizard
                         case LabelField.ChannelNumber:
                             if (header.PreviousReference.ChannelNumber == item)
                             {
-                                header.BackgroundColor = new SolidColorBrush(color);
+                                header.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.InstrumentName:
                             if (header.PreviousReference.InstrumentName == item)
                             {
-                                header.BackgroundColor = new SolidColorBrush(color);
+                                header.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.MulticoreName:
                             if (header.PreviousReference.MulticoreName == item)
                             {
-                                header.BackgroundColor = new SolidColorBrush(color);
+                                header.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.Position:
                             if (header.PreviousReference.Position == item)
                             {
-                                header.BackgroundColor = new SolidColorBrush(color);
+                                header.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.UserField1:
                             if (header.PreviousReference.UserField1 == item)
                             {
-                                header.BackgroundColor = new SolidColorBrush(color);
+                                header.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.UserField2:
                             if (header.PreviousReference.UserField2 == item)
                             {
-                                header.BackgroundColor = new SolidColorBrush(color);
+                                header.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.UserField3:
                             if (header.PreviousReference.UserField3 == item)
                             {
-                                header.BackgroundColor = new SolidColorBrush(color);
+                                header.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         case LabelField.UserField4:
                             if (header.PreviousReference.UserField4 == item)
                             {
-                                header.BackgroundColor = new SolidColorBrush(color);
+                                header.BackgroundBrush = new SolidColorBrush(color);
                             }
                             break;
                         default:
@@ -391,49 +391,49 @@ namespace Dimmer_Labels_Wizard
                             case LabelField.ChannelNumber:
                                 if (footer.PreviousReference.ChannelNumber == item)
                                 {
-                                    footer.BackgroundColor = new SolidColorBrush(color);
+                                    footer.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.InstrumentName:
                                 if (footer.PreviousReference.InstrumentName == item)
                                 {
-                                    footer.BackgroundColor = new SolidColorBrush(color);
+                                    footer.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.MulticoreName:
                                 if (footer.PreviousReference.MulticoreName == item)
                                 {
-                                    footer.BackgroundColor = new SolidColorBrush(color);
+                                    footer.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.Position:
                                 if (footer.PreviousReference.Position == item)
                                 {
-                                    footer.BackgroundColor = new SolidColorBrush(color);
+                                    footer.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.UserField1:
                                 if (footer.PreviousReference.UserField1 == item)
                                 {
-                                    footer.BackgroundColor = new SolidColorBrush(color);
+                                    footer.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.UserField2:
                                 if (footer.PreviousReference.UserField2 == item)
                                 {
-                                    footer.BackgroundColor = new SolidColorBrush(color);
+                                    footer.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.UserField3:
                                 if (footer.PreviousReference.UserField3 == item)
                                 {
-                                    footer.BackgroundColor = new SolidColorBrush(color);
+                                    footer.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.UserField4:
                                 if (footer.PreviousReference.UserField4 == item)
                                 {
-                                    footer.BackgroundColor = new SolidColorBrush(color);
+                                    footer.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             default:
@@ -450,49 +450,49 @@ namespace Dimmer_Labels_Wizard
                             case LabelField.ChannelNumber:
                                 if (header.PreviousReference.ChannelNumber == item)
                                 {
-                                    header.BackgroundColor = new SolidColorBrush(color);
+                                    header.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.InstrumentName:
                                 if (header.PreviousReference.InstrumentName == item)
                                 {
-                                    header.BackgroundColor = new SolidColorBrush(color);
+                                    header.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.MulticoreName:
                                 if (header.PreviousReference.MulticoreName == item)
                                 {
-                                    header.BackgroundColor = new SolidColorBrush(color);
+                                    header.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.Position:
                                 if (header.PreviousReference.Position == item)
                                 {
-                                    header.BackgroundColor = new SolidColorBrush(color);
+                                    header.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.UserField1:
                                 if (header.PreviousReference.UserField1 == item)
                                 {
-                                    header.BackgroundColor = new SolidColorBrush(color);
+                                    header.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.UserField2:
                                 if (header.PreviousReference.UserField2 == item)
                                 {
-                                    header.BackgroundColor = new SolidColorBrush(color);
+                                    header.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.UserField3:
                                 if (header.PreviousReference.UserField3 == item)
                                 {
-                                    header.BackgroundColor = new SolidColorBrush(color);
+                                    header.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             case LabelField.UserField4:
                                 if (header.PreviousReference.UserField4 == item)
                                 {
-                                    header.BackgroundColor = new SolidColorBrush(color);
+                                    header.BackgroundBrush = new SolidColorBrush(color);
                                 }
                                 break;
                             default:
@@ -550,9 +550,9 @@ namespace Dimmer_Labels_Wizard
                 }
 
                 // Check if a result has been found.
-                if (searchResult != null && searchResult.BackgroundColor != null)
+                if (searchResult != null && searchResult.BackgroundBrush != null)
                 {
-                    return searchResult.BackgroundColor.Color;
+                    return searchResult.BackgroundBrush.Color;
                 }
             }
 
@@ -568,18 +568,18 @@ namespace Dimmer_Labels_Wizard
                 // Footers
                 foreach (var footer in labelStrip.Footers)
                 {
-                    if (footer.BackgroundColor == null)
+                    if (footer.BackgroundBrush == null)
                     {
-                        footer.BackgroundColor = new SolidColorBrush(Colors.White);
+                        footer.BackgroundBrush = new SolidColorBrush(Colors.White);
                     }
                 }
 
                 // Headers
                 foreach (var header in labelStrip.Headers)
                 {
-                    if (header.BackgroundColor == null)
+                    if (header.BackgroundBrush == null)
                     {
-                        header.BackgroundColor = new SolidColorBrush(Colors.White);
+                        header.BackgroundBrush = new SolidColorBrush(Colors.White);
                     }
                 }
             }
