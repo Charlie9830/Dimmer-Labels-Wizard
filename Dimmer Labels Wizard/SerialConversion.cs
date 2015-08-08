@@ -11,6 +11,8 @@ namespace Dimmer_Labels_Wizard
     [Serializable()]
     public class ApplicationSerialization
     {
+        public VersionInfo SaveFileInfo = new VersionInfo("2.2", "-");
+
         public List<LabelStripStorage> LabelStrips = new List<LabelStripStorage>();
         public List<DimmerDistroUnitStorage> DimmerDistroUnits = new List<DimmerDistroUnitStorage>();
 
@@ -37,22 +39,20 @@ namespace Dimmer_Labels_Wizard
 
     public class Persistance
     {
-        public void SaveToFile()
+        public void SaveToFile(string filePath)
         {
             ApplicationSerialization applicationStorage = new ApplicationSerialization();
             applicationStorage.PrepareSerialization();
-            
-            string filePath = @"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\SaveFile.dlw";
+
             FileStream fileStream = File.Create(filePath);
             BinaryFormatter serializer = new BinaryFormatter();
             serializer.Serialize(fileStream, applicationStorage);
             fileStream.Close();
         }
 
-        public void LoadFromFile()
+        public void LoadFromFile(string filePath)
         {
             ApplicationSerialization applicationStorage = new ApplicationSerialization();
-            string filePath = @"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\SaveFile.dlw";
             FileStream fileStream = File.OpenRead(filePath);
             BinaryFormatter deSerializer = new BinaryFormatter();
             applicationStorage = (ApplicationSerialization)deSerializer.Deserialize(fileStream);
@@ -79,5 +79,18 @@ namespace Dimmer_Labels_Wizard
 
             UserParameters.Rebuild(applicationStorage.UserParametersStorage);
         }
+    }
+
+    [Serializable()]
+    public struct VersionInfo
+    {
+        public VersionInfo(string versionNumber, string notes)
+        {
+            VersionNumber = versionNumber;
+            Notes = notes;
+        }
+
+        string VersionNumber;
+        string Notes;
     }
 }

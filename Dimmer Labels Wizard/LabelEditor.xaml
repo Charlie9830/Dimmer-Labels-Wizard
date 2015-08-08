@@ -48,16 +48,18 @@
             <Button x:Name="MagnifyPlusButton" Content="{StaticResource magnifyPlus24}" HorizontalAlignment="Left" Margin="10,29,0,10" Height="24" Width="24" Click="MagnifyPlusButton_Click" FontWeight="ExtraBold" FontSize="14" Background="#FFDEDEDE"/>
         </Grid>
         <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="102" Margin="126,363,0,0" VerticalAlignment="Top" Width="131">
-            <Button x:Name="SplitCellsButton" Content="Split Cell" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Click="SplitCellsButton_Click" Width="75" RenderTransformOrigin="0.513,-0.742"/>
+            <Button x:Name="SplitCellsButton" Content="Split Header" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Click="SplitCellsButton_Click" Width="75" RenderTransformOrigin="0.513,-0.742"/>
             <Label Content="Tools" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" FontSize="16"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="75" Margin="800,487,0,0" VerticalAlignment="Top" Width="212">
-            <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="127,8,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
-            <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="127,43,0,0" VerticalAlignment="Top" Width="75" Click="InvokePrint"/>
-            <Button x:Name="BackButton" Content="Back" HorizontalAlignment="Left" Margin="47,43,0,0" VerticalAlignment="Top" Width="75" Click="BackButton_Click"/>
+        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="41" Margin="842,521,0,0" VerticalAlignment="Top" Width="170">
+            <Button x:Name="BackButton" Content="Back" HorizontalAlignment="Left" Margin="7,10,0,0" VerticalAlignment="Top" Width="75" Click="BackButton_Click"/>
+            <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="87,10,0,0" VerticalAlignment="Top" Width="75" Click="InvokePrint"/>
         </Grid>
-        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="937,419,0,0" VerticalAlignment="Top" Width="75" Click="SaveButton_Click"/>
-        <Button x:Name="LoadButton" Content="Load" HorizontalAlignment="Left" Margin="937,446,0,0" VerticalAlignment="Top" Width="75" Click="LoadButton_Click"/>
+        <Grid HorizontalAlignment="Left" Background="White" Height="41" Margin="842,475,0,0" VerticalAlignment="Top" Width="170">
+            <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="75" Click="SaveButton_Click"/>
+            <Button x:Name="LoadButton" Content="Load" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="LoadButton_Click"/>
+        </Grid>
+        <Button x:Name="DebugButton" Visibility="Hidden" Content="Debug" HorizontalAlignment="Left" Margin="937,415,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
 
     </Grid>
 </Window>

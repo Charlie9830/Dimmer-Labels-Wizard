@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms.Integration;
+using Microsoft.Win32;
 
 namespace Dimmer_Labels_Wizard
 {
@@ -38,6 +39,9 @@ namespace Dimmer_Labels_Wizard
         // Dialog First Time Tracking
         private bool GlobalApplyWarningShowAgain = true;
 
+        // Exit Message Handling.
+        private bool BackButtonPressed = false;
+
         public LabelEditor()
         {
             InitializeComponent();
@@ -58,6 +62,8 @@ namespace Dimmer_Labels_Wizard
 
             this.Loaded += LabelEditor_Loaded;
             RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
+
+            this.Closing += LabelEditor_Closing;
 
             CanvasBorder.MouseDown += CanvasBorder_MouseDown;
             CanvasBorder.MouseMove += CanvasBorder_MouseMove;
@@ -186,6 +192,11 @@ namespace Dimmer_Labels_Wizard
             RackSelector.Items.Add(DimmersNode);
         }
 
+        private void ClearRackLabelSelector()
+        {
+            RackSelector.Items.Clear();
+        }
+
         protected Border GetSplitCellOutline(HeaderCell headerCell)
         {
             foreach (var element in LabelCanvas.Children)
@@ -206,6 +217,50 @@ namespace Dimmer_Labels_Wizard
             }
 
             return null;
+        }
+
+        private void ReloadLabelEditor()
+        {
+            ClearRackLabelSelector();
+            PopulateRackLabelSelector();
+            LabelCanvas.Children.Clear();
+        }
+
+        private void InitiateSave()
+        {
+            Persistance persitance = new Persistance();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.DefaultExt = ".dlw";
+            saveFileDialog.Filter = "Dimmer Labels Wizard File (*.dlw) | *.dlw";
+            saveFileDialog.FilterIndex = 0;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                persitance.SaveToFile(saveFileDialog.FileName);
+            }
+        }
+
+        private void InitiateLoad()
+        {
+            string message = "Are you sure you want to Load? All unsaved changes will be lost.";
+            string caption = "Load from File";
+
+            if (MessageBox.Show(message, caption, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                Persistance persistance = new Persistance();
+
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.DefaultExt = ".dlw";
+                openFileDialog.Filter = "Dimmer Labels Wizard File (*.dlw) | *.dlw";
+                openFileDialog.FilterIndex = 0;
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    persistance.LoadFromFile(openFileDialog.FileName);
+                }
+
+                ReloadLabelEditor();
+            }
         }
 
         #region Drag Selection Handling
@@ -297,6 +352,22 @@ namespace Dimmer_Labels_Wizard
 
         #region Event Handling
 
+        private void LabelEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (BackButtonPressed != true)
+            {
+                string message = "Any unsaved changes will be lost. Are you sure you want to Exit?";
+                string caption = "Exit";
+
+                MessageBoxResult result = MessageBox.Show(message, caption, MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
         void InvokePrint(object sender, RoutedEventArgs e)
         {
             PrintWindow printWindow = new PrintWindow();
@@ -384,13 +455,16 @@ namespace Dimmer_Labels_Wizard
 
         void RackSelector_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            TreeViewItem selectedItem = (TreeViewItem)e.NewValue;
-            LabelStrip selectedLabelStrip = (LabelStrip)selectedItem.Tag;
+            if (e.NewValue != null)
+            {
+                TreeViewItem selectedItem = (TreeViewItem)e.NewValue;
+                LabelStrip selectedLabelStrip = (LabelStrip)selectedItem.Tag;
 
-            ActiveLabelStrip.ClearSelections();
-            ActiveLabelStrip.SetSelectedLabelStrip(selectedLabelStrip, LabelCanvas);
+                ActiveLabelStrip.ClearSelections();
+                ActiveLabelStrip.SetSelectedLabelStrip(selectedLabelStrip, LabelCanvas);
 
-            ForceRender();
+                ForceRender();
+            }
         }
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
@@ -476,8 +550,13 @@ namespace Dimmer_Labels_Wizard
                     SplitCellDialog.ShowDialog();
 
                     ForceRender();
-
                 }
+            }
+
+            else
+            {
+                string message = "You must select automatically merged Header cells before you can split them.";
+                MessageBox.Show(message);
             }
         }
 
@@ -488,14 +567,15 @@ namespace Dimmer_Labels_Wizard
 
             if (MessageBox.Show(message,caption,MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                this.Close();
+                BackButtonPressed = true;
 
                 if (Forms.LabelSetup == null)
                 {
                     Forms.LabelSetup = new FORM_LabelSetup();
                 }
 
-                Forms.LabelSetup.ShowDialog();
+                this.Close();
+                Forms.LabelSetup.Show();
             }
         }
 
@@ -514,14 +594,12 @@ namespace Dimmer_Labels_Wizard
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            Persistance test = new Persistance();
-            test.SaveToFile();
+            InitiateSave();
         }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e)
         {
-            Persistance test = new Persistance();
-            test.LoadFromFile();
+            InitiateLoad();
         }
 
         #endregion
