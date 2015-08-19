@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Dimmer_Labels_Wizard_WPF.DistroRangeSelectorHost"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+             mc:Ignorable="d" Height="155" Width="182.513">
+
+    <UserControl.Resources>
+        <Image x:Key="PlusSign12" Source="Resources/Plus-Sign-12.png" Stretch="Uniform"/>
+        <Image x:Key="MinusSign12" Source="Resources/Minus-Sign-12.png" Stretch="Uniform"/>
+    </UserControl.Resources>
+
+    <Border BorderBrush="Black" BorderThickness="1">
+        <Grid Background="White" RenderTransformOrigin="0.503,0.51">
+            <Button x:Name="MinusButton" Content="{StaticResource MinusSign12}" HorizontalAlignment="Left" Margin="134,10,0,0" VerticalAlignment="Top" Width="16" Height="16" Click="MinusButton_Click"/>
+            <ScrollViewer HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,31,0,0" Height="122" Width="166">
+                <StackPanel x:Name="SelectorsPanel" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            </ScrollViewer>
+            <Button x:Name="PlusButton" Content="{StaticResource PlusSign12}" HorizontalAlignment="Left" Margin="155,10,0,0" VerticalAlignment="Top" Width="16" Height="16" Click="PlusButton_Click"/>
+            <TextBlock x:Name="StartupTip" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="64,70,0,0" VerticalAlignment="Top" FontSize="10.667" Width="55" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}">
+                No Ranges
+            </TextBlock>
+        </Grid>
+    </Border>
+</UserControl>

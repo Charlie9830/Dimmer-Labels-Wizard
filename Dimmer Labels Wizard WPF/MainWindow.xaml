@@ -7,6 +7,17 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Label x:Name="label" Content="Welcome" HorizontalAlignment="Left" Margin="207,32,0,0" VerticalAlignment="Top" FontSize="21.333" FontFamily="Segoe UI Semibold"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="140,75,0,0" VerticalAlignment="Top" Width="236">
+            To begin, Browse for a CSV file to Open,
+            or Load from a previously saved Labels file.
+        </TextBlock>
+        <Label x:Name="label1" Content="Import new CSV" HorizontalAlignment="Left" Margin="207,144,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label1_Copy" Content="Load from Saved Labels" HorizontalAlignment="Left" Margin="188,225,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="ImportButton" Content="Browse" HorizontalAlignment="Left" Margin="217,170,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="LoadButton" Content="Browse" HorizontalAlignment="Left" Margin="217,251,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="432,288,0,0" VerticalAlignment="Top" Width="75" Click="NextButton_Click"/>
+        <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="432,176,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
+
     </Grid>
 </Window>

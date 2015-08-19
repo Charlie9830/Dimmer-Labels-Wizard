@@ -1,0 +1,56 @@
+﻿<Window x:Class="Dimmer_Labels_Wizard_WPF.UnResolveableData"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+        mc:Ignorable="d"
+        Title="UnResolveableData" Height="500.202" Width="635.725">
+
+    <Window.DataContext>
+        <local:UnresolveableDataViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <ImageBrush x:Key="checkMarkBrush" ImageSource="/Resources/checkMark24.png" Stretch="Uniform"/>
+        <ImageBrush x:Key="crossMarkBrush" ImageSource="/Resources/crossMark24.png" Stretch="Uniform"/>
+
+        <DataTemplate x:Key="ResolvedTemplate">
+            <Grid x:Name="grid" Margin="2">
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding ParseSuccessful}" Value="True">
+                    <Setter TargetName="grid" Property="Background" Value="{StaticResource checkMarkBrush}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ParseSuccessful}" Value="False">
+                    <Setter TargetName="grid" Property="Background" Value="{StaticResource crossMarkBrush}"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <DataGrid x:Name="UnresolveableDataGrid" ItemsSource="{Binding Path=UnresolveableUnits}" AutoGenerateColumns="False" HorizontalAlignment="Left" Margin="11,197,0,0" VerticalAlignment="Top" Height="237" Width="607" CanUserAddRows="False" CanUserDeleteRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Dimmer" IsReadOnly="False" Width="75" Binding="{Binding DataGridDimmerNumberText}"/>
+                <DataGridTextColumn Header="Channel" Width="75" Binding="{Binding ChannelNumber, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Instrument Name" Width="110" Binding="{Binding InstrumentName, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Position" Width="100" Binding="{Binding Position, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Multicore" Width="100" Binding="{Binding MulticoreName, Mode=OneWay}"/>
+                <DataGridCheckBoxColumn Header="Omit" Width="50" Binding="{Binding OmitUnit, Mode=TwoWay}"/>
+                <DataGridTemplateColumn Header="Resolved" Width="60" CellTemplate="{StaticResource ResolvedTemplate}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Label x:Name="label" Content="Unresolveable Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold" FontSize="21.333"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="607" Height="73"><Run Text="Some"/><Run Text=" of the data you have imported cannot be accurately processed. Generally this occurs when data entries do not match the &quot;Import Data Format&quot; you specified earlier. To continue please edit the &quot;Dimmer&quot; field of each of the entries"/><Run Text=" so that they match the correct Data Format, alternatively you can choose to omit these items from"/><Run Text=" the Label making process."/></TextBlock>
+        <CheckBox x:Name="checkBox" IsChecked="{Binding Path=OmitAll}" Content="Omit All" HorizontalAlignment="Left" Margin="554,177,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="542,439,0,0" VerticalAlignment="Top" Width="75" Click="NextButton_Click"/>
+        <Button x:Name="BackButton" Content="Back" HorizontalAlignment="Left" Margin="462,439,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label x:Name="label1" Content="Selected Dimmer Import Format:" HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
+        <Label x:Name="label2" Content="Selected Distro Import Format:" HorizontalAlignment="Left" Margin="323,126,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
+        <Label x:Name="label3" Content="{Binding Path=DimmerImportFormat}" HorizontalAlignment="Left" Margin="11,151,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label4" Content="{Binding Path=DistroImportFormat}" HorizontalAlignment="Left" Margin="323,152,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

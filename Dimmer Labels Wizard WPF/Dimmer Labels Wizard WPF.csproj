@@ -35,8 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,6 +59,85 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ApplicationWindows.cs" />
+    <Compile Include="BackgroundColorSetup.xaml.cs">
+      <DependentUpon>BackgroundColorSetup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataHandling.cs" />
+    <Compile Include="DimmerDistroUnit.cs" />
+    <Compile Include="DistroRangeSelector.xaml.cs">
+      <DependentUpon>DistroRangeSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DistroRangeSelectorHost.xaml.cs">
+      <DependentUpon>DistroRangeSelectorHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DistroRangeSelectorViewModel.cs" />
+    <Compile Include="DimmerRangeSelector.xaml.cs">
+      <DependentUpon>DimmerRangeSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DimmerRangeSelectorViewModel.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="FileImport.cs" />
+    <Compile Include="FileImportDialog.xaml.cs">
+      <DependentUpon>FileImportDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FooterCell.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="HeaderCell.cs" />
+    <Compile Include="ImportSettings.xaml.cs">
+      <DependentUpon>ImportSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ImportSettingsViewModel.cs" />
+    <Compile Include="LabelCell.cs" />
+    <Compile Include="DimmerRangeSelectorHost.xaml.cs">
+      <DependentUpon>DimmerRangeSelectorHost.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LabelSetup.xaml.cs">
+      <DependentUpon>LabelSetup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LabelStrip.cs" />
+    <Compile Include="Racks.cs" />
+    <Compile Include="SanitizationDialog.xaml.cs">
+      <DependentUpon>SanitizationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UnResolveableData.xaml.cs">
+      <DependentUpon>UnResolveableData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UnresolveableDataViewModel.cs" />
+    <Compile Include="UserParameters.cs" />
+    <Compile Include="ViewModelBase.cs" />
+    <Page Include="BackgroundColorSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DimmerRangeSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DistroRangeSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DistroRangeSelectorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileImportDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ImportSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DimmerRangeSelectorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LabelSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,6 +150,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SanitizationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UnResolveableData.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -94,6 +185,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\help-circled-24-000000.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Minus-Sign-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Plus-Sign-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\checkMark24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\crossMark24.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
