@@ -18,11 +18,16 @@ namespace Dimmer_Labels_Wizard_WPF
     /// <summary>
     /// Interaction logic for BackgroundColorSetup.xaml
     /// </summary>
-    public partial class BackgroundColorSetup : UserControl
+    public partial class BackgroundColorTable : UserControl
     {
-        public BackgroundColorSetup()
+        public BackgroundColorTable()
         {
             InitializeComponent();
+        }
+
+        private void ColorSelectButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

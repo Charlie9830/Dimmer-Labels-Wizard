@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-namespace Dimmer_Labels_Wizard
+namespace Dimmer_Labels_Wizard_WPF
 {
     [Serializable()]
     public class ApplicationSerialization
     {
+        public static Dictionary<DimmerDistroUnit, DimmerDistroUnitStorage> PreviousReferences =
+            new Dictionary<DimmerDistroUnit, DimmerDistroUnitStorage>();
+        // Use this to Track If a DimmerDistroUnit Storage object has already been created for a given Dimmer Distro Unit.
+        // Refactor PrepareSerialization to not Serialize Globals.DimmerDistroUnits Directly. They Will be Serialized as
+        // part of the LabelStrip.PreviousReferences. Then During Deserialization, can be added back to Globals.DimmerDistroUnits
+        // and Sorted.
+
         public VersionInfo SaveFileInfo = new VersionInfo("1.2", "-");
 
         public List<LabelStripStorage> LabelStrips = new List<LabelStripStorage>();
@@ -32,8 +39,6 @@ namespace Dimmer_Labels_Wizard
 
             UserParametersStorage = UserParameters.GenerateStorage();
         }
-
-
     }
 
 

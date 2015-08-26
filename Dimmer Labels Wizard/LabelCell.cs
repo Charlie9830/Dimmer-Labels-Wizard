@@ -54,6 +54,21 @@ namespace Dimmer_Labels_Wizard
             }
         }
 
+        #region DataGrid Properties
+        public SolidColorBrush dgBackgroundColor
+        {
+            get
+            {
+                return _BackgroundBrush;
+            }
+            set
+            {
+                BackgroundBrush = value;
+            }
+        }
+
+        #endregion
+
         // Serialization.
 
         #region Serialization Methods

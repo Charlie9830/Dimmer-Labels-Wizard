@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="LabelSetup" Height="492.013" Width="780.026">
+        Title="LabelSetup" Height="492.013" Width="1036.026">
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
         <Label x:Name="label" Content="Label Setup" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" FontSize="21.333" FontFamily="Segoe UI Semibold"/>
         <Label x:Name="label1" Content="Style" HorizontalAlignment="Left" Margin="15,40,0,0" VerticalAlignment="Top" FontSize="16"/>
@@ -38,5 +38,6 @@
         <Label x:Name="label2_Copy11" Content="Footer Bottom" HorizontalAlignment="Left" Margin="248,369,0,0" VerticalAlignment="Top"/>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="141" Margin="248,71,0,0" VerticalAlignment="Top" Width="240"/>
         <Label x:Name="label1_Copy1" Content="Example Diagram" HorizontalAlignment="Left" Margin="248,40,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <local:BackgroundColorTable HorizontalAlignment="Left" Margin="509,30,0,0" VerticalAlignment="Top" Height="403" Width="509"/>
     </Grid>
 </Window>

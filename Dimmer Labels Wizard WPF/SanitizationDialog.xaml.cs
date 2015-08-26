@@ -30,6 +30,10 @@ namespace Dimmer_Labels_Wizard_WPF
             DataHandling.SanitizeDimDistroUnits();
 
             PleaseWaitLabel.Content = "Complete";
+
+            Hide();
+            ApplicationWindows.LabelSetupWindow = new LabelSetup();
+            ApplicationWindows.LabelSetupWindow.Show();
         }
     }
 }

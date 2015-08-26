@@ -60,9 +60,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ApplicationWindows.cs" />
-    <Compile Include="BackgroundColorSetup.xaml.cs">
-      <DependentUpon>BackgroundColorSetup.xaml</DependentUpon>
+    <Compile Include="BackgroundColorTable.xaml.cs">
+      <DependentUpon>BackgroundColorTable.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BackgroundColorTableViewModel.cs" />
     <Compile Include="DataHandling.cs" />
     <Compile Include="DimmerDistroUnit.cs" />
     <Compile Include="DistroRangeSelector.xaml.cs">
@@ -100,13 +101,14 @@
     <Compile Include="SanitizationDialog.xaml.cs">
       <DependentUpon>SanitizationDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SerialConversion.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
     <Compile Include="UnresolveableDataViewModel.cs" />
     <Compile Include="UserParameters.cs" />
     <Compile Include="ViewModelBase.cs" />
-    <Page Include="BackgroundColorSetup.xaml">
+    <Page Include="BackgroundColorTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
