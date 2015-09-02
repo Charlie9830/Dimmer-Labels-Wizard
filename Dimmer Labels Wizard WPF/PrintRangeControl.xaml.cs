@@ -16,13 +16,18 @@ using System.Windows.Shapes;
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for BackgroundColorSetup.xaml
+    /// Interaction logic for PrintRangeControl.xaml
     /// </summary>
-    public partial class BackgroundColorTable : UserControl
+    public partial class PrintRangeControl : UserControl
     {
-        public BackgroundColorTable()
+        public PrintRangeControlViewModel ViewModel = new PrintRangeControlViewModel();
+   
+        public PrintRangeControl()
         {
             InitializeComponent();
+            this.DataContext = this.ViewModel;
         }
+
+
     }
 }

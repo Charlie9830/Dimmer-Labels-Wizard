@@ -16,13 +16,22 @@ using System.Windows.Shapes;
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for BackgroundColorSetup.xaml
+    /// Interaction logic for GlobalApplyWarning.xaml
     /// </summary>
-    public partial class BackgroundColorTable : UserControl
+    public partial class GlobalApplyWarning : Window
     {
-        public BackgroundColorTable()
+        public bool? DontShowDialogAgain = false;
+
+        public GlobalApplyWarning()
         {
             InitializeComponent();
+        }
+
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            DontShowDialogAgain = ShowAgainCheckBox.IsChecked;
+            this.Close();
         }
     }
 }

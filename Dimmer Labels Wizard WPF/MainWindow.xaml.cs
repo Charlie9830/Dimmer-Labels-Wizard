@@ -46,6 +46,8 @@ namespace Dimmer_Labels_Wizard_WPF
             UserParameters.DimmerRanges.Add(new DimmerRange(1, 1, 12));
             UserParameters.DistroRanges.Add(new DistroRange(1, 12));
 
+            UserParameters.GenerateDistroRange();
+
             UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
 
             UserParameters.ChannelNumberColumnIndex = 1;
@@ -77,7 +79,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else
             {
-                MessageBox.Show("Nothing in UnresolveableUnits");
+                DataHandling.SanitizeDimDistroUnits();
+
+                Hide();
+                ApplicationWindows.LabelSetupWindow = new LabelSetup();
+                ApplicationWindows.LabelSetupWindow.Show();
             }
         }
     }

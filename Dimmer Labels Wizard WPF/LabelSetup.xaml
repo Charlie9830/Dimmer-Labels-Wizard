@@ -4,40 +4,66 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="LabelSetup" Height="492.013" Width="1036.026">
+        Title="LabelSetup" Height="600.013" Width="1165.359">
+
+    <Window.DataContext>
+        <local:LabelSetupViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <ObjectDataProvider x:Key="LabelFields" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:LabelField"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
         <Label x:Name="label" Content="Label Setup" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" FontSize="21.333" FontFamily="Segoe UI Semibold"/>
-        <Label x:Name="label1" Content="Style" HorizontalAlignment="Left" Margin="15,40,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="label1_Copy" Content="Text Field Mapping" HorizontalAlignment="Left" Margin="248,224,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="label1_Copy2" Content="Cell Dimensions" HorizontalAlignment="Left" Margin="15,130,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <CheckBox x:Name="checkBox" Content="Single Label Strip Mode." HorizontalAlignment="Left" Margin="21,76,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="checkBox1" Content="Apply colour to Header only." HorizontalAlignment="Left" Margin="21,97,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label2" Content="Dimmer" HorizontalAlignment="Left" Margin="21,161,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
-        <Label x:Name="label2_Copy" Content="Distro" HorizontalAlignment="Left" Margin="21,263,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="63,224,0,0" TextWrapping="Wrap" Text="88.8" VerticalAlignment="Top" Width="38"/>
-        <TextBox x:Name="textBox_Copy" HorizontalAlignment="Left" Height="23" Margin="166,224,0,0" TextWrapping="Wrap" Text="88.8" VerticalAlignment="Top" Width="38"/>
+        <Label x:Name="label1" Content="Style" HorizontalAlignment="Left" Margin="15,40,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Segoe UI Semibold"/>
+        <Label x:Name="label1_Copy" Content="Text Field Mapping" HorizontalAlignment="Left" Margin="21,378,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Segoe UI Semibold"/>
+        <Label x:Name="label1_Copy2" Content="Cell Dimensions" HorizontalAlignment="Left" Margin="15,130,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Segoe UI Semibold"/>
+        <CheckBox x:Name="checkBox" IsChecked="{Binding Path=SingleLabelStripMode}" Content="Single Label Strip Mode." HorizontalAlignment="Left" Margin="21,76,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox1" IsChecked="{Binding Path=HeaderBackgroundColorOnly}" Content="Apply colour to Header only." HorizontalAlignment="Left" Margin="21,97,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2" Content="Dimmer" HorizontalAlignment="Left" Margin="21,161,0,0" VerticalAlignment="Top" FontSize="13.333"/>
+        <Label x:Name="label2_Copy" Content="Distro" HorizontalAlignment="Left" Margin="21,265,0,0" VerticalAlignment="Top" FontSize="13.333"/>
+        <TextBox x:Name="textBox" Text="{Binding Path=DimmerCellWidth}" HorizontalAlignment="Left" Height="23" Margin="63,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="38"/>
+        <TextBox x:Name="textBox_Copy" Text="{Binding Path=DimmerCellHeight}" HorizontalAlignment="Left" Height="23" Margin="181,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="38"/>
         <Label x:Name="label2_Copy1" Content="Width" HorizontalAlignment="Left" Margin="21,221,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label2_Copy2" Content="Height" HorizontalAlignment="Left" Margin="120,221,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="69,192,0,0" VerticalAlignment="Top" Width="135"/>
+        <Label x:Name="label2_Copy2" Content="Height" HorizontalAlignment="Left" Margin="135,222,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox" ItemsSource="{Binding Path=DimmerPresets}" SelectedItem="{Binding Path=SelectedDimmerPreset}" HorizontalAlignment="Left" Margin="89,190,0,0" VerticalAlignment="Top" Width="135"/>
         <Label x:Name="label2_Copy3" Content="Preset" HorizontalAlignment="Left" Margin="21,188,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_Copy1" HorizontalAlignment="Left" Height="23" Margin="63,325,0,0" TextWrapping="Wrap" Text="88.8" VerticalAlignment="Top" Width="38"/>
-        <TextBox x:Name="textBox_Copy2" HorizontalAlignment="Left" Height="23" Margin="166,325,0,0" TextWrapping="Wrap" Text="88.8" VerticalAlignment="Top" Width="38"/>
-        <Label x:Name="label2_Copy4" Content="Width" HorizontalAlignment="Left" Margin="21,322,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox_Copy" HorizontalAlignment="Left" Margin="69,293,0,0" VerticalAlignment="Top" Width="135"/>
-        <Label x:Name="label2_Copy5" Content="Preset" HorizontalAlignment="Left" Margin="21,289,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label2_Copy6" Content="Label Field" HorizontalAlignment="Left" Margin="248,258,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
-        <Label x:Name="label2_Copy7" Content="Data Type" HorizontalAlignment="Left" Margin="368,259,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
-        <Label x:Name="label2_Copy8" Content="Header" HorizontalAlignment="Left" Margin="248,289,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="368,293,0,0" VerticalAlignment="Top" Width="120"/>
-        <ComboBox x:Name="comboBox1_Copy" HorizontalAlignment="Left" Margin="368,320,0,0" VerticalAlignment="Top" Width="120"/>
-        <ComboBox x:Name="comboBox1_Copy1" HorizontalAlignment="Left" Margin="368,347,0,0" VerticalAlignment="Top" Width="120"/>
-        <ComboBox x:Name="comboBox1_Copy2" HorizontalAlignment="Left" Margin="368,374,0,0" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="label2_Copy9" Content="Footer Top" HorizontalAlignment="Left" Margin="248,315,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label2_Copy10" Content="Footer Middle" HorizontalAlignment="Left" Margin="248,343,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label2_Copy11" Content="Footer Bottom" HorizontalAlignment="Left" Margin="248,369,0,0" VerticalAlignment="Top"/>
-        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="141" Margin="248,71,0,0" VerticalAlignment="Top" Width="240"/>
-        <Label x:Name="label1_Copy1" Content="Example Diagram" HorizontalAlignment="Left" Margin="248,40,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <local:BackgroundColorTable HorizontalAlignment="Left" Margin="509,30,0,0" VerticalAlignment="Top" Height="403" Width="509"/>
+        <TextBox x:Name="textBox_Copy1" Text="{Binding Path=DistroCellWidth}" HorizontalAlignment="Left" Height="23" Margin="63,327,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="38"/>
+        <TextBox x:Name="textBox_Copy2" Text="{Binding Path=DistroCellHeight}" HorizontalAlignment="Left" Height="23" Margin="186,327,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="38"/>
+        <Label x:Name="label2_Copy4" Content="Width" HorizontalAlignment="Left" Margin="21,324,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox_Copy" ItemsSource="{Binding Path=DistroPresets}" SelectedItem="{Binding Path=SelectedDistroPreset}" HorizontalAlignment="Left" Margin="89,295,0,0" VerticalAlignment="Top" Width="135"/>
+        <Label x:Name="label2_Copy5" Content="Preset" HorizontalAlignment="Left" Margin="21,291,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2_Copy6" Content="Label Field" HorizontalAlignment="Left" Margin="21,412,0,0" VerticalAlignment="Top" FontSize="13.333"/>
+        <Label x:Name="label2_Copy7" Content="Data Type" HorizontalAlignment="Left" Margin="141,413,0,0" VerticalAlignment="Top" FontSize="13.333"/>
+        <Label x:Name="label2_Copy8" Content="Header" HorizontalAlignment="Left" Margin="21,443,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox1" ItemsSource="{Binding Source={StaticResource LabelFields}}" SelectedItem="{Binding Path=HeaderField}" HorizontalAlignment="Left" Margin="141,447,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="comboBox1_Copy" ItemsSource="{Binding Source={StaticResource LabelFields}}" SelectedItem="{Binding Path=FooterTopField}" IsEnabled="{Binding Path=FooterTopEnable}" HorizontalAlignment="Left" Margin="141,474,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="comboBox1_Copy1" ItemsSource="{Binding Source={StaticResource LabelFields}}" SelectedItem="{Binding Path=FooterMiddleField}" HorizontalAlignment="Left" Margin="141,501,0,0" VerticalAlignment="Top" Width="120"/>
+        <ComboBox x:Name="comboBox1_Copy2" ItemsSource="{Binding Source={StaticResource LabelFields}}" SelectedItem="{Binding Path=FooterBottomField}" HorizontalAlignment="Left" Margin="141,528,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label2_Copy9" IsEnabled="{Binding Path=FooterTopEnable}" Content="Footer Top" HorizontalAlignment="Left" Margin="21,469,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2_Copy10" Content="Footer Middle" HorizontalAlignment="Left" Margin="21,497,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2_Copy11" Content="Footer Bottom" HorizontalAlignment="Left" Margin="21,523,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label1_Copy1" Content="Example" HorizontalAlignment="Left" Margin="309,40,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Segoe UI Semibold"/>
+        <local:BackgroundColorTable x:Name="backgroundColorTable" HorizontalAlignment="Left" Margin="690,55,0,0" VerticalAlignment="Top" Height="463" Width="442"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="113" Margin="309,76,0,0" VerticalAlignment="Top" Width="350"/>
+        <Label x:Name="label2_Copy12" Content="Height" HorizontalAlignment="Left" Margin="135,325,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2_Copy13" Content="(mm)" HorizontalAlignment="Left" Margin="63,243,0,0" VerticalAlignment="Top" FontSize="9.333"/>
+        <Label x:Name="label2_Copy14" Content="(mm)" HorizontalAlignment="Left" Margin="181,243,0,0" VerticalAlignment="Top" FontSize="9.333"/>
+        <Label x:Name="label2_Copy15" Content="(mm)" HorizontalAlignment="Left" Margin="63,347,0,0" VerticalAlignment="Top" FontSize="9.333"/>
+        <Label x:Name="label2_Copy16" Content="(mm)" HorizontalAlignment="Left" Margin="187,347,0,0" VerticalAlignment="Top" FontSize="9.333"/>
+        <Label x:Name="label1_Copy3" Content="Colour Mapping" HorizontalAlignment="Left" Margin="690,33,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Segoe UI Semibold"/>
+        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="1057,523,0,0" VerticalAlignment="Top" Width="75" Click="NextButton_Click"/>
+        <Button x:Name="BackButton" Content="Back" HorizontalAlignment="Left" Margin="977,523,0,0" VerticalAlignment="Top" Width="75"/>
+        
+        <Label x:Name="label1_Copy4" Content="Instrument Name Resolution" IsEnabled="{Binding Path=InstrumentNameResolutionEnable}" HorizontalAlignment="Left" Margin="309,197,0,0" VerticalAlignment="Top" FontSize="16" FontFamily="Segoe UI Semibold"/>
+        <local:InstrumentNameResolution x:Name="instrumentNameResolution" IsEnabled="{Binding Path=InstrumentNameResolutionEnable}" HorizontalAlignment="Left" Margin="309,230,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

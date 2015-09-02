@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Windows.Media;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -18,6 +19,24 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // List to Hold LabelStrip Objects
         public static List<LabelStrip> LabelStrips = new List<LabelStrip>();
+
+        // Color Dictionary
+        public static Dictionary<DimmerDistroUnit, SolidColorBrush> LabelColors = 
+            new Dictionary<DimmerDistroUnit, SolidColorBrush>();
+
+        public static SolidColorBrush GetLabelColor(DimmerDistroUnit unit)
+        {
+            SolidColorBrush outValue;
+            if (Globals.LabelColors.TryGetValue(unit, out outValue) == true)
+            {
+                return outValue;
+            }
+
+            else
+            {
+                return new SolidColorBrush(Colors.White);
+            }
+        }
 
         // List to Hold Imported Elements with Dimmer Data that does not Match Formatting Styles.
         public static List<DimmerDistroUnit> UnresolvableUnits = new List<DimmerDistroUnit>();

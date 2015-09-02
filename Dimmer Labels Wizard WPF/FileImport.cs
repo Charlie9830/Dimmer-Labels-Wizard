@@ -76,7 +76,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     Globals.DimmerDistroUnits.Insert(index, new DimmerDistroUnit());
 
                     // Populate object if Columns have been assigned Indexes.
-                    //Directly Imported Data
+                    // Directly Imported Data
                     Globals.DimmerDistroUnits[index].ChannelNumber = channelColumn == -1 ? "" : fields[channelColumn];
                     Globals.DimmerDistroUnits[index].DimmerNumberText = dimmerColumn == -1 ? "" : fields[dimmerColumn];
                     Globals.DimmerDistroUnits[index].InstrumentName = instrumentNameColumn == -1 ? "" : fields[instrumentNameColumn];

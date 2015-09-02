@@ -10,19 +10,27 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for BackgroundColorSetup.xaml
+    /// Interaction logic for LabelGenerationDialog.xaml
     /// </summary>
-    public partial class BackgroundColorTable : UserControl
+    public partial class LabelGenerationDialog : Window
     {
-        public BackgroundColorTable()
+        public LabelGenerationDialog()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Output.ExportToRackLabel();
+
+            Hide();
+            ApplicationWindows.LabelEditorWindow = new LabelEditor();
+            ApplicationWindows.LabelEditorWindow.Show();
         }
     }
 }

@@ -53,6 +53,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\..\..\Third Party Libraries\Extended WPF Toolkit Binaries\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -64,6 +67,14 @@
       <DependentUpon>BackgroundColorTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="BackgroundColorTableViewModel.cs" />
+    <Compile Include="CellControl.xaml.cs">
+      <DependentUpon>CellControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CellControlViewModels.cs" />
+    <Compile Include="ColorControl.xaml.cs">
+      <DependentUpon>ColorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ColorControlViewModel.cs" />
     <Compile Include="DataHandling.cs" />
     <Compile Include="DimmerDistroUnit.cs" />
     <Compile Include="DistroRangeSelector.xaml.cs">
@@ -83,25 +94,53 @@
       <DependentUpon>FileImportDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="FooterCell.cs" />
+    <Compile Include="GlobalApplyWarning.xaml.cs">
+      <DependentUpon>GlobalApplyWarning.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Globals.cs" />
     <Compile Include="HeaderCell.cs" />
     <Compile Include="ImportSettings.xaml.cs">
       <DependentUpon>ImportSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="ImportSettingsViewModel.cs" />
+    <Compile Include="InstrumentNameResolution.xaml.cs">
+      <DependentUpon>InstrumentNameResolution.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InstrumentNameResolutionViewModel.cs" />
     <Compile Include="LabelCell.cs" />
     <Compile Include="DimmerRangeSelectorHost.xaml.cs">
       <DependentUpon>DimmerRangeSelectorHost.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LabelEditor.xaml.cs">
+      <DependentUpon>LabelEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LabelGenerationDialog.xaml.cs">
+      <DependentUpon>LabelGenerationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LabelSetup.xaml.cs">
       <DependentUpon>LabelSetup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LabelSetupViewModel.cs" />
     <Compile Include="LabelStrip.cs" />
+    <Compile Include="LabelStripSelection.cs" />
+    <Compile Include="Output.cs" />
+    <Compile Include="PrintRangeControl.xaml.cs">
+      <DependentUpon>PrintRangeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PrintRangeControlViewModel.cs" />
+    <Compile Include="PrintWindow.xaml.cs">
+      <DependentUpon>PrintWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PrintWindowViewModel.cs" />
     <Compile Include="Racks.cs" />
     <Compile Include="SanitizationDialog.xaml.cs">
       <DependentUpon>SanitizationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SerialConversion.cs" />
+    <Compile Include="SplitCellViewModel.cs" />
+    <Compile Include="SplitCellWindow.xaml.cs">
+      <DependentUpon>SplitCellWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
@@ -111,6 +150,14 @@
     <Page Include="BackgroundColorTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CellControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ColorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="DimmerRangeSelector.xaml">
       <SubType>Designer</SubType>
@@ -128,11 +175,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GlobalApplyWarning.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ImportSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DimmerRangeSelectorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InstrumentNameResolution.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LabelEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LabelGenerationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -152,9 +215,21 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PrintRangeControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PrintWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SanitizationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SplitCellWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UnResolveableData.xaml">
       <SubType>Designer</SubType>

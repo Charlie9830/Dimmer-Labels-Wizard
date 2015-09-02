@@ -23,5 +23,23 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             InitializeComponent();
         }
+
+        private void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            var mainViewModel = DataContext as LabelSetupViewModel;
+            mainViewModel.UpdateModel();
+
+            var backgroundColorTableViewModel = backgroundColorTable.DataContext as BackgroundColorTableViewModel;
+            backgroundColorTableViewModel.UpdateModel();
+
+            // Push Instrument Name Resolutions Back to Model.
+            var instrumentNameViewModel = instrumentNameResolution.DataContext as InstrumentNameResolutionViewModel;
+            instrumentNameViewModel.UpdateModel();
+
+            Hide();
+            ApplicationWindows.LabelGenerationWindow = new LabelGenerationDialog();
+            ApplicationWindows.LabelGenerationWindow.Show();
+
+        }
     }
 }

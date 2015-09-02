@@ -128,6 +128,7 @@ namespace Dimmer_Labels_Wizard_WPF
             OnPropertyChanged("ParseSuccessful");
         }
         #endregion
+
         // Control Method for Parse Methods. Determines Rack Type and calls Parse Methods. Adds unit to Unparseable
         // List if string format does not Match the User set option.
         public void ParseUnitData()
@@ -488,8 +489,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     return RackType.ClashingRange;
                 }
             }
-
-            Console.WriteLine("Control Fell through all of DetermineUnitType(). Return RackType.Unparseable.");
             return RackType.Unparseable;
         }
 
