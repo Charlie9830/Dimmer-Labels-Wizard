@@ -507,7 +507,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 brushes.Add(Globals.GetLabelColor(element));
             }
 
-            uniformityResult = brushes.All(item => item == brushes.First());
+            uniformityResult = brushes.All(item => item.Color == brushes.First().Color);
 
             return brushes;
         }
