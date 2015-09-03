@@ -16,7 +16,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected string _Debug = "Debug Messages";
         protected LabelField _SelectedLabelField = LabelField.Position;
 
-        protected Color _SelectedColor = Colors.White;
+        protected Color _SelectedColor = Colors.Transparent;
 
         // Non Data Bound Fields
         protected bool ModelUpdateRequried = false;
@@ -27,7 +27,12 @@ namespace Dimmer_Labels_Wizard_WPF
         public BackgroundColorTableViewModel()
         {
             _Items.CollectionChanged += _Items_CollectionChanged;
+            _SelectedItems.CollectionChanged += _SelectedItems_CollectionChanged;
             PopulateItems(_SelectedLabelField);
+        }
+
+        private void _SelectedItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
         }
 
         #region Getters/Setters
@@ -61,6 +66,7 @@ namespace Dimmer_Labels_Wizard_WPF
             set
             {
                 _SelectedLabelField = value;
+                _SelectedItems.Clear();
                 PopulateItems(value);
                 OnPropertyChanged("SelectedLabelField");
             }
@@ -75,18 +81,24 @@ namespace Dimmer_Labels_Wizard_WPF
             set
             {
                 _SelectedColor = value;
-                UpdateColorToSelectedItems();
+                PushColorToSelectedItems();
                 OnPropertyChanged("SelectedColor");
             }
         }
         #endregion
 
         #region General Methods
+        // Searches through SelectedItems and Returns Color if all items match, Transparent if Otherwise.
         protected Color GetItemColor()
         {
             if (_SelectedItems.Count == 0)
             {
-                return Colors.White;
+                return Colors.Transparent;
+            }
+
+            if (_SelectedItems.First().BackgroundBrush == null)
+            {
+                return Colors.Transparent;
             }
 
             Color referenceColor = _SelectedItems.First().BackgroundBrush.Color;
@@ -97,7 +109,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else
             {
-                return Colors.White;
+                return Colors.Transparent;
             }
         }
         #endregion
@@ -153,6 +165,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits = 
                         Globals.DimmerDistroUnits.Where(item => item.ChannelNumber == element.ChannelNumber).ToList();
                     _Items.Last().ItemName = element.ChannelNumber;
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
+                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
                 }
             }
         }
@@ -167,7 +181,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.InstrumentName == element.InstrumentName).ToList();
                     _Items.Last().ItemName = element.InstrumentName;
-                    _Items.Last().BackgroundBrush = Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
+                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
                 }
             }
         }
@@ -182,7 +197,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.MulticoreName == element.MulticoreName).ToList();
                     _Items.Last().ItemName = element.MulticoreName;
-                    _Items.Last().BackgroundBrush = Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
+                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
                 }
             }
         }
@@ -197,7 +213,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.Position == element.Position).ToList();
                     _Items.Last().ItemName = element.Position;
-                    _Items.Last().BackgroundBrush = Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
+                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
                 }
             }
         }
@@ -212,7 +229,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.UserField1 == element.UserField1).ToList();
                     _Items.Last().ItemName = element.UserField1;
-                    _Items.Last().BackgroundBrush = Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
+                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
                 }
             }
         }
@@ -227,7 +245,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.UserField2 == element.UserField2).ToList();
                     _Items.Last().ItemName = element.UserField2;
-                    _Items.Last().BackgroundBrush = Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
+                         new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
                 }
             }
         }
@@ -242,7 +261,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.UserField3 == element.UserField3).ToList();
                     _Items.Last().ItemName = element.UserField3;
-                    _Items.Last().BackgroundBrush = Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
+                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
                 }
             }
         }
@@ -257,17 +277,17 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.UserField4 == element.UserField4).ToList();
                     _Items.Last().ItemName = element.UserField4;
-                    _Items.Last().BackgroundBrush = Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
+                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
                 }
             }
         }
-
         #endregion
-
         #endregion
 
         #region Update Methods
-        public void UpdateColorToSelectedItems()
+        // Pushes Selected Colour to all Selected items.
+        public void PushColorToSelectedItems()
         {
             foreach (var element in _SelectedItems)
             {
@@ -281,7 +301,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             if (ModelUpdateRequried == true)
             {
-                Globals.LabelColors.Clear();
+                // Globals.LabelColors.Clear();
                 foreach (var rowViewModel in _Items)
                 {
                     // Only Push update to Model if User has Actually Modified Color Data.
@@ -289,7 +309,18 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         foreach (var element in rowViewModel.DimmerDistroUnits)
                         {
-                            Globals.LabelColors.Add(element, rowViewModel.BackgroundBrush);
+                            if (Globals.LabelColors.ContainsKey(element))
+                            {
+                                // Edit Value if already existing in Dictionary.
+                                Globals.LabelColors[element] = rowViewModel.BackgroundBrush;
+                            }
+
+                            else
+                            {
+                                // Add if not already Existing.
+                                Globals.LabelColors.Add(element, rowViewModel.BackgroundBrush);
+                            }
+                            
                         }
                     }
                 }
@@ -359,7 +390,8 @@ namespace Dimmer_Labels_Wizard_WPF
         protected List<DimmerDistroUnit> _DimmerDistroUnits = new List<DimmerDistroUnit>();
         protected string _ItemName = string.Empty;
         protected bool _IsSelected = false;
-        protected SolidColorBrush _BackgroundBrush = new SolidColorBrush(Colors.White);
+        protected SolidColorBrush _BackgroundBrush = new SolidColorBrush(Colors.Transparent);
+        protected Brush _DisplayBrush = new SolidColorBrush(Colors.Purple);
 
         public bool UserChanged = false;
 
@@ -404,7 +436,48 @@ namespace Dimmer_Labels_Wizard_WPF
                     _BackgroundBrush = value;
                     // Property name string is Directly Referenced in BackgroundColorTableViewModel.
                     OnPropertyChanged("BackgroundBrush");
+                    OnPropertyChanged("DisplayBrush");
                     UserChanged = true;
+                }
+            }
+        }
+
+        // Sets the Value of BackgroundBrush without triggering the "UserChanged" boolean.
+        public SolidColorBrush SneakBackgroundBrush
+        {
+            set
+            {
+                _BackgroundBrush = value;
+                // Property name string is Directly Referenced in BackgroundColorTableViewModel.
+                OnPropertyChanged("DisplayBrush");
+            }
+        }
+
+        public Brush DisplayBrush
+        {
+            get
+            {
+                bool uniformity;
+                List<SolidColorBrush> brushes = CollectBrushes(out uniformity);
+
+                if (uniformity == true)
+                {
+                    return _BackgroundBrush;
+                }
+
+                else
+                {
+                    if (UserChanged == false)
+                    {
+                        // Generate Gradient.
+                        return new LinearGradientBrush(GenerateGradientStops(brushes), 0d);
+                    }
+                    else
+                    {
+                        // User has chosen to Overide non Uniform colors. Display Solid Color
+                        // instead of a Gradient.
+                        return _BackgroundBrush;
+                    }
                 }
             }
         }
@@ -421,6 +494,71 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Property name string is directly referenced in BackgroundColorTableViewModel.
                 OnPropertyChanged("IsSelected");
             }
+        }
+        #endregion
+
+        #region General Methods
+        protected List<SolidColorBrush> CollectBrushes(out bool uniformityResult)
+        {
+            List<SolidColorBrush> brushes = new List<SolidColorBrush>();
+
+            foreach (var element in _DimmerDistroUnits)
+            {
+                brushes.Add(Globals.GetLabelColor(element));
+            }
+
+            uniformityResult = brushes.All(item => item == brushes.First());
+
+            return brushes;
+        }
+
+        protected GradientStopCollection GenerateGradientStops(List<SolidColorBrush> brushes)
+        {
+            List<SolidColorBrush> refinedBrushes = new List<SolidColorBrush>();
+            refinedBrushes.AddRange(brushes.Where(item => 
+            refinedBrushes.Contains(item, new SolidColorBrushComparer()) == false));
+
+            
+            int brushQTY = refinedBrushes.Count;
+            double offset = 1d / brushQTY;
+            GradientStopCollection stops = new GradientStopCollection();
+
+            for (int index = 0; index < brushQTY; index++)
+            {
+                stops.Add(new GradientStop());
+                stops.Last().Color = refinedBrushes[index].Color;
+                stops.Last().Offset = offset * index;
+
+                stops.Add(new GradientStop());
+                stops.Last().Color = refinedBrushes[index].Color;
+                stops.Last().Offset = (offset * index) + offset;
+            }
+
+            return stops;
+        }
+        #endregion
+
+        
+    }
+
+    public class SolidColorBrushComparer : IEqualityComparer<SolidColorBrush>
+    {
+        #region Interface Implementations
+        public bool Equals(SolidColorBrush x, SolidColorBrush y)
+        {
+            if (x.Color == y.Color)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public int GetHashCode(SolidColorBrush obj)
+        {
+            return obj.GetHashCode();
         }
         #endregion
     }

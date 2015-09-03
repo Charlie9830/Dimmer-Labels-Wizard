@@ -34,7 +34,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else
             {
-                return new SolidColorBrush(Colors.White);
+                return null;
             }
         }
 
