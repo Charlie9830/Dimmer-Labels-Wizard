@@ -6,5 +6,29 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <Image x:Key="HelpIcon24" Source="/Resources/help-circled-24-000000.png" Stretch="Uniform"/>
+        <Style x:Key="HelpButton" TargetType="{x:Type Button}">
+            <Style.Setters>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <TextBlock x:Name="text" HorizontalAlignment="Center" FontFamily="Segoe UI" FontWeight="Normal" FontSize="12" Foreground="{TemplateBinding Foreground}" TextDecorations="Underline">
+                                    Help
+                            </TextBlock>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Foreground" Value="#FF6A6A6A"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="#FFC3C3C3"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Foreground" Value="#FF000000"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
     </Application.Resources>
 </Application>

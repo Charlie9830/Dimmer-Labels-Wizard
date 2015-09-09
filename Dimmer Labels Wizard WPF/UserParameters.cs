@@ -262,7 +262,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
-    [Serializable()]
+    
     public struct DimmerRange : IComparable<DimmerRange>
     {
         public DimmerRange(int universe, int firstChannel, int lastChannel)
@@ -287,7 +287,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
     }
 
-    [Serializable()]
+    
     public struct DistroRange : IComparable<DistroRange>
     {
         public DistroRange(int firstChannel, int lastChannel)
@@ -308,7 +308,6 @@ namespace Dimmer_Labels_Wizard_WPF
         }
     }
 
-    [Serializable()]
     public class UserParametersStorage
     {
         public ImportFormatting DimmerImportFormat;

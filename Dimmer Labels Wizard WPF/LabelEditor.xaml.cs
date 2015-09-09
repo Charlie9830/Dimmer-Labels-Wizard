@@ -467,7 +467,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Break");
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)

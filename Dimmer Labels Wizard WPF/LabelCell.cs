@@ -73,6 +73,8 @@ namespace Dimmer_Labels_Wizard_WPF
             storage.TextColor = new ByteColor(_TextBrush.Color);
             storage.BackgroundColor = new ByteColor(_BackgroundBrush.Color);
 
+            storage.PreviousReference = PreviousReference;
+
             return storage;
         }
         #endregion
@@ -106,7 +108,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
-    [Serializable()]
+    
     public class LabelCellStorage
     {
         public DimmerDistroUnit PreviousReference;
@@ -115,7 +117,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public ByteColor BackgroundColor;
     }
 
-    [Serializable()]
+    
     public struct ByteColor
     {
         public ByteColor(byte a, byte r, byte g, byte b)

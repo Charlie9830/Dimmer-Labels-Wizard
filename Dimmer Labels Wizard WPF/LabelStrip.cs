@@ -1175,7 +1175,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
-    [Serializable()]
+    
     public class LabelStripStorage
     {
         public List<HeaderCellStorage> HeaderCells = new List<HeaderCellStorage>();

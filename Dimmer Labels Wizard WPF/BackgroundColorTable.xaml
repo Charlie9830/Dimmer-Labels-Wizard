@@ -30,7 +30,7 @@
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
         <DataGrid x:Name="dataGrid" ItemsSource="{Binding Path=Items}" HorizontalScrollBarVisibility="Disabled" CanUserAddRows="False" RowStyle="{StaticResource RowStyle}" AutoGenerateColumns="False" SelectionMode="Extended" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" Height="419" Width="422">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Item" Width="220" Binding="{Binding ItemName}"/>
+                <DataGridTextColumn Header="Item" Width="220" IsReadOnly="True" Binding="{Binding ItemName}"/>
                 <DataGridTemplateColumn Header="Colour" Width="200" CellTemplate="{StaticResource ColorColumnTemplate}"/>
             </DataGrid.Columns>
         </DataGrid>

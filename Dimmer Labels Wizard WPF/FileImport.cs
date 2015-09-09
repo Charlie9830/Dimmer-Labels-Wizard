@@ -12,6 +12,30 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public static string FilePath;
 
+        public static bool ValidateFile(string filePath, out string errorMessage)
+        {
+            CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(filePath);
+            file.SetDelimiters(",");
+
+            try
+            {
+                while (!file.EndOfData)
+                {
+                    file.ReadLine();
+                }
+            }
+
+            catch (CSVRead.MalformedLineException e)
+            {
+                errorMessage = e.Message;
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
+        }
+
+
         public static string[] CollectHeaders()
         {
             // Create new CSV object Pointed to File Location.

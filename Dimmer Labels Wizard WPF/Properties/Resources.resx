@@ -133,4 +133,28 @@
   <data name="PlusSign12" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Plus-Sign-12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="bold24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bold24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="earth24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\earth24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="italic24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\italic24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="underline24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\underline24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crosshair24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crosshair24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="magnifyMinus24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\magnifyMinus24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="magnifyPlus24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\magnifyPlus24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="zoomToFit24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoomToFit24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

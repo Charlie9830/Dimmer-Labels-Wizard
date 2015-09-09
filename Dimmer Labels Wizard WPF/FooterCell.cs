@@ -35,6 +35,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Set LabelCell Values.
             TextBrush = new SolidColorBrush(storage.BaseStorage.TextColor.ToColor());
             BackgroundBrush = new SolidColorBrush(storage.BaseStorage.BackgroundColor.ToColor());
+            PreviousReference = storage.BaseStorage.PreviousReference;
         }
 
         // Top Line Properties
@@ -159,7 +160,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
-    [Serializable()]
+    
     public class FooterCellStorage
     {
         public string TopData;

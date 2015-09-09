@@ -34,7 +34,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else
             {
-                return null;
+                return new SolidColorBrush(Colors.Transparent);
             }
         }
 
@@ -46,7 +46,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public static List<DimmerDistroUnit> ClashingRangeData = new List<DimmerDistroUnit>();
 
         // Represents DMX Addresses.
-        [Serializable()]
+        
         public struct DMX
         {
             public int Universe;

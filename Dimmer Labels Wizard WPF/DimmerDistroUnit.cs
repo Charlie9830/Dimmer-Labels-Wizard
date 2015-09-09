@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    [Serializable()]
+    
     public class DimmerDistroUnit : ViewModelBase, IComparable<DimmerDistroUnit>
     {
         public DimmerDistroUnit()
@@ -712,7 +712,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
-    [Serializable()]
+    
     public class DimmerDistroUnitStorage
     {
         public string ChannelNumber;

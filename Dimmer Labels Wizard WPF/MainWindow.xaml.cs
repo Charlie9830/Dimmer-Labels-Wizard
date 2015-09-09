@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -85,6 +86,29 @@ namespace Dimmer_Labels_Wizard_WPF
                 ApplicationWindows.LabelSetupWindow = new LabelSetup();
                 ApplicationWindows.LabelSetupWindow.Show();
             }
+        }
+
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var fileDialog = new OpenFileDialog();
+            fileDialog.Title = "Import File";
+            fileDialog.Filter = "Comma Seperated Values File (*.csv) | *.csv";
+            fileDialog.FilterIndex = 0;
+            fileDialog.DefaultExt = ".csv";
+
+            if (fileDialog.ShowDialog() == true)
+            {
+                string message = string.Empty;
+                FileImport.ValidateFile(fileDialog.FileName, out message);
+
+                MessageBox.Show(message);
+            }
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            Help helpWindow = new Help();
+            helpWindow.Show();
         }
     }
 }

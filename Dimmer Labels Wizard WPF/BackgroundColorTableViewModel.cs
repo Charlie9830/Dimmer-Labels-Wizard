@@ -165,8 +165,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits = 
                         Globals.DimmerDistroUnits.Where(item => item.ChannelNumber == element.ChannelNumber).ToList();
                     _Items.Last().ItemName = element.ChannelNumber;
-                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
-                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element);
                 }
             }
         }
@@ -181,8 +180,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.InstrumentName == element.InstrumentName).ToList();
                     _Items.Last().ItemName = element.InstrumentName;
-                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
-                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element);
                 }
             }
         }
@@ -197,8 +195,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.MulticoreName == element.MulticoreName).ToList();
                     _Items.Last().ItemName = element.MulticoreName;
-                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
-                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element);
                 }
             }
         }
@@ -213,8 +210,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.Position == element.Position).ToList();
                     _Items.Last().ItemName = element.Position;
-                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
-                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element);
                 }
             }
         }
@@ -229,8 +225,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.UserField1 == element.UserField1).ToList();
                     _Items.Last().ItemName = element.UserField1;
-                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
-                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element);
                 }
             }
         }
@@ -245,8 +240,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.UserField2 == element.UserField2).ToList();
                     _Items.Last().ItemName = element.UserField2;
-                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
-                         new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element);
                 }
             }
         }
@@ -261,8 +255,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.UserField3 == element.UserField3).ToList();
                     _Items.Last().ItemName = element.UserField3;
-                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
-                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element);
                 }
             }
         }
@@ -277,8 +270,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Items.Last().DimmerDistroUnits =
                         Globals.DimmerDistroUnits.Where(item => item.UserField4 == element.UserField4).ToList();
                     _Items.Last().ItemName = element.UserField4;
-                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element) == null ?
-                        new SolidColorBrush(Colors.Transparent) : Globals.GetLabelColor(element);
+                    _Items.Last().SneakBackgroundBrush = Globals.GetLabelColor(element);
                 }
             }
         }

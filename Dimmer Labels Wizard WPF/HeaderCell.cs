@@ -28,6 +28,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Set LabelCell Values.
             TextBrush = new SolidColorBrush(storageObject.BaseStorage.TextColor.ToColor());
             BackgroundBrush = new SolidColorBrush(storageObject.BaseStorage.BackgroundColor.ToColor());
+            PreviousReference = storageObject.BaseStorage.PreviousReference;
         }
 
         protected double _FontSize;
@@ -77,7 +78,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
     }
 
-    [Serializable()]
+    
     public class HeaderCellStorage
     {
         public string Data;
