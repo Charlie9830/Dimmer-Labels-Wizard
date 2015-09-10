@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="ImportSettings" Height="507.268" Width="742.124">
+        Title="ImportSettings" Height="581.268" Width="742.124">
 
     <Window.DataContext>
         <local:ImportSettingsViewModel/>
@@ -14,12 +14,12 @@
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
         <Label x:Name="titleLabel" Content="Import Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="21.333" FontFamily="Segoe UI Semibold"/>
         <Label x:Name="subTitle1" Content="Dimmer Ranges" HorizontalAlignment="Left" Margin="9,50,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="subTitle1_Copy" IsEnabled="{Binding Path=DimmerLabelRangeEnable}" Content="Dimmer Data Format" HorizontalAlignment="Left" Margin="9,257,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="subTitle1_Copy1" Content="Distro Ranges" HorizontalAlignment="Left" Margin="271,48,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="subTitle1_Copy2" IsEnabled="{Binding Path=DistroLabelRangeEnable}" Content="Distro Data Format" HorizontalAlignment="Left" Margin="271,258,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="subTitle1_Copy" IsEnabled="{Binding Path=DimmerLabelRangeEnable}" Content="Dimmer Data Format" HorizontalAlignment="Left" Margin="10,336,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="subTitle1_Copy1" Content="Distro Ranges" HorizontalAlignment="Left" Margin="275,48,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <Label x:Name="subTitle1_Copy2" IsEnabled="{Binding Path=DistroLabelRangeEnable}" Content="Distro Data Format" HorizontalAlignment="Left" Margin="275,342,0,0" VerticalAlignment="Top" FontSize="16"/>
         <CheckBox x:Name="DimmersCheckBox" IsChecked="{Binding Path=GenerateDimmerLabels}" Content="Generate Labels" HorizontalAlignment="Left" Margin="10,81,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="DistrosCheckBox" IsChecked="{Binding Path=GenerateDistroLabels}" Content="Generate Labels" HorizontalAlignment="Left" Margin="271,81,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="subTitle1_Copy3" Content="CSV Column Mapping" HorizontalAlignment="Left" Margin="466,47,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <CheckBox x:Name="DistrosCheckBox" IsChecked="{Binding Path=GenerateDistroLabels}" Content="Generate Labels" HorizontalAlignment="Left" Margin="275,81,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="subTitle1_Copy3" Content="CSV Column Mapping" HorizontalAlignment="Left" Margin="466,50,0,0" VerticalAlignment="Top" FontSize="16"/>
         <Grid HorizontalAlignment="Left" Height="285" Margin="466,83,0,0" VerticalAlignment="Top"  Width="263">
             <Label x:Name="subTitle1_Copy4" Content="Label Text Field" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
             <Label x:Name="subTitle1_Copy5" Content="CSV Column Header" HorizontalAlignment="Left" Margin="133,9,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
@@ -42,24 +42,22 @@
             <ComboBox x:Name="comboBox_Copy6" SelectedItem="{Binding Path=UserField3SelectedItem}" ItemsSource="{Binding Path=CSVColumnHeaders}" HorizontalAlignment="Left" Margin="133,226,0,0" VerticalAlignment="Top" Width="120"/>
             <ComboBox x:Name="comboBox_Copy7" SelectedItem="{Binding Path=UserField4SelectedItem}" ItemsSource="{Binding Path=CSVColumnHeaders}" HorizontalAlignment="Left" Margin="133,253,0,0" VerticalAlignment="Top" Width="120"/>
         </Grid>
-        <Button x:Name="button" Style="{StaticResource HelpButton}" HorizontalAlignment="Left" Margin="229,81,0,0" VerticalAlignment="Top" Width="30" Height="20"/>
-        <Button x:Name="button_Copy" Style="{StaticResource HelpButton}" HorizontalAlignment="Left" Margin="420,81,0,0" VerticalAlignment="Top" Width="30" Height="20" FontFamily="Symbol"/>
-        <Button x:Name="button_Copy1" Style="{StaticResource HelpButton}" HorizontalAlignment="Left" Margin="694,77,0,0" VerticalAlignment="Top" Width="30" Height="20"/>
-        <ComboBox x:Name="comboBox1" IsEnabled="{Binding Path=DimmerLabelRangeEnable}" ItemsSource="{Binding Path=DimmerDataFormats}" SelectedItem="{Binding Path=DimmerDataFormatSelectedItem}" SelectedIndex="{Binding Path=DimmerDataFormatSelectedIndex, Mode=OneWayToSource}"  HorizontalAlignment="Left" Margin="11,288,0,0" VerticalAlignment="Top" Width="150"/>
-        <ComboBox x:Name="comboBox1_Copy" IsEnabled="{Binding Path=DistroLabelRangeEnable}" ItemsSource="{Binding Path=DistroDataFormats}" SelectedItem="{Binding Path=DistroDataFormatSelectedItem}" SelectedIndex="{Binding Path=DistroDataFormatSelectedIndex, Mode=OneWayToSource}" HorizontalAlignment="Left" Margin="271,289,0,0" VerticalAlignment="Top" Width="150"/>
-        <RadioButton x:Name="radioButton" IsEnabled="{Binding Path=DimmerLabelRangeEnable}" IsChecked="{Binding Path=DimmerUniverseDataEnable}"  GroupName="A" Content="Universe Data in seperate Column" HorizontalAlignment="Left" Margin="9,334,0,0" VerticalAlignment="Top"/>
-        <RadioButton x:Name="radioButton_Copy" IsEnabled="{Binding Path=DimmerLabelRangeEnable}" IsChecked="True" GroupName="A" Content="No Universe Data in CSV" HorizontalAlignment="Left" Margin="9,318,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox1_Copy1" IsEnabled="{Binding Path=DimmerUniverseDataEnable}"  ItemsSource="{Binding Path=CSVColumnHeaders}" SelectedItem="{Binding Path=UniverseDataColumnSelectedItem}" HorizontalAlignment="Left" Margin="9,385,0,0" VerticalAlignment="Top" Width="150"/>
-        <Label x:Name="label" IsEnabled="{Binding Path=DimmerUniverseDataEnable}"  Content="Column Header" HorizontalAlignment="Left" Margin="9,359,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox1_Copy2" IsEnabled="{Binding Path=DimmerUniverseDataEnable}"  ItemsSource="{Binding Path=DimmerDataFormats}" SelectedItem="{Binding Path=UniverseDataFormatSelectedItem}" SelectedIndex="{Binding Path=UniverseDataFormatSelectedIndex,Mode=OneWayToSource}" HorizontalAlignment="Left" Margin="9,433,0,0" VerticalAlignment="Top" Width="150"/>
-        <Label x:Name="label_Copy" IsEnabled="{Binding Path=DimmerUniverseDataEnable}" Content="Data Format" HorizontalAlignment="Left" Margin="9,407,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label_Copy1" IsEnabled="{Binding Path=DistroLabelRangeEnable}" Content="Distro Number Prefix Letter(s)" HorizontalAlignment="Left" Margin="271,319,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" IsEnabled="{Binding Path=DistroLabelRangeEnable}" Text="{Binding Path=DistroNumberPrefix}" HorizontalAlignment="Left" Height="23" Margin="271,345,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="button_Copy2" Style="{StaticResource HelpButton}" HorizontalAlignment="Left" Margin="229,266,0,0" VerticalAlignment="Top" Width="30" Height="20"/>
-        <Button x:Name="button_Copy3" Style="{StaticResource HelpButton}" HorizontalAlignment="Left" Margin="420,267,0,0" VerticalAlignment="Top" Width="30" Height="20"/>
-        <local:DimmerRangeSelectorHost x:Name="dimmerRangeSelectorHost" HorizontalAlignment="Left" IsEnabled="{Binding Path=DimmerLabelRangeEnable}"  DimmerRanges="{Binding Path=DimmerRanges}" Margin="11,101,0,0" VerticalAlignment="Top" Width="249"/>
-        <local:DistroRangeSelectorHost x:Name="distroRangeSelectorHost" HorizontalAlignment="Left" IsEnabled="{Binding Path=DistroLabelRangeEnable}" DistroRanges="{Binding Path=DistroRanges}" Margin="271,101,0,0" VerticalAlignment="Top" Width="Auto" Height="Auto"/>
-        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="649,440,0,0" VerticalAlignment="Top" Width="75" Click="NextButton_Click"/>
+        <Button x:Name="button" Style="{StaticResource HelpButton}" HorizontalAlignment="Left" Margin="230,57,0,0" VerticalAlignment="Top" Width="30" Height="20"/>
+        <Button x:Name="button_Copy" Style="{StaticResource HelpButton}" HorizontalAlignment="Left" Margin="423,58,0,0" VerticalAlignment="Top" Width="30" Height="20" FontFamily="Symbol"/>
+        <Button x:Name="button_Copy1" Style="{StaticResource HelpButton}" HorizontalAlignment="Left" Margin="694,59,0,0" VerticalAlignment="Top" Width="30" Height="20"/>
+        <ComboBox x:Name="comboBox1" IsEnabled="{Binding Path=DimmerLabelRangeEnable}" ItemsSource="{Binding Path=DimmerDataFormats}" SelectedItem="{Binding Path=DimmerDataFormatSelectedItem}" SelectedIndex="{Binding Path=DimmerDataFormatSelectedIndex, Mode=OneWayToSource}"  HorizontalAlignment="Left" Margin="12,367,0,0" VerticalAlignment="Top" Width="150"/>
+        <ComboBox x:Name="comboBox1_Copy" IsEnabled="{Binding Path=DistroLabelRangeEnable}" ItemsSource="{Binding Path=DistroDataFormats}" SelectedItem="{Binding Path=DistroDataFormatSelectedItem}" SelectedIndex="{Binding Path=DistroDataFormatSelectedIndex, Mode=OneWayToSource}" HorizontalAlignment="Left" Margin="275,373,0,0" VerticalAlignment="Top" Width="150"/>
+        <RadioButton x:Name="radioButton" IsEnabled="{Binding Path=DimmerLabelRangeEnable}" IsChecked="{Binding Path=DimmerUniverseDataEnable}"  GroupName="A" Content="Universe Data in seperate Column" HorizontalAlignment="Left" Margin="10,413,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="radioButton_Copy" IsEnabled="{Binding Path=DimmerLabelRangeEnable}" IsChecked="True" GroupName="A" Content="No Universe Data in CSV" HorizontalAlignment="Left" Margin="10,397,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox1_Copy1" IsEnabled="{Binding Path=DimmerUniverseDataEnable}"  ItemsSource="{Binding Path=CSVColumnHeaders}" SelectedItem="{Binding Path=UniverseDataColumnSelectedItem}" HorizontalAlignment="Left" Margin="10,464,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label x:Name="label" IsEnabled="{Binding Path=DimmerUniverseDataEnable}"  Content="Column Header" HorizontalAlignment="Left" Margin="10,438,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox1_Copy2" IsEnabled="{Binding Path=DimmerUniverseDataEnable}"  ItemsSource="{Binding Path=DimmerDataFormats}" SelectedItem="{Binding Path=UniverseDataFormatSelectedItem}" SelectedIndex="{Binding Path=UniverseDataFormatSelectedIndex,Mode=OneWayToSource}" HorizontalAlignment="Left" Margin="10,512,0,0" VerticalAlignment="Top" Width="150"/>
+        <Label x:Name="label_Copy" IsEnabled="{Binding Path=DimmerUniverseDataEnable}" Content="Data Format" HorizontalAlignment="Left" Margin="10,486,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label_Copy1" IsEnabled="{Binding Path=DistroLabelRangeEnable}" Content="Distro Number Prefix Letter(s)" HorizontalAlignment="Left" Margin="275,403,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox" IsEnabled="{Binding Path=DistroLabelRangeEnable}" Text="{Binding Path=DistroNumberPrefix}" HorizontalAlignment="Left" Height="23" Margin="275,429,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <local:DimmerRangeSelectorHost x:Name="dimmerRangeSelectorHost" HorizontalAlignment="Left" IsEnabled="{Binding Path=DimmerLabelRangeEnable}"  DimmerRanges="{Binding Path=DimmerRanges}" Margin="11,101,0,0" VerticalAlignment="Top" Width="249" Height="235"/>
+        <local:DistroRangeSelectorHost x:Name="distroRangeSelectorHost" HorizontalAlignment="Left" IsEnabled="{Binding Path=DistroLabelRangeEnable}" DistroRanges="{Binding Path=DistroRanges}" Margin="275,101,0,0" VerticalAlignment="Top" Width="Auto" Height="235"/>
+        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="649,519,0,0" VerticalAlignment="Top" Width="75" Click="NextButton_Click"/>
 
     </Grid>
 </Window>
