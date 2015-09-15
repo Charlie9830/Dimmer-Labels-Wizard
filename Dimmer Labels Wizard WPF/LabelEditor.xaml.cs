@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -29,11 +30,15 @@ namespace Dimmer_Labels_Wizard_WPF
         private ScaleTransform LabelCanvasScaleTransform = new ScaleTransform();
         private TranslateTransform LabelCanvasTranslateTransform = new TranslateTransform();
 
+        // Selection Mode
+        private CellSelectionMode SelectionMode = CellSelectionMode.Cell;
+
         // Drag Selection
         private Point MouseDownLocation;
         private const double DragThreshold = 5;
         private bool isDragging = false;
         private List<Border> selectedOutlines = new List<Border>();
+        private List<TextBlock> selectedTextBlocks = new List<TextBlock>();
 
         // Dialog First Time Tracking
         private bool GlobalApplyWarningShowAgain = true;
@@ -70,26 +75,21 @@ namespace Dimmer_Labels_Wizard_WPF
 
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
+            ActiveLabelStrip.SelectedFooterCellTextChanged += ActiveLabelStrip_SelectedFooterCellTextChanged;
 
             HeaderCellControl.HeaderViewModel.RenderRequested += Control_RenderRequested;
             FooterTopCellControl.FooterTopViewModel.RenderRequested += Control_RenderRequested;
             FooterMiddleCellControl.FooterMiddleViewModel.RenderRequested += Control_RenderRequested;
-            FooterBottomCellControl.FooterBottomViewModel.RenderRequested += Control_RenderRequested;
 
-            ColorControl.ViewModel.RenderRequested += Control_RenderRequested;
 
             HeaderCellControl.HeaderViewModel.GlobalApplySelected += CellControl_GlobalApplySelected;
             FooterTopCellControl.FooterTopViewModel.GlobalApplySelected += CellControl_GlobalApplySelected;
             FooterMiddleCellControl.FooterMiddleViewModel.GlobalApplySelected += CellControl_GlobalApplySelected;
-            FooterBottomCellControl.FooterBottomViewModel.GlobalApplySelected += CellControl_GlobalApplySelected;
-
-            ColorControl.ViewModel.GlobalApplySelected += CellControl_GlobalApplySelected;
 
             // Set Data Contexts for Cell Control Binding.
             HeaderCellControl.DataContext = HeaderCellControl.HeaderViewModel;
             FooterTopCellControl.DataContext = FooterTopCellControl.FooterTopViewModel;
             FooterMiddleCellControl.DataContext = FooterMiddleCellControl.FooterMiddleViewModel;
-            FooterBottomCellControl.DataContext = FooterBottomCellControl.FooterBottomViewModel;
         }
 
         void ForceRender()
@@ -100,7 +100,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Offset Point is given in WPF Pixels (Inches).
                 ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20),UserParameters.SingleLabel);
                 ActiveLabelStrip.ReAttachAdorners(LabelCanvas);
-                CollectSelectionEvents();
+                CollectSelectionEvents(SelectionMode);
             }
         }
 
@@ -118,42 +118,57 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             FooterTopCellControl.FooterTopViewModel.FooterCells.Clear();
             FooterMiddleCellControl.FooterMiddleViewModel.FooterCells.Clear();
-            FooterBottomCellControl.FooterBottomViewModel.FooterCells.Clear();
 
             foreach (var element in ActiveLabelStrip.SelectedFooters)
             {
                 FooterTopCellControl.FooterTopViewModel.FooterCells.Add(element);
                 FooterMiddleCellControl.FooterMiddleViewModel.FooterCells.Add(element);
-                FooterBottomCellControl.FooterBottomViewModel.FooterCells.Add(element);
             }
         }
 
-        void PopulateColorControl()
-        {
-            ColorControl.ViewModel.SelectedHeaderCells.Clear();
-            ColorControl.ViewModel.SelectedFooterCells.Clear();
-
-            foreach (var element in ActiveLabelStrip.SelectedHeaders)
-            {
-                ColorControl.ViewModel.SelectedHeaderCells.Add(element);
-            }
-
-            foreach (var element in ActiveLabelStrip.SelectedFooters)
-            {
-                ColorControl.ViewModel.SelectedFooterCells.Add(element);
-            }
-
-            ColorControl.ViewModel.ActiveLabelStrip = ActiveLabelStrip.LabelStrip;
-        }
-
-        void CollectSelectionEvents()
+        void CollectSelectionEvents(CellSelectionMode selectionMode)
         {
             foreach (var element in LabelCanvas.Children)
             {
                 Border outline = (Border)element;
 
-                outline.MouseDown += outline_MouseDown;
-                outline.MouseUp += outline_MouseUp;
+                if (selectionMode == CellSelectionMode.Cell)
+                {
+                    // Connect incoming Events.
+                    outline.MouseDown += outline_MouseDown;
+                    outline.MouseUp += outline_MouseUp;
+
+                    // Disconnect Outgoing Events.
+                    var textCanvas = outline.Child as Canvas;
+                    foreach (var child in textCanvas.Children)
+                    {
+                        if (child is TextBlock)
+                        {
+                            var textBlock = child as TextBlock;
+                            textBlock.MouseDown -= TextBlock_MouseDown;
+                            textBlock.MouseUp -= TextBlock_MouseUp;
+                        }
+                    }
+                }
+
+                if (selectionMode == CellSelectionMode.Text)
+                {
+                    // Connect incoming Events.
+                    var textCanvas = outline.Child as Canvas;
+                    foreach (var child in textCanvas.Children)
+                    {
+                        if (child is TextBlock)
+                        {
+                            var textBlock = child as TextBlock;
+                            textBlock.MouseDown += TextBlock_MouseDown;
+                            textBlock.MouseUp += TextBlock_MouseUp;
+                        }
+                    }
+
+                    // Disconnect Outgoing Events.
+                    outline.MouseDown -= outline_MouseDown;
+                    outline.MouseUp -= outline_MouseUp;
+                }
             }
         }
 
@@ -331,18 +346,39 @@ namespace Dimmer_Labels_Wizard_WPF
             GeometryHitTestParameters geometryHitTest = new GeometryHitTestParameters(new RectangleGeometry(dragRect));
 
             VisualTreeHelper.HitTest(LabelAreaGrid, null, new HitTestResultCallback(ResultCallBack), geometryHitTest);
-            ActiveLabelStrip.MakeSelections(selectedOutlines);
 
-            selectedOutlines.Clear();
+            if (SelectionMode == CellSelectionMode.Cell)
+            {
+                ActiveLabelStrip.MakeSelections(selectedOutlines);
+                selectedOutlines.Clear();
+            }
+
+            if (SelectionMode == CellSelectionMode.Text)
+            {
+                ActiveLabelStrip.MakeSelections(selectedTextBlocks);
+                selectedTextBlocks.Clear();
+            }
+            
             DragRectangle.Width = 0;
             DragRectangle.Height = 0;
         }
 
         private HitTestResultBehavior ResultCallBack(HitTestResult result)
         {
-            if (result.VisualHit.GetType() == typeof(Border))
+            if (SelectionMode == CellSelectionMode.Cell)
             {
-                selectedOutlines.Add(result.VisualHit as Border);
+                if (result.VisualHit.GetType() == typeof(Border))
+                {
+                    selectedOutlines.Add(result.VisualHit as Border);
+                }
+            }
+
+            else
+            {
+                if (result.VisualHit is TextBlock)
+                {
+                    selectedTextBlocks.Add(result.VisualHit as TextBlock);
+                }
             }
 
             return HitTestResultBehavior.Continue;
@@ -386,7 +422,6 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 MouseDownLocation = e.GetPosition(CanvasBorder);
             }
-            
         }
 
         void outline_MouseUp(object sender, MouseButtonEventArgs e)
@@ -395,12 +430,33 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (isDragging == false)
             {
-                ActiveLabelStrip.MakeSelection(sender);
+                ActiveLabelStrip.MakeSelection(sender as Border);
             }
 
             if (isDragging == true)
             {
                 CompleteDragSelection();
+            }
+        }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+        }
+
+        private void TextBlock_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (SelectionMode == CellSelectionMode.Text)
+            {
+                e.Handled = true;
+                if (isDragging == false)
+                {
+                    ActiveLabelStrip.MakeSelection(sender as TextBlock);
+                }
+
+                if (isDragging == true)
+                {
+                    CompleteDragSelection();
+                }
             }
         }
 
@@ -450,7 +506,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-
         void RackSelector_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue != null)
@@ -476,7 +531,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
             FooterTopCellControl.FooterTopViewModel.SetTitle("Footer Top Text");
             FooterMiddleCellControl.FooterMiddleViewModel.SetTitle("Footer Middle Text");
-            FooterBottomCellControl.FooterBottomViewModel.SetTitle("Footer Bottom Text");
 
         }
 
@@ -522,14 +576,19 @@ namespace Dimmer_Labels_Wizard_WPF
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
         {
             PopulateHeaderCellControls();
-            PopulateColorControl();
         }
 
         void ActiveLabelStrip_SelectedFootersChanged(object sender, EventArgs e)
         {
             PopulateFooterCellsControls();
-            PopulateColorControl();
         }
+
+        private void ActiveLabelStrip_SelectedFooterCellTextChanged(object sender, EventArgs e)
+        {
+            // This will change when new Popup UI is Implemented. Just needs to not Throw an exception at Event Declaration
+            // right now.
+        }
+
 
         private void SplitCellsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -585,6 +644,26 @@ namespace Dimmer_Labels_Wizard_WPF
             InitiateLoad();
         }
 
+        private void SelectionModeToggle_Click(object sender, RoutedEventArgs e)
+        {
+            var toggle = sender as ToggleButton;
+
+            if (toggle.IsChecked == true)
+            {
+                SelectionMode = CellSelectionMode.Text;
+            }
+
+            else
+            {
+                SelectionMode = CellSelectionMode.Cell;
+            }
+
+            ActiveLabelStrip.ClearSelections();
+            CollectSelectionEvents(SelectionMode);
+        }
+
         #endregion
+
+
     }
 }

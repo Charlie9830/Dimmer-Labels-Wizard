@@ -18,6 +18,10 @@ namespace Dimmer_Labels_Wizard_WPF
     public enum LabelField { NoAssignment, ChannelNumber, InstrumentName, MulticoreName, Position, UserField1 ,UserField2, UserField3, UserField4}
 
     public enum RadioButtonSelection { None, All, Rack, Selection };
+
+    public enum CellSelectionMode { Cell, Text};
+
+    public enum FooterTextPosition { Top, Middle, Bottom};
 }
 
 

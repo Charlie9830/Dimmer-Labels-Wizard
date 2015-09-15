@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -158,6 +159,24 @@ namespace Dimmer_Labels_Wizard_WPF
             return storage;
         }
         #endregion
+    }
+
+    // Wraps a Footercell together with a TextBlock Position Enumeration.
+    public class FooterCellWrapper
+    {
+        public FooterCell Cell { get; set; }
+        public FooterTextPosition Position { get; set; }
+
+        public FooterCellWrapper()
+        {
+
+        }
+
+        public FooterCellWrapper(FooterCell cell, FooterTextPosition position)
+        {
+            Cell = cell;
+            Position = position;
+        }
     }
 
     

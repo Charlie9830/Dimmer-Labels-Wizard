@@ -13,9 +13,20 @@ namespace Dimmer_Labels_Wizard_WPF
 {
     public class LabelStripSelection
     {
+        // Debugging.
+        public int AdornerCount
+        {
+            get
+            {
+                return _FooterAdorners.Count;
+            }
+        }
+
         public LabelStrip LabelStrip;
         public List<HeaderCell> SelectedHeaders = new List<HeaderCell>();
         public List<FooterCell> SelectedFooters = new List<FooterCell>();
+
+        public List<FooterCellWrapper> SelectedFooterCellText = new List<FooterCellWrapper>();
 
         // These lists are expicitly linked and Tracking SelectedHeaders and SelectedFooters
         private List<SelectionAdorner> _HeaderAdorners = new List<SelectionAdorner>();
@@ -35,15 +46,13 @@ namespace Dimmer_Labels_Wizard_WPF
             _AdornerLayer = AdornerLayer.GetAdornerLayer(labelStripCanvas);
         }
 
-        public void MakeSelection(object selectionOutline)
+        public void MakeSelection(Border selectedBorder)
         {
-            Border outline = (Border)selectionOutline;
-
-            if (outline.Tag != null)
+            if (selectedBorder.Tag != null)
             {
-                if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
+                if (selectedBorder.Tag.GetType() == typeof(HeaderCellWrapper))
                 {
-                    HeaderCellWrapper wrapper = (HeaderCellWrapper)outline.Tag;
+                    HeaderCellWrapper wrapper = (HeaderCellWrapper)selectedBorder.Tag;
                     List<HeaderCell> headerCells = wrapper.Cells;
 
                     foreach (var element in headerCells)
@@ -51,38 +60,65 @@ namespace Dimmer_Labels_Wizard_WPF
                         if (SelectedHeaders.Contains(element) == false)
                         {
                             // Add it as a Selection.
-                            AddHeaderAdorner(outline);
+                            AddHeaderAdorner(selectedBorder);
                             SelectedHeaders.Add(element);
                         }
 
                         else
                         {
                             // Remove it from Selections.
-                            RemoveHeaderAdorner(outline);
+                            RemoveHeaderAdorner(selectedBorder);
                             SelectedHeaders.Remove(element);
                         }
                     }
                     OnSelectedHeadersChanged(new EventArgs());
                 }
 
-                if (outline.Tag.GetType() == typeof(FooterCell))
+                if (selectedBorder.Tag.GetType() == typeof(FooterCell))
                 {
-                    FooterCell footerCell = (FooterCell)outline.Tag;
+                    FooterCell footerCell = (FooterCell)selectedBorder.Tag;
 
                     if (SelectedFooters.Contains(footerCell) == false)
                     {
                         // Add it as a Selection.
-                        AddFooterAdorner(outline);
+                        AddFooterAdorner(selectedBorder);
                         SelectedFooters.Add(footerCell);
                     }
 
                     else
                     {
                         // Remove it from Selections.
-                        RemoveFooterAdorner(outline);
+                        RemoveFooterAdorner(selectedBorder);
                         SelectedFooters.Remove(footerCell);
                     }
                     OnSelectedFootersChanged(new EventArgs());
+                }
+            }
+        }
+
+        public void MakeSelection(TextBlock selectedTextBlock)
+        {
+            if (selectedTextBlock.Tag != null)
+            {
+                if (selectedTextBlock.Tag is FooterCellWrapper)
+                {
+                    var wrapper = selectedTextBlock.Tag as FooterCellWrapper;
+
+                    if (SelectedFooterCellText.Contains(wrapper) == false)
+                    {
+                        // Add it as a Selection.
+                        AddFooterAdorner(selectedTextBlock);
+                        SelectedFooterCellText.Add(wrapper);
+                    }
+
+                    else
+                    {
+                        // Remove it from Selections.
+                        RemoveFooterAdorner(selectedTextBlock);
+                        SelectedFooterCellText.Remove(wrapper);
+                    }
+
+                    OnSelectedFooterCellTextChanged(new EventArgs());
                 }
             }
         }
@@ -157,6 +193,44 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public void MakeSelections(List<TextBlock> selectedTextBlocks)
+        {
+            bool headerUpdateRequired = false;
+            bool footerUpdateRequired = false;
+
+            foreach (var selection in selectedTextBlocks)
+            {
+                if (selection.Tag != null)
+                {
+                    if (selection.Tag is FooterCellWrapper)
+                    {
+                        var wrapper = selection.Tag as FooterCellWrapper;
+
+                        if (SelectedFooterCellText.Contains(wrapper) == false)
+                        {
+                            // Add it as Selection.
+                            AddFooterAdorner(selection);
+                            SelectedFooterCellText.Add(wrapper);
+                        }
+
+                        else
+                        {
+                            // Remove it From Selection.
+                            RemoveFooterAdorner(selection);
+                            SelectedFooterCellText.Remove(wrapper);
+                        }
+
+                        footerUpdateRequired = true;
+                    }
+                }
+            }
+
+            if (footerUpdateRequired == true)
+            {
+                OnSelectedFooterCellTextChanged(new EventArgs());
+            }
+        }
+
         public void ClearSelections()
         {
             SelectedHeaders.Clear();
@@ -164,8 +238,10 @@ namespace Dimmer_Labels_Wizard_WPF
             OnSelectedHeadersChanged(new EventArgs());
 
             SelectedFooters.Clear();
+            SelectedFooterCellText.Clear();
             ClearFooterAdorners();
             OnSelectedFootersChanged(new EventArgs());
+            OnSelectedFooterCellTextChanged(new EventArgs());
         }
 
         #region AdornerHandling
@@ -257,6 +333,19 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        private void RemoveFooterAdorner(TextBlock textBlock)
+        {
+            SelectionAdorner adornerToRemove = _FooterAdorners.Find(item => item.AdornedElement == textBlock);
+
+            {
+                if (adornerToRemove != null)
+                {
+                    _AdornerLayer.Remove(adornerToRemove);
+                    _FooterAdorners.Remove(adornerToRemove);
+                }
+            }
+        }
+
         private void AddFooterAdorner(Border outline)
         {
             if (_FooterAdorners.Find(item => item.AdornedElement == outline) == null)
@@ -265,6 +354,17 @@ namespace Dimmer_Labels_Wizard_WPF
                 adornerToAdd.IsHitTestVisible = false;
                 _AdornerLayer.Add(adornerToAdd);
                 _FooterAdorners.Add(adornerToAdd);
+            }
+        }
+
+        private void AddFooterAdorner(TextBlock textBlock)
+        {
+            if (_FooterAdorners.Find(item => item.AdornedElement == textBlock) == null)
+            {
+                SelectionAdorner addornerToAdd = new SelectionAdorner(textBlock);
+                addornerToAdd.IsHitTestVisible = false;
+                _AdornerLayer.Add(addornerToAdd);
+                _FooterAdorners.Add(addornerToAdd);
             }
         }
 
@@ -284,6 +384,8 @@ namespace Dimmer_Labels_Wizard_WPF
         public event EventHandler SelectedHeadersChanged;
         public event EventHandler SelectedFootersChanged;
 
+        public event EventHandler SelectedFooterCellTextChanged;
+
         protected void OnSelectedHeadersChanged(EventArgs e)
         {
             SelectedHeadersChanged(this, e);
@@ -292,6 +394,11 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void OnSelectedFootersChanged(EventArgs e)
         {
             SelectedFootersChanged(this, e);
+        }
+
+        protected void OnSelectedFooterCellTextChanged(EventArgs e)
+        {
+            SelectedFooterCellTextChanged(this, e);
         }
         #endregion
     }

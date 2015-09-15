@@ -16,9 +16,9 @@
     </Window.Resources>
 
     <Grid Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,0,0,0">
-
-        <Grid x:Name="LabelAreaGrid" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10" Cursor="Cross">
-            <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Margin="0" 
+        <ToggleButton x:Name="SelectionModeToggle" Content="Mode" Width="50" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Click="SelectionModeToggle_Click"/>
+        <Grid x:Name="LabelAreaGrid" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,45,0,0" Cursor="Cross">
+            <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" 
                     BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1" RenderTransformOrigin="0.5,0.5">
                 <Canvas x:Name="LabelCanvas" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" RenderTransformOrigin="0.5,0.5" Margin="0"/>
             </Border>
@@ -31,12 +31,10 @@
             </Canvas>
         </Grid>
 
-        <custom:CellControl x:Name="HeaderCellControl" Margin="126,262,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"></custom:CellControl>
-        <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="301" Margin="10,262,0,0" VerticalAlignment="Top" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <custom:CellControl x:Name="FooterTopCellControl" Margin="445,262,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <custom:CellControl x:Name="FooterMiddleCellControl" Margin="445,362,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <custom:CellControl x:Name="FooterBottomCellControl" Margin="445,462,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <custom:ColorControl x:Name="ColorControl" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="258,362,0,0" Height="200" />
+        <custom:CellControl x:Name="HeaderCellControl" Margin="126,319,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"></custom:CellControl>
+        <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="271" Margin="10,292,0,0" VerticalAlignment="Top" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        <custom:CellControl x:Name="FooterTopCellControl" Margin="450,358,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <custom:CellControl x:Name="FooterMiddleCellControl" Margin="445,463,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="128" Margin="966,262,0,0" VerticalAlignment="Top" Width="46">
             <Grid.RowDefinitions>
                 <RowDefinition Height="77*"/>
@@ -47,7 +45,7 @@
             <Button x:Name="MagnifyMinusButton" Content="{StaticResource magnifyMinus24}" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top" Width="24" Height="24" Click="MagnifyMinusButton_Click" FontWeight="ExtraBold" RenderTransformOrigin="0.528,0.514" FontSize="14" Grid.RowSpan="2"/>
             <Button x:Name="MagnifyPlusButton" Content="{StaticResource magnifyPlus24}" HorizontalAlignment="Left" Margin="10,29,0,10" Height="24" Width="24" Click="MagnifyPlusButton_Click" FontWeight="ExtraBold" FontSize="14" Background="#FFDEDEDE"/>
         </Grid>
-        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="102" Margin="126,363,0,0" VerticalAlignment="Top" Width="131">
+        <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="102" Margin="126,440,0,0" VerticalAlignment="Top" Width="131">
             <Button x:Name="SplitCellsButton" Content="Split Header" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" Click="SplitCellsButton_Click" Width="75" RenderTransformOrigin="0.513,-0.742"/>
             <Label Content="Tools" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" FontSize="16"/>
         </Grid>

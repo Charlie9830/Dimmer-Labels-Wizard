@@ -508,7 +508,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     Footers[index].BottomFontSize *= bottomDifferenceRatio.Width;
                 }
 
-                // Generate blank TextBlocks. (Only Generates a Positions 3 TextBlocks).
+                // Generate blank TextBlocks. (Only Generates and Positions 3 TextBlocks).
                 TextBlock[] textBlocks = GenerateFooterTextBlocks(textCanvas,Footers[index]);
 
                 TextBlock topTextBlock = textBlocks[0];
@@ -544,6 +544,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 textCanvas.Children.Add(topTextBlock);
                 textCanvas.Children.Add(middleTextBlock);
                 textCanvas.Children.Add(bottomTextBlock);
+
+                // Tag TextBlocks.
+                topTextBlock.Tag = new FooterCellWrapper(Footers[index], FooterTextPosition.Top);
+                middleTextBlock.Tag = new FooterCellWrapper(Footers[index], FooterTextPosition.Middle);
+                bottomTextBlock.Tag = new FooterCellWrapper(Footers[index], FooterTextPosition.Bottom);
 
                 // Add Canvas to Outline.
                 FooterOutlines.Last().Child = textCanvas;
