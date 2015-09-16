@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Controls;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -78,7 +79,6 @@ namespace Dimmer_Labels_Wizard_WPF
         }
     }
 
-    
     public class HeaderCellStorage
     {
         public string Data;
@@ -90,10 +90,10 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelCellStorage BaseStorage;
     }
 
-
+    // Utliized for LabelEditor Selection Handling.
     public class HeaderCellWrapper
     {
-        // Wraps a List of HeaderCells so they can be Tagged to outlines during Rendering.
         public List<HeaderCell> Cells = new List<HeaderCell>();
+        public List<TextBlock> TextBlocks = new List<TextBlock>();
     }
 }

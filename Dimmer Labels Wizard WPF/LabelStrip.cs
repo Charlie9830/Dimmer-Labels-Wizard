@@ -253,7 +253,6 @@ namespace Dimmer_Labels_Wizard_WPF
             for (int index = 0; index < Headers.Count; index++)
             {
                 Canvas textCanvas = new Canvas();
-                List<TextBlock> textBlocks = new List<TextBlock>();
 
                 HeaderOutlines.Add(new Border());
 
@@ -413,6 +412,18 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 HeaderOutlines.Last().Tag = wrapper;
 
+                // Tag Each textBlock with a Wrapper that contains a List of other Textblocks within that Cell.
+                foreach (var element in textCanvas.Children)
+                {
+                    if (element is TextBlock)
+                    {
+                        var textBlock = element as TextBlock;
+                        
+                        wrapper.TextBlocks.Add(textBlock);
+                        textBlock.Tag = wrapper;   
+                    }
+                }
+
                 // Add to labelCanvas.
                 HeaderOutlines.Last().Child = textCanvas;
                 canvas.Children.Add(HeaderOutlines.Last());
@@ -546,9 +557,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 textCanvas.Children.Add(bottomTextBlock);
 
                 // Tag TextBlocks.
-                topTextBlock.Tag = new FooterCellWrapper(Footers[index], FooterTextPosition.Top);
-                middleTextBlock.Tag = new FooterCellWrapper(Footers[index], FooterTextPosition.Middle);
-                bottomTextBlock.Tag = new FooterCellWrapper(Footers[index], FooterTextPosition.Bottom);
+                topTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Top);
+                middleTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Middle);
+                bottomTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Bottom);
 
                 // Add Canvas to Outline.
                 FooterOutlines.Last().Child = textCanvas;

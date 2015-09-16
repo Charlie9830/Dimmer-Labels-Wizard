@@ -76,6 +76,7 @@ namespace Dimmer_Labels_Wizard_WPF
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
             ActiveLabelStrip.SelectedFooterCellTextChanged += ActiveLabelStrip_SelectedFooterCellTextChanged;
+            ActiveLabelStrip.SelectedHeaderCellTextChanged += ActiveLabelStrip_SelectedHeaderCellTextChanged;
 
             HeaderCellControl.HeaderViewModel.RenderRequested += Control_RenderRequested;
             FooterTopCellControl.FooterTopViewModel.RenderRequested += Control_RenderRequested;
@@ -584,6 +585,12 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         private void ActiveLabelStrip_SelectedFooterCellTextChanged(object sender, EventArgs e)
+        {
+            // This will change when new Popup UI is Implemented. Just needs to not Throw an exception at Event Declaration
+            // right now.
+        }
+
+        private void ActiveLabelStrip_SelectedHeaderCellTextChanged(object sender, EventArgs e)
         {
             // This will change when new Popup UI is Implemented. Just needs to not Throw an exception at Event Declaration
             // right now.

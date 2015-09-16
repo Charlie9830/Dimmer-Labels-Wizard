@@ -26,7 +26,8 @@ namespace Dimmer_Labels_Wizard_WPF
         public List<HeaderCell> SelectedHeaders = new List<HeaderCell>();
         public List<FooterCell> SelectedFooters = new List<FooterCell>();
 
-        public List<FooterCellWrapper> SelectedFooterCellText = new List<FooterCellWrapper>();
+        public List<FooterCellText> SelectedFooterCellText = new List<FooterCellText>();
+        public List<HeaderCellWrapper> SelectedHeaderCellText = new List<HeaderCellWrapper>();
 
         // These lists are expicitly linked and Tracking SelectedHeaders and SelectedFooters
         private List<SelectionAdorner> _HeaderAdorners = new List<SelectionAdorner>();
@@ -100,9 +101,9 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             if (selectedTextBlock.Tag != null)
             {
-                if (selectedTextBlock.Tag is FooterCellWrapper)
+                if (selectedTextBlock.Tag is FooterCellText)
                 {
-                    var wrapper = selectedTextBlock.Tag as FooterCellWrapper;
+                    var wrapper = selectedTextBlock.Tag as FooterCellText;
 
                     if (SelectedFooterCellText.Contains(wrapper) == false)
                     {
@@ -119,6 +120,34 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
 
                     OnSelectedFooterCellTextChanged(new EventArgs());
+                }
+
+                if (selectedTextBlock.Tag is HeaderCellWrapper)
+                {
+                    var wrapper = selectedTextBlock.Tag as HeaderCellWrapper;
+                    if (SelectedHeaderCellText.Contains(wrapper) == false)
+                    {
+                        // Add all associated Textblocks as selections.
+                        foreach (var element in wrapper.TextBlocks)
+                        {
+                            AddHeaderAdorner(element);
+                        }
+
+                        SelectedHeaderCellText.Add(wrapper);
+                    }
+
+                    else
+                    {
+                        // Remove all associated Textblocks from Selections.
+                        foreach (var element in wrapper.TextBlocks)
+                        {
+                            RemoveHeaderAdorner(element);
+                        }
+
+                        SelectedHeaderCellText.Remove(wrapper);
+                    }
+
+                    OnSelectedHeaderCellTextChanged(new EventArgs());
                 }
             }
         }
@@ -202,9 +231,9 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (selection.Tag != null)
                 {
-                    if (selection.Tag is FooterCellWrapper)
+                    if (selection.Tag is FooterCellText)
                     {
-                        var wrapper = selection.Tag as FooterCellWrapper;
+                        var wrapper = selection.Tag as FooterCellText;
 
                         if (SelectedFooterCellText.Contains(wrapper) == false)
                         {
@@ -222,7 +251,40 @@ namespace Dimmer_Labels_Wizard_WPF
 
                         footerUpdateRequired = true;
                     }
+
+                    if (selection.Tag is HeaderCellWrapper)
+                    {
+                        var wrapper = selection.Tag as HeaderCellWrapper;
+                        if (SelectedHeaderCellText.Contains(wrapper) == false)
+                        {
+                            // Add all associated Textblocks as selections.
+                            foreach (var element in wrapper.TextBlocks)
+                            {
+                                AddHeaderAdorner(element);
+                            }
+
+                            SelectedHeaderCellText.Add(wrapper);
+                        }
+
+                        else
+                        {
+                            // Remove all associated Textblocks from Selections.
+                            foreach (var element in wrapper.TextBlocks)
+                            {
+                                RemoveHeaderAdorner(element);
+                            }
+
+                            SelectedHeaderCellText.Remove(wrapper);
+                        }
+
+                        headerUpdateRequired = true;
+                    }
                 }
+            }
+
+            if (headerUpdateRequired == true)
+            {
+                OnSelectedHeaderCellTextChanged(new EventArgs());
             }
 
             if (footerUpdateRequired == true)
@@ -234,8 +296,10 @@ namespace Dimmer_Labels_Wizard_WPF
         public void ClearSelections()
         {
             SelectedHeaders.Clear();
+            SelectedHeaderCellText.Clear();
             ClearHeaderAdorners();
             OnSelectedHeadersChanged(new EventArgs());
+            OnSelectedHeaderCellTextChanged(new EventArgs());
 
             SelectedFooters.Clear();
             SelectedFooterCellText.Clear();
@@ -301,11 +365,33 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        private void RemoveHeaderAdorner(TextBlock textBlock)
+        {
+            SelectionAdorner adornerToRemove = _HeaderAdorners.Find(item => item.AdornedElement == textBlock);
+            
+            if (adornerToRemove != null)
+            {
+                _AdornerLayer.Remove(adornerToRemove);
+                _HeaderAdorners.Remove(adornerToRemove);
+            }
+        }
+
         private void AddHeaderAdorner(Border outline)
         {
             if (_HeaderAdorners.Find(item => item.AdornedElement == outline) == null)
             {
                 SelectionAdorner adornerToAdd = new SelectionAdorner(outline);
+                adornerToAdd.IsHitTestVisible = false;
+                _AdornerLayer.Add(adornerToAdd);
+                _HeaderAdorners.Add(adornerToAdd);
+            }
+        }
+
+        private void AddHeaderAdorner(TextBlock textBlock)
+        {
+            if (_HeaderAdorners.Find(item => item.AdornedElement == textBlock) == null)
+            {
+                SelectionAdorner adornerToAdd = new SelectionAdorner(textBlock);
                 adornerToAdd.IsHitTestVisible = false;
                 _AdornerLayer.Add(adornerToAdd);
                 _HeaderAdorners.Add(adornerToAdd);
@@ -384,6 +470,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public event EventHandler SelectedHeadersChanged;
         public event EventHandler SelectedFootersChanged;
 
+        public event EventHandler SelectedHeaderCellTextChanged;
         public event EventHandler SelectedFooterCellTextChanged;
 
         protected void OnSelectedHeadersChanged(EventArgs e)
@@ -394,6 +481,11 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void OnSelectedFootersChanged(EventArgs e)
         {
             SelectedFootersChanged(this, e);
+        }
+
+        protected void OnSelectedHeaderCellTextChanged(EventArgs e)
+        {
+            SelectedHeaderCellTextChanged(this, e);
         }
 
         protected void OnSelectedFooterCellTextChanged(EventArgs e)

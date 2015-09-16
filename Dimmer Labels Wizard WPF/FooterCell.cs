@@ -162,17 +162,17 @@ namespace Dimmer_Labels_Wizard_WPF
     }
 
     // Wraps a Footercell together with a TextBlock Position Enumeration.
-    public class FooterCellWrapper
+    public class FooterCellText
     {
         public FooterCell Cell { get; set; }
         public FooterTextPosition Position { get; set; }
 
-        public FooterCellWrapper()
+        public FooterCellText()
         {
 
         }
 
-        public FooterCellWrapper(FooterCell cell, FooterTextPosition position)
+        public FooterCellText(FooterCell cell, FooterTextPosition position)
         {
             Cell = cell;
             Position = position;
