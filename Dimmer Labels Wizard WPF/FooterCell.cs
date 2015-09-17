@@ -167,16 +167,131 @@ namespace Dimmer_Labels_Wizard_WPF
         public FooterCell Cell { get; set; }
         public FooterTextPosition Position { get; set; }
 
-        public FooterCellText()
-        {
-
-        }
-
         public FooterCellText(FooterCell cell, FooterTextPosition position)
         {
             Cell = cell;
             Position = position;
         }
+
+        #region Getters/Setters
+        // Collects Data based on Position member Enum.
+        public string Data
+        {
+            get
+            {
+                switch (Position)
+                {
+                    case FooterTextPosition.Top:
+                        return Cell.TopData;
+                    case FooterTextPosition.Middle:
+                        return Cell.MiddleData;
+                    case FooterTextPosition.Bottom:
+                        return Cell.BottomData;
+                    case FooterTextPosition.NotAssigned:
+                        throw new InvalidOperationException("FooterCellText.Position not initialized to Position Value.");
+                    default:
+                        return string.Empty;
+                }
+            }
+            set
+            {
+                switch (Position)
+                {
+                    case FooterTextPosition.Top:
+                        Cell.TopData = value;
+                        return;
+                    case FooterTextPosition.Middle:
+                        Cell.MiddleData = value;
+                        return;
+                    case FooterTextPosition.Bottom:
+                        Cell.BottomData = value;
+                        return;
+                    case FooterTextPosition.NotAssigned:
+                        throw new InvalidOperationException("FooterCellText.Position enumeration set to Not Assigned.");
+                    default:
+                        return;
+                }
+            }
+        }
+
+        public Typeface Font
+        {
+            get
+            {
+                switch (Position)
+                {
+                    case FooterTextPosition.NotAssigned:
+                        throw new InvalidOperationException("FooterCellText.Position not initialized to Position Value.");
+                    case FooterTextPosition.Top:
+                        return Cell.TopFont;
+                    case FooterTextPosition.Middle:
+                        return Cell.MiddleFont;
+                    case FooterTextPosition.Bottom:
+                        return Cell.BottomFont;
+                    default:
+                        throw new InvalidOperationException("FooterCellTextPosition Switch reached Default Case.");
+                }
+            }
+            set
+            {
+                switch (Position)
+                {
+                    case FooterTextPosition.NotAssigned:
+                        throw new InvalidOperationException("FooterCellText.Position not initialized to Position Value.");
+                    case FooterTextPosition.Top:
+                        Cell.TopFont = value;
+                        return;
+                    case FooterTextPosition.Middle:
+                        Cell.MiddleFont = value;
+                        return;
+                    case FooterTextPosition.Bottom:
+                        Cell.BottomFont = value;
+                        return;
+                    default:
+                        throw new InvalidOperationException("FooterCellTextPosition Switch reached Default Case.");
+                }
+            }
+        }
+
+        public double FontSize
+        {
+            get
+            {
+                switch (Position)
+                {
+                    case FooterTextPosition.NotAssigned:
+                        throw new InvalidOperationException("FooterCellText.Position not initialized to Position Value.");
+                    case FooterTextPosition.Top:
+                        return Cell.TopFontSize;
+                    case FooterTextPosition.Middle:
+                        return Cell.MiddleFontSize;
+                    case FooterTextPosition.Bottom:
+                        return Cell.BottomFontSize;
+                    default:
+                        throw new InvalidOperationException("FooterCellTextPosition Switch reached Default Case.");
+                }
+            }
+            set
+            {
+                switch (Position)
+                {
+                    case FooterTextPosition.NotAssigned:
+                        throw new InvalidOperationException("FooterCellText.Position not initialized to Position Value.");
+                    case FooterTextPosition.Top:
+                        Cell.TopFontSize = value;
+                        return;
+                    case FooterTextPosition.Middle:
+                        Cell.MiddleFontSize = value;
+                        return;
+                    case FooterTextPosition.Bottom:
+                        Cell.BottomFontSize = value;
+                        return;
+                    default:
+                        throw new InvalidOperationException("FooterCellTextPosition Switch reached Default Case.");
+                }
+            }
+        }
+        #endregion
     }
 
     

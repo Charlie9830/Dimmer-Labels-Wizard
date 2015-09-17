@@ -6,88 +6,31 @@
              xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
              xmlns:vsm="clr-namespace:System.Windows;assembly=PresentationFramework"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             mc:Ignorable="d" Height="100" Width="319">
+             mc:Ignorable="d" Height="70" Width="319" Cursor="Arrow">
+
+    <UserControl.DataContext>
+        <local:CellControlViewModel/>
+    </UserControl.DataContext>
 
     <UserControl.Resources>
         <Image x:Key="earth24" Source="Resources/earth24.png" Stretch="Uniform"/>
         <Image x:Key="bold24" Source="Resources/bold24.png" Stretch="Uniform"/>
         <Image x:Key="italic24" Source="Resources/italic24.png" Stretch="Uniform"/>
         <Image x:Key="underline24" Source="Resources/underline24.png" Stretch="Uniform"/>
-        <Style x:Key="ButtonFocusVisual">
-            <Setter Property="Control.Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Rectangle StrokeDashArray="1 2" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" SnapsToDevicePixels="true" Margin="2"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#F3F3F3" Offset="0"/>
-            <GradientStop Color="#EBEBEB" Offset="0.5"/>
-            <GradientStop Color="#DDDDDD" Offset="0.5"/>
-            <GradientStop Color="#CDCDCD" Offset="1"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070"/>
-        <Style x:Key="GlobalApplyStyle" TargetType="{x:Type ToggleButton}">
-            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
-            <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ToggleButton}">
-                        <Themes:ButtonChrome x:Name="Chrome" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" RenderDefaulted="{TemplateBinding Button.IsDefaulted}" SnapsToDevicePixels="true">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Themes:ButtonChrome>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocused" Value="true">
-                                <Setter Property="RenderDefaulted" TargetName="Chrome" Value="true"/>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="true">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                                            <GradientStop Color="#FF535151" Offset="1"/>
-                                            <GradientStop Color="#FFC5C3C3" Offset="0"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="true">
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                                            <GradientStop Color="#FF535151" Offset="1"/>
-                                            <GradientStop Color="#FFC5C3C3" Offset="0"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="#ADADAD"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
+    <UserControl.Effect>
+        <DropShadowEffect/>
+    </UserControl.Effect>
+
     <Border BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" BorderThickness="1">
-        <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-            <ComboBox x:Name="FontComboBox" ItemsSource="{Binding SystemFonts}" SelectedItem="{Binding FontFamily}" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="162" IsReadOnly="True"/>
-            <ComboBox x:Name="SizeComboBox" ItemsSource="{Binding FontSizes}" Text="{Binding FontSize}" HorizontalAlignment="Left" Margin="177,38,0,0" VerticalAlignment="Top" Width="63" IsEditable="True"/>
-            <TextBox x:Name="DataTextBox" Text="{Binding Data}" FontSize="15" HorizontalAlignment="Left" Height="23" Margin="10,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Cursor="IBeam"/>
-            <ToggleButton x:Name="GlobalApplyToggleButton" IsChecked="{Binding GlobalApply}" Width="22" Height="22" Margin="287,11,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource earth24}" Style="{DynamicResource GlobalApplyStyle}" />
-            <ToggleButton x:Name="BoldToggleButton" IsChecked="{Binding IsBold}" Width="20" Height="20" Margin="245,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource bold24}" Background="#FFDDDDDD"/>
-            <ToggleButton x:Name="ItalicsToggleButton" IsChecked="{Binding IsItalics}" Width="20" Height="20" Margin="267,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource italic24}"/>
-            <ToggleButton x:Name="UnderlineToggleButton" Width="20" Height="20" Margin="289,38,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource underline24}"/>
-            <Label x:Name="TitleLabel" Content="{Binding ControlTitle}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.605,-0.385" FontSize="16" Height="38" Width="271"/>
+        <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
+            <ComboBox x:Name="FontComboBox" ItemsSource="{Binding SystemFonts}" SelectedItem="{Binding FontFamily}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="162" IsReadOnly="True"/>
+            <ComboBox x:Name="SizeComboBox" ItemsSource="{Binding FontSizes}" Text="{Binding FontSize}" HorizontalAlignment="Left" Margin="177,10,0,0" VerticalAlignment="Top" Width="63" IsEditable="True"/>
+            <TextBox x:Name="DataTextBox" Text="{Binding Data}" FontSize="15" HorizontalAlignment="Left" Height="23" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Cursor="IBeam"/>
+            <ToggleButton x:Name="BoldToggleButton" IsChecked="{Binding IsBold}" Width="20" Height="20" Margin="245,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource bold24}" Background="#FFDDDDDD"/>
+            <ToggleButton x:Name="ItalicsToggleButton" IsChecked="{Binding IsItalics}" Width="20" Height="20" Margin="267,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource italic24}"/>
+            <ToggleButton x:Name="UnderlineToggleButton" Width="20" Height="20" Margin="289,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource underline24}"/>
         </Grid>
     </Border>
 </UserControl>

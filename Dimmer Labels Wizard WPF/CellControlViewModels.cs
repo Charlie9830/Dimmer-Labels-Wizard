@@ -10,18 +10,17 @@ using System.Windows;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public class HeaderCellControlViewModel : ViewModelBase
+    public class CellControlViewModel : ViewModelBase
     {
         protected ObservableCollection<HeaderCell> _HeaderCells = new ObservableCollection<HeaderCell>();
-        
-        protected string _ControlTitle = string.Empty;
+        protected ObservableCollection<FooterCellText> _FooterCells = new ObservableCollection<FooterCellText>();
+
         protected string _Data = string.Empty;
         protected Typeface _Typeface = new Typeface("Arial");
         protected string _FontSize = string.Empty;
         protected bool _isBold = false;
         protected bool _isItalics = false;
         protected bool _isUnderlined = false;
-        protected bool _GlobalApply = false;
 
         protected FontFamily _FontFamily = new FontFamily();
 
@@ -30,21 +29,16 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected FontFamily[] _SystemFonts = Fonts.SystemFontFamilies.ToArray();
 
-        protected string _DifferingEntries = "*";
-        protected string _NullFontSize = string.Empty;
+        protected const string nonEqualData = "***";
+        protected const string nonEqualFontSize = "";
 
-        public HeaderCellControlViewModel()
-        {
-            _HeaderCells.CollectionChanged += _headerCells_CollectionChanged;
-        }
+        protected bool Resetting = false;
 
-        #region Setup Methods
-        public void SetTitle(string title)
+        public CellControlViewModel()
         {
-            _ControlTitle = title;
-            OnPropertyChanged("ControlTitle");
+            _HeaderCells.CollectionChanged += Cells_CollectionChanged;
+            _FooterCells.CollectionChanged += Cells_CollectionChanged;
         }
-        #endregion
 
         #region Property Getters/Setters
         public ObservableCollection<HeaderCell> HeaderCells
@@ -60,18 +54,15 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string ControlTitle
+        public ObservableCollection<FooterCellText> FooterCells
         {
             get
             {
-
-                return _ControlTitle;
+                return _FooterCells;
             }
-
             set
             {
-                _ControlTitle = value;
-                OnPropertyChanged("ControlTitle");
+                _FooterCells = value;
             }
         }
 
@@ -167,20 +158,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public bool GlobalApply
-        {
-            get
-            {
-                return _GlobalApply;
-            }
-            set
-            {
-                _GlobalApply = value;
-                OnPropertyChanged("GlobalApply");
-                OnGlobalApplySelected();
-            }
-        }
-
         public double[] FontSizes
         {
             get
@@ -210,7 +187,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 OnPropertyChanged("FontFamily");
                 UpdateTypeface();
                 OnRenderRequested();
-
             }
         }
 
@@ -219,9 +195,14 @@ namespace Dimmer_Labels_Wizard_WPF
         #region UpdateMethods.
         void UpdateData()
         {
-            if (_Data != _DifferingEntries)
+            if (_Data != nonEqualData)
             {
                 foreach (var element in _HeaderCells)
+                {
+                    element.Data = _Data;
+                }
+
+                foreach (var element in _FooterCells)
                 {
                     element.Data = _Data;
                 }
@@ -232,49 +213,31 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             Typeface newTypeface = new Typeface(_FontFamily,GetFontStyle(),GetFontWeight(),new FontStretch());
 
-            if (_GlobalApply == true)
+            foreach (var element in _HeaderCells)
             {
-                foreach (var labelStrip in Globals.LabelStrips)
-                {
-                    foreach (var cell in labelStrip.Headers)
-                    {
-                        cell.Font = newTypeface;
-                    }
-                }
+                element.Font = newTypeface;
             }
 
-            else
+            foreach (var element in _FooterCells)
             {
+                element.Font = newTypeface;
+            }
+        }
+
+        void UpdateFontSize()
+        {
+            if (_FontSize != string.Empty)
+            {
+                double selectedFontSize = Convert.ToDouble(_FontSize);
+
                 foreach (var element in _HeaderCells)
                 {
-                    element.Font = newTypeface;
-                }
-            }
-        }
-
-        void UpdateFontSize()
-        {
-            if (_FontSize != string.Empty)
-            {
-                double selectedFontSize = Convert.ToDouble(_FontSize);
-
-                if (_GlobalApply == true)
-                {
-                    foreach (var labelStrip in Globals.LabelStrips)
-                    {
-                        foreach (var cell in labelStrip.Headers)
-                        {
-                            cell.FontSize = selectedFontSize;
-                        }
-                    }
+                    element.FontSize = selectedFontSize;
                 }
 
-                else
+                foreach (var element in _FooterCells)
                 {
-                    foreach (var element in _HeaderCells)
-                    {
-                        element.FontSize = selectedFontSize;
-                    }
+                    element.FontSize = selectedFontSize;
                 }
             }
         }
@@ -308,1316 +271,132 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
-        void _headerCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Cells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (_HeaderCells.Count > 0)
+            if (Resetting == false)
             {
-                _Data = CheckDataEquality() ? _HeaderCells.First().Data : _DifferingEntries;
-                _FontSize = CheckFontSizeEquality() ? _HeaderCells.First().FontSize.ToString() : string.Empty;
-                _isBold = CheckTypefaceEquality() ? _HeaderCells.First().Font.Weight == FontWeights.Bold : false;
-                _isItalics = CheckTypefaceEquality() ? _HeaderCells.First().Font.Style == FontStyles.Italic : false;
-                _Typeface = CheckTypefaceEquality() ? _HeaderCells.First().Font : null;
+                string outData;
+                _Data = CheckDataEquality(out outData) ? outData : nonEqualData;
 
-                if (CheckTypefaceEquality() == true)
-                {
-                    _Typeface = HeaderCells.First().Font;
-                    _FontFamily = _Typeface.FontFamily;
-                }
+                double outFontSize;
+                _FontSize = CheckFontSizeEquality(out outFontSize) ? outFontSize.ToString() : string.Empty;
 
-                else
-                {
-                    _Typeface = null;
-                }
-            }
+                Typeface outTypeface;
+                bool typefaceEquality = CheckTypefaceEquality(out outTypeface);
 
-            else
-            {
-                _Data = string.Empty;
-                _FontFamily = null;
-                _FontSize = string.Empty;
-                _isBold = false;
-                _isItalics = false;
-                _isUnderlined = false;
-            }
+                _isBold = typefaceEquality == true ? outTypeface.Weight == FontWeights.Bold : false;
 
-            // Signal Listeners to Update.
-            OnPropertyChanged("Data");
-            OnPropertyChanged("Typeface");
-            OnPropertyChanged("FontFamily");
-            OnPropertyChanged("FontSize");
-            OnPropertyChanged("IsBold");
-            OnPropertyChanged("IsItalics");
-        }
-        #endregion
+                _isItalics = typefaceEquality == true ? outTypeface.Style == FontStyles.Italic : false;
+                _Typeface = typefaceEquality ? outTypeface : null;
+                _FontFamily = typefaceEquality ? outTypeface.FontFamily : null;
 
-        #region Data Equality Check Methods.
-
-        private bool CheckDataEquality()
-        {
-            string referenceData = _HeaderCells.First().Data;
-
-            if (_HeaderCells.All(item => item.Data == referenceData) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-
-        }
-
-        private bool CheckTypefaceEquality()
-        {
-            Typeface referenceTypeface = _HeaderCells.First().Font;
-
-            if (_HeaderCells.All(item => item.Font.FontFamily.Source == referenceTypeface.FontFamily.Source) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-        }
-
-        private bool CheckFontSizeEquality()
-        {
-            double referenceFontSize = _HeaderCells.First().FontSize;
-
-            if (_HeaderCells.All(item => item.FontSize == referenceFontSize) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-        }
-        #endregion
-
-        #region External Events
-        public event EventHandler GlobalApplySelected;
-
-        protected virtual void OnGlobalApplySelected()
-        {
-            if (GlobalApply == true)
-            {
-                GlobalApplySelected(this, new EventArgs());
-            }
-        }
-        #endregion
-
-    }
-
-    public class FooterTopCellControlViewModel : ViewModelBase
-    {
-        protected ObservableCollection<FooterCell> _FooterCells = new ObservableCollection<FooterCell>();
-
-        protected string _ControlTitle = string.Empty;
-        protected string _Data = string.Empty;
-        protected Typeface _Typeface = new Typeface("Arial");
-        protected string _FontSize = string.Empty;
-        protected bool _isBold = false;
-        protected bool _isItalics = false;
-        protected bool _isUnderlined = false;
-        protected bool _GlobalApply = false;
-
-        protected FontFamily _FontFamily = new FontFamily();
-
-        protected double[] _fontSizes = {1,2,3,4,5,6,8,9,10,12,14,16,18,20,22,
-                                        24,26,28,30,32,34,36,48,60,72};
-
-        protected FontFamily[] _SystemFonts = Fonts.SystemFontFamilies.ToArray();
-
-        protected string _DifferingEntries = "*";
-        protected string _NullFontSize = string.Empty;
-
-        public FooterTopCellControlViewModel()
-        {
-            _FooterCells.CollectionChanged += _FooterCells_CollectionChanged;
-        }
-
-        #region Setup Methods
-        public void SetTitle(string title)
-        {
-            _ControlTitle = title;
-            OnPropertyChanged("ControlTitle");
-        }
-        #endregion
-
-        #region Property Getters/Setters
-        public ObservableCollection<FooterCell> FooterCells
-        {
-            get
-            {
-                return _FooterCells;
-            }
-
-            set
-            {
-                _FooterCells = value;
-            }
-        }
-
-        public string ControlTitle
-        {
-            get
-            {
-
-                return _ControlTitle;
-            }
-
-            set
-            {
-                _ControlTitle = value;
-                OnPropertyChanged("ControlTitle");
-            }
-        }
-
-        public string Data
-        {
-            get
-            {
-                return _Data;
-            }
-
-            set
-            {
-                _Data = value;
+                // Signal Listeners to Update.
                 OnPropertyChanged("Data");
-                UpdateData();
-                OnRenderRequested();
-            }
-        }
-
-        public Typeface Typeface
-        {
-            get
-            {
-                return _Typeface;
-            }
-
-            set
-            {
-                _Typeface = value;
                 OnPropertyChanged("Typeface");
-            }
-        }
-
-        public string FontSize
-        {
-            get
-            {
-                return _FontSize;
-            }
-
-            set
-            {
-                _FontSize = value;
-                OnPropertyChanged("FontSize");
-                UpdateFontSize();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsBold
-        {
-            get
-            {
-                return _isBold;
-            }
-
-            set
-            {
-                _isBold = value;
-                OnPropertyChanged("IsBold");
-                UpdateTypeface();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsItalics
-        {
-            get
-            {
-                return _isItalics;
-            }
-
-            set
-            {
-                _isItalics = value;
-                OnPropertyChanged("IsItalics");
-                UpdateTypeface();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsUnderlined
-        {
-            get
-            {
-                return _isUnderlined;
-            }
-
-            set
-            {
-                _isUnderlined = value;
-                OnPropertyChanged("IsUnderlined");
-            }
-        }
-
-        public bool GlobalApply
-        {
-            get
-            {
-                return _GlobalApply;
-            }
-            set
-            {
-                _GlobalApply = value;
-                OnPropertyChanged("GlobalApply");
-                OnGlobalApplySelected();
-            }
-        }
-
-        public double[] FontSizes
-        {
-            get
-            {
-                return _fontSizes;
-            }
-        }
-
-        public FontFamily[] SystemFonts
-        {
-            get
-            {
-                return _SystemFonts;
-            }
-        }
-
-        public FontFamily FontFamily
-        {
-            get
-            {
-                return _FontFamily;
-            }
-
-            set
-            {
-                _FontFamily = value;
                 OnPropertyChanged("FontFamily");
-                UpdateTypeface();
-                OnRenderRequested();
-
-            }
-        }
-
-        #endregion
-
-        #region UpdateMethods.
-        void UpdateData()
-        {
-            if (_Data != _DifferingEntries)
-            {
-                foreach (var element in _FooterCells)
-                {
-                    element.TopData = _Data;
-                }
-            }
-        }
-
-        void UpdateTypeface()
-        {
-            Typeface newTypeface = new Typeface(_FontFamily, GetFontStyle(), GetFontWeight(), new FontStretch());
-
-            if (_GlobalApply == true)
-            {
-                foreach (var labelStrip in Globals.LabelStrips)
-                {
-                    foreach (var cell in labelStrip.Footers)
-                    {
-                        cell.TopFont = newTypeface;
-                    }
-                }
-            }
-
-            else
-            {
-                foreach (var element in _FooterCells)
-                {
-                    element.TopFont = newTypeface;
-                }
-            }
-        }
-
-        void UpdateFontSize()
-        {
-            if (_FontSize != string.Empty)
-            {
-                double selectedFontSize = Convert.ToDouble(_FontSize);
-
-                if (_GlobalApply == true)
-                {
-                    foreach (var labelStrip in Globals.LabelStrips)
-                    {
-                        foreach (var cell in labelStrip.Footers)
-                        {
-                            cell.TopFontSize = selectedFontSize;
-                        }
-                    }
-                }
-
-                else
-                {
-                    foreach (var element in _FooterCells)
-                    {
-                        element.TopFontSize = selectedFontSize;
-                    }
-                }
-            }
-        }
-
-        FontStyle GetFontStyle()
-        {
-            if (_isItalics == true)
-            {
-                return FontStyles.Italic;
-            }
-
-            else
-            {
-                return FontStyles.Normal;
-            }
-        }
-
-        FontWeight GetFontWeight()
-        {
-            if (_isBold == true)
-            {
-                return FontWeights.Bold;
-            }
-
-            else
-            {
-                return FontWeights.Normal;
-            }
-        }
-
-        #endregion
-
-        #region Event Handlers
-        void _FooterCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_FooterCells.Count > 0)
-            {
-                _Data = CheckDataEquality() ? _FooterCells.First().TopData : _DifferingEntries;
-                _FontSize = CheckFontSizeEquality() ? _FooterCells.First().TopFontSize.ToString() : string.Empty;
-                _isBold = CheckTypefaceEquality() ? _FooterCells.First().TopFont.Weight == FontWeights.Bold : false;
-                _isItalics = CheckTypefaceEquality() ? _FooterCells.First().TopFont.Style == FontStyles.Italic : false;
-                _Typeface = CheckTypefaceEquality() ? _FooterCells.First().TopFont : null;
-
-                if (CheckTypefaceEquality() == true)
-                {
-                    _Typeface = FooterCells.First().TopFont;
-                    _FontFamily = _Typeface.FontFamily;
-                }
-
-                else
-                {
-                    _Typeface = null;
-                }
-            }
-
-            else
-            {
-                _Data = string.Empty;
-                _FontFamily = null;
-                _FontSize = string.Empty;
-                _isBold = false;
-                _isItalics = false;
-                _isUnderlined = false;
-            }
-
-            // Signal Listeners to Update.
-            OnPropertyChanged("Data");
-            OnPropertyChanged("Typeface");
-            OnPropertyChanged("FontFamily");
-            OnPropertyChanged("FontSize");
-            OnPropertyChanged("IsBold");
-            OnPropertyChanged("IsItalics");
-        }
-        #endregion
-
-        #region Data Equality Check Methods.
-
-        private bool CheckDataEquality()
-        {
-            string referenceData = _FooterCells.First().TopData;
-
-            if (_FooterCells.All(item => item.TopData == referenceData) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-
-        }
-
-        private bool CheckTypefaceEquality()
-        {
-            Typeface referenceTypeface = _FooterCells.First().TopFont;
-
-            if (_FooterCells.All(item => item.TopFont.FontFamily.Source == referenceTypeface.FontFamily.Source) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-        }
-
-        private bool CheckFontSizeEquality()
-        {
-            double referenceFontSize = _FooterCells.First().TopFontSize;
-
-            if (_FooterCells.All(item => item.TopFontSize == referenceFontSize) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-        }
-        #endregion
-
-        #region External Events
-        public event EventHandler GlobalApplySelected;
-
-        protected virtual void OnGlobalApplySelected()
-        {
-            if (GlobalApply == true)
-            {
-                GlobalApplySelected(this, new EventArgs());
-            }
-        }
-        #endregion
-    }
-
-    public class FooterMiddleCellControlViewModel : ViewModelBase
-    {
-        protected ObservableCollection<FooterCell> _FooterCells = new ObservableCollection<FooterCell>();
-
-        protected string _ControlTitle = string.Empty;
-        protected string _Data = string.Empty;
-        protected Typeface _Typeface = new Typeface("Arial");
-        protected string _FontSize = string.Empty;
-        protected bool _isBold = false;
-        protected bool _isItalics = false;
-        protected bool _isUnderlined = false;
-        protected bool _GlobalApply = false;
-
-        protected FontFamily _FontFamily = new FontFamily();
-
-        protected double[] _fontSizes = {1,2,3,4,5,6,8,9,10,12,14,16,18,20,22,
-                                        24,26,28,30,32,34,36,48,60,72};
-
-        protected FontFamily[] _SystemFonts = Fonts.SystemFontFamilies.ToArray();
-
-        protected string _DifferingEntries = "*";
-        protected string _NullFontSize = string.Empty;
-
-        public FooterMiddleCellControlViewModel()
-        {
-            _FooterCells.CollectionChanged += _FooterCells_CollectionChanged;
-        }
-
-        #region Setup Methods
-        public void SetTitle(string title)
-        {
-            _ControlTitle = title;
-            OnPropertyChanged("ControlTitle");
-        }
-        #endregion
-
-        #region Property Getters/Setters
-        public ObservableCollection<FooterCell> FooterCells
-        {
-            get
-            {
-                return _FooterCells;
-            }
-
-            set
-            {
-                _FooterCells = value;
-            }
-        }
-
-        public string ControlTitle
-        {
-            get
-            {
-
-                return _ControlTitle;
-            }
-
-            set
-            {
-                _ControlTitle = value;
-                OnPropertyChanged("ControlTitle");
-            }
-        }
-
-        public string Data
-        {
-            get
-            {
-                return _Data;
-            }
-
-            set
-            {
-                
-                _Data = value;
-                UpdateData();
-                OnPropertyChanged("Data");
-                OnRenderRequested();
-            }
-        }
-
-        public Typeface Typeface
-        {
-            get
-            {
-                return _Typeface;
-            }
-
-            set
-            {
-                _Typeface = value;
-                OnPropertyChanged("Typeface");
-            }
-        }
-
-        public string FontSize
-        {
-            get
-            {
-                return _FontSize;
-            }
-
-            set
-            {
-                _FontSize = value;
                 OnPropertyChanged("FontSize");
-                UpdateFontSize();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsBold
-        {
-            get
-            {
-                return _isBold;
-            }
-
-            set
-            {
-                _isBold = value;
                 OnPropertyChanged("IsBold");
-                UpdateTypeface();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsItalics
-        {
-            get
-            {
-                return _isItalics;
-            }
-
-            set
-            {
-                _isItalics = value;
                 OnPropertyChanged("IsItalics");
-                UpdateTypeface();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsUnderlined
-        {
-            get
-            {
-                return _isUnderlined;
-            }
-
-            set
-            {
-                _isUnderlined = value;
-                OnPropertyChanged("IsUnderlined");
-            }
-        }
-
-        public bool GlobalApply
-        {
-            get
-            {
-                return _GlobalApply;
-            }
-            set
-            {
-                _GlobalApply = value;
-                OnPropertyChanged("GlobalApply");
-                OnGlobalApplySelected();
-            }
-        }
-
-        public double[] FontSizes
-        {
-            get
-            {
-                return _fontSizes;
-            }
-        }
-
-        public FontFamily[] SystemFonts
-        {
-            get
-            {
-                return _SystemFonts;
-            }
-        }
-
-        public FontFamily FontFamily
-        {
-            get
-            {
-                return _FontFamily;
-            }
-
-            set
-            {
-                _FontFamily = value;
-                OnPropertyChanged("FontFamily");
-                UpdateTypeface();
-                OnRenderRequested();
-
             }
         }
 
         #endregion
 
-        #region UpdateMethods.
-        void UpdateData()
-        {
-            if (_Data != _DifferingEntries)
-            {
-                foreach (var element in _FooterCells)
-                {
-                    element.MiddleData = _Data;
-                }
-            }
-        }
+        #region Equality Checking Methods.
 
-        void UpdateTypeface()
+        private bool CheckDataEquality(out string value)
         {
-            Typeface newTypeface = new Typeface(_FontFamily, GetFontStyle(), GetFontWeight(), new FontStretch());
-
-            if (_GlobalApply == true)
+            string referenceData;
+            if (_HeaderCells.Count == 0)
             {
-                foreach (var labelStrip in Globals.LabelStrips)
-                {
-                    foreach (var cell in labelStrip.Footers)
-                    {
-                        cell.MiddleFont = newTypeface;
-                    }
-                }
+                referenceData = _FooterCells.FirstOrDefault().Data;
             }
 
             else
             {
-                foreach (var element in _FooterCells)
-                {
-                    element.MiddleFont = newTypeface;
-                }
-            }
-        }
-
-        void UpdateFontSize()
-        {
-            if (_FontSize != string.Empty)
-            {
-                double selectedFontSize = Convert.ToDouble(_FontSize);
-
-                if (_GlobalApply == true)
-                {
-                    foreach (var labelStrip in Globals.LabelStrips)
-                    {
-                        foreach (var cell in labelStrip.Footers)
-                        {
-                            cell.MiddleFontSize = selectedFontSize;
-                        }
-                    }
-                }
-
-                else
-                {
-                    foreach (var element in _FooterCells)
-                    {
-                        element.MiddleFontSize = selectedFontSize;
-                    }
-                }
-            }
-        }
-
-        FontStyle GetFontStyle()
-        {
-            if (_isItalics == true)
-            {
-                return FontStyles.Italic;
+                referenceData = _HeaderCells.FirstOrDefault().Data;
             }
 
-            else
+            if (_HeaderCells.All(item => item.Data == referenceData) == true &&
+                _FooterCells.All(item => item.Data == referenceData) == true)
             {
-                return FontStyles.Normal;
-            }
-        }
-
-        FontWeight GetFontWeight()
-        {
-            if (_isBold == true)
-            {
-                return FontWeights.Bold;
-            }
-
-            else
-            {
-                return FontWeights.Normal;
-            }
-        }
-
-        #endregion
-
-        #region Event Handlers
-        void _FooterCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_FooterCells.Count > 0)
-            {
-                _Data = CheckDataEquality() ? _FooterCells.First().MiddleData : _DifferingEntries;
-                _FontSize = CheckFontSizeEquality() ? _FooterCells.First().MiddleFontSize.ToString() : string.Empty;
-                _isBold = CheckTypefaceEquality() ? _FooterCells.First().MiddleFont.Weight == FontWeights.Bold : false;
-                _isItalics = CheckTypefaceEquality() ? _FooterCells.First().MiddleFont.Style == FontStyles.Italic : false;
-                _Typeface = CheckTypefaceEquality() ? _FooterCells.First().MiddleFont : null;
-
-                if (CheckTypefaceEquality() == true)
-                {
-                    _Typeface = FooterCells.First().MiddleFont;
-                    _FontFamily = _Typeface.FontFamily;
-                }
-
-                else
-                {
-                    _Typeface = null;
-                }
-            }
-
-            else
-            {
-                _Data = string.Empty;
-                _FontFamily = null;
-                _FontSize = string.Empty;
-                _isBold = false;
-                _isItalics = false;
-                _isUnderlined = false;
-            }
-
-            // Signal Listeners to Update.
-            OnPropertyChanged("Data");
-            OnPropertyChanged("Typeface");
-            OnPropertyChanged("FontFamily");
-            OnPropertyChanged("FontSize");
-            OnPropertyChanged("IsBold");
-            OnPropertyChanged("IsItalics");
-        }
-        #endregion
-
-        #region Data Equality Check Methods.
-
-        private bool CheckDataEquality()
-        {
-            string referenceData = _FooterCells.First().MiddleData;
-
-            if (_FooterCells.All(item => item.MiddleData == referenceData) == true)
-            {
+                value = referenceData;
                 return true;
             }
 
             else
             {
+                value = nonEqualData;
                 return false;
             }
-
         }
 
-        private bool CheckTypefaceEquality()
+        private bool CheckTypefaceEquality(out Typeface value)
         {
-            Typeface referenceTypeface = _FooterCells.First().MiddleFont;
+            Typeface referenceTypeface;
 
-            if (_FooterCells.All(item => item.MiddleFont.FontFamily.Source == referenceTypeface.FontFamily.Source) == true)
+            if (_HeaderCells.Count == 0)
             {
+                referenceTypeface = _FooterCells.First().Font;
+            }
+            else
+            {
+                referenceTypeface = _HeaderCells.First().Font;
+            }
+
+            if (_HeaderCells.All(item => item.Font == referenceTypeface) == true &&
+                _FooterCells.All(item => item.Font == referenceTypeface) == true)
+            {
+                value = referenceTypeface;
                 return true;
             }
 
             else
             {
+                value = null;
                 return false;
             }
         }
 
-        private bool CheckFontSizeEquality()
+        private bool CheckFontSizeEquality(out double value)
         {
-            double referenceFontSize = _FooterCells.First().MiddleFontSize;
+            double referenceFontSize;
 
-            if (_FooterCells.All(item => item.MiddleFontSize == referenceFontSize) == true)
+            if (_HeaderCells.Count == 0)
             {
+                referenceFontSize = _FooterCells.First().FontSize;
+            }
+            else
+            {
+                referenceFontSize = _HeaderCells.First().FontSize;
+            }
+
+            if (_HeaderCells.All(item => item.FontSize == referenceFontSize) == true &&
+                _FooterCells.All(item => item.FontSize == referenceFontSize) == true)
+            {
+                value = referenceFontSize;
                 return true;
             }
 
             else
             {
+                value = 0.0D;
                 return false;
             }
         }
         #endregion
 
-        #region External Events
-        public event EventHandler GlobalApplySelected;
-
-        protected virtual void OnGlobalApplySelected()
+        #region Public Methods
+        public void Reset()
         {
-            if (GlobalApply == true)
-            {
-                GlobalApplySelected(this, new EventArgs());
-            }
-        }
-        #endregion
-    }
+            Resetting = true;
 
-    public class FooterBottomCellControlViewModel : ViewModelBase
-    {
-        protected ObservableCollection<FooterCell> _FooterCells = new ObservableCollection<FooterCell>();
+            _HeaderCells.Clear();
+            _FooterCells.Clear();
 
-        protected string _ControlTitle = string.Empty;
-        protected string _Data = string.Empty;
-        protected Typeface _Typeface = new Typeface("Arial");
-        protected string _FontSize = string.Empty;
-        protected bool _isBold = false;
-        protected bool _isItalics = false;
-        protected bool _isUnderlined = false;
-        protected bool _GlobalApply = false;
-
-        protected FontFamily _FontFamily = new FontFamily();
-
-        protected double[] _fontSizes = {1,2,3,4,5,6,8,9,10,12,14,16,18,20,22,
-                                        24,26,28,30,32,34,36,48,60,72};
-
-        protected FontFamily[] _SystemFonts = Fonts.SystemFontFamilies.ToArray();
-
-        protected string _DifferingEntries = "*";
-        protected string _NullFontSize = string.Empty;
-
-        public FooterBottomCellControlViewModel()
-        {
-            _FooterCells.CollectionChanged += _FooterCells_CollectionChanged;
-        }
-
-        #region Setup Methods
-        public void SetTitle(string title)
-        {
-            _ControlTitle = title;
-            OnPropertyChanged("ControlTitle");
+            Resetting = false;
         }
         #endregion
 
-        #region Property Getters/Setters
-        public ObservableCollection<FooterCell> FooterCells
-        {
-            get
-            {
-                return _FooterCells;
-            }
-
-            set
-            {
-                _FooterCells = value;
-            }
-        }
-
-        public string ControlTitle
-        {
-            get
-            {
-
-                return _ControlTitle;
-            }
-
-            set
-            {
-                _ControlTitle = value;
-                OnPropertyChanged("ControlTitle");
-            }
-        }
-
-        public string Data
-        {
-            get
-            {
-                return _Data;
-            }
-
-            set
-            {
-
-                _Data = value;
-                UpdateData();
-                OnPropertyChanged("Data");
-                OnRenderRequested();
-            }
-        }
-
-        public Typeface Typeface
-        {
-            get
-            {
-                return _Typeface;
-            }
-
-            set
-            {
-                _Typeface = value;
-                OnPropertyChanged("Typeface");
-            }
-        }
-
-        public string FontSize
-        {
-            get
-            {
-                return _FontSize;
-            }
-
-            set
-            {
-                _FontSize = value;
-                OnPropertyChanged("FontSize");
-                UpdateFontSize();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsBold
-        {
-            get
-            {
-                return _isBold;
-            }
-
-            set
-            {
-                _isBold = value;
-                OnPropertyChanged("IsBold");
-                UpdateTypeface();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsItalics
-        {
-            get
-            {
-                return _isItalics;
-            }
-
-            set
-            {
-                _isItalics = value;
-                OnPropertyChanged("IsItalics");
-                UpdateTypeface();
-                OnRenderRequested();
-            }
-        }
-
-        public bool IsUnderlined
-        {
-            get
-            {
-                return _isUnderlined;
-            }
-
-            set
-            {
-                _isUnderlined = value;
-                OnPropertyChanged("IsUnderlined");
-            }
-        }
-
-        public bool GlobalApply
-        {
-            get
-            {
-                return _GlobalApply;
-            }
-            set
-            {
-                _GlobalApply = value;
-                OnPropertyChanged("GlobalApply");
-                OnGlobalApplySelected();
-            }
-        }
-
-        public double[] FontSizes
-        {
-            get
-            {
-                return _fontSizes;
-            }
-        }
-
-        public FontFamily[] SystemFonts
-        {
-            get
-            {
-                return _SystemFonts;
-            }
-        }
-
-        public FontFamily FontFamily
-        {
-            get
-            {
-                return _FontFamily;
-            }
-
-            set
-            {
-                _FontFamily = value;
-                OnPropertyChanged("FontFamily");
-                UpdateTypeface();
-                OnRenderRequested();
-
-            }
-        }
-
-        #endregion
-
-        #region UpdateMethods.
-        void UpdateData()
-        {
-            if (_Data != _DifferingEntries)
-            {
-                foreach (var element in _FooterCells)
-                {
-                    element.BottomData = _Data;
-                }
-            }
-        }
-
-        void UpdateTypeface()
-        {
-            Typeface newTypeface = new Typeface(_FontFamily, GetFontStyle(), GetFontWeight(), new FontStretch());
-
-            if (_GlobalApply == true)
-            {
-                foreach (var labelStrip in Globals.LabelStrips)
-                {
-                    foreach (var cell in labelStrip.Footers)
-                    {
-                        cell.BottomFont = newTypeface;
-                    }
-                }
-            }
-
-            else
-            {
-                foreach (var element in _FooterCells)
-                {
-                    element.BottomFont = newTypeface;
-                }
-            }
-        }
-
-        void UpdateFontSize()
-        {
-            if (_FontSize != string.Empty)
-            {
-                double selectedFontSize = Convert.ToDouble(_FontSize);
-
-                if (_GlobalApply == true)
-                {
-                    foreach (var labelStrip in Globals.LabelStrips)
-                    {
-                        foreach (var cell in labelStrip.Footers)
-                        {
-                            cell.BottomFontSize = selectedFontSize;
-                        }
-                    }
-                }
-
-                else
-                {
-                    foreach (var element in _FooterCells)
-                    {
-                        element.BottomFontSize = selectedFontSize;
-                    }
-                }
-            }
-        }
-
-        FontStyle GetFontStyle()
-        {
-            if (_isItalics == true)
-            {
-                return FontStyles.Italic;
-            }
-
-            else
-            {
-                return FontStyles.Normal;
-            }
-        }
-
-        FontWeight GetFontWeight()
-        {
-            if (_isBold == true)
-            {
-                return FontWeights.Bold;
-            }
-
-            else
-            {
-                return FontWeights.Normal;
-            }
-        }
-
-        #endregion
-
-        #region Event Handlers
-        void _FooterCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_FooterCells.Count > 0)
-            {
-                _Data = CheckDataEquality() ? _FooterCells.First().BottomData : _DifferingEntries;
-                _FontSize = CheckFontSizeEquality() ? _FooterCells.First().BottomFontSize.ToString() : string.Empty;
-                _isBold = CheckTypefaceEquality() ? _FooterCells.First().BottomFont.Weight == FontWeights.Bold : false;
-                _isItalics = CheckTypefaceEquality() ? _FooterCells.First().BottomFont.Style == FontStyles.Italic : false;
-                _Typeface = CheckTypefaceEquality() ? _FooterCells.First().BottomFont : null;
-
-                if (CheckTypefaceEquality() == true)
-                {
-                    _Typeface = FooterCells.First().BottomFont;
-                    _FontFamily = _Typeface.FontFamily;
-                }
-
-                else
-                {
-                    _Typeface = null;
-                }
-            }
-
-            else
-            {
-                _Data = string.Empty;
-                _FontFamily = null;
-                _FontSize = string.Empty;
-                _isBold = false;
-                _isItalics = false;
-                _isUnderlined = false;
-            }
-
-            // Signal Listeners to Update.
-            OnPropertyChanged("Data");
-            OnPropertyChanged("Typeface");
-            OnPropertyChanged("FontFamily");
-            OnPropertyChanged("FontSize");
-            OnPropertyChanged("IsBold");
-            OnPropertyChanged("IsItalics");
-        }
-        #endregion
-
-        #region Data Equality Check Methods.
-
-        private bool CheckDataEquality()
-        {
-            string referenceData = _FooterCells.First().BottomData;
-
-            if (_FooterCells.All(item => item.BottomData == referenceData) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-
-        }
-
-        private bool CheckTypefaceEquality()
-        {
-            Typeface referenceTypeface = _FooterCells.First().BottomFont;
-
-            if (_FooterCells.All(item => item.BottomFont.FontFamily.Source == referenceTypeface.FontFamily.Source) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-        }
-
-        private bool CheckFontSizeEquality()
-        {
-            double referenceFontSize = _FooterCells.First().BottomFontSize;
-
-            if (_FooterCells.All(item => item.BottomFontSize == referenceFontSize) == true)
-            {
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-        }
-        #endregion
-
-        #region External Events
-        public event EventHandler GlobalApplySelected;
-
-        protected virtual void OnGlobalApplySelected()
-        {
-            if (GlobalApply == true)
-            {
-                GlobalApplySelected(this, new EventArgs());
-            }
-        }
-        #endregion
     }
 }

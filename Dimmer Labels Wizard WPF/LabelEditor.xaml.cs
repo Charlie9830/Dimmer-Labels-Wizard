@@ -40,6 +40,9 @@ namespace Dimmer_Labels_Wizard_WPF
         private List<Border> selectedOutlines = new List<Border>();
         private List<TextBlock> selectedTextBlocks = new List<TextBlock>();
 
+        // Popup UI
+        private CellControl CellControl = new CellControl();
+
         // Dialog First Time Tracking
         private bool GlobalApplyWarningShowAgain = true;
 
@@ -73,24 +76,15 @@ namespace Dimmer_Labels_Wizard_WPF
             CanvasBorder.MouseMove += CanvasBorder_MouseMove;
             CanvasBorder.MouseUp += CanvasBorder_MouseUp;
 
+            CellControl.Visibility = Visibility.Hidden;
+            CellControl.HorizontalAlignment = HorizontalAlignment.Left;
+            CellControl.VerticalAlignment = VerticalAlignment.Top;
+            LabelAreaGrid.Children.Add(CellControl);
+
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
             ActiveLabelStrip.SelectedFooterCellTextChanged += ActiveLabelStrip_SelectedFooterCellTextChanged;
             ActiveLabelStrip.SelectedHeaderCellTextChanged += ActiveLabelStrip_SelectedHeaderCellTextChanged;
-
-            HeaderCellControl.HeaderViewModel.RenderRequested += Control_RenderRequested;
-            FooterTopCellControl.FooterTopViewModel.RenderRequested += Control_RenderRequested;
-            FooterMiddleCellControl.FooterMiddleViewModel.RenderRequested += Control_RenderRequested;
-
-
-            HeaderCellControl.HeaderViewModel.GlobalApplySelected += CellControl_GlobalApplySelected;
-            FooterTopCellControl.FooterTopViewModel.GlobalApplySelected += CellControl_GlobalApplySelected;
-            FooterMiddleCellControl.FooterMiddleViewModel.GlobalApplySelected += CellControl_GlobalApplySelected;
-
-            // Set Data Contexts for Cell Control Binding.
-            HeaderCellControl.DataContext = HeaderCellControl.HeaderViewModel;
-            FooterTopCellControl.DataContext = FooterTopCellControl.FooterTopViewModel;
-            FooterMiddleCellControl.DataContext = FooterMiddleCellControl.FooterMiddleViewModel;
         }
 
         void ForceRender()
@@ -102,28 +96,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20),UserParameters.SingleLabel);
                 ActiveLabelStrip.ReAttachAdorners(LabelCanvas);
                 CollectSelectionEvents(SelectionMode);
-            }
-        }
-
-        void PopulateHeaderCellControls()
-        {
-            HeaderCellControl.HeaderViewModel.HeaderCells.Clear();
-
-            foreach (var element in ActiveLabelStrip.SelectedHeaders)
-            {
-                HeaderCellControl.HeaderViewModel.HeaderCells.Add(element);
-            }
-        }
-
-        void PopulateFooterCellsControls()
-        {
-            FooterTopCellControl.FooterTopViewModel.FooterCells.Clear();
-            FooterMiddleCellControl.FooterMiddleViewModel.FooterCells.Clear();
-
-            foreach (var element in ActiveLabelStrip.SelectedFooters)
-            {
-                FooterTopCellControl.FooterTopViewModel.FooterCells.Add(element);
-                FooterMiddleCellControl.FooterMiddleViewModel.FooterCells.Add(element);
             }
         }
 
@@ -528,11 +500,6 @@ namespace Dimmer_Labels_Wizard_WPF
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)
         {
             PopulateRackLabelSelector();
-            HeaderCellControl.HeaderViewModel.SetTitle("Header Text");
-
-            FooterTopCellControl.FooterTopViewModel.SetTitle("Footer Top Text");
-            FooterMiddleCellControl.FooterMiddleViewModel.SetTitle("Footer Middle Text");
-
         }
 
         private void MagnifyPlusButton_Click(object sender, RoutedEventArgs e)
@@ -576,12 +543,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
         {
-            PopulateHeaderCellControls();
         }
 
         void ActiveLabelStrip_SelectedFootersChanged(object sender, EventArgs e)
         {
-            PopulateFooterCellsControls();
         }
 
         private void ActiveLabelStrip_SelectedFooterCellTextChanged(object sender, EventArgs e)

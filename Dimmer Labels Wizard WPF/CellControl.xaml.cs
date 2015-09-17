@@ -20,76 +20,47 @@ namespace Dimmer_Labels_Wizard_WPF
     /// </summary>
     public partial class CellControl : UserControl
     {
-        public HeaderCellControlViewModel HeaderViewModel
-        {
-            get
-            {
-                return _HeaderViewModel;
-            }
-            set
-            {
-                _HeaderViewModel = value;
-            }
-        }
-        protected HeaderCellControlViewModel _HeaderViewModel = new HeaderCellControlViewModel();
-
-        public FooterTopCellControlViewModel FooterTopViewModel
-        {
-            get
-            {
-                return _FooterTopViewModel;
-            }
-            set
-            {
-                _FooterTopViewModel = value;
-            }
-        }
-        protected FooterTopCellControlViewModel _FooterTopViewModel = new FooterTopCellControlViewModel();
-
-        public FooterMiddleCellControlViewModel FooterMiddleViewModel
-        {
-            get
-            {
-                return _FooterMiddleViewModel;
-            }
-            set
-            {
-                _FooterMiddleViewModel = value;
-            }
-        }
-        protected FooterMiddleCellControlViewModel _FooterMiddleViewModel = new FooterMiddleCellControlViewModel();
-
-        public FooterBottomCellControlViewModel FooterBottomViewModel
-        {
-            get
-            {
-                return _FooterBottomViewModel;
-            }
-            set
-            {
-                _FooterBottomViewModel = value;
-            }
-        }
-        protected FooterBottomCellControlViewModel _FooterBottomViewModel = new FooterBottomCellControlViewModel();
-
         public CellControl()
         {
             InitializeComponent();
-            DataTextBox.KeyUp += DataTextBox_KeyUp;
         }
+
+        #region ViewModel Interfacing Methods.
+        public void ShowControl(List<FooterCellText> selectedFooterText , 
+            List<HeaderCellWrapper> selectedHeaderText, Point mouseLocation )
+        {
+            var viewModel = DataContext as CellControlViewModel;
+
+            viewModel.Reset();
+
+            foreach (var element in selectedHeaderText)
+            {
+                foreach (var cell in element.Cells)
+                {
+                    viewModel.HeaderCells.Add(cell);
+                }
+            }
+
+            foreach (var element in selectedFooterText)
+            {
+                viewModel.FooterCells.Add(element);
+            }
+
+            Margin = new Thickness(mouseLocation.X, mouseLocation.Y, 0, 0);
+            Visibility = Visibility.Visible;
+        }
+
+        public void HideControl()
+        {
+            Visibility = Visibility.Hidden;
+            var viewModel = DataContext as CellControlViewModel;
+            viewModel.Reset();
+        }
+        #endregion
 
         void CellControl_Loaded(object sender, RoutedEventArgs e)
         {
-            
-        }
 
-        private void DataTextBox_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                BindingExpression bindingExpression = DataTextBox.GetBindingExpression(TextBox.TextProperty);
-                bindingExpression.UpdateSource();
-            }
         }
     }
 }

@@ -30,11 +30,7 @@
                 </Rectangle>
             </Canvas>
         </Grid>
-
-        <custom:CellControl x:Name="HeaderCellControl" Margin="126,319,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"></custom:CellControl>
         <TreeView x:Name="RackSelector" HorizontalAlignment="Left" Height="271" Margin="10,292,0,0" VerticalAlignment="Top" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        <custom:CellControl x:Name="FooterTopCellControl" Margin="450,358,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <custom:CellControl x:Name="FooterMiddleCellControl" Margin="445,463,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Grid HorizontalAlignment="Left" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Height="128" Margin="966,262,0,0" VerticalAlignment="Top" Width="46">
             <Grid.RowDefinitions>
                 <RowDefinition Height="77*"/>
