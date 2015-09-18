@@ -42,6 +42,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Popup UI
         private CellControl CellControl = new CellControl();
+        private bool IsCellControlVisible = false;
 
         // Dialog First Time Tracking
         private bool GlobalApplyWarningShowAgain = true;
@@ -79,7 +80,7 @@ namespace Dimmer_Labels_Wizard_WPF
             CellControl.Visibility = Visibility.Hidden;
             CellControl.HorizontalAlignment = HorizontalAlignment.Left;
             CellControl.VerticalAlignment = VerticalAlignment.Top;
-            LabelAreaGrid.Children.Add(CellControl);
+            MainGrid.Children.Add(CellControl);
 
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
@@ -256,7 +257,11 @@ namespace Dimmer_Labels_Wizard_WPF
             if (isDragging == false)
             {
                 isDragging = true;
-                ActiveLabelStrip.ClearSelections();
+
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    ActiveLabelStrip.ClearSelections();
+                }
                 DragCanvas.Visibility = Visibility.Visible;
             }
             
@@ -322,13 +327,35 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (SelectionMode == CellSelectionMode.Cell)
             {
-                ActiveLabelStrip.MakeSelections(selectedOutlines);
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    // Additive Selection.
+                    ActiveLabelStrip.MakeSelections(selectedOutlines);
+                }
+                else
+                {
+                    // Exclusive Selection.
+                    ActiveLabelStrip.ClearSelections();
+                    ActiveLabelStrip.MakeSelections(selectedOutlines);
+                }
+                
                 selectedOutlines.Clear();
             }
 
             if (SelectionMode == CellSelectionMode.Text)
             {
-                ActiveLabelStrip.MakeSelections(selectedTextBlocks);
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    // Additive Selection.
+                    ActiveLabelStrip.MakeSelections(selectedTextBlocks);
+                }
+                else
+                {
+                    // Exclusive Selection.
+                    ActiveLabelStrip.ClearSelections();
+                    ActiveLabelStrip.MakeSelections(selectedTextBlocks);
+                }
+
                 selectedTextBlocks.Clear();
             }
             
@@ -401,14 +428,29 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             e.Handled = true;
 
-            if (isDragging == false)
+            if (e.ChangedButton == MouseButton.Left)
             {
-                ActiveLabelStrip.MakeSelection(sender as Border);
-            }
+                if (isDragging == false)
+                {
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        // Additive Selection.
+                        ActiveLabelStrip.MakeSelection(sender as Border);
+                    }
 
-            if (isDragging == true)
-            {
-                CompleteDragSelection();
+                    else
+                    {
+                        // Exclusive Selection.
+                        ActiveLabelStrip.ClearSelections();
+                        ActiveLabelStrip.MakeSelection(sender as Border);
+                    }
+                    
+                }
+
+                if (isDragging == true)
+                {
+                    CompleteDragSelection();
+                }
             }
         }
 
@@ -423,7 +465,19 @@ namespace Dimmer_Labels_Wizard_WPF
                 e.Handled = true;
                 if (isDragging == false)
                 {
-                    ActiveLabelStrip.MakeSelection(sender as TextBlock);
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        // Additive Selection.
+                        ActiveLabelStrip.MakeSelection(sender as TextBlock);
+                    }
+
+                    else
+                    {
+                        // Exclusive Selection.
+                        ActiveLabelStrip.ClearSelections();
+                        ActiveLabelStrip.MakeSelection(sender as TextBlock);
+                    }
+                    
                 }
 
                 if (isDragging == true)
@@ -438,11 +492,6 @@ namespace Dimmer_Labels_Wizard_WPF
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 MouseDownLocation = e.GetPosition(CanvasBorder);
-            }
-            
-            if (e.RightButton == MouseButtonState.Pressed)
-            {
-                ActiveLabelStrip.ClearSelections();
             }
             
         }
@@ -470,11 +519,36 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void CanvasBorder_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Released)
+            if (e.ChangedButton == MouseButton.Left)
             {
                 if (isDragging == true)
                 {
                     CompleteDragSelection();
+                }
+
+                else
+                {
+                    ActiveLabelStrip.ClearSelections();
+                }
+            }
+
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                if (ActiveLabelStrip.HasSelectedItems)
+                {
+                    if (IsCellControlVisible == false)
+                    {
+                        CellControl.ShowControl(ActiveLabelStrip.SelectedFooterCellText, ActiveLabelStrip.SelectedHeaderCellText,
+                            e.GetPosition(MainGrid));
+
+                        IsCellControlVisible = true;
+                    }
+
+                    else
+                    {
+                        CellControl.HideControl();
+                        IsCellControlVisible = false;
+                    }
                 }
             }
         }

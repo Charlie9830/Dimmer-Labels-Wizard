@@ -13,15 +13,6 @@ namespace Dimmer_Labels_Wizard_WPF
 {
     public class LabelStripSelection
     {
-        // Debugging.
-        public int AdornerCount
-        {
-            get
-            {
-                return _FooterAdorners.Count;
-            }
-        }
-
         public LabelStrip LabelStrip;
         public List<HeaderCell> SelectedHeaders = new List<HeaderCell>();
         public List<FooterCell> SelectedFooters = new List<FooterCell>();
@@ -35,6 +26,25 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private Canvas _LabelStripCanvas;
         private AdornerLayer _AdornerLayer;
+
+        #region Getters/Setters
+        public bool HasSelectedItems
+        {
+            get
+            {
+                if (SelectedHeaders.Count > 0 || SelectedFooters.Count > 0 ||
+                    SelectedHeaderCellText.Count > 0 || SelectedFooterCellText.Count > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
+        }
+        #endregion
 
         public LabelStripSelection()
         {

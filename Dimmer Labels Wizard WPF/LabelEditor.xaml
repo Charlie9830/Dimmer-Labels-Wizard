@@ -15,7 +15,7 @@
 
     </Window.Resources>
 
-    <Grid Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,0,0,0">
+    <Grid x:Name="MainGrid" Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,0,0,0">
         <ToggleButton x:Name="SelectionModeToggle" Content="Mode" Width="50" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Click="SelectionModeToggle_Click"/>
         <Grid x:Name="LabelAreaGrid" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,45,0,0" Cursor="Cross">
             <Border x:Name="CanvasBorder" Height="242" Width="1015" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" 
