@@ -23,11 +23,18 @@ namespace Dimmer_Labels_Wizard_WPF
         public CellControl()
         {
             InitializeComponent();
+            var viewModel = DataContext as CellControlViewModel;
+            viewModel.RenderRequested += ViewModel_RenderRequested;
+        }
+
+        private void ViewModel_RenderRequested(object sender, EventArgs e)
+        {
+            OnRenderRequested();
         }
 
         #region ViewModel Interfacing Methods.
-        public void ShowControl(List<FooterCellText> selectedFooterText , 
-            List<HeaderCellWrapper> selectedHeaderText, Point mouseLocation )
+        public void LoadControl(List<FooterCellText> selectedFooterText , 
+            List<HeaderCellWrapper> selectedHeaderText)
         {
             var viewModel = DataContext as CellControlViewModel;
 
@@ -46,13 +53,10 @@ namespace Dimmer_Labels_Wizard_WPF
                 viewModel.FooterCells.Add(element);
             }
 
-            Margin = new Thickness(mouseLocation.X, mouseLocation.Y, 0, 0);
-            Visibility = Visibility.Visible;
         }
 
-        public void HideControl()
+        public void ClearControl()
         {
-            Visibility = Visibility.Hidden;
             var viewModel = DataContext as CellControlViewModel;
             viewModel.Reset();
         }
@@ -62,5 +66,14 @@ namespace Dimmer_Labels_Wizard_WPF
         {
 
         }
+
+        #region Event Declarations
+        public event EventHandler RenderRequested;
+
+        protected void OnRenderRequested()
+        {
+            RenderRequested(this, new EventArgs());
+        }
+        #endregion
     }
 }

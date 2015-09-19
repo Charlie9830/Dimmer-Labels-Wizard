@@ -762,6 +762,18 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 HeaderOutlines.Last().Tag = wrapper;
 
+                // Tag Each textBlock with a Wrapper that contains a List of other Textblocks within that Cell.
+                foreach (var element in textCanvas.Children)
+                {
+                    if (element is TextBlock)
+                    {
+                        var textBlock = element as TextBlock;
+
+                        wrapper.TextBlocks.Add(textBlock);
+                        textBlock.Tag = wrapper;
+                    }
+                }
+
                 // Add to labelCanvas.
                 HeaderOutlines.Last().Child = textCanvas;
                 canvas.Children.Add(HeaderOutlines.Last());
@@ -891,6 +903,10 @@ namespace Dimmer_Labels_Wizard_WPF
                 bottomTextBlock.Foreground = UserParameters.HeaderBackGroundColourOnly ?
                     new SolidColorBrush(Colors.Black) : Footers[index].TextBrush;
                 // Border "Hugging" has been handled by GenerateTextBlocksSingleLabel().
+
+                // Tag TextBlocks.
+                middleTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Middle);
+                bottomTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Bottom);
 
                 // Add TextBlocks to textCanvas.
                 textCanvas.Children.Add(middleTextBlock);

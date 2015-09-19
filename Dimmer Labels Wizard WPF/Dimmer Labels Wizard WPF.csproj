@@ -132,6 +132,7 @@
     <Compile Include="LabelStrip.cs" />
     <Compile Include="LabelStripSelection.cs" />
     <Compile Include="Output.cs" />
+    <Compile Include="PopUpControlAdorner.cs" />
     <Compile Include="PrintRangeControl.xaml.cs">
       <DependentUpon>PrintRangeControl.xaml</DependentUpon>
     </Compile>

@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 
 namespace Dimmer_Labels_Wizard_WPF
@@ -398,31 +399,5 @@ namespace Dimmer_Labels_Wizard_WPF
             Resetting = false;
         }
         #endregion
-    }
-
-    public class CellControlAdorner : Adorner
-    {
-        protected CellControl CellControl;
-        protected VisualCollection VisualChildren;
-
-        public CellControlAdorner(UIElement adornedElement) : base(adornedElement)
-        {
-            VisualChildren = new VisualCollection(this);
-            CellControl = new CellControl();
-            VisualChildren.Add(CellControl);
-        }
-
-        protected override Visual GetVisualChild(int index)
-        {
-            return VisualChildren[index];
-        }
-
-        protected override int VisualChildrenCount
-        {
-            get
-            {
-                return VisualChildren.Count;
-            }
-        }
     }
 }

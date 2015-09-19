@@ -43,6 +43,8 @@ namespace Dimmer_Labels_Wizard_WPF
         // Popup UI
         private CellControl CellControl = new CellControl();
         private bool IsCellControlVisible = false;
+        private AdornerLayer MainGridAdornerLayer;
+        private PopUpControlAdorner PopUpAdorner;
 
         // Dialog First Time Tracking
         private bool GlobalApplyWarningShowAgain = true;
@@ -57,6 +59,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // View Setup
             CanvasBorder.ClipToBounds = true;
 
+            // Transformation Setup
             LabelCanvasScaleTransform.ScaleX = 1;
             LabelCanvasScaleTransform.ScaleY = 1;
 
@@ -68,19 +71,22 @@ namespace Dimmer_Labels_Wizard_WPF
 
             LabelCanvas.RenderTransform = LabelCanvasTransformGroup;
 
-            this.Loaded += LabelEditor_Loaded;
-            RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
+            // PopUp UI Setup.
+            MainGridAdornerLayer = AdornerLayer.GetAdornerLayer(MainGrid);
+            PopUpAdorner = new PopUpControlAdorner(MainGrid);
+            PopUpAdorner.Content = CellControl;
 
-            this.Closing += LabelEditor_Closing;
+            // Event Hookups.
+            Loaded += LabelEditor_Loaded;
+            Closing += LabelEditor_Closing;
+
+            CellControl.RenderRequested += CellControl_RenderRequested;
+
+            RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
 
             CanvasBorder.MouseDown += CanvasBorder_MouseDown;
             CanvasBorder.MouseMove += CanvasBorder_MouseMove;
             CanvasBorder.MouseUp += CanvasBorder_MouseUp;
-
-            CellControl.Visibility = Visibility.Hidden;
-            CellControl.HorizontalAlignment = HorizontalAlignment.Left;
-            CellControl.VerticalAlignment = VerticalAlignment.Top;
-            MainGrid.Children.Add(CellControl);
 
             ActiveLabelStrip.SelectedHeadersChanged += ActiveLabelStrip_SelectedHeadersChanged;
             ActiveLabelStrip.SelectedFootersChanged += ActiveLabelStrip_SelectedFootersChanged;
@@ -95,7 +101,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 LabelCanvas.Children.Clear();
                 // Offset Point is given in WPF Pixels (Inches).
                 ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20),UserParameters.SingleLabel);
-                ActiveLabelStrip.ReAttachAdorners(LabelCanvas);
+                ActiveLabelStrip.ReAttachAdorners(LabelCanvas, SelectionMode);
                 CollectSelectionEvents(SelectionMode);
             }
         }
@@ -385,6 +391,37 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+        #region Pop Up UI Handling
+        protected void TogglePopUpUI(Point mouseLocation)
+        {
+            if (IsCellControlVisible == false)
+            {
+                LoadCellControl();
+                CellControl.Margin = new Thickness(mouseLocation.X, mouseLocation.Y, 0, 0);
+                MainGridAdornerLayer.Add(PopUpAdorner);
+                IsCellControlVisible = true;
+            }
+
+            else
+            {
+                MainGridAdornerLayer.Remove(PopUpAdorner);
+                ClearCellControl();
+                IsCellControlVisible = false;
+            }
+        } 
+
+        protected void LoadCellControl()
+        {
+            CellControl.LoadControl(ActiveLabelStrip.SelectedFooterCellText,
+                ActiveLabelStrip.SelectedHeaderCellText);
+        }
+
+        protected void ClearCellControl()
+        {
+            CellControl.ClearControl();
+        }
+        #endregion
+
         #region Event Handling
 
         private void LabelEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -534,22 +571,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (e.ChangedButton == MouseButton.Right)
             {
-                if (ActiveLabelStrip.HasSelectedItems)
-                {
-                    if (IsCellControlVisible == false)
-                    {
-                        CellControl.ShowControl(ActiveLabelStrip.SelectedFooterCellText, ActiveLabelStrip.SelectedHeaderCellText,
-                            e.GetPosition(MainGrid));
-
-                        IsCellControlVisible = true;
-                    }
-
-                    else
-                    {
-                        CellControl.HideControl();
-                        IsCellControlVisible = false;
-                    }
-                }
+                TogglePopUpUI(e.GetPosition(MainGrid));
+                
             }
         }
 
@@ -613,6 +636,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 ActiveLabelStrip.RefreshAdorners();
             }
+        }
+
+        private void CellControl_RenderRequested(object sender, EventArgs e)
+        {
+            ForceRender();
         }
 
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
@@ -709,7 +737,6 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         #endregion
-
 
     }
 }

@@ -319,35 +319,42 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         #region AdornerHandling
-        public void ReAttachAdorners(Canvas labelCanvas)
+        public void ReAttachAdorners(Canvas labelCanvas, CellSelectionMode selectionMode)
         {
-            foreach (var child in labelCanvas.Children)
+            if (selectionMode == CellSelectionMode.Cell)
             {
-                if (child.GetType() == typeof(Border))
+                foreach (var child in labelCanvas.Children)
                 {
-                    Border outline = child as Border;
-
-                    if (outline.Tag.GetType() == typeof(HeaderCellWrapper))
+                    if (child is Border)
                     {
-                        HeaderCellWrapper wrapper = outline.Tag as HeaderCellWrapper;
-                        HeaderCell headerCell = wrapper.Cells.First();
+                        Border outline = child as Border;
 
-                        if (SelectedHeaders.Contains(headerCell))
+                        if (outline.Tag is HeaderCellWrapper)
                         {
-                            AddHeaderAdorner(outline);
+                            HeaderCellWrapper wrapper = outline.Tag as HeaderCellWrapper;
+                            HeaderCell headerCell = wrapper.Cells.First();
+
+                            if (SelectedHeaders.Contains(headerCell))
+                            {
+                                AddHeaderAdorner(outline);
+                            }
                         }
-                    }
 
-                    if (outline.Tag.GetType() == typeof(FooterCell))
-                    {
-                        FooterCell footerCell = outline.Tag as FooterCell;
-
-                        if (SelectedFooters.Contains(footerCell))
+                        if (outline.Tag is FooterCell)
                         {
-                            AddFooterAdorner(outline);
+                            FooterCell footerCell = outline.Tag as FooterCell;
+
+                            if (SelectedFooters.Contains(footerCell))
+                            {
+                                AddFooterAdorner(outline);
+                            }
                         }
                     }
                 }
+            }
+
+            if (selectionMode == CellSelectionMode.Text)
+            {
             }
         }
 
