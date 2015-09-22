@@ -321,40 +321,82 @@ namespace Dimmer_Labels_Wizard_WPF
         #region AdornerHandling
         public void ReAttachAdorners(Canvas labelCanvas, CellSelectionMode selectionMode)
         {
-            if (selectionMode == CellSelectionMode.Cell)
+            foreach (var child in labelCanvas.Children)
             {
-                foreach (var child in labelCanvas.Children)
+                if (child is Border)
                 {
-                    if (child is Border)
+                    Border outline = child as Border;
+
+                    if (outline.Tag is HeaderCellWrapper)
                     {
-                        Border outline = child as Border;
+                        HeaderCellWrapper wrapper = outline.Tag as HeaderCellWrapper;
+                        HeaderCell headerCell = wrapper.Cells.First();
 
-                        if (outline.Tag is HeaderCellWrapper)
+                        if (selectionMode == CellSelectionMode.Cell)
                         {
-                            HeaderCellWrapper wrapper = outline.Tag as HeaderCellWrapper;
-                            HeaderCell headerCell = wrapper.Cells.First();
-
                             if (SelectedHeaders.Contains(headerCell))
                             {
                                 AddHeaderAdorner(outline);
                             }
                         }
 
-                        if (outline.Tag is FooterCell)
+                        if (selectionMode == CellSelectionMode.Text)
                         {
-                            FooterCell footerCell = outline.Tag as FooterCell;
+                            Canvas textCanvas;
+                            if ((textCanvas = outline.Child as Canvas) != null)
+                            {
+                                foreach (var textChild in textCanvas.Children)
+                                {
+                                    TextBlock textBlock;
+                                    if ((textBlock = textChild as TextBlock) != null)
+                                    {
+                                        if (SelectedHeaderCellText.Contains((HeaderCellWrapper)textBlock.Tag))
+                                        {
+                                            HeaderCellWrapper textWrapper = textBlock.Tag as HeaderCellWrapper;
+                                            foreach (var element in textWrapper.TextBlocks)
+                                            {
+                                                AddHeaderAdorner(element);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
+                    if (outline.Tag is FooterCell)
+                    {
+                        FooterCell footerCell = outline.Tag as FooterCell;
+
+                        if (selectionMode == CellSelectionMode.Cell)
+                        {
                             if (SelectedFooters.Contains(footerCell))
                             {
                                 AddFooterAdorner(outline);
                             }
                         }
+
+                        if (selectionMode == CellSelectionMode.Text)
+                        {
+                            Canvas textCanvas;
+                            if ((textCanvas = outline.Child as Canvas) != null)
+                            {
+                                foreach (var element in textCanvas.Children)
+                                {
+                                    TextBlock textBlock;
+                                    if ((textBlock = element as TextBlock) != null)
+                                    {
+                                        if (SelectedFooterCellText.Contains((FooterCellText)textBlock.Tag))
+                                        {
+                                            AddFooterAdorner(textBlock);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-            }
-
-            if (selectionMode == CellSelectionMode.Text)
-            {
             }
         }
 

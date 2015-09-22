@@ -27,11 +27,6 @@ namespace Dimmer_Labels_Wizard_WPF
             viewModel.RenderRequested += ViewModel_RenderRequested;
         }
 
-        private void ViewModel_RenderRequested(object sender, EventArgs e)
-        {
-            OnRenderRequested();
-        }
-
         #region ViewModel Interfacing Methods.
         public void LoadControl(List<FooterCellText> selectedFooterText , 
             List<HeaderCellWrapper> selectedHeaderText)
@@ -62,10 +57,26 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+        #region Event Handling
+        private void ViewModel_RenderRequested(object sender, EventArgs e)
+        {
+            OnRenderRequested();
+        }
+
         void CellControl_Loaded(object sender, RoutedEventArgs e)
         {
 
         }
+
+        private void DataTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                BindingExpression bindingExpression = DataTextBox.GetBindingExpression(TextBox.TextProperty);
+                bindingExpression.UpdateSource();
+            }
+        }
+        #endregion
 
         #region Event Declarations
         public event EventHandler RenderRequested;

@@ -27,7 +27,7 @@
         <Grid Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
             <ComboBox x:Name="FontComboBox" ItemsSource="{Binding SystemFonts}" SelectedItem="{Binding FontFamily}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="162" IsReadOnly="True"/>
             <ComboBox x:Name="SizeComboBox" ItemsSource="{Binding FontSizes}" Text="{Binding FontSize}" HorizontalAlignment="Left" Margin="177,10,0,0" VerticalAlignment="Top" Width="63" IsEditable="True"/>
-            <TextBox x:Name="DataTextBox" Text="{Binding Data}" FontSize="15" HorizontalAlignment="Left" Height="23" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Cursor="IBeam"/>
+            <TextBox x:Name="DataTextBox" Text="{Binding Data}" FontSize="15" HorizontalAlignment="Left" Height="23" Margin="10,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Cursor="IBeam" KeyUp="DataTextBox_KeyUp"/>
             <ToggleButton x:Name="BoldToggleButton" IsChecked="{Binding IsBold}" Width="20" Height="20" Margin="245,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource bold24}" Background="#FFDDDDDD"/>
             <ToggleButton x:Name="ItalicsToggleButton" IsChecked="{Binding IsItalics}" Width="20" Height="20" Margin="267,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource italic24}"/>
             <ToggleButton x:Name="UnderlineToggleButton" Width="20" Height="20" Margin="289,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource underline24}"/>

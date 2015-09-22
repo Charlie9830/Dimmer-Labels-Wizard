@@ -102,7 +102,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Rendering Control Methods
         // Control Method for DrawToCanvas Methods.
-        public void RenderToDisplay(Canvas canvas, Point offset, bool singleLabelMode)
+        public void RenderToDisplay(Canvas canvas, Point offset, bool singleLabelMode,
+            List<HeaderCellWrapper> headerCellWrappers, List<FooterCellText> footerCellText)
         {
             // Dual Label.
             if (singleLabelMode == false)
@@ -116,11 +117,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 canvas.Width = (labelWidth * Footers.Count) + (offset.X * 2);
                 canvas.Height = totalLabelStripHeight + (offset.Y * 2);
 
-                RenderHeader(canvas, offset);
+                RenderHeader(canvas, offset, headerCellWrappers);
 
                 offset.Y += (this.LabelHeightInMM * unitConversionRatio) * LabelStripOffsetMultiplier;
 
-                RenderFooters(canvas, offset);
+                RenderFooters(canvas, offset, footerCellText);
             }
 
             // Single Label.
@@ -132,11 +133,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 canvas.Width = (labelWidth * Footers.Count) + (offset.X * 2);
                 canvas.Height = labelHeight + (offset.Y * 2);
 
-                RenderHeaderSingleLabel(canvas, offset);
+                RenderHeaderSingleLabel(canvas, offset, headerCellWrappers);
 
                 offset.Y += (this.LabelHeightInMM * unitConversionRatio) / 3;
 
-                RenderFootersSingleLabel(canvas, offset);
+                RenderFootersSingleLabel(canvas, offset, footerCellText);
             }
         }
 
@@ -172,15 +173,15 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         if (stripCounter == 0)
                         {
-                            stripsToPrint[listIndex].RenderHeader(returnList.Last(), new Point(0, 0));
-                            stripsToPrint[listIndex].RenderFooters(returnList.Last(), new Point(0, labelStripOffset));
+                            stripsToPrint[listIndex].RenderHeader(returnList.Last(), new Point(0, 0), null);
+                            stripsToPrint[listIndex].RenderFooters(returnList.Last(), new Point(0, labelStripOffset), null);
                         }
 
                         else
                         {
-                            stripsToPrint[listIndex].RenderHeader(returnList.Last(), new Point(0, totalLabelStripHeight * stripCounter));
+                            stripsToPrint[listIndex].RenderHeader(returnList.Last(), new Point(0, totalLabelStripHeight * stripCounter), null);
                             stripsToPrint[listIndex].RenderFooters(returnList.Last(), new Point(0, (totalLabelStripHeight * stripCounter) +
-                                labelStripOffset));
+                                labelStripOffset), null);
                         }
 
                         listIndex++;
@@ -204,16 +205,16 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         if (stripCounter == 0)
                         {
-                            stripsToPrint[listIndex].RenderHeaderSingleLabel(returnList.Last(), printOffset);
+                            stripsToPrint[listIndex].RenderHeaderSingleLabel(returnList.Last(), printOffset, null);
                             stripsToPrint[listIndex].RenderFootersSingleLabel(returnList.Last(),
-                                new Point(0,printOffset.Y + (labelHeight / 3)));
+                                new Point(0,printOffset.Y + (labelHeight / 3)), null);
                         }
 
                         else
                         {
-                            stripsToPrint[listIndex].RenderHeaderSingleLabel(returnList.Last(), printOffset);
+                            stripsToPrint[listIndex].RenderHeaderSingleLabel(returnList.Last(), printOffset, null);
                             stripsToPrint[listIndex].RenderFootersSingleLabel(returnList.Last(),
-                                new Point(0, printOffset.Y + (labelHeight / 3)));
+                                new Point(0, printOffset.Y + (labelHeight / 3)), null);
                         }
 
                         printOffset.Y += labelHeight + labelStripOffset;
@@ -228,7 +229,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Rendering
         // Dual Label.
-        public void RenderHeader(Canvas canvas, Point offset)
+        public void RenderHeader(Canvas canvas, Point offset, List<HeaderCellWrapper> headerCellWrappers)
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
@@ -394,15 +395,35 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
                 }
 
-                // Tag the HeaderOutline.
-                HeaderCellWrapper wrapper = new HeaderCellWrapper();
-
-                int wrapperIndex = index;
-                for (int count = 1; count <= rightBoundPosition; count++ )
+                // Generate a List of Associtated HeaderCells.
+                List<HeaderCell> associatedHeaderCells = new List<HeaderCell>();
+                int headersIndex = index;
+                for (int count = 1; count <= rightBoundPosition; count++)
                 {
-                    wrapper.Cells.Add(Headers[wrapperIndex]);
-                    wrapperIndex++;
+                    associatedHeaderCells.Add(Headers[headersIndex]);
+                    headersIndex++;
                 }
+
+                // Determine if a Suitable HeaderCellWrapper has been provided. If not Make a new one.
+                HeaderCellWrapper wrapper;
+                if (headerCellWrappers != null || headerCellWrappers.Count != 0)
+                {
+                    // Search for a Provided HeaderCellWrapper who's Cells Match the Currently Rendering Cells.
+                    wrapper = headerCellWrappers.Find(item => item.Cells.SequenceEqual(associatedHeaderCells));
+
+                    if (wrapper == null)
+                    {
+                        wrapper = new HeaderCellWrapper();
+                        wrapper.Cells.AddRange(associatedHeaderCells);
+                    }
+                }
+
+                else
+                {
+                    wrapper = new HeaderCellWrapper();
+                    wrapper.Cells.AddRange(associatedHeaderCells);
+                }
+                
 
                 // Copy Data modified by Renderer to other Merged HeaderCells.
                 foreach (var element in wrapper.Cells)
@@ -410,6 +431,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     element.FontSize = Headers[index].FontSize;
                 }
 
+                // Tag Wrapper to Outline.
                 HeaderOutlines.Last().Tag = wrapper;
 
                 // Tag Each textBlock with a Wrapper that contains a List of other Textblocks within that Cell.
@@ -435,7 +457,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public void RenderFooters(Canvas canvas, Point offset)
+        public void RenderFooters(Canvas canvas, Point offset, List<FooterCellText> footerCellText)
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
@@ -557,9 +579,16 @@ namespace Dimmer_Labels_Wizard_WPF
                 textCanvas.Children.Add(bottomTextBlock);
 
                 // Tag TextBlocks.
-                topTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Top);
-                middleTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Middle);
-                bottomTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Bottom);
+                // The ?: Expressions search for a provided Matching FooterCellText object, if one cannot be found
+                // a new Object is created.
+                topTextBlock.Tag = (footerCellText.Find(item => item.Cell == Footers[index] && item.Position == FooterTextPosition.Top)) == null ?
+                    new FooterCellText(Footers[index], FooterTextPosition.Top) : footerCellText.Find(item => item.Cell == Footers[index]);
+
+                middleTextBlock.Tag = (footerCellText.Find(item => item.Cell == Footers[index] && item.Position == FooterTextPosition.Middle)) == null ?
+                    new FooterCellText(Footers[index], FooterTextPosition.Middle) : footerCellText.Find(item => item.Cell == Footers[index]);
+
+                bottomTextBlock.Tag = (footerCellText.Find(item => item.Cell == Footers[index] && item.Position == FooterTextPosition.Bottom)) == null ?
+                    new FooterCellText(Footers[index], FooterTextPosition.Bottom) : footerCellText.Find(item => item.Cell == Footers[index]);
 
                 // Add Canvas to Outline.
                 FooterOutlines.Last().Child = textCanvas;
@@ -577,7 +606,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // Single Label.
-        public void RenderHeaderSingleLabel(Canvas canvas, Point offset)
+        public void RenderHeaderSingleLabel(Canvas canvas, Point offset, List<HeaderCellWrapper> headerCellWrappers)
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
@@ -744,14 +773,33 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
                 }
 
-                // Tag the HeaderOutline.
-                HeaderCellWrapper wrapper = new HeaderCellWrapper();
-
-                int wrapperIndex = index;
+                // Generate a List of Associtated HeaderCells.
+                List<HeaderCell> associatedHeaderCells = new List<HeaderCell>();
+                int headersIndex = index;
                 for (int count = 1; count <= rightBoundPosition; count++)
                 {
-                    wrapper.Cells.Add(Headers[wrapperIndex]);
-                    wrapperIndex++;
+                    associatedHeaderCells.Add(Headers[headersIndex]);
+                    headersIndex++;
+                }
+
+                // Determine if a Suitable HeaderCellWrapper has been provided. If not Make a new one.
+                HeaderCellWrapper wrapper;
+                if (headerCellWrappers != null || headerCellWrappers.Count != 0)
+                {
+                    // Search for a Provided HeaderCellWrapper who's Cells Match the Currently Rendering Cells.
+                    wrapper = headerCellWrappers.Find(item => item.Cells.SequenceEqual(associatedHeaderCells));
+
+                    if (wrapper == null)
+                    {
+                        wrapper = new HeaderCellWrapper();
+                        wrapper.Cells.AddRange(associatedHeaderCells);
+                    }
+                }
+
+                else
+                {
+                    wrapper = new HeaderCellWrapper();
+                    wrapper.Cells.AddRange(associatedHeaderCells);
                 }
 
                 // Copy Data modified by Renderer to other Merged HeaderCells.
@@ -785,7 +833,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public void RenderFootersSingleLabel(Canvas canvas, Point offset)
+        public void RenderFootersSingleLabel(Canvas canvas, Point offset, List<FooterCellText> footerCellText)
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
@@ -905,8 +953,13 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Border "Hugging" has been handled by GenerateTextBlocksSingleLabel().
 
                 // Tag TextBlocks.
-                middleTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Middle);
-                bottomTextBlock.Tag = new FooterCellText(Footers[index], FooterTextPosition.Bottom);
+                // The ?: Expressions search for a provided Matching FooterCellText object, if one cannot be found
+                // a new Object is created.
+                middleTextBlock.Tag = (footerCellText.Find(item => item.Cell == Footers[index] && item.Position == FooterTextPosition.Middle)) == null ?
+                    new FooterCellText(Footers[index], FooterTextPosition.Middle) : footerCellText.Find(item => item.Cell == Footers[index]);
+
+                bottomTextBlock.Tag = (footerCellText.Find(item => item.Cell == Footers[index] && item.Position == FooterTextPosition.Bottom)) == null ?
+                    new FooterCellText(Footers[index], FooterTextPosition.Bottom) : footerCellText.Find(item => item.Cell == Footers[index]);
 
                 // Add TextBlocks to textCanvas.
                 textCanvas.Children.Add(middleTextBlock);

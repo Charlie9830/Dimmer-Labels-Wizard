@@ -100,7 +100,8 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 LabelCanvas.Children.Clear();
                 // Offset Point is given in WPF Pixels (Inches).
-                ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20),UserParameters.SingleLabel);
+                ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20),UserParameters.SingleLabel,
+                    ActiveLabelStrip.SelectedHeaderCellText, ActiveLabelStrip.SelectedFooterCellText);
                 ActiveLabelStrip.ReAttachAdorners(LabelCanvas, SelectionMode);
                 CollectSelectionEvents(SelectionMode);
             }
