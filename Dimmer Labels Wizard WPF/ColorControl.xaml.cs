@@ -24,22 +24,46 @@ namespace Dimmer_Labels_Wizard_WPF
         public ColorControl()
         {
             InitializeComponent();
-            this.DataContext = this.ViewModel;
+            var viewModel = DataContext as ColorControlViewModel;
+            viewModel.RenderRequested += ViewModel_RenderRequested;
         }
 
-        protected ColorControlViewModel _ViewModel = new ColorControlViewModel();
-
-        public ColorControlViewModel ViewModel
+        public void LoadControl(List<HeaderCell> headerCells, List<FooterCell> footerCells)
         {
-            get
+            var viewModel = DataContext as ColorControlViewModel;
+
+            foreach (var element in headerCells)
             {
-                return _ViewModel;
+                viewModel.SelectedHeaderCells.Add(element);
             }
-            set
+
+            foreach (var element in footerCells)
             {
-                _ViewModel = value;
+                viewModel.SelectedFooterCells.Add(element);
             }
         }
 
+        public void ClearControl()
+        {
+            var viewModel = DataContext as ColorControlViewModel;
+
+            viewModel.Clear();
+        }
+
+        #region Event Handlers
+        private void ViewModel_RenderRequested(object sender, EventArgs e)
+        {
+            OnRenderRequested();
+        }
+        #endregion
+
+        #region External Events
+        public event EventHandler RenderRequested;
+
+        protected void OnRenderRequested()
+        {
+            RenderRequested(this, new EventArgs());
+        }
+        #endregion
     }
 }

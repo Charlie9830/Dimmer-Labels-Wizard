@@ -163,9 +163,9 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PaintBucket512 {
+        internal static System.Drawing.Bitmap PaintBrush64 {
             get {
-                object obj = ResourceManager.GetObject("PaintBucket512", resourceCulture);
+                object obj = ResourceManager.GetObject("PaintBrush64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

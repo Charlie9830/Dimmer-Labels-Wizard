@@ -42,7 +42,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Popup UI
         private CellControl CellControl = new CellControl();
-        private bool IsCellControlVisible = false;
+        private ColorControl ColorControl = new ColorControl();
+        private bool IsPopUpVisible = false;
         private AdornerLayer MainGridAdornerLayer;
         private PopUpControlAdorner PopUpAdorner;
 
@@ -74,13 +75,14 @@ namespace Dimmer_Labels_Wizard_WPF
             // PopUp UI Setup.
             MainGridAdornerLayer = AdornerLayer.GetAdornerLayer(MainGrid);
             PopUpAdorner = new PopUpControlAdorner(MainGrid);
-            PopUpAdorner.Content = CellControl;
+            PopUpAdorner.Content = ColorControl;
 
             // Event Hookups.
             Loaded += LabelEditor_Loaded;
             Closing += LabelEditor_Closing;
 
             CellControl.RenderRequested += CellControl_RenderRequested;
+            ColorControl.RenderRequested += ColorControl_RenderRequested;
 
             RackSelector.SelectedItemChanged += RackSelector_SelectedItemChanged;
 
@@ -99,9 +101,10 @@ namespace Dimmer_Labels_Wizard_WPF
             if (ActiveLabelStrip.LabelStrip != null)
             {
                 LabelCanvas.Children.Clear();
-                // Offset Point is given in WPF Pixels (Inches).
+
                 ActiveLabelStrip.LabelStrip.RenderToDisplay(LabelCanvas, new Point(20, 20),UserParameters.SingleLabel,
                     ActiveLabelStrip.SelectedHeaderCellText, ActiveLabelStrip.SelectedFooterCellText);
+
                 ActiveLabelStrip.ReAttachAdorners(LabelCanvas, SelectionMode);
                 CollectSelectionEvents(SelectionMode);
             }
@@ -395,21 +398,51 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Pop Up UI Handling
         protected void TogglePopUpUI(Point mouseLocation)
         {
-            if (IsCellControlVisible == false)
+            if (SelectionMode == CellSelectionMode.Cell)
             {
-                LoadCellControl();
-                CellControl.Margin = new Thickness(mouseLocation.X, mouseLocation.Y, 0, 0);
-                MainGridAdornerLayer.Add(PopUpAdorner);
-                IsCellControlVisible = true;
+                if (IsPopUpVisible == false)
+                {
+                    LoadColorControl();
+                    ColorControl.Margin = new Thickness(mouseLocation.X, mouseLocation.Y, 0, 0);
+                    MainGridAdornerLayer.Add(PopUpAdorner);
+                    IsPopUpVisible = true;
+                }
+
+                else
+                {
+                    MainGridAdornerLayer.Remove(PopUpAdorner);
+                    ClearColorControl();
+                    IsPopUpVisible = false;
+                }
             }
 
-            else
+            if (SelectionMode == CellSelectionMode.Text)
             {
-                MainGridAdornerLayer.Remove(PopUpAdorner);
-                ClearCellControl();
-                IsCellControlVisible = false;
+                if (IsPopUpVisible == false)
+                {
+                    LoadCellControl();
+                    CellControl.Margin = new Thickness(mouseLocation.X, mouseLocation.Y, 0, 0);
+                    MainGridAdornerLayer.Add(PopUpAdorner);
+                    IsPopUpVisible = true;
+                }
+
+                else
+                {
+                    MainGridAdornerLayer.Remove(PopUpAdorner);
+                    ClearCellControl();
+                    IsPopUpVisible = false;
+                }
             }
         } 
+
+        protected void AssertPopUpUI()
+        {
+            if (IsPopUpVisible == true)
+            {
+                MainGridAdornerLayer.Remove(PopUpAdorner);
+                MainGridAdornerLayer.Add(PopUpAdorner);
+            }
+        }
 
         protected void LoadCellControl()
         {
@@ -420,6 +453,16 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void ClearCellControl()
         {
             CellControl.ClearControl();
+        }
+
+        protected void LoadColorControl()
+        {
+            ColorControl.LoadControl(ActiveLabelStrip.SelectedHeaders, ActiveLabelStrip.SelectedFooters);
+        }
+
+        protected void ClearColorControl()
+        {
+            ColorControl.ClearControl();
         }
         #endregion
 
@@ -437,6 +480,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 if (result == MessageBoxResult.No)
                 {
                     e.Cancel = true;
+                }
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    Application.Current.Shutdown();
                 }
             }
         }
@@ -490,6 +538,12 @@ namespace Dimmer_Labels_Wizard_WPF
                     CompleteDragSelection();
                 }
             }
+
+            // Spawn PopUp UI.
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                TogglePopUpUI(e.GetPosition(MainGrid));
+            }
         }
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
@@ -498,9 +552,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void TextBlock_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (SelectionMode == CellSelectionMode.Text)
+            e.Handled = true;
+            if (e.ChangedButton == MouseButton.Left)
             {
-                e.Handled = true;
                 if (isDragging == false)
                 {
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
@@ -515,13 +569,19 @@ namespace Dimmer_Labels_Wizard_WPF
                         ActiveLabelStrip.ClearSelections();
                         ActiveLabelStrip.MakeSelection(sender as TextBlock);
                     }
-                    
+
                 }
 
                 if (isDragging == true)
                 {
                     CompleteDragSelection();
                 }
+            }
+
+            // Spawn PopUp UI.
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                TogglePopUpUI(e.GetPosition(MainGrid));
             }
         }
 
@@ -569,11 +629,11 @@ namespace Dimmer_Labels_Wizard_WPF
                     ActiveLabelStrip.ClearSelections();
                 }
             }
-
+            
+            // Spawn PopUp UI.
             if (e.ChangedButton == MouseButton.Right)
             {
                 TogglePopUpUI(e.GetPosition(MainGrid));
-                
             }
         }
 
@@ -644,26 +704,34 @@ namespace Dimmer_Labels_Wizard_WPF
             ForceRender();
         }
 
+        private void ColorControl_RenderRequested(object sender, EventArgs e)
+        {
+            ForceRender();
+        }
+
         void ActiveLabelStrip_SelectedHeadersChanged(object sender, EventArgs e)
         {
+            LoadColorControl();
+            AssertPopUpUI();
         }
 
         void ActiveLabelStrip_SelectedFootersChanged(object sender, EventArgs e)
         {
+            LoadColorControl();
+            AssertPopUpUI();
         }
 
         private void ActiveLabelStrip_SelectedFooterCellTextChanged(object sender, EventArgs e)
         {
-            // This will change when new Popup UI is Implemented. Just needs to not Throw an exception at Event Declaration
-            // right now.
+            LoadCellControl();
+            AssertPopUpUI();
         }
 
         private void ActiveLabelStrip_SelectedHeaderCellTextChanged(object sender, EventArgs e)
         {
-            // This will change when new Popup UI is Implemented. Just needs to not Throw an exception at Event Declaration
-            // right now.
+            LoadCellControl();
+            AssertPopUpUI();
         }
-
 
         private void SplitCellsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -726,11 +794,13 @@ namespace Dimmer_Labels_Wizard_WPF
             if (toggle.IsChecked == true)
             {
                 SelectionMode = CellSelectionMode.Text;
+                PopUpAdorner.Content = CellControl;
             }
 
             else
             {
                 SelectionMode = CellSelectionMode.Cell;
+                PopUpAdorner.Content = ColorControl;
             }
 
             ActiveLabelStrip.ClearSelections();

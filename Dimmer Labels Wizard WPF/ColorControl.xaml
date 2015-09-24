@@ -4,11 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:custom="clr-namespace:Dimmer_Labels_Wizard_WPF"
+             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              mc:Ignorable="d" Height="43" Width="142">
 
+    <UserControl.DataContext>
+        <custom:ColorControlViewModel/>
+    </UserControl.DataContext>
+
     <UserControl.Resources>
-        <Image x:Key="paintBucket512" Source="Resources/PaintBucket512.png"/>
+        <Image x:Key="paintBucket512" Source="Resources/PaintBrush64.png"/>
         <ControlTemplate x:Key="ToggleButtonTemplate" TargetType="ToggleButton">
             <Border x:Name="border" BorderBrush="Black" Margin="0,0,0,2" Child="{StaticResource paintBucket512}"/>
             <ControlTemplate.Triggers>
@@ -35,7 +40,7 @@
             <Grid.Background>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
             </Grid.Background>
-            <!--<xctk:ColorPicker x:Name="ColorPicker" ButtonStyle="{StaticResource ColorPickerStyle}" SelectedColor="{Binding Path=SelectedColor}" StandardColors="{Binding Path=StandardColorItems}" Width="20" Height="21" AvailableColorsSortingMode="HueSaturationBrightness" DisplayColorAndName="True" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0"/> -->
+            <xctk:ColorPicker x:Name="ColorPicker"  ButtonStyle="{StaticResource ColorPickerStyle}" SelectedColor="{Binding Path=SelectedColor}" AvailableColors="{Binding Path=StandardColorItems}" StandardColors="{Binding Path=StandardColorItems}" Width="20" Height="21" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0"/>
             <ComboBox HorizontalAlignment="Left" ItemsSource="{Binding Path=StandardLineWeights}" Text="{Binding Path=LineWeight}" Margin="47,10,0,0" VerticalAlignment="Top" Width="80" IsEditable="True"/>
         </Grid>
     </Border>

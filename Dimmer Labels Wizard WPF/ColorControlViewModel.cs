@@ -17,13 +17,9 @@ namespace Dimmer_Labels_Wizard_WPF
         protected ObservableCollection<ColorItem> _StandardColorItems = new ObservableCollection<ColorItem>();
         protected Color _SelectedColor = new Color();
 
-        protected bool _BackgroundColorGlobalApply = false;
-        protected bool _LineWeightGlobalApply = false;
+        protected bool Resetting = false;
 
-        protected double[] _StandardLineWeights = { 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25 };
-        protected double _LineWeight = 1.25d;
-
-        protected LabelStrip _ActiveLabelStrip;
+        // protected double[] _StandardLineWeights = { 0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 2.25 };
 
         public ColorControlViewModel()
         {
@@ -79,139 +75,22 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public bool BackgroundColorGlobalApply
-        {
-            get
-            {
-                return _BackgroundColorGlobalApply;
-            }
-            set
-            {
-                _BackgroundColorGlobalApply = value;
-                OnPropertyChanged("BackgroundColorGlobalApply");
-                OnGlobalApplySelected();
-            }
-        }
-
-        public bool LineWeightGlobalApply
-        {
-            get
-            {
-                return _LineWeightGlobalApply;
-            }
-            set
-            {
-                _LineWeightGlobalApply = value;
-                OnPropertyChanged("LineWeightGlobalApply");
-                OnGlobalApplySelected();
-            }
-        }
-
-        public double[] StandardLineWeights
-        {
-            get
-            {
-                return _StandardLineWeights;
-            }
-        }
-
-        public double LineWeight
-        {
-            get
-            {
-                return _LineWeight;
-            }
-            set
-            {
-                _LineWeight = value;
-                UpdateLineWeight();
-                OnPropertyChanged("LineWeight");
-            }
-        }
-
-        public LabelStrip ActiveLabelStrip
-        {
-            get
-            {
-                return _ActiveLabelStrip;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    _ActiveLabelStrip = value;
-                    SetLineWeightSelection();
-                }
-            }
-        }
-
         #endregion
 
         #region Methods
         void UpdateColor()
         {
-            bool updateOccured = false;
-
-            if (_BackgroundColorGlobalApply == false)
+            foreach (var element in _SelectedHeaderCells)
             {
-                foreach (var element in _SelectedHeaderCells)
-                {
-                    element.BackgroundBrush = new SolidColorBrush(_SelectedColor);
-                    updateOccured = true;
-                }
-
-                foreach (var element in _SelectedFooterCells)
-                {
-                    element.BackgroundBrush = new SolidColorBrush(_SelectedColor);
-                    updateOccured = true;
-                }
+                element.BackgroundBrush = new SolidColorBrush(_SelectedColor);
             }
 
-            else
+            foreach (var element in _SelectedFooterCells)
             {
-                foreach (var labelStrip in Globals.LabelStrips)
-                {
-                    foreach (var header in labelStrip.Headers)
-                    {
-                        header.BackgroundBrush = new SolidColorBrush(_SelectedColor);
-                    }
-
-                    foreach (var footer in labelStrip.Footers)
-                    {
-                        footer.BackgroundBrush = new SolidColorBrush(_SelectedColor);
-                    }
-                }
-                updateOccured = true;
-            }
-
-            if (updateOccured == true)
-            {
-                OnRenderRequested();
-            }
-        }
-
-        void UpdateLineWeight()
-        {
-            if (_LineWeightGlobalApply == false)
-            {
-                ActiveLabelStrip.LineWeight = _LineWeight;
-            }
-
-            else
-            {
-                foreach (var labelStrip in Globals.LabelStrips)
-                {
-                    labelStrip.LineWeight = _LineWeight;
-                }
+                element.BackgroundBrush = new SolidColorBrush(_SelectedColor);
             }
 
             OnRenderRequested();
-        }
-
-        void SetLineWeightSelection()
-        {
-            _LineWeight = ActiveLabelStrip.LineWeight;
-            OnPropertyChanged("LineWeight");
         }
 
         void PopulateStandardColorItems()
@@ -228,7 +107,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _StandardColorItems.Add(new ColorItem(Colors.Gray,"Gray"));
         }
 
-        bool CheckColorEquality()
+        protected bool CheckColorEquality()
         {
             List<LabelCell> cells = new List<LabelCell>();
 
@@ -264,41 +143,47 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+        #region External Interfacing Methods
+        public void Clear()
+        {
+            Resetting = true;
+            SelectedHeaderCells.Clear();
+            SelectedFooterCells.Clear();
+            Resetting = false;
+        }
+        #endregion
+
         #region Event Handlers
 
         void SelectedCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (CheckColorEquality() == true)
+            if (Resetting != true)
             {
-                if (_SelectedHeaderCells.Count > 0)
+                if (CheckColorEquality() == true)
                 {
-                    _SelectedColor = _SelectedHeaderCells.First().BackgroundBrush.Color;
+                    if (_SelectedHeaderCells.Count > 0)
+                    {
+                        _SelectedColor = _SelectedHeaderCells.First().BackgroundBrush.Color;
+                    }
+
+                    if (_SelectedFooterCells.Count > 0)
+                    {
+                        _SelectedColor = _SelectedFooterCells.First().BackgroundBrush.Color;
+                    }
                 }
 
-                if (_SelectedFooterCells.Count > 0)
+                else
                 {
-                    _SelectedColor = _SelectedFooterCells.First().BackgroundBrush.Color;
+                    _SelectedColor = Colors.Transparent;
                 }
-            }
 
-            else
-            {
-                _SelectedColor = Colors.Transparent;
+                OnPropertyChanged("SelectedColor");
             }
-
-            OnPropertyChanged("SelectedColor");
         }
 
         #endregion
 
         #region External Events
-        public event EventHandler GlobalApplySelected;
-
-        protected virtual void OnGlobalApplySelected()
-        {
-            GlobalApplySelected(this, new EventArgs());
-            
-        }
         #endregion
     }
 }

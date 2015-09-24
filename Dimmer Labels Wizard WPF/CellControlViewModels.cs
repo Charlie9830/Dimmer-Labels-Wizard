@@ -346,8 +346,8 @@ namespace Dimmer_Labels_Wizard_WPF
                 referenceTypeface = _HeaderCells.First().Font;
             }
 
-            if (_HeaderCells.All(item => item.Font == referenceTypeface) == true &&
-                _FooterCells.All(item => item.Font == referenceTypeface) == true)
+            if (_HeaderCells.All(item => item.Font.Equals(referenceTypeface)) == true &&
+                _FooterCells.All(item => item.Font.Equals(referenceTypeface)) == true)
             {
                 value = referenceTypeface;
                 return true;

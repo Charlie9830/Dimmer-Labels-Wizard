@@ -338,8 +338,8 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\PaintBucket512.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Resource Include="Resources\PaintBrush64.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
