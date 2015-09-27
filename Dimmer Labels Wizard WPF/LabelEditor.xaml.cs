@@ -106,6 +106,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     ActiveLabelStrip.SelectedHeaderCellText, ActiveLabelStrip.SelectedFooterCellText);
 
                 ActiveLabelStrip.ReAttachAdorners(LabelCanvas, SelectionMode);
+                AssertPopUpUI();
                 CollectSelectionEvents(SelectionMode);
             }
         }
