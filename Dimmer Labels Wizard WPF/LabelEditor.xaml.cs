@@ -654,6 +654,14 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
+            foreach (var element in ActiveLabelStrip.LabelStrip.Footers)
+            {
+                element.TopWeight += 1;
+                element.BottomWeight += 1;
+                element.RightWeight += 1;
+                element.LeftWeight += 1;
+                ForceRender();
+            }
         }
 
         void LabelEditor_Loaded(object sender, RoutedEventArgs e)

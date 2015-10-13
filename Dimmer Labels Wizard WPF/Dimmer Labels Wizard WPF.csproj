@@ -89,6 +89,9 @@
       <DependentUpon>DimmerRangeSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="DimmerRangeSelectorViewModel.cs" />
+    <Compile Include="DrawingTest.xaml.cs">
+      <DependentUpon>DrawingTest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Enums.cs" />
     <Compile Include="FileImport.cs" />
     <Compile Include="FileImportDialog.xaml.cs">
@@ -177,6 +180,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DistroRangeSelectorHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DrawingTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

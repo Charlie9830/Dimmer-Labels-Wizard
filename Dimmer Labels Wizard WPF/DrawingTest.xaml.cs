@@ -15,21 +15,13 @@ using System.Windows.Shapes;
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for LabelGenerationDialog.xaml
+    /// Interaction logic for DrawingTest.xaml
     /// </summary>
-    public partial class LabelGenerationDialog : Window
+    public partial class DrawingTest : Window
     {
-        public LabelGenerationDialog()
+        public DrawingTest()
         {
             InitializeComponent();
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Output.ExportToRackLabel();
-            Hide();
-            ApplicationWindows.LabelEditorWindow = new LabelEditor();
-            ApplicationWindows.LabelEditorWindow.Show();
         }
     }
 }

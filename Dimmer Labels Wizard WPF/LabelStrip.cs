@@ -294,7 +294,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 HeaderOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
-                HeaderOutlines.Last().BorderThickness = headerOutlineThickness;
+                HeaderOutlines.Last().BorderThickness = new Thickness(1);
 
                 // Setup Text.
                 textCanvas.Width = HeaderOutlines.Last().Width - HeaderOutlines.Last().BorderThickness.Left -
@@ -461,7 +461,6 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             // Resources.
             SolidColorBrush outlineColor = new SolidColorBrush(Colors.Black);
-            Thickness footerOutlineThickness = new Thickness(LineWeight);
 
             // Convert to WPF Units (inches).
             double labelWidth = this.LabelWidthInMM * unitConversionRatio;
@@ -504,7 +503,13 @@ namespace Dimmer_Labels_Wizard_WPF
                 FooterOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
-                FooterOutlines.Last().BorderThickness = footerOutlineThickness;
+                Thickness cellThickness = new Thickness();
+                cellThickness.Left = Footers[index].LeftWeight;
+                cellThickness.Top = Footers[index].TopWeight;
+                cellThickness.Right = Footers[index].RightWeight;
+                cellThickness.Bottom = Footers[index].BottomWeight;
+
+                FooterOutlines.Last().BorderThickness = cellThickness;
 
                 // Setup Text Canvas.
                 textCanvas.Width = FooterOutlines.Last().Width - FooterOutlines.Last().BorderThickness.Left -

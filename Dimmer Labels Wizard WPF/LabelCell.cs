@@ -17,6 +17,13 @@ namespace Dimmer_Labels_Wizard_WPF
         protected SolidColorBrush _TextBrush;
         protected SolidColorBrush _BackgroundBrush;
 
+        protected NeighbourCells _Neighbours;
+        protected double _LeftWeight = 0;
+        protected double _TopWeight = 0;
+        protected double _RightWeight = 0;
+        protected double _BottomWeight = 0;
+
+        #region Getters/Setters.
         public SolidColorBrush TextBrush
         {
             get
@@ -29,7 +36,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 _TextBrush = value;
             }
         }
-        
+
         public SolidColorBrush BackgroundBrush
         {
             get
@@ -54,6 +61,248 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public NeighbourCells Neighbours
+        {
+            get
+            {
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                else
+                {
+                    return _Neighbours;
+                }
+            }
+            set
+            {
+                _Neighbours = value;
+            }
+        }
+
+        // Public Weights
+        public double LeftWeight
+        {
+            get
+            {
+                // No Neighbour Object has been set.
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                // Left hand Neighbour exists.
+                else if (_Neighbours.Left != null)
+                {
+                    if (_LeftWeight == 0)
+                    {
+                        return _LeftWeight;
+                    }
+                    else
+                    {
+                        return _LeftWeight / 2;
+                    }
+                }
+
+                // Left Hand Neighbour does not exist.
+                else
+                {
+                    return _LeftWeight;
+                }
+            }
+            set
+            {
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                else
+                {
+                    _LeftWeight = value;
+                    if (Neighbours.Left != null)
+                    {
+                        Neighbours.Left.SneakRightWeight = value;
+                    }
+                }
+            }
+        }
+
+        public double TopWeight
+        {
+            get
+            {
+                // No Neighbour Object has been set.
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                // Top Neighbour exists.
+                else if (_Neighbours.Top != null)
+                {
+                    if (_TopWeight == 0)
+                    {
+                        return _TopWeight;
+                    }
+                    else
+                    {
+                        return _TopWeight / 2;
+                    }
+                }
+
+                // Top Neighbour does not exist.
+                else
+                {
+                    return _TopWeight;
+                }
+            }
+            set
+            {
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                else
+                {
+                    _TopWeight = value;
+                    if (Neighbours.Bottom != null)
+                    {
+                        Neighbours.Bottom.SneakBottomWeight = value;
+                    }
+                }
+            }
+        }
+
+        public double RightWeight
+        {
+            get
+            {
+                // No Neighbour Object has been set.
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                // Right Neighbour exists.
+                else if (_Neighbours.Right != null)
+                {
+                    if (_RightWeight == 0)
+                    {
+                        return _RightWeight;
+                    }
+                    else
+                    {
+                        return _RightWeight / 2;
+                    }
+                }
+
+                // Right Neighbour does not exist.
+                else
+                {
+                    return _RightWeight;
+                }
+            }
+            set
+            {
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                else
+                {
+                    _RightWeight = value;
+                    if (Neighbours.Right != null)
+                    {
+                        Neighbours.Right.SneakLeftWeight = value;
+                    }
+                }
+            }
+        }
+
+        public double BottomWeight
+        {
+            get
+            {
+                // No Neighbour Object has been set.
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                // Bottom Neighbour exists.
+                else if (_Neighbours.Bottom != null)
+                {
+                    if (_BottomWeight == 0)
+                    {
+                        return _BottomWeight;
+                    }
+                    else
+                    {
+                        return _BottomWeight / 2;
+                    }
+                }
+
+                // Bottom Neighbour does not exist.
+                else
+                {
+                    return _BottomWeight;
+                }
+            }
+            set
+            {
+                if (_Neighbours == null)
+                {
+                    throw new NullReferenceException("LabelCell.Neighbours is null");
+                }
+
+                else
+                {
+                    _BottomWeight = value;
+                    if (Neighbours.Bottom != null)
+                    {
+                        Neighbours.Bottom.SneakTopWeight = value;
+                    }
+                }
+            }
+        }
+
+        // Public SneakWeights
+        public double SneakLeftWeight
+        {
+            set
+            {
+                _LeftWeight = value;
+            }
+        }
+
+        public double SneakTopWeight
+        {
+            set
+            {
+                _TopWeight = value;
+            }
+        }
+
+        public double SneakRightWeight
+        {
+            set
+            {
+                _RightWeight = value;
+            }
+        }
+
+        public double SneakBottomWeight
+        {
+            set
+            {
+                _BottomWeight = value;
+            }
+        }
+        #endregion
         // Serialization.
 
         #region Serialization Methods
@@ -108,6 +357,14 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
+    public class NeighbourCells
+    {
+        public LabelCell Left { get; set; }
+        public LabelCell Top { get; set; }
+        public LabelCell Right { get; set; }
+        public LabelCell Bottom { get; set; }
+
+    }
     
     public class LabelCellStorage
     {

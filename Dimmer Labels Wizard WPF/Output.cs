@@ -261,6 +261,54 @@ namespace Dimmer_Labels_Wizard_WPF
                         Globals.GetLabelColor(Globals.LabelStrips[outputIndex].Footers[j].PreviousReference);
                 }
 
+                #region Lineweight Setup
+
+                // Neighbours
+                for (int index = 0; index < Globals.LabelStrips[outputIndex].Footers.Count; index++)
+                {
+                    var neighbour = new NeighbourCells();
+
+                    // Left Neighbour
+                    if (index != 0)
+                    {
+                        neighbour.Left = Globals.LabelStrips[outputIndex].Footers[index - 1];
+                    }
+
+                    else
+                    {
+                        neighbour.Left = null;
+                    }
+
+                    // Right Neighbour
+                    if (index != Globals.LabelStrips[outputIndex].Footers.Count - 1)
+                    {
+                        neighbour.Right = Globals.LabelStrips[outputIndex].Footers[index + 1];
+                    }
+
+                    else
+                    {
+                        neighbour.Right = null;
+                    }
+
+                    // Top Neighbour
+                    LabelCell header = Globals.LabelStrips[outputIndex].Headers.Find(item => item.PreviousReference
+                    == Globals.LabelStrips[outputIndex].Footers[index].PreviousReference);
+
+                    neighbour.Top = header;
+
+                    // Bottom Neighbour
+                    neighbour.Bottom = null;
+
+                    Globals.LabelStrips[outputIndex].Footers[index].Neighbours = neighbour;
+
+                    Globals.LabelStrips[outputIndex].Footers[index].LeftWeight = 1;
+                    Globals.LabelStrips[outputIndex].Footers[index].TopWeight = 1;
+                    Globals.LabelStrips[outputIndex].Footers[index].RightWeight = 1;
+                    Globals.LabelStrips[outputIndex].Footers[index].BottomWeight = 1;
+                }
+
+                #endregion
+
                 // Itterate Input_index to the beginning of the next Rack.
                 inputIndex += rackSize;
                 outputIndex++;
