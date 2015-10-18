@@ -22,6 +22,14 @@ namespace Dimmer_Labels_Wizard_WPF
     public enum CellSelectionMode { Cell, Text};
 
     public enum FooterTextPosition {NotAssigned, Top, Middle, Bottom};
+
+    public enum LabelStripMode { Single, Double};
+
+    public enum ScaleDirection { Horizontal, Vertical, Both};
+
+    public enum CellDataMode { SingleField, MixedField };
+
+    public enum CellRowHeightMode { Static, Automatic, Manual};
 }
 
 

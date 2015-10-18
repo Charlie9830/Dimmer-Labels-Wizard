@@ -104,7 +104,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     Globals.LabelStrips[outputIndex].Headers[j].PreviousReference = Globals.DimmerDistroUnits[inputIndex + j];
 
                     // Set Background Color.
-                    Globals.LabelStrips[outputIndex].Headers[j].BackgroundBrush =
+                    Globals.LabelStrips[outputIndex].Headers[j].Background =
                         Globals.GetLabelColor(Globals.LabelStrips[outputIndex].Headers[j].PreviousReference);
 
                     // Create the Footer Cell Object.
@@ -257,7 +257,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     Globals.LabelStrips[outputIndex].Footers[j].PreviousReference = Globals.DimmerDistroUnits[inputIndex + j];
 
                     // Set Background Color
-                    Globals.LabelStrips[outputIndex].Footers[j].BackgroundBrush =
+                    Globals.LabelStrips[outputIndex].Footers[j].Background =
                         Globals.GetLabelColor(Globals.LabelStrips[outputIndex].Footers[j].PreviousReference);
                 }
 

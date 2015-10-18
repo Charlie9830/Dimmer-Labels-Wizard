@@ -91,12 +91,12 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             foreach (var element in Headers)
             {
-                element.BackgroundBrush = new SolidColorBrush(desiredColor);
+                element.Background = new SolidColorBrush(desiredColor);
             }
 
             foreach (var element in Footers)
             {
-                element.BackgroundBrush = new SolidColorBrush(desiredColor);
+                element.Background = new SolidColorBrush(desiredColor);
             }
         }
 
@@ -290,7 +290,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
 
                 // Set Colors.
-                HeaderOutlines.Last().Background = Headers[index].BackgroundBrush;
+                HeaderOutlines.Last().Background = Headers[index].Background;
                 HeaderOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
@@ -499,7 +499,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
 
                 // Set Colors.
-                FooterOutlines.Last().Background = Footers[index].BackgroundBrush;
+                FooterOutlines.Last().Background = Footers[index].Background;
                 FooterOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
@@ -673,7 +673,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
 
                 // Set Colors.
-                HeaderOutlines.Last().Background = Headers[index].BackgroundBrush;
+                HeaderOutlines.Last().Background = Headers[index].Background;
                 HeaderOutlines.Last().BorderBrush = outlineColor;
 
                 // Set Outline Thickness.
@@ -888,7 +888,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 else
                 {
-                    FooterOutlines.Last().Background = Footers[index].BackgroundBrush;
+                    FooterOutlines.Last().Background = Footers[index].Background;
                 }
                 
                 FooterOutlines.Last().BorderBrush = outlineColor;

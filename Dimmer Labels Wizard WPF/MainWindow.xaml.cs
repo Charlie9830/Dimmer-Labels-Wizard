@@ -37,6 +37,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
+            var window = new DrawingTest();
+            window.ShowDialog();
+
+            Application.Current.Shutdown();
+
             #region Hardcoded UserParameters
             UserParameters.CreateDimmerObjects = true;
 

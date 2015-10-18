@@ -82,12 +82,12 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             foreach (var element in _SelectedHeaderCells)
             {
-                element.BackgroundBrush = new SolidColorBrush(_SelectedColor);
+                element.Background = new SolidColorBrush(_SelectedColor);
             }
 
             foreach (var element in _SelectedFooterCells)
             {
-                element.BackgroundBrush = new SolidColorBrush(_SelectedColor);
+                element.Background = new SolidColorBrush(_SelectedColor);
             }
 
             OnRenderRequested();
@@ -123,9 +123,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (cells.Count > 1)
             {
-                Color referenceColor = cells.First().BackgroundBrush.Color;
+                Color referenceColor = cells.First().Background.Color;
 
-                if (cells.All(item => item.BackgroundBrush.Color == referenceColor))
+                if (cells.All(item => item.Background.Color == referenceColor))
                 {
                     return true;
                 }
@@ -163,12 +163,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     if (_SelectedHeaderCells.Count > 0)
                     {
-                        _SelectedColor = _SelectedHeaderCells.First().BackgroundBrush.Color;
+                        _SelectedColor = _SelectedHeaderCells.First().Background.Color;
                     }
 
                     if (_SelectedFooterCells.Count > 0)
                     {
-                        _SelectedColor = _SelectedFooterCells.First().BackgroundBrush.Color;
+                        _SelectedColor = _SelectedFooterCells.First().Background.Color;
                     }
                 }
 

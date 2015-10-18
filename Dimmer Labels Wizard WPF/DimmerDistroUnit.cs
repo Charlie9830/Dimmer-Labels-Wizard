@@ -38,14 +38,265 @@ namespace Dimmer_Labels_Wizard_WPF
     }
 
         // Imported Data
-        public string ChannelNumber { get; set; }
-        public string InstrumentName { get; set; }
-        public string MulticoreName { get; set; }
-        public string Position { get; set; }
-        public string UserField1 { get; set; }
-        public string UserField2 { get; set; }
-        public string UserField3 { get; set; }
-        public string UserField4 { get; set; }
+        protected string _ChannelNumber = string.Empty;
+        protected string _InstrumentName = string.Empty;
+        protected string _MulticoreName = string.Empty;
+        protected string _Position = string.Empty;
+        protected string _UserField1 = string.Empty;
+        protected string _UserField2 = string.Empty;
+        protected string _UserField3 = string.Empty;
+        protected string _UserField4 = string.Empty;
+
+        #region Imported Data Public Accsesors.
+        public string ChannelNumber
+        {
+            get
+            {
+                return _ChannelNumber;
+            }
+            set
+            {
+                if (value != _ChannelNumber)
+                {
+                    _ChannelNumber = value;
+                    OnPropertyChanged("ChannelNumber");
+                }
+            }
+        }
+
+        public string InstrumentName
+        {
+            get
+            {
+                return _InstrumentName;
+            }
+            set
+            {
+                if (value != _InstrumentName)
+                {
+                    _InstrumentName = value;
+                    OnPropertyChanged("InstrumentName");
+                }
+            }
+        }
+
+        public string MulticoreName
+        {
+            get
+            {
+                return _MulticoreName;
+            }
+            set
+            {
+                if (value != _MulticoreName)
+                {
+                    _MulticoreName = value;
+                    OnPropertyChanged("MulticoreName");
+                }
+            }
+        }
+
+        public string Position
+        {
+            get
+            {
+                return _Position;
+            }
+            set
+            {
+                if (value != _Position)
+                {
+                    _Position = value;
+                    OnPropertyChanged("Position");
+                }
+            }
+        }
+
+        public string UserField1
+        {
+            get
+            {
+                return _UserField1;
+            }
+            set
+            {
+                if (value != _UserField1)
+                {
+                    _UserField1 = value;
+                    OnPropertyChanged("UserField1");
+                }
+            }
+        }
+
+        public string UserField2
+        {
+            get
+            {
+                return _UserField2;
+            }
+            set
+            {
+                if (value != _UserField2)
+                {
+                    _UserField2 = value;
+                    OnPropertyChanged("UserField2");
+                }
+            }
+        }
+
+        public string UserField3
+        {
+            get
+            {
+                return _UserField3;
+            }
+            set
+            {
+                if (value != _UserField3)
+                {
+                    _UserField3 = value;
+                    OnPropertyChanged("UserField3");
+                }
+            }
+        }
+
+        public string UserField4
+        {
+            get
+            {
+                return _UserField4;
+            }
+            set
+            {
+                if (value != _UserField4)
+                {
+                    _UserField4 = value;
+                    OnPropertyChanged("UserField4");
+                }
+            }
+        }
+
+        // Sneak Setters.
+        public string SneakChannelNumber
+        {
+            get
+            {
+                return _ChannelNumber;
+            }
+            set
+            {
+                if (value != _ChannelNumber)
+                {
+                    _ChannelNumber = value;
+                }
+            }
+        }
+
+        public string SneakInstrumentName
+        {
+            get
+            {
+                return _InstrumentName;
+            }
+            set
+            {
+                if (value != _InstrumentName)
+                {
+                    _InstrumentName = value;
+                }
+            }
+        }
+
+        public string SneakMulticoreName
+        {
+            get
+            {
+                return _MulticoreName;
+            }
+            set
+            {
+                if (value != _MulticoreName)
+                {
+                    _MulticoreName = value;
+                }
+            }
+        }
+
+        public string SneakPosition
+        {
+            get
+            {
+                return _Position;
+            }
+            set
+            {
+                if (value != _Position)
+                {
+                    _Position = value;
+                }
+            }
+        }
+
+        public string SneakUserField1
+        {
+            get
+            {
+                return _UserField1;
+            }
+            set
+            {
+                if (value != _UserField1)
+                {
+                    _UserField1 = value;
+                }
+            }
+        }
+
+        public string SneakUserField2
+        {
+            get
+            {
+                return _UserField2;
+            }
+            set
+            {
+                if (value != _UserField2)
+                {
+                    _UserField2 = value;
+                }
+            }
+        }
+
+        public string SneakUserField3
+        {
+            get
+            {
+                return _UserField3;
+            }
+            set
+            {
+                if (value != _UserField3)
+                {
+                    _UserField3 = value;
+                }
+            }
+        }
+
+        public string SneakUserField4
+        {
+            get
+            {
+                return _UserField4;
+            }
+            set
+            {
+                if (value != _UserField4)
+                {
+                    _UserField4 = value;
+                }
+            }
+        }
+        #endregion
 
         // Imported Temporary Data
         protected string _DimmerNumberText = string.Empty;

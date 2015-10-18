@@ -28,7 +28,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Set LabelCell Values.
             TextBrush = new SolidColorBrush(storageObject.BaseStorage.TextColor.ToColor());
-            BackgroundBrush = new SolidColorBrush(storageObject.BaseStorage.BackgroundColor.ToColor());
+            Background = new SolidColorBrush(storageObject.BaseStorage.BackgroundColor.ToColor());
             PreviousReference = storageObject.BaseStorage.PreviousReference;
         }
 

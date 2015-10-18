@@ -553,26 +553,4 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
     }
-
-    public class SelectionAdorner : Adorner
-    {
-        public SelectionAdorner(UIElement adornedElement) : base(adornedElement)
-        {
-        }
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            Rect adornedElementRect = new Rect(this.DesiredSize);
-
-            Brush selectionBrush = new SolidColorBrush(Color.FromArgb(128, 0, 0, 255));
-            Pen selectionPen = new Pen();
-
-            drawingContext.DrawRectangle(selectionBrush, selectionPen, adornedElementRect);
-        }
-
-        public void ForceInvalidate()
-        {
-            InvalidateVisual();
-        }
-    }
 }

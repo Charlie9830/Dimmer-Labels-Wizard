@@ -63,6 +63,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Adorners.cs" />
     <Compile Include="ApplicationWindows.cs" />
     <Compile Include="BackgroundColorTable.xaml.cs">
       <DependentUpon>BackgroundColorTable.xaml</DependentUpon>
@@ -72,6 +73,7 @@
       <DependentUpon>CellControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CellControlViewModels.cs" />
+    <Compile Include="CellRow.cs" />
     <Compile Include="ColorControl.xaml.cs">
       <DependentUpon>ColorControl.xaml</DependentUpon>
     </Compile>
@@ -145,6 +147,7 @@
     </Compile>
     <Compile Include="PrintWindowViewModel.cs" />
     <Compile Include="Racks.cs" />
+    <Compile Include="RenderingTesting.cs" />
     <Compile Include="SanitizationDialog.xaml.cs">
       <DependentUpon>SanitizationDialog.xaml</DependentUpon>
     </Compile>

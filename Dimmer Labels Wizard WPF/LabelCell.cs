@@ -4,26 +4,169 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Shapes;
+using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Documents;
+using System.Globalization;
+using System.Windows.Data;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public class LabelCell
+    public class LabelCell : ContentControl
     {
-        // Properties
+        // Constants
+        protected const double HeaderSingleLabelHeightDownFactor = 0.25d;
+        protected const double FooterSingleLabelHeightDownFactor = 0.75d;
+        protected const double UnitConversionRatio = 96d / 25.4d;
+
+        // Properties.
         public DimmerDistroUnit PreviousReference { get; set; }
 
-        protected SolidColorBrush _TextBrush;
-        protected SolidColorBrush _BackgroundBrush;
-
+        protected bool _IsCellSelected = false;
         protected NeighbourCells _Neighbours;
-        protected double _LeftWeight = 0;
-        protected double _TopWeight = 0;
-        protected double _RightWeight = 0;
-        protected double _BottomWeight = 0;
+
+        protected double _RealWidth;
+        protected double _RealHeight;
+
+        protected SolidColorBrush _TextBrush;
+        protected SolidColorBrush _Background;
+        protected double _LeftWeight = 2;
+        protected double _TopWeight = 2;
+        protected double _RightWeight = 2;
+        protected double _BottomWeight = 2;
+
+        protected LabelStripMode _LabelMode = LabelStripMode.Double;
+
+        // Text Grid Rendering Elements.
+        protected Grid _Grid = new Grid();
+
+        #region Constructor
+        public LabelCell()
+        {
+            // Assign Grid to Content Property.
+            Content = _Grid;
+        }
+        #endregion
 
         #region Getters/Setters.
+        /// <summary>
+        /// The Grid in which CellRow's and their Child elements are Displayed.
+        /// </summary>
+        public Grid Grid
+        {
+            get { return _Grid; }
+            set { _Grid = value; }
+        }
+
+        /// <summary>
+        /// The Width of the Cell in real world millimetres.
+        /// </summary>
+        public double RealWidth
+        {
+            get
+            {
+                return _RealWidth;
+            }
+            set
+            {
+                _RealWidth = value;
+
+                Width = _RealWidth * UnitConversionRatio;
+            }
+        }
+
+        /// <summary>
+        /// The Height of the Cell in real world millimeters.
+        /// </summary>
+        public double RealHeight
+        {
+            get
+            {
+                return _RealHeight;
+            }
+            set
+            {
+                _RealHeight = value;
+
+                if (LabelMode == LabelStripMode.Single)
+                {
+                    if (GetType() == typeof(FooterCell))
+                    {
+                        if (LabelMode == LabelStripMode.Single)
+                        {
+                            Height = (_RealHeight * UnitConversionRatio) * FooterSingleLabelHeightDownFactor;
+                        }
+                        else
+                        {
+                            Height = (_RealHeight * UnitConversionRatio);
+                        }
+                    }
+
+                    if (GetType() == typeof(HeaderCell))
+                    {
+                        if (LabelMode == LabelStripMode.Single)
+                        {
+                            Height = (_RealHeight * UnitConversionRatio) * HeaderSingleLabelHeightDownFactor;
+                        }
+                        else
+                        {
+                            Height = (_RealHeight * UnitConversionRatio);
+                        }
+                    }
+                }
+
+                else
+                {
+                    Height = (_RealHeight * UnitConversionRatio);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Describes the Type of LabelStrip. Single or Double Strip Modes.
+        /// </summary>
+        public virtual LabelStripMode LabelMode
+        {
+            get
+            {
+                return _LabelMode;
+            }
+            set
+            {
+                if (_LabelMode != value)
+                {
+                    _LabelMode = value;
+
+                    //Increase or Decrease Height depending on LabelMode and Derived Type.
+                    if (value == LabelStripMode.Single)
+                    {
+                        if (GetType() == typeof(HeaderCell))
+                        {
+                            Height = (_RealHeight * UnitConversionRatio) * HeaderSingleLabelHeightDownFactor;
+                        }
+
+                        if (GetType() == typeof(FooterCell))
+                        {
+                            Height = (_RealHeight * UnitConversionRatio) * FooterSingleLabelHeightDownFactor;
+                        }
+                    }
+
+                    if (value == LabelStripMode.Double)
+                    {
+                        if (GetType() == typeof(HeaderCell))
+                        {
+                            Height = _RealHeight * UnitConversionRatio;
+                        }
+
+                        if (GetType() == typeof(FooterCell))
+                        {
+                            Height = _RealHeight * UnitConversionRatio;
+                        }
+                    }
+                }
+            }
+        }
+
         public SolidColorBrush TextBrush
         {
             get
@@ -37,27 +180,31 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public SolidColorBrush BackgroundBrush
+        public new SolidColorBrush Background
         {
             get
             {
-                return _BackgroundBrush;
+                return _Background;
             }
 
             set
-            {    
-                // Calculate Luminance of Color and set _textColor to White or Black based on this luminance result.
-                if ((0.299 * value.Color.R) + (0.587 * value.Color.G) + (0.114 * value.Color.B) > 128)
+            {
+                if (_Background == null || _Background.Color != value.Color)
                 {
-                    _TextBrush = new SolidColorBrush(Colors.Black);
-                }
+                    // Calculate Luminance of Color and set _textColor to White or Black based on this luminance result.
+                    if ((0.299 * value.Color.R) + (0.587 * value.Color.G) + (0.114 * value.Color.B) > 128)
+                    {
+                        _TextBrush = new SolidColorBrush(Colors.Black);
+                    }
 
-                else
-                {
-                    _TextBrush = new SolidColorBrush(Colors.White);
-                }
+                    else
+                    {
+                        _TextBrush = new SolidColorBrush(Colors.White);
+                    }
 
-                _BackgroundBrush = value;
+                    _Background = value;
+                    InvalidateVisual();
+                }
             }
         }
 
@@ -81,51 +228,19 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        // Public Weights
         public double LeftWeight
         {
             get
             {
-                // No Neighbour Object has been set.
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                // Left hand Neighbour exists.
-                else if (_Neighbours.Left != null)
-                {
-                    if (_LeftWeight == 0)
-                    {
-                        return _LeftWeight;
-                    }
-                    else
-                    {
-                        return _LeftWeight / 2;
-                    }
-                }
-
-                // Left Hand Neighbour does not exist.
-                else
-                {
-                    return _LeftWeight;
-                }
+                return _LeftWeight;
             }
             set
-            {
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                else
+            {   if (_LeftWeight != value)
                 {
                     _LeftWeight = value;
-                    if (Neighbours.Left != null)
-                    {
-                        Neighbours.Left.SneakRightWeight = value;
-                    }
+                    InvalidateVisual();
                 }
+                
             }
         }
 
@@ -133,45 +248,14 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                // No Neighbour Object has been set.
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                // Top Neighbour exists.
-                else if (_Neighbours.Top != null)
-                {
-                    if (_TopWeight == 0)
-                    {
-                        return _TopWeight;
-                    }
-                    else
-                    {
-                        return _TopWeight / 2;
-                    }
-                }
-
-                // Top Neighbour does not exist.
-                else
-                {
-                    return _TopWeight;
-                }
+                return _TopWeight;
             }
             set
             {
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                else
+                if (_TopWeight != value)
                 {
                     _TopWeight = value;
-                    if (Neighbours.Bottom != null)
-                    {
-                        Neighbours.Bottom.SneakBottomWeight = value;
-                    }
+                    InvalidateVisual();
                 }
             }
         }
@@ -180,45 +264,14 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                // No Neighbour Object has been set.
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                // Right Neighbour exists.
-                else if (_Neighbours.Right != null)
-                {
-                    if (_RightWeight == 0)
-                    {
-                        return _RightWeight;
-                    }
-                    else
-                    {
-                        return _RightWeight / 2;
-                    }
-                }
-
-                // Right Neighbour does not exist.
-                else
-                {
-                    return _RightWeight;
-                }
+                return _RightWeight;
             }
             set
             {
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                else
+                if (_RightWeight != value)
                 {
                     _RightWeight = value;
-                    if (Neighbours.Right != null)
-                    {
-                        Neighbours.Right.SneakLeftWeight = value;
-                    }
+                    InvalidateVisual();
                 }
             }
         }
@@ -227,83 +280,59 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                // No Neighbour Object has been set.
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                // Bottom Neighbour exists.
-                else if (_Neighbours.Bottom != null)
-                {
-                    if (_BottomWeight == 0)
-                    {
-                        return _BottomWeight;
-                    }
-                    else
-                    {
-                        return _BottomWeight / 2;
-                    }
-                }
-
-                // Bottom Neighbour does not exist.
-                else
-                {
-                    return _BottomWeight;
-                }
+                return _BottomWeight;
             }
             set
             {
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                else
+                if (_BottomWeight != value)
                 {
                     _BottomWeight = value;
-                    if (Neighbours.Bottom != null)
-                    {
-                        Neighbours.Bottom.SneakTopWeight = value;
-                    }
+                    InvalidateVisual();
                 }
-            }
-        }
-
-        // Public SneakWeights
-        public double SneakLeftWeight
-        {
-            set
-            {
-                _LeftWeight = value;
-            }
-        }
-
-        public double SneakTopWeight
-        {
-            set
-            {
-                _TopWeight = value;
-            }
-        }
-
-        public double SneakRightWeight
-        {
-            set
-            {
-                _RightWeight = value;
-            }
-        }
-
-        public double SneakBottomWeight
-        {
-            set
-            {
-                _BottomWeight = value;
             }
         }
         #endregion
-        // Serialization.
+
+        #region Overrides
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            #region TextGrid Rendering.
+
+            // Setup Grid.
+            _Grid.Width = Width;
+            _Grid.Height = Height;
+
+            #endregion
+
+            #region Outline Rendering
+            // Declare Resources.
+            var lineBrush = new SolidColorBrush(Colors.Black);
+
+            // Pens.
+            var leftPen = new Pen(lineBrush, _LeftWeight);
+            var topPen = new Pen(lineBrush, _TopWeight);
+            var rightPen = new Pen(lineBrush, _RightWeight);
+            var bottomPen = new Pen(lineBrush, _BottomWeight);
+
+            // Corner Points.
+            var topLeft = new Point(0, 0);
+            var topRight = new Point(Width, 0);
+            var bottomRight = new Point(Width, Height);
+            var bottomLeft = new Point(0, Height);
+
+            // Drawing 
+            drawingContext.DrawLine(leftPen, bottomLeft, topLeft);
+            drawingContext.DrawLine(topPen, topLeft, topRight);
+            drawingContext.DrawLine(rightPen, topRight, bottomRight);
+            drawingContext.DrawLine(bottomPen, bottomRight, bottomLeft);
+
+            #endregion
+
+        }
+        #endregion
+
+        #region Dependency Properties
+        #endregion
 
         #region Serialization Methods
         public void RebuildLabelCell(LabelCellStorage storage)
@@ -312,7 +341,7 @@ namespace Dimmer_Labels_Wizard_WPF
             ByteColor backgroundColor = storage.BackgroundColor;
 
             _TextBrush = new SolidColorBrush(storage.TextColor.ToColor());
-            _BackgroundBrush = new SolidColorBrush(storage.BackgroundColor.ToColor());
+            _Background = new SolidColorBrush(storage.BackgroundColor.ToColor());
         }
 
         public LabelCellStorage GenerateLabelCellStorage()
@@ -320,7 +349,7 @@ namespace Dimmer_Labels_Wizard_WPF
             LabelCellStorage storage = new LabelCellStorage();
 
             storage.TextColor = new ByteColor(_TextBrush.Color);
-            storage.BackgroundColor = new ByteColor(_BackgroundBrush.Color);
+            storage.BackgroundColor = new ByteColor(_Background.Color);
 
             storage.PreviousReference = PreviousReference;
 
