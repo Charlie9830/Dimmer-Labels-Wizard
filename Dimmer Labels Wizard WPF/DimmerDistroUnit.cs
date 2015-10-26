@@ -46,6 +46,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected string _UserField2 = string.Empty;
         protected string _UserField3 = string.Empty;
         protected string _UserField4 = string.Empty;
+        protected string _Custom = string.Empty;
 
         #region Imported Data Public Accsesors.
         public string ChannelNumber
@@ -176,6 +177,21 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public string Custom
+        {
+            get
+            {
+                return _Custom;
+            }
+            set
+            {
+                if (value != _Custom)
+                {
+                    _Custom = value;
+                    OnPropertyChanged("Custom");
+                }
+            }
+        }
         // Sneak Setters.
         public string SneakChannelNumber
         {
@@ -380,6 +396,74 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+        // Provides easier accsess when using Switch Statements to GetData Based on LabelField.
+        public string GetData(LabelField labelField)
+        {
+            switch (labelField)
+            {
+                case LabelField.NoAssignment:
+                    return "No Assignment";
+                case LabelField.ChannelNumber:
+                    return ChannelNumber;
+                case LabelField.InstrumentName:
+                    return InstrumentName;
+                case LabelField.MulticoreName:
+                    return MulticoreName;
+                case LabelField.Position:
+                    return Position;
+                case LabelField.UserField1:
+                    return UserField1;
+                case LabelField.UserField2:
+                    return UserField2;
+                case LabelField.UserField3:
+                    return UserField3;
+                case LabelField.UserField4:
+                    return UserField4;
+                case LabelField.Custom:
+                    return Custom;
+                default:
+                    return "DimmerDistroUnit.GetData() Error";
+            }
+        }
+
+        public void SetData(string data, LabelField labelField)
+        {
+            switch (labelField)
+            {
+                case LabelField.NoAssignment:
+                    break;
+                case LabelField.ChannelNumber:
+                    ChannelNumber = data;
+                    break;
+                case LabelField.InstrumentName:
+                    InstrumentName = data;
+                    break;
+                case LabelField.MulticoreName:
+                    MulticoreName = data;
+                    break;
+                case LabelField.Position:
+                    Position = data;
+                    break;
+                case LabelField.UserField1:
+                    UserField1 = data;
+                    break;
+                case LabelField.UserField2:
+                    UserField2 = data;
+                    break;
+                case LabelField.UserField3:
+                    UserField3 = data;
+                    break;
+                case LabelField.UserField4:
+                    UserField4 = data;
+                    break;
+                case LabelField.Custom:
+                    Custom = data;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         // Control Method for Parse Methods. Determines Rack Type and calls Parse Methods. Adds unit to Unparseable
         // List if string format does not Match the User set option.
         public void ParseUnitData()
@@ -458,6 +542,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
             
         }
+
         // Overload: Returns Value to Caller. Returns -1 If Control falls through the Format switch.
         private int ParseDistroNumber(string text, ImportFormatting format)
         {
@@ -628,6 +713,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
         // Helper Method for Parse Methods. Splits string by Slash and Returns results as String Array.
+
         private string[] SplitBySlash(string input)
         {
             char delimitingCharacter = '/';

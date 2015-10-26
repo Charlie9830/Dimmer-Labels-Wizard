@@ -3,10 +3,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="DrawingTest" Height="500" Width="800">
+        Title="DrawingTest" Height="500" Width="800"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <ObjectDataProvider x:Key="DataFields" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:LabelField"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="RowHeightModes" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:CellRowHeightMode"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+
     <Grid>
-        <local:LabelCell HorizontalAlignment="Left" Height="100" Margin="250,100,0,0" VerticalAlignment="Top" Width="100"/>
+        <Button x:Name="AddRowButton" Content="Add Row" HorizontalAlignment="Left" Margin="505,307,0,0" VerticalAlignment="Top" Width="75" Click="AddRowButton_Click"/>
+        <Label x:Name="label" Content="Selected Row" HorizontalAlignment="Left" Margin="506,15,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox" ItemsSource="{Binding Source={StaticResource DataFields}}" SelectedItem="{Binding Path=SelectedRowDataField}" HorizontalAlignment="Left" Margin="506,162,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label1" Content="Data Field" HorizontalAlignment="Left" Margin="506,136,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2" Content="Data" HorizontalAlignment="Left" Margin="640,136,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="640,161,0,0" TextWrapping="Wrap" Text="{Binding Path=CellData}" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label2_Copy" Content="Font Size" HorizontalAlignment="Left" Margin="640,8,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="640,46,0,0" TextWrapping="Wrap" Text="{Binding Path=FontSize}" VerticalAlignment="Top" Width="120"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="432" Margin="10,15,0,0" VerticalAlignment="Top" Width="473">
+            <Border BorderBrush="Black" BorderThickness="0" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" RenderTransformOrigin="0.5,0.5">
+                <Border.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="2.5" ScaleY="2.5"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Border.RenderTransform>
+                <local:LabelCell x:Name="labelCell"/>
+            </Border>
+        </Border>
+        <Label x:Name="label3" Content="Height Mode" HorizontalAlignment="Left" Margin="505,242,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox1" ItemsSource="{Binding Source={StaticResource RowHeightModes}}" SelectedItem="{Binding Path=SelectedRowHeightMode}" HorizontalAlignment="Left" Margin="505,273,0,0" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label3_Copy" Content="Height" HorizontalAlignment="Left" Margin="661,242,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox3" HorizontalAlignment="Left" Height="23" Margin="661,272,0,0" TextWrapping="Wrap" Text="{Binding Path=RowHeight}" VerticalAlignment="Top" Width="59"/>
+        <Button x:Name="RemoveRowButton" Content="Remove Row" HorizontalAlignment="Left" Margin="505,334,0,0" VerticalAlignment="Top" Width="75" Click="RemoveRowButton_Click"/>
+        <ComboBox x:Name="comboBox2" ItemsSource="{Binding Path=LabelCell.Rows}" SelectedItem="{Binding Path=SelectedRow}" HorizontalAlignment="Left" Margin="506,46,0,0" VerticalAlignment="Top" Width="120"/>
+        <CheckBox x:Name="ShowGridLinesCheckBox" Content="Show Grid Lines" IsChecked="{Binding Path=LabelCell.Grid.ShowGridLines}" HorizontalAlignment="Left" Margin="609,310,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label2_Copy1" Content="Font" HorizontalAlignment="Left" Margin="640,74,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox3" ItemsSource="{Binding Path=SystemTypefaces}" SelectedItem="{Binding Path=SelectedTypeface}" HorizontalAlignment="Left" Margin="640,100,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="PrintDataModelButton" Content="Print Data Model" HorizontalAlignment="Left" Margin="522,422,0,0" VerticalAlignment="Top" Width="104" Click="PrintDataModelButton_Click"/>
+        <CheckBox x:Name="SingleFieldCheckBox" Content="SingleField" IsChecked="{Binding Path=SingleFieldModeActive}" HorizontalAlignment="Left" Margin="609,340,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

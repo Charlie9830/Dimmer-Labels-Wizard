@@ -94,6 +94,7 @@
     <Compile Include="DrawingTest.xaml.cs">
       <DependentUpon>DrawingTest.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DrawingTestViewModel.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FileImport.cs" />
     <Compile Include="FileImportDialog.xaml.cs">
