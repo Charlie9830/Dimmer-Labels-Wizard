@@ -24,7 +24,7 @@ namespace Dimmer_Labels_Wizard_WPF
         /// </summary>
         /// <param name="availableTextWidth"></param>
         /// <param name="availableTextHeight"></param>
-        public CellRow(LabelCell parentLabelCell, LabelField dataField)
+        public CellRow(LabelCell parentLabelCell)
         {
             if (parentLabelCell == null)
             {
@@ -32,7 +32,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             CellParent = parentLabelCell;
-            DataField = dataField;
+            DataField = LabelField.NoAssignment;
 
             // Setup TextBlock.
             TextBlock.VerticalAlignment = VerticalAlignment.Center;
@@ -40,14 +40,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Initial Values.
             Data = CellParent.PreviousReference.GetData(DataField);
-            FontSize = 12;
+            DesiredFontSize = 12;
             Font = new Typeface("Arial");
             HeightMode = CellParent.RowHeightMode;
 
             // Assign TextBlock to CellParent's Grid.
-            CellParent.Grid.Children.Add(TextBlock);           
-            
-            // Unit Testing Code.
+            CellParent.Grid.Children.Add(TextBlock);
         }
         #endregion
 
@@ -61,9 +59,28 @@ namespace Dimmer_Labels_Wizard_WPF
         /// Abstract rendering Target. Do not write directly to this Field. Internal use only.
         /// </summary>
         public TextBlock TextBlock = new TextBlock();
+
+        /// <summary>
+        /// Tracks whether a Data Layout Pass is in progress or not.
+        /// </summary>
+        public bool IsInDataLayoutPass = false;
         #endregion
 
         #region CLR Properties and Fields.
+
+        /// <summary>
+        /// Gets or Sets a collection of the Cells cascading alongside this Cell, also contains
+        /// this cell.
+        /// </summary>
+        private List<CellRow> _CascadingRows = new List<CellRow>();
+
+        public List<CellRow> CascadingRows
+        {
+            get { return _CascadingRows; }
+            set { _CascadingRows = value; }
+        }
+
+
         /// <summary>
         /// Unexpected results may occur when setting this property directly. To set this property, use
         /// the Parent Label Cell Row Height Mode property.
@@ -96,6 +113,17 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        private bool _IsCascading;
+        /// <summary>
+        /// Gets or Sets a value indicating if this Row is Cascading Data.
+        /// </summary>
+        public bool IsCascading
+        {
+            get { return _IsCascading; }
+            set { _IsCascading = value; }
+        }
+
+
         /// <summary>
         /// The Width available for Text Placement in WPF Units.
         /// </summary>
@@ -120,6 +148,32 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+
+
+        public DataLayout DataLayout
+        {
+            get { return (DataLayout)GetValue(DataLayoutProperty); }
+            set { SetValue(DataLayoutProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DataLayout.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DataLayoutProperty =
+            DependencyProperty.Register("DataLayout", typeof(DataLayout), typeof(CellRow), new FrameworkPropertyMetadata(new DataLayout(), 
+                new PropertyChangedCallback(OnDataLayoutPropertyChanged), new CoerceValueCallback(CoerceDataLayout)));
+
+        private static object CoerceDataLayout(DependencyObject d, object value)
+        {
+            return value;
+        }
+
+        private static void OnDataLayoutPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as CellRow;
+            var layout = (DataLayout)e.NewValue;
+
+            instance.TextBlock.Text = instance.Data.Substring(layout.FirstIndex, layout.Length);
+        }
+
         /// <summary>
         /// Gets or Sets the data currently displayed in the TextBlock. Changes to this value will be pushed to Data Model.
         ///  This is a Dependency Property.
@@ -133,26 +187,23 @@ namespace Dimmer_Labels_Wizard_WPF
         // DataProperty
         public static readonly DependencyProperty DataProperty =
             DependencyProperty.Register("Data", typeof(string), typeof(CellRow),
-                new FrameworkPropertyMetadata(string.Empty, new PropertyChangedCallback(OnDataPropertyChanged)));
+                new FrameworkPropertyMetadata(string.Empty, new PropertyChangedCallback(OnDataPropertyChanged),
+                    new CoerceValueCallback(CoerceData)));
 
         // Property Changed Callback handler.
         private static void OnDataPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as CellRow;
-            var data = e.NewValue as string;
 
-            if (instance.TextBlock.Text != data)
-            {
-                // Set TextBlock Text, Coerce FontSize to ReMeasure
-                // and if Parent LabelCell is not currently Setting this Rows Data. Signal property Change.
-                instance.TextBlock.Text = data;
-                instance.CoerceValue(FontSizeProperty);
+            // Signal Parent Cell to Update properties.
+            OnPropertyChanged(e.Property.Name, instance);
+        }
 
-                if (instance.CellParent.IsSettingData == false)
-                {
-                    OnPropertyChanged(DataProperty.Name, instance);
-                }
-            }
+        private static object CoerceData(DependencyObject d, object value)
+        {
+            string data = (string)value;
+            // Trim Leading and trailing Whitespace.
+            return data.Trim();
         }
 
         /// <summary>
@@ -172,46 +223,45 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static void OnDataFieldPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var oldValue = (LabelField)e.OldValue;
-            var newValue = (LabelField)e.NewValue;
+            var instance = d as CellRow;
 
-            if (newValue != oldValue)
-            {
-                // Externally signal Parent Cell to Update Data.
-                OnPropertyChanged(e.Property.Name, d as CellRow);
-            }
+            // Signal change to Parent Cell.
+            OnPropertyChanged(DataFieldProperty.Name, instance);
         }
 
         /// <summary>
         /// Sets the Font Size for Text Rendering. This is a Dependency Property
         /// </summary>
-        public double FontSize
+        public double DesiredFontSize
         {
-            get { return (double)GetValue(FontSizeProperty); }
-            set { SetValue(FontSizeProperty, value); }
+            get { return (double)GetValue(DesiredFontSizeProperty); }
+            set { SetValue(DesiredFontSizeProperty, value); }
         }
 
         // Font Size Backing Field.
-        public static readonly DependencyProperty FontSizeProperty =
-            DependencyProperty.Register("FontSize", typeof(double), typeof(CellRow), new FrameworkPropertyMetadata(1d, 
-                new PropertyChangedCallback(OnFontSizePropertyChanged), new CoerceValueCallback(CoerceFontSize)));
+        public static readonly DependencyProperty DesiredFontSizeProperty =
+            DependencyProperty.Register("DesiredFontSize", typeof(double), typeof(CellRow), new FrameworkPropertyMetadata(1d, 
+                new PropertyChangedCallback(OnDesiredFontSizePropertyChanged), new CoerceValueCallback(CoerceDesiredFontSize)));
 
         // Property Changed Callback Handler.
-        private static void OnFontSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnDesiredFontSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as CellRow;
             var fontSize = (double)e.NewValue;
+            DataLayout layout = instance.DataLayout;
 
-            if (instance.TextBlock.FontSize != fontSize)
+            if (fontSize != layout.FontSize)
             {
-                instance.TextBlock.FontSize = fontSize;
-
-                // Coerce RowHeight.
-                instance.CoerceValue(RowHeightProperty);
+                // Signal to Parent that Data Layout needs to be refreshed.
+                OnPropertyChanged(DataLayoutProperty.Name, instance);
             }
+
+            // Coerce RowHeight.
+            instance.CoerceValue(RowHeightProperty);
+            
         }
 
-        private static object CoerceFontSize(DependencyObject d, object baseValue)
+        private static object CoerceDesiredFontSize(DependencyObject d, object baseValue)
         {
             var instance = d as CellRow;
             string data = instance.Data;
@@ -225,12 +275,52 @@ namespace Dimmer_Labels_Wizard_WPF
                 desiredFontSize = 1d;
             }
 
-            // Downsize FontSize if required.
-            var ignore = new ScaleDirection();
-            double fontSize = HelperScaleDownFont(data, font, desiredFontSize,
-                width, height, ScaleDirection.Both, out ignore);
+            double fontSize = desiredFontSize;
 
             return fontSize;
+        }
+
+        /// <summary>
+        /// Gets the Actual FontSize used after Scaling passes.
+        /// </summary>
+        public double ActualFontSize
+        {
+            get { return (double)GetValue(ActualFontSizeProperty); }
+            set { SetValue(ActualFontSizeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ActualFontSize.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActualFontSizeProperty =
+            DependencyProperty.Register("ActualFontSize", typeof(double), typeof(CellRow),
+                new FrameworkPropertyMetadata(1d, new PropertyChangedCallback(OnActualFontSizePropertyChanged),
+                    new CoerceValueCallback(CoerceActualFontSize)));
+
+        private static object CoerceActualFontSize(DependencyObject d, object value)
+        {
+            double fontSize = (double)value;
+            if (fontSize <= 0.0d)
+            {
+                return 0.1d;
+            }
+
+            else if (fontSize >= double.PositiveInfinity)
+            {
+                return 300d;
+            }
+
+            else
+            {
+                return value;
+            }
+
+        }
+
+        private static void OnActualFontSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as CellRow;
+            double value = (double)e.NewValue;
+
+            instance.TextBlock.FontSize = value;
         }
 
         /// <summary>
@@ -258,7 +348,7 @@ namespace Dimmer_Labels_Wizard_WPF
             instance.TextBlock.FontStyle = typeface.Style;
             instance.TextBlock.FontWeight = typeface.Weight;
 
-            instance.CoerceValue(FontSizeProperty);
+            instance.CoerceValue(DesiredFontSizeProperty);
         }
 
         /// <summary>
@@ -289,7 +379,7 @@ namespace Dimmer_Labels_Wizard_WPF
             GridLength newHeight = new GridLength(value, currentHeight.GridUnitType);
             instance.Height = newHeight;
 
-            instance.CoerceValue(FontSizeProperty);
+            instance.CoerceValue(DesiredFontSizeProperty);
         }
 
         private static object CoerceRowHeight(DependencyObject d, object value)
@@ -301,7 +391,7 @@ namespace Dimmer_Labels_Wizard_WPF
             double cellHeight = instance.CellParent.Height;
             string data = instance.Data;
             Typeface font = instance.Font;
-            double fontSize = instance.FontSize;
+            double fontSize = instance.DesiredFontSize;
 
             CellRowHeightMode heightMode = instance.HeightMode;
             if (heightMode == CellRowHeightMode.Static)
@@ -312,7 +402,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // If Heightmode is set to Automatic Adjust Row Heights.
             if (heightMode == CellRowHeightMode.Automatic)
             {
-                double textHeight = HelperMeasureText(data, font, fontSize).Height;
+                double textHeight = LabelCell.MeasureText(data, font, fontSize).Height;
                 return textHeight / cellHeight;
             }
 
@@ -392,134 +482,8 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Helper Methods
-        /// <summary>
-        /// Measures the size of provided text. Returns Size 0 if a null or Empty string was provided.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="font"></param>
-        /// <param name="fontSize"></param>
-        /// <returns></returns>
-        public static Size HelperMeasureText(string data, Typeface font, double fontSize)
-        {
-            if (data == null || data == string.Empty)
-            {
-                return new Size(0, 0);
-            }
+        
 
-            FormattedText formatter = new FormattedText(data, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-                font, fontSize, Brushes.Black);
-
-            return new Size(formatter.Width, formatter.Height);
-        }
-
-        /// <summary>
-        /// Scales Font Size Down if Required, and rounds to nearest
-        /// quarter. If not Required, will return Font Size untouched.
-        /// Out parameter fontScaledDirection informs caller in which Axis font scaling was required
-        /// the most, Ignore out parameter if scaleDirection was not set to Both.
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="font"></param>
-        /// <param name="fontSize"></param>
-        /// <param name="containerWidth"></param>
-        /// <param name="containerHeight"></param>
-        /// <param name="scaleDirection"></param>
-        /// <returns></returns>
-        public static double HelperScaleDownFont(string data, Typeface font, double fontSize,
-            double containerWidth, double containerHeight, ScaleDirection scaleDirection,
-            out ScaleDirection fontScaledDirection)
-        {
-            Size textSize = HelperMeasureText(data, font, fontSize);
-
-            switch (scaleDirection)
-            {
-                // Scale Down by Horizontal Axis only.
-                case ScaleDirection.Horizontal:
-
-                    fontScaledDirection = ScaleDirection.Horizontal;
-
-                    if (textSize.Width > containerWidth)
-                    {
-                        double ratio = containerWidth / textSize.Width;
-
-                        // Round and Return.
-                        return Math.Round((fontSize * ratio) * 4, MidpointRounding.AwayFromZero) / 4;
-                    }
-
-                    else
-                    {
-                        // Round and Return.
-                        return Math.Round(fontSize * 4, MidpointRounding.AwayFromZero) / 4;
-                    }
-
-
-                // Scale Down by Vertical axis only.
-                case ScaleDirection.Vertical:
-                    fontScaledDirection = ScaleDirection.Vertical;
-                    if (textSize.Height > containerHeight)
-                    {
-                        double ratio = containerHeight / textSize.Height;
-
-                        // Round and Return.
-                        return Math.Round((fontSize * ratio) * 4, MidpointRounding.AwayFromZero) / 4;
-                    }
-                    else
-                    {
-                        // Round and Return.
-                        return Math.Round(fontSize * 4, MidpointRounding.AwayFromZero) / 4;
-                    }
-
-
-                // Scale down by both Horizontal and Vertical axis.
-                case ScaleDirection.Both:
-                    double widthRatio = 1;
-                    double heightRatio = 1;
-
-                    // Calculate Ratios.
-                    if (textSize.Width > containerWidth)
-                    {
-                        widthRatio = containerWidth / textSize.Width;
-                    }
-
-                    if (textSize.Height > containerHeight)
-                    {
-                        heightRatio = containerHeight / textSize.Height;
-                    }
-
-                    // Scale FontSize by largest Ratio. (Furthest from 1).
-                    if (widthRatio < heightRatio)
-                    {
-                        fontScaledDirection = ScaleDirection.Horizontal;
-
-                        // Round and Return.
-                        return Math.Round((fontSize * widthRatio) * 4, MidpointRounding.AwayFromZero) / 4;
-                    }
-
-                    if (heightRatio > widthRatio)
-                    {
-                        fontScaledDirection = ScaleDirection.Vertical;
-
-                        // Round and Return.
-                        return Math.Round((fontSize * heightRatio) * 4, MidpointRounding.AwayFromZero) / 4;
-                    }
-
-                    // Ratio's are either Identical or both have been left at 1.
-                    else
-                    {
-                        fontScaledDirection = ScaleDirection.Both;
-
-                        // Round and Return.
-                        return Math.Round((fontSize * widthRatio) * 4, MidpointRounding.AwayFromZero) / 4;
-                    }
-
-                default:
-                    fontScaledDirection = ScaleDirection.Both;
-
-                    // Round and Return.
-                    return Math.Round(fontSize * 4, MidpointRounding.AwayFromZero) / 4;
-            }
-
-        }
         #endregion
     }
 }

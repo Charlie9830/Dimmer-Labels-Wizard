@@ -27,13 +27,18 @@ namespace Dimmer_Labels_Wizard_WPF
 
             DimmerDistroUnit unit = new DimmerDistroUnit();
             unit.ChannelNumber = "131";
-            unit.Position = "LX2";
+            unit.Position = "Position";
             unit.InstrumentName = "Polaris";
             unit.MulticoreName = "LX2A";
 
             labelCell.PreviousReference = unit;
 
-            Console.WriteLine("DrawingTest Started");
+            // Cascading Rows Test Initialization.
+            labelCell.Rows.Add(new CellRow(labelCell));
+            //labelCell.Rows.Add(new CellRow(labelCell));
+            //labelCell.Rows.Add(new CellRow(labelCell));
+
+            viewModel.SelectedRow = labelCell.Rows.First();
 
         }
 
@@ -43,7 +48,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void AddRowButton_Click(object sender, RoutedEventArgs e)
         {
-            labelCell.Rows.Add(new CellRow(labelCell, LabelField.ChannelNumber));
+            var viewModel = DataContext as DrawingTestViewModel;
+            labelCell.Rows.Add(new CellRow(labelCell));
+            viewModel.SelectedRow = labelCell.Rows.Last();
         }
 
         private void RemoveRowButton_Click(object sender, RoutedEventArgs e)
@@ -51,6 +58,18 @@ namespace Dimmer_Labels_Wizard_WPF
             if (labelCell.Rows.Count != 0)
             {
                 labelCell.Rows.Remove(labelCell.Rows.Last());
+
+                if (labelCell.Rows.Count == 0)
+                {
+                    var viewModel = DataContext as DrawingTestViewModel;
+                    viewModel.SelectedRow = null;
+                }
+
+                else
+                {
+                    var viewModel = DataContext as DrawingTestViewModel;
+                    viewModel.SelectedRow = labelCell.Rows.Last();
+                }
             }
         }
 

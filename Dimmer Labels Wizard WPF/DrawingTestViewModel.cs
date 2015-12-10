@@ -136,8 +136,6 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                if (LabelCell.CellDataMode == CellDataMode.MixedField)
-                {
                     if (_SelectedRow != null)
                     {
                         return _SelectedRow.Data;
@@ -146,35 +144,19 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         return "***";
                     }
-                }
-                else
-                {
-                    return LabelCell.SFcellData;
-                }
             }
             set
             {
-                if (LabelCell.CellDataMode == CellDataMode.MixedField)
+                if (_SelectedRow != null)
                 {
-                    if (_SelectedRow != null)
+                    if (value != _SelectedRow.Data)
                     {
-                        if (value != _SelectedRow.Data)
-                        {
-                            _SelectedRow.Data = value;
-                            OnPropertyChanged("CellData");
-                            OnPropertyChanged("FontSize");
-                        }
-                    }
-                }
-                else
-                {
-                    if (value != LabelCell.SFcellData)
-                    {
-                        LabelCell.SFcellData = value;
+                        _SelectedRow.Data = value;
                         OnPropertyChanged("CellData");
                         OnPropertyChanged("FontSize");
                     }
                 }
+                
             }
         }
 
@@ -182,42 +164,24 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                if (LabelCell.CellDataMode == CellDataMode.MixedField)
+                if (_SelectedRow != null)
                 {
-                    if (_SelectedRow != null)
-                    {
-                        return _SelectedRow.FontSize;
-                    }
-                    else
-                    {
-                        return 0d;
-                    }
+                    return _SelectedRow.DesiredFontSize;
                 }
-
                 else
                 {
-                    return LabelCell.SFfontSize;
+                    return 0d;
                 }
             }
             set
             {
-                if (LabelCell.CellDataMode == CellDataMode.MixedField)
+                if (_SelectedRow != null)
                 {
-                    if (_SelectedRow != null)
+                    if (value != _SelectedRow.DesiredFontSize)
                     {
-                        if (value != _SelectedRow.FontSize)
-                        {
-                            _SelectedRow.FontSize = value;
-                            OnPropertyChanged("FontSize");
-                        }
+                        _SelectedRow.DesiredFontSize = value;
+                        OnPropertyChanged("FontSize");
                     }
-                }
-
-                else
-                {
-                    if (value != LabelCell.SFfontSize)
-                    LabelCell.SFfontSize = value;
-                    OnPropertyChanged("FontSize");
                 }
             }
         }

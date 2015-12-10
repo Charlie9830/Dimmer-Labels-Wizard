@@ -262,121 +262,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #endregion
 
-        #region CLR Properties - Single Field Mode Properties.
-        protected LabelField _SFcellDataField = LabelField.NoAssignment;
-        public LabelField SFcellDataField
-        {
-            get
-            {
-                return _SFcellDataField;
-            }
-            set
-            {
-                if (value != _SFcellDataField)
-                {
-                    SFcellData = PreviousReference.GetData(value);
-                    SFcellDataField = value;
-                }
-            } 
-        }
-
-        protected string _SFcellData = string.Empty;
-        public string SFcellData
-        {
-            get
-            {
-                return _SFcellData;
-            }
-            set
-            {
-                if (value != SFcellData)
-                {
-                    // Send Change to Rows.
-                    double availableTextWidth = Width - LeftWeight - RightWeight;
-                    double availableTextHeight = Height - BottomWeight - TopWeight;
-
-                    // Assign to Rows, collect and Update adjusted Font Size.
-                    Rows.Clear();
-                    List<CellRow> newRows = AssignToChildren(value, SFfont, SFfontSize, null,
-                        availableTextWidth, availableTextHeight, SFcellDataField, out _SFfontSize);
-
-                    foreach (var element in newRows)
-                    {
-                        Rows.Add(element);
-                    }
-
-                    // Assign value to Data Model.
-                    PreviousReference.SetData(value, SFcellDataField);
-
-                    // Store Value
-                    _SFcellData = value;
-                }
-            }
-        }
-
-        protected Typeface _SFfont = new Typeface("Arial");
-        public Typeface SFfont
-        {
-            get
-            {
-                return _SFfont;
-            }
-            set
-            {
-                if (value != _SFfont)
-                {
-                    // Send Change to Rows.
-                    double availableTextWidth = Width - LeftWeight - RightWeight;
-                    double availableTextHeight = Height - BottomWeight - TopWeight;
-
-                    // Assign to Rows, collect and Update adjusted Font Size.
-                    Rows.Clear();
-                    List<CellRow> newRows = AssignToChildren(SFcellData, value, SFfontSize, null,
-                        availableTextWidth, availableTextHeight, SFcellDataField, out _SFfontSize);
-
-                    foreach (var element in newRows)
-                    {
-                        Rows.Add(element);
-                    }
-
-                    // Store Value
-                    _SFfont = value;
-                }
-            }
-        }
-
-        protected double _SFfontSize = 12d;
-        public double SFfontSize
-        {
-            get
-            {
-                return _SFfontSize;
-            }
-
-            set
-            {
-                // Assign to Rows, collect and Update adjusted Font Size.
-                double availableTextWidth = Width - LeftWeight - RightWeight;
-                double availableTextHeight = Height - BottomWeight - TopWeight;
-                double adjustedFontSize;
-
-                Rows.Clear();
-                List<CellRow> newRows = AssignToChildren(SFcellData, SFfont, value, null,
-                    availableTextWidth, availableTextHeight, SFcellDataField, out adjustedFontSize);
-
-                foreach (var element in newRows)
-                {
-                    Rows.Add(element);
-                }
-
-                // Store Values.
-                _SFfontSize = adjustedFontSize;
-                
-            }
-        }
-
-        #endregion
-
         #region Dependency Properties
         /// <summary>
         /// Gets or Sets the Width of the Cell in Millimetres. This is a Dependency Property.
@@ -690,7 +575,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
 
-            
+
             if (e.OldItems == null && e.NewItems == null && collection.Count == 0)
             {
                 // Collection has Been Cleared.
@@ -706,6 +591,32 @@ namespace Dimmer_Labels_Wizard_WPF
                 rowIndexCounter++;
                 element.CoerceValue(CellRow.RowHeightProperty);
             }
+
+            // Update Cascading State.
+            SetCascadingRows(collection.ToList());
+
+            // Push Cascaded Data to new Rows.
+            if (collection.Any(item => item.IsCascading == true))
+            {
+                if (e.NewItems != null)
+                {
+                    foreach (var element in e.NewItems)
+                    {
+                        var cellRow = element as CellRow;
+
+                        if (cellRow.IsCascading == true)
+                        {
+                            cellRow.Data = cellRow.CascadingRows.First().Data;
+                        }
+                    }
+                }
+            }
+
+            // Refresh Data Layouts.
+            foreach (var element in collection)
+            {
+                AssignDataLayouts(element);
+            }
         }
 
         private void CellRow_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -713,205 +624,252 @@ namespace Dimmer_Labels_Wizard_WPF
             var cellRow = sender as CellRow;
             string propertyName = e.PropertyName;
 
-            // DataField.
-            if (propertyName == CellRow.DataFieldProperty.Name)
-            {
-                // Set Cell Data.
-                SetRowData(cellRow, this);
-            }
-
-            // Data.
+            // Data
             if (propertyName == CellRow.DataProperty.Name)
             {
-                Console.WriteLine("Data is Being Set");
-                // Signal that this Cell is currently setting Data.
-                IsSettingData = true;
-
-                if (HasCascadingRows == true)
+                if (cellRow.IsCascading == true)
                 {
-                    List<List<CellRow>> cascadedRows = GetCascadedRows(Rows.ToList());
-                    
-                    foreach (var list in cascadedRows)
+                    // Push Data Change to other CascadingRows in group.
+                    foreach (var element in cellRow.CascadingRows)
                     {
-                        if (list.Contains(cellRow))
+                        if (element != cellRow)
                         {
-                            string data = string.Empty;
-                            Typeface font = list.First().Font;
-                            double fontSize = list.First().FontSize;
-                            LabelField dataField = list.First().DataField;
-                            double availableTextWidth = list.First().AvailableTextWidth;
-                            double availableTextHeight = 0d;
-                            double ignoreFontSize;
-                            
-                            foreach (var element in list)
-                            {
-                                // Concatenate Data.
-                                data += element.Data + " ";
-
-                                // Sum available Text Height.
-                                availableTextHeight += element.AvailableTextHeight;
-                            }
-
-                            Console.WriteLine("Data = " + data);
-                            // Assign data to Children.
-                            AssignToChildren(data, font, fontSize, list, availableTextWidth, availableTextHeight,
-                                dataField, out ignoreFontSize);
+                            element.Data = cellRow.Data;
                         }
                     }
                 }
 
-                else
-                {
-                    // No Cascading Rows.
-                    PreviousReference.SetData(cellRow.Data, cellRow.DataField);
-                }
+                // Update Model.
+                PreviousReference.SetData(cellRow.Data, cellRow.DataField);
 
-                IsSettingData = false;
+                // Assign Data Layout(s).
+                AssignDataLayouts(cellRow);
+            }
+
+            // DataField.
+            if (propertyName == CellRow.DataFieldProperty.Name)
+            {
+                // Collect new Data.
+                cellRow.Data = PreviousReference.GetData(cellRow.DataField);
+
+                // Update Cascading State.
+                SetCascadingRows(Rows.ToList());
+            }
+
+            // Data Layout
+            if (propertyName == CellRow.DataLayoutProperty.Name)
+            {
+                AssignDataLayouts(cellRow);
             }
         }
         #endregion.
 
         #region Methods.
         /// <summary>
-        /// Populates and intializes new Rows or modifies Existing Rows with data provided.
+        /// Sets and Unsets Cascading row flags and collections on objects residing in Rows collection.
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="font"></param>
-        /// <param name="fontSize"></param>
-        /// <param name="existingRows"></param>
-        /// <param name="availableTextWidth"></param>
-        /// <param name="availableTextHeight"></param>
-        /// <param name="dataField"></param>
-        /// <param name="newFonSize"></param>
-        /// <returns></returns>
-        protected List<CellRow> AssignToChildren(string data, Typeface font, double fontSize, List<CellRow> existingRows,
-            double availableTextWidth, double availableTextHeight, LabelField dataField, out double adjustedFontSize)
+        private void SetCascadingRows(List<CellRow> rowCollection)
         {
-            char stringDelimiter = ' ';
-            List<CellRow> returnList = new List<CellRow>();
-            double oldFontSize = fontSize;
-            ScaleDirection ignore;
+            // Assign CellRow.IsCascading flags and CascadingRows Collections.
+            List<List<CellRow>> cascadingRows = GetCascadedRows(rowCollection);
 
-            // Validate Parameters.
-            if (existingRows != null)
+            if (cascadingRows.Count > 0)
             {
-                if (existingRows.Count == 0)
+                // Assign.
+                foreach (var list in cascadingRows)
                 {
-                    throw new FormatException("existingRows.Count cannot be 0");
-                }
-                CellRow referenceRow = existingRows.First();
-                foreach (var element in existingRows)
-                {
-                    if (element.DataField != referenceRow.DataField)
+                    foreach (var element in list)
                     {
-                        throw new FormatException("Not all DataField's of existingRows Match");
+                        element.IsCascading = true;
+                        element.CascadingRows = list;
                     }
                 }
-            }
 
-            // Determine scaled font size (if any).
-            ScaleDirection fontScaledDirection;
-            double newFontSize = CellRow.HelperScaleDownFont(data, font, fontSize,
-                availableTextWidth, availableTextHeight, ScaleDirection.Both, out fontScaledDirection);
+                // Flatten cascadingRows.
+                IEnumerable<CellRow> flattenedRows = cascadingRows.SelectMany(x => x);
+                IEnumerable<CellRow> unAssignRows = rowCollection.Where(x => flattenedRows.Contains(x) == false);
 
-            if (oldFontSize == newFontSize)
-            {
-                // No Font Size Scaling Required.
-                if (existingRows == null)
+                if (unAssignRows != null)
                 {
-                    // Generate new Row.
-                    string[] dataArray = { data };
-
-                    adjustedFontSize = oldFontSize;
-                    return HelperPopulateRows(this, null, dataArray, font, oldFontSize, dataField);
-                }
-
-                else
-                {
-                    // Use Existing Rows.
-                    double scaledFontSize = CellRow.HelperScaleDownFont(data, font, fontSize,
-                        availableTextWidth, HelperGetShortestRow(existingRows).Height.Value,
-                        ScaleDirection.Vertical, out ignore);
-
-                    string[] dataArray = { data };
-
-                    adjustedFontSize = scaledFontSize;
-                    return HelperPopulateRows(this, existingRows, dataArray, font, scaledFontSize, dataField);
+                    foreach (var element in unAssignRows)
+                    {
+                        element.IsCascading = false;
+                        element.CascadingRows.Clear();
+                    }
                 }
             }
 
             else
             {
-                // Font is too large.
-                string[] splitStrings = data.Split(stringDelimiter);
-
-                if (splitStrings.Length > 1)
+                // No Cascading rows found. UnAssign any remaining Cascading Flagged rows.
+                foreach (var element in rowCollection)
                 {
-                    // String can be Split.
-                    int longestStringIndex = HelperGetLongestStringIndex(splitStrings, font, fontSize);
-
-                    // Scale Font Size Further if needed.
-                    double scaledFontSize = CellRow.HelperScaleDownFont(splitStrings[longestStringIndex], font, fontSize,
-                        availableTextWidth, availableTextHeight / splitStrings.Length, ScaleDirection.Both, out ignore);
-
-                    if (existingRows == null)
+                    if (element.IsCascading == true)
                     {
-                        // Generate new Rows.
-                        adjustedFontSize = scaledFontSize;
-                        return HelperPopulateRows(this, null, splitStrings, font, scaledFontSize, dataField);
+                        element.IsCascading = false;
+                        element.CascadingRows.Clear();
                     }
+                }
+            }
+        }
 
-                    else
+        /// <summary>
+        /// Assigns Data Layout(s) and acompany properties to the provided object.
+        /// </summary>
+        /// <param name="targetRow"></param>
+        private void AssignDataLayouts(CellRow targetRow)
+        {
+            string data = targetRow.Data;
+            double desiredFontSize = targetRow.DesiredFontSize;
+            double actualFontSize = desiredFontSize;
+            Typeface font = targetRow.Font;
+            double availableTextWidth = targetRow.AvailableTextWidth;
+            double availableTextHeight = targetRow.AvailableTextHeight;
+
+            if (targetRow.IsCascading == false)
+            {
+                // Standard Row.
+                // Update DataLayout.
+                ScaleDirection ignore;
+                actualFontSize = ScaleDownFontSize(data, font, desiredFontSize,
+                    availableTextWidth, availableTextHeight, ScaleDirection.Both, out ignore);
+
+                DataLayout dataLayout = new DataLayout(0, data.Length, data, font, actualFontSize);
+
+                targetRow.DataLayout = dataLayout;
+                targetRow.ActualFontSize = actualFontSize;
+            }
+
+            else
+            {
+                // Cascaded Row.
+                CurateRowQty(targetRow);
+
+                char delimiter = ' ';
+                List<string> dataElements = data.Split(delimiter).ToList();
+                List<CellRow> cascadingRows = targetRow.CascadingRows;
+                int cascadedRowCount = cascadingRows.Count;
+                List<DataLayout> dataLayouts = new List<DataLayout>();
+                ScaleDirection ignore;
+                List<double> scaledFontSizes = new List<double>();
+
+                if (dataElements.Count > cascadedRowCount)
+                {
+                    // More Data Elements then Cascading Rows. Concatentate Data.
+                    while(dataElements.Count > cascadedRowCount)
                     {
-                        // Can existing rows be used?
-                        double heightScaledFontSize = CellRow.HelperScaleDownFont(data, font, fontSize,
-                        availableTextWidth, HelperGetShortestRow(existingRows).Height.Value,
-                        ScaleDirection.Vertical, out ignore);
-
-                        if (splitStrings.Length <= existingRows.Count)
+                        if (dataElements.Count > 1)
                         {
-                            // Use all existing Rows or Use available rows and assign Blank data to remaining Rows.
-                            adjustedFontSize = heightScaledFontSize;
-                            return HelperPopulateRows(this, existingRows, splitStrings, font, heightScaledFontSize, dataField);
+                            dataElements[dataElements.Count - 2] += delimiter + dataElements.Last();
+                            dataElements.RemoveAt(dataElements.IndexOf(dataElements.Last()));
                         }
 
                         else
                         {
-                            // Reprocess String to Fit into Avaiable Rows. 
-                            double textLayoutFontSizeReturn;
-                            string[] scaledStrings = HelperScaleTextLayout(splitStrings, existingRows, font,
-                                heightScaledFontSize, out textLayoutFontSizeReturn);
-
-                            adjustedFontSize = textLayoutFontSizeReturn;
-                            return HelperPopulateRows(this, existingRows, scaledStrings, font, textLayoutFontSizeReturn, dataField);
+                            break;
                         }
                     }
+
                 }
 
-                else
+                // Generate Data Layouts.
+                int startIndex = 0;
+                for (int rowIndex = 0; rowIndex < cascadedRowCount; rowIndex++)
                 {
-                    // String cannot be split.
-                    double scaledFontSize = CellRow.HelperScaleDownFont(data, font, fontSize,
-                        availableTextWidth, availableTextHeight, ScaleDirection.Both, out ignore);
-
-                    if (existingRows == null)
+                    if (rowIndex < dataElements.Count)
                     {
-                        string[] dataArray = { data };
+                        // Populated Row.
+                        dataLayouts.Add(new DataLayout(startIndex, dataElements[rowIndex].Length,
+                            data, font, desiredFontSize));
 
-                        adjustedFontSize = scaledFontSize;
-                        return HelperPopulateRows(this, null, dataArray, font, scaledFontSize, dataField);
+                        startIndex += dataElements[rowIndex].Length + 1;
                     }
 
                     else
                     {
-                        // Use Existing rows.
-                        string[] dataArray = { data };
-
-                        adjustedFontSize = scaledFontSize;
-                        return HelperPopulateRows(this, existingRows, dataArray, font, scaledFontSize, dataField);
+                        // Blank Row.
+                        dataLayouts.Add(new DataLayout(0, 0, data, font, desiredFontSize));
                     }
                 }
 
+                // Scale Font Sizes.
+                for (int index = 0; index < dataLayouts.Count && index < cascadedRowCount; index++)
+                {
+                    string displayedData = dataLayouts[index].DisplayedText;
+                    double containerWidth = cascadingRows[index].AvailableTextWidth;
+                    double containerHeight = cascadingRows[index].AvailableTextHeight;
+
+                    scaledFontSizes.Add(ScaleDownFontSize(displayedData, font, desiredFontSize,
+                        containerWidth, containerHeight, ScaleDirection.Both, out ignore));
+                }
+
+                // Select smallest Font.
+                scaledFontSizes.Sort();
+                actualFontSize = scaledFontSizes.First();
+
+                // Assign Data Layouts to Cells.
+                int listIndex = 0;
+                foreach (var element in cascadingRows)
+                {
+                    element.DataLayout = dataLayouts[listIndex];
+                    element.ActualFontSize = actualFontSize;
+                    listIndex++;
+                }
+                
+            }
+        }
+
+        /// <summary>
+        /// Will try to trim or expand the row Collection that the provided CellRow parameter belongs too.
+        /// </summary>
+        /// <param name="currentRow"></param>
+        private static void CurateRowQty(CellRow currentRow)
+        {
+            ObservableCollection<CellRow> rows = currentRow.CellParent.Rows;
+            LabelCell cellParent = currentRow.CellParent;
+            LabelField dataField = currentRow.DataField;
+            char delimiter = ' ';
+            int rowQty = rows.Count;
+            int dataQty = currentRow.Data.Split(delimiter).Length;
+            bool inSingleFieldMode = currentRow.CellParent.CellDataMode == CellDataMode.SingleField;
+
+
+            if (inSingleFieldMode == true)
+            {
+                // Row Collection is free to change Qty.
+                int qtyDifference = rowQty - dataQty;
+
+                if (qtyDifference < 0)
+                {
+                    // Row Deficit. Create new rows.
+                    int count = Math.Abs(qtyDifference);
+
+                    while (count >= 0)
+                    {
+                        rows.Add(new CellRow(cellParent));
+                        count--;
+                    }
+                }
+
+                if (qtyDifference > 0)
+                {
+                    // Data Deficit. Remove excess Rows.
+                    int count = Math.Abs(qtyDifference);
+
+                    while (count >= 0)
+                    {
+                        rows.Remove(rows.Last());
+                        count--;
+                    }
+                }
+
+                return;
+            }
+
+            else
+            {
+                // Row Collection should not change Qty. Do nothing.
+                return;
             }
         }
 
@@ -979,224 +937,135 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
                 }
             }
-
             return returnList;
         }
 
-        #endregion
-
-        #region Helper Methods.
-        public string[] HelperScaleTextLayout(string[] text, List<CellRow>existingRows, Typeface font,
-            double fontSize, out double scaledFontSize)
+        /// <summary>
+        /// Measures the size of provided text. Returns Size 0 if a null or Empty string was provided.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="font"></param>
+        /// <param name="fontSize"></param>
+        /// <returns></returns>
+        public static Size MeasureText(string data, Typeface font, double fontSize)
         {
-            int lastStringsIndex = text.Length - 1;
-            int textQty = text.Length;
-            List<string> textBuffer = new List<string>(text);
-            double currentFontSize = fontSize;
-            string delimiter = " ";
-            int rowCount = existingRows.Count;
-            int currentTextCount = text.Length;
-
-            // Change Me when Restarting a Concatenation Pass.
-            double delimiterWidth = CellRow.HelperMeasureText(delimiter, font, currentFontSize).Width;
-
-            // Concatenation Pass.
-            for (int rowIndex = 0; rowIndex < existingRows.Count; rowIndex++)
+            if (data == null || data == string.Empty)
             {
-                if (rowIndex - 1 != lastStringsIndex)
-                {
-                    int primaryIndex = rowIndex;
-                    int secondaryIndex = rowIndex + 1;
+                return new Size(0, 0);
+            }
 
-                    string primaryText = text[primaryIndex];
-                    string secondaryText = text[secondaryIndex];
+            FormattedText formatter = new FormattedText(data, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                font, fontSize, Brushes.Black);
 
-                    bool canConcatenate = HelperCanTextConcatenate(primaryText, secondaryText, font,
-                        currentFontSize, existingRows[rowIndex].AvailableTextWidth, delimiter);
+            return new Size(formatter.Width, formatter.Height);
+        }
 
-                    if (canConcatenate == true)
+        /// <summary>
+        /// Scales Font Size Down if Required, and rounds to nearest
+        /// quarter. If not Required, will return Font Size untouched.
+        /// Out parameter fontScaledDirection informs caller in which Axis font scaling was required
+        /// the most, Ignore out parameter if scaleDirection was not set to Both.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="font"></param>
+        /// <param name="fontSize"></param>
+        /// <param name="containerWidth"></param>
+        /// <param name="containerHeight"></param>
+        /// <param name="scaleDirection"></param>
+        /// <returns></returns>
+        public static double ScaleDownFontSize(string data, Typeface font, double fontSize,
+            double containerWidth, double containerHeight, ScaleDirection scaleDirection,
+            out ScaleDirection fontScaledDirection)
+        {
+            Size textSize = MeasureText(data, font, fontSize);
+
+            switch (scaleDirection)
+            {
+                // Scale Down by Horizontal Axis only.
+                case ScaleDirection.Horizontal:
+                    fontScaledDirection = ScaleDirection.Horizontal;
+
+                    if (textSize.Width > containerWidth)
                     {
-                        textBuffer.Insert(rowIndex, primaryText + delimiter + secondaryIndex);
+                        double ratio = containerWidth / textSize.Width;
 
-                        currentTextCount -= 1;
-                        if (currentTextCount <= rowCount)
-                        {
-                            // Text Layout has been Completed.
-                            scaledFontSize = currentFontSize;
-                            return textBuffer.ToArray();
-                        }
+                        // Round and Return.
+                        return Math.Round((fontSize * ratio) * 4, MidpointRounding.AwayFromZero) / 4;
                     }
 
                     else
                     {
-                        rowCount++;
+                        // Round and Return.
+                        return Math.Round(fontSize * 4, MidpointRounding.AwayFromZero) / 4;
                     }
-                }
-            }
 
-            // Concatenation Pass was unable to scale down Layout enough.
-            // Scale Font down and recursively call method again.
-            ScaleDirection ignore;
-            int longestStringIndex = HelperGetLongestStringIndex(textBuffer.ToArray(), font, currentFontSize);
 
-            currentFontSize = CellRow.HelperScaleDownFont(textBuffer[longestStringIndex], font, currentFontSize,
-                existingRows[longestStringIndex].AvailableTextWidth, existingRows[longestStringIndex].AvailableTextHeight,
-                ScaleDirection.Both, out ignore);
-
-            scaledFontSize = currentFontSize;
-
-            return HelperScaleTextLayout(textBuffer.ToArray(), existingRows, font, currentFontSize, out scaledFontSize);
-           
-        }
-
-        protected bool HelperCanTextConcatenate(string primaryText, string secondaryText,
-            Typeface font, double fontSize, double availableWidth, string delimiter)
-        {
-            double primaryWidth = CellRow.HelperMeasureText(primaryText, font, fontSize).Width;
-            double secondaryWidth = CellRow.HelperMeasureText(secondaryText, font, fontSize).Width;
-            double delimiterWidth = CellRow.HelperMeasureText(delimiter, font, fontSize).Width;
-
-            if (primaryWidth + delimiterWidth + secondaryWidth <= availableWidth)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Measures the Width of each of the strings in the strings Array Parameter. Returns the Index of the longest
-        /// string or equally longest string.
-        /// </summary>
-        /// <param name="strings"></param>
-        /// <returns></returns>
-        protected int HelperGetLongestStringIndex(string[] strings, Typeface font, double fontSize)
-        {
-            if (strings.Length == 0)
-            {
-                throw new FormatException("Parameter strings has no Elements.");
-            }
-
-            List<double> lengths = new List<double>();
-
-            foreach (var element in strings)
-            {
-                lengths.Add(CellRow.HelperMeasureText(element, font, fontSize).Width);
-            }
-
-            lengths.OrderBy(item => item);
-
-            return lengths.IndexOf(lengths.Last());
-            
-        }
-
-        /// <summary>
-        /// Adds Data to and initializes/updates collection of Rows provided. If provided row Collection is null,
-        /// new rows will be Generated and returned.
-        /// </summary>
-        /// <param name="labelCell"></param>
-        /// <param name="existingRows"></param>
-        /// <param name="splitStrings"></param>
-        /// <param name="font"></param>
-        /// <param name="heightScaledFontSize"></param>
-        /// <param name="dataField"></param>
-        /// <returns></returns>
-        private List<CellRow> HelperPopulateRows(LabelCell labelCell, List<CellRow> existingRows, string[] data, 
-            Typeface font, double fontSize, LabelField dataField)
-        {
-            var returnList = new List<CellRow>();
-
-            if (existingRows == null)
-            {
-                // Generate new Rows.
-                foreach (var element in data)
-                {
-                    returnList.Add(new CellRow(labelCell, dataField));
-                    returnList.Last().Data = element;
-                    returnList.Last().Font = font;
-                    returnList.Last().FontSize = fontSize;
-                }
-
-                return returnList;
-            }
-            
-            else
-            {
-                // Use Existing Rows as much as Possible.
-                int lastExistingRowIndex = existingRows.Count - 1;
-
-                if (data.Length >= existingRows.Count)
-                {
-                    // Equal ammount of strings and Rows.
-                    for (int index = 0; index < data.Length; index++)
+                // Scale Down by Vertical axis only.
+                case ScaleDirection.Vertical:
+                    fontScaledDirection = ScaleDirection.Vertical;
+                    if (textSize.Height > containerHeight)
                     {
-                        if (index <= lastExistingRowIndex)
-                        {
-                            // Populate existing Rows.
-                            existingRows[index].Data = data[index];
-                            existingRows[index].DataField = dataField;
-                            existingRows[index].Font = font;
-                            existingRows[index].FontSize = fontSize;
+                        double ratio = containerHeight / textSize.Height;
 
-                            returnList.Add(existingRows[index]);
-                        }
+                        // Round and Return.
+                        return Math.Round((fontSize * ratio) * 4, MidpointRounding.AwayFromZero) / 4;
                     }
-                }
-
-                if (data.Length < existingRows.Count)
-                {
-                    // Less strings then already Existing Rows.
-                    int lastDataIndex = data.Length - 1;
-
-                    for (int index = 0; index < existingRows.Count; index++)
+                    else
                     {
-                        if (index <= lastDataIndex)
-                        {
-                            // Populate existing rows with existing Data.
-                            existingRows[index].Data = data[index];
-                            existingRows[index].DataField = dataField;
-                            existingRows[index].Font = font;
-                            existingRows[index].FontSize = fontSize;
-
-                            returnList.Add(existingRows[index]);
-                        }
-
-                        else
-                        {
-                            // Not enough Data, Populate existing rows with blank Data.
-                            existingRows[index].Data = string.Empty;
-                            existingRows[index].DataField = dataField;
-                            existingRows[index].Font = font;
-                            existingRows[index].FontSize = fontSize;
-
-                            returnList.Add(existingRows[index]);
-                        }
+                        // Round and Return.
+                        return Math.Round(fontSize * 4, MidpointRounding.AwayFromZero) / 4;
                     }
-                }
 
-                if (data.Length > existingRows.Count)
-                {
-                    // Too many Strings.
-                    throw new FormatException("HelperPopulateRows(), To many strings, not enough Rows! " +
-                        "Use HelperScaleTextLayout() before calling this Method");
-                }
-                return returnList;
+
+                // Scale down by both Horizontal and Vertical axis.
+                case ScaleDirection.Both:
+                    double widthRatio = 1;
+                    double heightRatio = 1;
+
+                    // Calculate Ratios.
+                    if (textSize.Width > containerWidth)
+                    {
+                        widthRatio = containerWidth / textSize.Width;
+                    }
+
+                    if (textSize.Height > containerHeight)
+                    {
+                        heightRatio = containerHeight / textSize.Height;
+                    }
+
+                    // Scale FontSize by largest Ratio. (Furthest from 1).
+                    if (widthRatio < heightRatio)
+                    {
+                        fontScaledDirection = ScaleDirection.Horizontal;
+
+                        // Round and Return.
+                        return Math.Round((fontSize * widthRatio) * 4, MidpointRounding.AwayFromZero) / 4;
+                    }
+
+                    if (heightRatio > widthRatio)
+                    {
+                        fontScaledDirection = ScaleDirection.Vertical;
+
+                        // Round and Return.
+                        return Math.Round((fontSize * heightRatio) * 4, MidpointRounding.AwayFromZero) / 4;
+                    }
+
+                    // Ratio's are either Identical or both have been left at 1.
+                    else
+                    {
+                        fontScaledDirection = ScaleDirection.Both;
+
+                        // Round and Return.
+                        return Math.Round((fontSize * widthRatio) * 4, MidpointRounding.AwayFromZero) / 4;
+                    }
+
+                default:
+                    fontScaledDirection = ScaleDirection.Both;
+
+                    // Round and Return.
+                    return Math.Round(fontSize * 4, MidpointRounding.AwayFromZero) / 4;
             }
-        }
 
-        /// <summary>
-        /// Returns the row with the smallest Height Value from the provided List.
-        /// </summary>
-        /// <param name="existingRows"></param>
-        /// <returns></returns>
-        protected CellRow HelperGetShortestRow(List<CellRow> existingRows)
-        {
-            var sortList = new List<CellRow>(existingRows);
-            sortList.OrderBy(item => item.Height.Value);
-
-            return sortList.Last();
         }
         #endregion
 

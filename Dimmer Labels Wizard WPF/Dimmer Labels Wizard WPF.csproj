@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="ColorControlViewModel.cs" />
     <Compile Include="DataHandling.cs" />
+    <Compile Include="DataLayout.cs" />
     <Compile Include="DimmerDistroUnit.cs" />
     <Compile Include="DistroRangeSelector.xaml.cs">
       <DependentUpon>DistroRangeSelector.xaml</DependentUpon>
