@@ -26,10 +26,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Output.ExportToRackLabel();
-            Hide();
-            ApplicationWindows.LabelEditorWindow = new LabelEditor();
-            ApplicationWindows.LabelEditorWindow.Show();
+            //Output.ExportToRackLabel();
+            //Hide();
+            //ApplicationWindows.LabelEditorWindow = new LabelEditor();
+            //ApplicationWindows.LabelEditorWindow.Show();
+
+            // ReImplementation Required.
+            throw new NotImplementedException();
         }
     }
 }

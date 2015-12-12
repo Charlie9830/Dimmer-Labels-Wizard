@@ -132,41 +132,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public static void SetDefaultRackLabelSettings()
-        {
-
-            foreach (var element in Globals.LabelStrips)
-            {
-                element.LineWeight = 1.25d;
-
-                // Set Default Fonts,FontStyles and StringFormat Alignments.
-                for (int listIndex = 0; listIndex < element.Headers.Count; listIndex++)
-                {
-                    if (SingleLabel == true)
-                    {
-                        element.Headers[listIndex].Font = new Typeface("Arial");
-                        element.Headers[listIndex].FontSize = 24;
-                    }
-
-                    else
-                    {
-  
-                        element.Headers[listIndex].Font = new Typeface("Arial");
-                        element.Headers[listIndex].FontSize = 24;
-                    }
-
-                    element.Footers[listIndex].TopFont = new Typeface("Arial");
-                    element.Footers[listIndex].TopFontSize = 12;
-
-                    element.Footers[listIndex].MiddleFont = new Typeface("Arial");
-                    element.Footers[listIndex].MiddleFontSize = 16;
-
-                    element.Footers[listIndex].BottomFont = new Typeface("Arial");
-                    element.Footers[listIndex].BottomFontSize = 14;
-                }
-            }
-        }
-
         #region Serialization
         public static UserParametersStorage GenerateStorage()
         {

@@ -69,15 +69,8 @@
       <DependentUpon>BackgroundColorTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="BackgroundColorTableViewModel.cs" />
-    <Compile Include="CellControl.xaml.cs">
-      <DependentUpon>CellControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CellControlViewModels.cs" />
+    <Compile Include="CellCollection.cs" />
     <Compile Include="CellRow.cs" />
-    <Compile Include="ColorControl.xaml.cs">
-      <DependentUpon>ColorControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ColorControlViewModel.cs" />
     <Compile Include="DataHandling.cs" />
     <Compile Include="DataLayout.cs" />
     <Compile Include="DimmerDistroUnit.cs" />
@@ -101,12 +94,10 @@
     <Compile Include="FileImportDialog.xaml.cs">
       <DependentUpon>FileImportDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FooterCell.cs" />
     <Compile Include="GlobalApplyWarning.xaml.cs">
       <DependentUpon>GlobalApplyWarning.xaml</DependentUpon>
     </Compile>
     <Compile Include="Globals.cs" />
-    <Compile Include="HeaderCell.cs" />
     <Compile Include="Help.xaml.cs">
       <DependentUpon>Help.xaml</DependentUpon>
     </Compile>
@@ -126,9 +117,6 @@
     <Compile Include="DimmerRangeSelectorHost.xaml.cs">
       <DependentUpon>DimmerRangeSelectorHost.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LabelEditor.xaml.cs">
-      <DependentUpon>LabelEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="LabelGenerationDialog.xaml.cs">
       <DependentUpon>LabelGenerationDialog.xaml</DependentUpon>
     </Compile>
@@ -137,8 +125,6 @@
     </Compile>
     <Compile Include="LabelSetupViewModel.cs" />
     <Compile Include="LabelStrip.cs" />
-    <Compile Include="LabelStripSelection.cs" />
-    <Compile Include="Output.cs" />
     <Compile Include="PopUpControlAdorner.cs" />
     <Compile Include="PrintRangeControl.xaml.cs">
       <DependentUpon>PrintRangeControl.xaml</DependentUpon>
@@ -154,10 +140,7 @@
       <DependentUpon>SanitizationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SerialConversion.cs" />
-    <Compile Include="SplitCellViewModel.cs" />
-    <Compile Include="SplitCellWindow.xaml.cs">
-      <DependentUpon>SplitCellWindow.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="StyleTemplates.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
@@ -167,14 +150,6 @@
     <Page Include="BackgroundColorTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CellControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ColorControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="DimmerRangeSelector.xaml">
       <SubType>Designer</SubType>
@@ -220,10 +195,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LabelEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="LabelGenerationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -255,10 +226,6 @@
     <Page Include="SanitizationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SplitCellWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="UnResolveableData.xaml">
       <SubType>Designer</SubType>

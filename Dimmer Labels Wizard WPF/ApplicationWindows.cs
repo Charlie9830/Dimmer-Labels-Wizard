@@ -14,6 +14,5 @@ namespace Dimmer_Labels_Wizard_WPF
         public static SanitizationDialog SanitizationWindow;
         public static LabelSetup LabelSetupWindow;
         public static LabelGenerationDialog LabelGenerationWindow;
-        public static LabelEditor LabelEditorWindow;
     }
 }

@@ -64,25 +64,27 @@ namespace Dimmer_Labels_Wizard_WPF
                     FixedDocument printDocument = new FixedDocument();
                     printDocument.DocumentPaginator.PageSize = printableArea;
 
-                    List<Canvas> pageCanvases = LabelStrip.RenderToPrinter(printStrips, pDialog.PrintableAreaWidth,
-                        pDialog.PrintableAreaHeight,UserParameters.SingleLabel);
-                    
+                    //List<Canvas> pageCanvases = LabelStrip.RenderToPrinter(printStrips, pDialog.PrintableAreaWidth,
+                    //    pDialog.PrintableAreaHeight,UserParameters.SingleLabel);
 
-                    foreach (var canvas in pageCanvases)
-                    {
-                        FixedPage page = new FixedPage();
-                        page.Width = printableArea.Width;
-                        page.Height = printableArea.Height;
-                        page.Margin = safePrintingMargin;
 
-                        page.Children.Add(canvas);
+                    //foreach (var canvas in pageCanvases)
+                    //{
+                    //    FixedPage page = new FixedPage();
+                    //    page.Width = printableArea.Width;
+                    //    page.Height = printableArea.Height;
+                    //    page.Margin = safePrintingMargin;
 
-                        PageContent pageContent = new PageContent();
-                        ((IAddChild)pageContent).AddChild(page);
+                    //    page.Children.Add(canvas);
 
-                        printDocument.Pages.Add(pageContent);
-                    }
-                    pDialog.PrintDocument(printDocument.DocumentPaginator, "Labels");
+                    //    PageContent pageContent = new PageContent();
+                    //    ((IAddChild)pageContent).AddChild(page);
+
+                    //    printDocument.Pages.Add(pageContent);
+                    //}
+                    throw new NotImplementedException();
+
+                    //pDialog.PrintDocument(printDocument.DocumentPaginator, "Labels");
                 }
             }
         }

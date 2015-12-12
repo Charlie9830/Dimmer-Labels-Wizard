@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ using System.Collections.ObjectModel;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public class LabelCell : ContentControl
+    public class LabelCell : ContentControl, INotifyPropertyChanged
     {
         #region Fields.
         // Constants
@@ -237,18 +238,6 @@ namespace Dimmer_Labels_Wizard_WPF
             get { return _Rows; }
         }
 
-        private bool _IsSettingData;
-
-        /// <summary>
-        /// True if this Cell is currently Assigning Data to Child Row Elements.
-        /// </summary>
-        public bool IsSettingData
-        {
-            get { return _IsSettingData; }
-            protected set { _IsSettingData = value; }
-        }
-
-
         /// <summary>
         /// Gets a value indictating if Cascading Rows have been detected. 
         /// </summary>
@@ -325,7 +314,7 @@ namespace Dimmer_Labels_Wizard_WPF
         // Using a DependencyProperty as the backing store for LabelStripMode.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LabelStripModeProperty =
             DependencyProperty.Register("LabelStripMode", typeof(LabelStripMode), typeof(LabelCell),
-                new FrameworkPropertyMetadata(LabelStripMode.Double,
+                new FrameworkPropertyMetadata(LabelStripMode.Dual,
                     new PropertyChangedCallback(OnLabelStripModePropertyChanged)));
 
         private static void OnLabelStripModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -502,7 +491,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
 
-            if (mode == LabelStripMode.Double)
+            if (mode == LabelStripMode.Dual)
             {
                 return (double)value;
             }
@@ -1066,6 +1055,19 @@ namespace Dimmer_Labels_Wizard_WPF
                     return Math.Round(fontSize * 4, MidpointRounding.AwayFromZero) / 4;
             }
 
+        }
+        #endregion
+
+        #region Interface Implementations
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                var eventArgs = new PropertyChangedEventArgs(propertyName);
+                PropertyChanged(this, eventArgs);
+            }
         }
         #endregion
 

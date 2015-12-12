@@ -23,7 +23,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
     public enum FooterTextPosition {NotAssigned, Top, Middle, Bottom};
 
-    public enum LabelStripMode { Single, Double};
+    public enum LabelStripMode { Single, Dual};
 
     public enum LabelStripVerticalPosition { Header, Footer};
 
