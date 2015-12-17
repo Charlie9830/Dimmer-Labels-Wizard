@@ -47,6 +47,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Assign TextBlock to CellParent's Grid.
             CellParent.Grid.Children.Add(TextBlock);
         }
+
         #endregion
 
         #region Constants
@@ -480,10 +481,35 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
         #endregion
+    }
 
-        #region Helper Methods
-        
+    /// <summary>
+    /// Equality Comparer for CellRows. Performs a Value Comparison of CellRow.Data AND CellRow.DataField.
+    /// </summary>
+    public class CellRowDataValueComparer : IEqualityComparer<CellRow>
+    {
+        public bool Equals(CellRow x, CellRow y)
+        {
+            if (x == null || y == null)
+            {
+                return false;
+            }
 
-        #endregion
+            if (x.Data == y.Data && x.DataField == y.DataField)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
+        public int GetHashCode(CellRow obj)
+        {
+            int hCode = obj.Data.GetHashCode() ^ (int)obj.DataField;
+            return hCode.GetHashCode();
+        }
     }
 }

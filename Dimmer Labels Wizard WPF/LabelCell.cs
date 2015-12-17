@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Globalization;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -25,14 +26,8 @@ namespace Dimmer_Labels_Wizard_WPF
         // Properties.
         public DimmerDistroUnit PreviousReference { get; set; }
 
-        protected NeighbourCells _Neighbours;
-
         protected SolidColorBrush _TextBrush;
         protected SolidColorBrush _Background;
-        protected double _LeftWeight = 2;
-        protected double _TopWeight = 2;
-        protected double _RightWeight = 2;
-        protected double _BottomWeight = 2;
 
         // Text Grid Rendering Elements.
         protected Grid _Grid = new Grid();
@@ -44,16 +39,20 @@ namespace Dimmer_Labels_Wizard_WPF
         /// </summary>
         static LabelCell()
         {
-            FrameworkPropertyMetadataOptions heightOptions = FrameworkPropertyMetadataOptions.AffectsArrange;
-            heightOptions |= FrameworkPropertyMetadataOptions.AffectsMeasure;
-            heightOptions |= FrameworkPropertyMetadataOptions.AffectsRender;
-            heightOptions |= FrameworkPropertyMetadataOptions.AffectsParentArrange;
-            heightOptions |= FrameworkPropertyMetadataOptions.AffectsParentMeasure;
+            FrameworkPropertyMetadataOptions options = FrameworkPropertyMetadataOptions.AffectsArrange;
+            options |= FrameworkPropertyMetadataOptions.AffectsMeasure;
+            options |= FrameworkPropertyMetadataOptions.AffectsRender;
+            options |= FrameworkPropertyMetadataOptions.AffectsParentArrange;
+            options |= FrameworkPropertyMetadataOptions.AffectsParentMeasure;
 
             FrameworkPropertyMetadata heightPropertyMetadata =
-                new FrameworkPropertyMetadata(69d, heightOptions, null, new CoerceValueCallback(CoerceHeight));
+                new FrameworkPropertyMetadata(69d, options, null, new CoerceValueCallback(CoerceHeight));
+
+            FrameworkPropertyMetadata widthPropertyMetadata =
+                new FrameworkPropertyMetadata(69d, options, null, new CoerceValueCallback(CoerceWidth));
 
             HeightProperty.OverrideMetadata(typeof(LabelCell), heightPropertyMetadata);
+            WidthProperty.OverrideMetadata(typeof(LabelCell), widthPropertyMetadata);
         }
 
         /// <summary>
@@ -74,7 +73,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Unit Testing
             Grid.ShowGridLines = true;
-            
+
+            SnapsToDevicePixels = true;
         }
 
         /// <summary>
@@ -90,10 +90,12 @@ namespace Dimmer_Labels_Wizard_WPF
             Content = _Grid;
 
             PreviousReference = dataReference;
+
+            SnapsToDevicePixels = true;
         }
         #endregion
 
-        #region CLR Properties - General and Mixed Mode Field Properties.
+        #region CLR Properties
         /// <summary>
         /// The Grid in which CellRow's and their Child elements are Displayed.
         /// </summary>
@@ -101,131 +103,6 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get { return _Grid; }
             set { _Grid = value; }
-        }
-
-        public SolidColorBrush TextBrush
-        {
-            get
-            {
-                return _TextBrush;
-            }
-
-            protected set     // Set By BackgroundColor Setter
-            {
-                _TextBrush = value;
-            }
-        }
-
-        public new SolidColorBrush Background
-        {
-            get
-            {
-                return _Background;
-            }
-
-            set
-            {
-                if (_Background == null || _Background.Color != value.Color)
-                {
-                    // Calculate Luminance of Color and set _textColor to White or Black based on this luminance result.
-                    if ((0.299 * value.Color.R) + (0.587 * value.Color.G) + (0.114 * value.Color.B) > 128)
-                    {
-                        _TextBrush = new SolidColorBrush(Colors.Black);
-                    }
-
-                    else
-                    {
-                        _TextBrush = new SolidColorBrush(Colors.White);
-                    }
-
-                    _Background = value;
-                    InvalidateVisual();
-                }
-            }
-        }
-
-        public NeighbourCells Neighbours
-        {
-            get
-            {
-                if (_Neighbours == null)
-                {
-                    throw new NullReferenceException("LabelCell.Neighbours is null");
-                }
-
-                else
-                {
-                    return _Neighbours;
-                }
-            }
-            set
-            {
-                _Neighbours = value;
-            }
-        }
-
-        public double LeftWeight
-        {
-            get
-            {
-                return _LeftWeight;
-            }
-            set
-            {   if (_LeftWeight != value)
-                {
-                    _LeftWeight = value;
-                    InvalidateVisual();
-                }
-                
-            }
-        }
-
-        public double TopWeight
-        {
-            get
-            {
-                return _TopWeight;
-            }
-            set
-            {
-                if (_TopWeight != value)
-                {
-                    _TopWeight = value;
-                    InvalidateVisual();
-                }
-            }
-        }
-
-        public double RightWeight
-        {
-            get
-            {
-                return _RightWeight;
-            }
-            set
-            {
-                if (_RightWeight != value)
-                {
-                    _RightWeight = value;
-                    InvalidateVisual();
-                }
-            }
-        }
-
-        public double BottomWeight
-        {
-            get
-            {
-                return _BottomWeight;
-            }
-            set
-            {
-                if (_BottomWeight != value)
-                {
-                    _BottomWeight = value;
-                    InvalidateVisual();
-                }
-            }
         }
 
         private ObservableCollection<CellRow> _Rows;
@@ -252,6 +129,295 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+        public bool IsMerged
+        {
+            get { return (bool)GetValue(IsMergedProperty); }
+            set { SetValue(IsMergedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsMerged.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsMergedProperty =
+            DependencyProperty.Register("IsMerged", typeof(bool), typeof(LabelCell), new FrameworkPropertyMetadata(false));
+
+
+        public double LeftWeight
+        {
+            get { return (double)GetValue(LeftWeightProperty); }
+            set { SetValue(LeftWeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for LeftWeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LeftWeightProperty =
+            DependencyProperty.Register("LeftWeight", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(1d, new PropertyChangedCallback(OnLeftWeightPropertyChanged),
+                    new CoerceValueCallback(CoerceLeftWeight)));
+
+        private static object CoerceLeftWeight(DependencyObject d, object value)
+        {
+            double lineWeight = (double)value;
+
+            if (lineWeight < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return lineWeight;
+            }
+        }
+
+        private static void OnLeftWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+
+            // Raise event to owner LabelStrip.
+            OnPropertyChanged(instance, nameof(LeftWeight));
+        }
+
+
+        public double TopWeight
+        {
+            get { return (double)GetValue(TopWeightProperty); }
+            set { SetValue(TopWeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TopWeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TopWeightProperty =
+            DependencyProperty.Register("TopWeight", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(1d,new PropertyChangedCallback(OnTopWeightPropertyChanged),
+                    new CoerceValueCallback(CoerceTopWeight)));
+
+        private static object CoerceTopWeight(DependencyObject d, object value)
+        {
+            double lineWeight = (double)value;
+
+            if (lineWeight < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return lineWeight;
+            }
+        }
+
+        private static void OnTopWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+
+            // Raise event to owner LabelStrip.
+            OnPropertyChanged(instance, nameof(TopWeight));
+        }
+
+
+
+        public double RightWeight
+        {
+            get { return (double)GetValue(RightWeightProperty); }
+            set { SetValue(RightWeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for RightWeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RightWeightProperty =
+            DependencyProperty.Register("RightWeight", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(1d, new PropertyChangedCallback(OnRightWeightPropertyChanged),
+                    new CoerceValueCallback(CoerceRightWeight)));
+
+        private static object CoerceRightWeight(DependencyObject d, object value)
+        {
+            double lineWeight = (double)value;
+
+            if (lineWeight < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return lineWeight;
+            }
+        }
+
+        private static void OnRightWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+
+            // Raise event to owner LabelStrip.
+            OnPropertyChanged(instance, nameof(RightWeight));
+        }
+
+
+        public double BottomWeight
+        {
+            get { return (double)GetValue(BottomWeightProperty); }
+            set { SetValue(BottomWeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for BottomWeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BottomWeightProperty =
+            DependencyProperty.Register("BottomWeight", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(1d, new PropertyChangedCallback(OnBottomWeightPropertyChanged),
+                    new CoerceValueCallback(CoerceBottomWeight)));
+
+        private static object CoerceBottomWeight(DependencyObject d, object value)
+        {
+            double lineWeight = (double)value;
+
+            if (lineWeight < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return lineWeight;
+            }
+        }
+
+        private static void OnBottomWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+
+            // Raise event to owner LabelStrip.
+            OnPropertyChanged(instance, nameof(BottomWeight));
+        }
+
+
+
+        public double ActualLeftWeight
+        {
+            get { return (double)GetValue(ActualLeftWeightProperty); }
+            set { SetValue(ActualLeftWeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ActualLeftWeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActualLeftWeightProperty =
+            DependencyProperty.Register("ActualLeftWeight", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(1d, GetLineWeightMetadataOptions(), new PropertyChangedCallback(OnActualLeftWeightPropertyChanged),
+                    new CoerceValueCallback(CoerceActualLeftWeight)));
+
+        private static object CoerceActualLeftWeight(DependencyObject d, object value)
+        {
+            double lineWeight = (double)value;
+
+            if (lineWeight < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return lineWeight;
+            }
+        }
+
+        private static void OnActualLeftWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+
+
+        public double ActualTopWeight
+        {
+            get { return (double)GetValue(ActualTopWeightProperty); }
+            set { SetValue(ActualTopWeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ActualTopWeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActualTopWeightProperty =
+            DependencyProperty.Register("ActualTopWeight", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(1d, GetLineWeightMetadataOptions(), new PropertyChangedCallback(OnActualTopWeightPropertyChanged),
+                    new CoerceValueCallback(CoerceActualTopWeight)));
+
+        private static object CoerceActualTopWeight(DependencyObject d, object value)
+        {
+            double lineWeight = (double)value;
+
+            if (lineWeight < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return lineWeight;
+            }
+        }
+
+        private static void OnActualTopWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            
+        }
+
+
+
+        public double ActualRightWeight
+        {
+            get { return (double)GetValue(ActualRightWeightProperty); }
+            set { SetValue(ActualRightWeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ActualRightWeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActualRightWeightProperty =
+            DependencyProperty.Register("ActualRightWeight", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(1d, GetLineWeightMetadataOptions(), new PropertyChangedCallback(OnActualRightWeightPropertyChanged),
+                    new CoerceValueCallback(CoerceActualRightWeight)));
+
+        private static object CoerceActualRightWeight(DependencyObject d, object value)
+        {
+            double lineWeight = (double)value;
+
+            if (lineWeight < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return lineWeight;
+            }
+        }
+
+        private static void OnActualRightWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+
+
+        public double ActualBottomWeight
+        {
+            get { return (double)GetValue(ActualBottomWeightProperty); }
+            set { SetValue(ActualBottomWeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ActualBottomWeight.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActualBottomWeightProperty =
+            DependencyProperty.Register("ActualBottomWeight", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(1d, GetLineWeightMetadataOptions(), new PropertyChangedCallback(OnActualBottomWeightPropertyChanged),
+                    new CoerceValueCallback(CoerceActualBottomWeight)));
+
+        private static object CoerceActualBottomWeight(DependencyObject d, object value)
+        {
+            double lineWeight = (double)value;
+
+            if (lineWeight < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return lineWeight;
+            }
+        }
+
+        private static void OnActualBottomWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            
+        }
+
         /// <summary>
         /// Gets or Sets the Width of the Cell in Millimetres. This is a Dependency Property.
         /// </summary>
@@ -304,49 +470,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 instance.Height = newValue * UnitConversionRatio;
             }
         }
-
-        public LabelStripMode LabelStripMode
-        {
-            get { return (LabelStripMode)GetValue(LabelStripModeProperty); }
-            set { SetValue(LabelStripModeProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for LabelStripMode.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty LabelStripModeProperty =
-            DependencyProperty.Register("LabelStripMode", typeof(LabelStripMode), typeof(LabelCell),
-                new FrameworkPropertyMetadata(LabelStripMode.Dual,
-                    new PropertyChangedCallback(OnLabelStripModePropertyChanged)));
-
-        private static void OnLabelStripModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as LabelCell;
-            double realHeight = instance.RealHeight;
-
-            // Push Change to Height Property.
-            CoerceHeight(d, realHeight);
-        }
-
-        public LabelStripVerticalPosition VerticalPosition
-        {
-            get { return (LabelStripVerticalPosition)GetValue(VerticalPositionProperty); }
-            set { SetValue(VerticalPositionProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for VerticalPosition.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty VerticalPositionProperty =
-            DependencyProperty.Register("VerticalPosition", typeof(LabelStripVerticalPosition),
-                typeof(LabelCell), new FrameworkPropertyMetadata(LabelStripVerticalPosition.Header,
-                    new PropertyChangedCallback(OnVerticalPositionPropertyChanged)));
-
-        private static void OnVerticalPositionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as LabelCell;
-            double realHeight = instance.RealHeight;
-
-            // Push Change to Height Property.
-            CoerceHeight(d, realHeight);
-        }
-
 
         public CellRowHeightMode RowHeightMode
         {
@@ -460,6 +583,14 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region PropertyMetadata Overides.
+        private static object CoerceWidth(DependencyObject d, object value)
+        {
+            var instance = d as LabelCell;
+            var width = (double)value;
+
+            return width;
+        }
+
         /// <summary>
         /// Coerces derived Height Property based on value of LabelMode and LabelStripVerticalPosition.
         /// </summary>
@@ -469,34 +600,9 @@ namespace Dimmer_Labels_Wizard_WPF
         private static object CoerceHeight(DependencyObject d, object value)
         {
             var instance = d as LabelCell;
-            LabelStripMode mode = instance.LabelStripMode;
-            LabelStripVerticalPosition verticalPosition = instance.VerticalPosition;
+            var height = (double)value;
 
-            // If LabelCell is in Single Label Strip Mode. Downsize Height Accordingly.
-            if (mode == LabelStripMode.Single)
-            {
-                if (verticalPosition == LabelStripVerticalPosition.Header)
-                {
-                    return (double)value * HeaderSingleLabelHeightDownFactor;
-                }
-
-                if (verticalPosition == LabelStripVerticalPosition.Footer)
-                {
-                    return (double)value * FooterSingleLabelHeightDownFactor;
-                }
-
-                else
-                {
-                    return (double)value;
-                }
-            }
-
-            if (mode == LabelStripMode.Dual)
-            {
-                return (double)value;
-            }
-
-            return (double)value;
+            return height;
         }
         #endregion
 
@@ -516,22 +622,41 @@ namespace Dimmer_Labels_Wizard_WPF
             var lineBrush = new SolidColorBrush(Colors.Black);
 
             // Pens.
-            var leftPen = new Pen(lineBrush, _LeftWeight);
-            var topPen = new Pen(lineBrush, _TopWeight);
-            var rightPen = new Pen(lineBrush, _RightWeight);
-            var bottomPen = new Pen(lineBrush, _BottomWeight);
+            var leftPen = new Pen(lineBrush, ActualLeftWeight);
+            var topPen = new Pen(lineBrush, ActualTopWeight);
+            var rightPen = new Pen(lineBrush, ActualRightWeight);
+            var bottomPen = new Pen(lineBrush, ActualBottomWeight);
+
+            // Debugging.
+            //FormattedText left = new FormattedText(ActualLeftWeight.ToString(), CultureInfo.CurrentCulture,
+            //    FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Red);
+
+            //FormattedText top = new FormattedText(ActualTopWeight.ToString(), CultureInfo.CurrentCulture,
+            //    FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Red);
+
+            //FormattedText right = new FormattedText(ActualRightWeight.ToString(), CultureInfo.CurrentCulture,
+            //    FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Red);
+
+            //FormattedText bottom = new FormattedText(ActualBottomWeight.ToString(), CultureInfo.CurrentCulture,
+            //    FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Red);
 
             // Corner Points.
-            var topLeft = new Point(0, 0);
-            var topRight = new Point(Width, 0);
-            var bottomRight = new Point(Width, Height);
-            var bottomLeft = new Point(0, Height);
+            var topLeft = new Point(0 + (LeftWeight / 4), 0 + (TopWeight / 4));
+            var topRight = new Point(Width - (RightWeight / 4), 0 + (TopWeight / 4));
+            var bottomRight = new Point(Width - (RightWeight / 4), Height - (BottomWeight / 4));
+            var bottomLeft = new Point(0 + (LeftWeight / 4), Height - (BottomWeight / 4));
 
             // Drawing 
             drawingContext.DrawLine(leftPen, bottomLeft, topLeft);
             drawingContext.DrawLine(topPen, topLeft, topRight);
             drawingContext.DrawLine(rightPen, topRight, bottomRight);
             drawingContext.DrawLine(bottomPen, bottomRight, bottomLeft);
+
+            // Debugging
+            //drawingContext.DrawText(left, new Point(topLeft.X, topLeft.Y + (Height / 2)));
+            //drawingContext.DrawText(top, new Point(topLeft.X + (Width / 2), topLeft.Y));
+            //drawingContext.DrawText(right, new Point(topRight.X, topRight.Y + (Height / 2)));
+            //drawingContext.DrawText(bottom, new Point(bottomLeft.X + (Width / 2), bottomLeft.Y));
 
             #endregion
 
@@ -602,10 +727,10 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Refresh Data Layouts.
-            foreach (var element in collection)
-            {
-                AssignDataLayouts(element);
-            }
+            //foreach (var element in collection)
+            //{
+            //     AssignDataLayouts(element);
+            //}
         }
 
         private void CellRow_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1058,6 +1183,18 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+        #region Static Methods
+        protected static FrameworkPropertyMetadataOptions GetLineWeightMetadataOptions()
+        {
+            FrameworkPropertyMetadataOptions options = FrameworkPropertyMetadataOptions.AffectsRender;
+
+            options |= FrameworkPropertyMetadataOptions.AffectsMeasure;
+            options |= FrameworkPropertyMetadataOptions.AffectsArrange;
+
+            return options;
+        }
+        #endregion
+
         #region Interface Implementations
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1067,6 +1204,15 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 var eventArgs = new PropertyChangedEventArgs(propertyName);
                 PropertyChanged(this, eventArgs);
+            }
+        }
+
+        private static void OnPropertyChanged(LabelCell instance, string propertyName)
+        {
+            if (instance.PropertyChanged != null)
+            {
+                var eventArgs = new PropertyChangedEventArgs(propertyName);
+                instance.PropertyChanged(instance, eventArgs);
             }
         }
         #endregion

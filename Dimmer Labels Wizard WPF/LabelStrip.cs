@@ -41,11 +41,15 @@ namespace Dimmer_Labels_Wizard_WPF
             HeightProperty.OverrideMetadata(typeof(LabelStrip), heightOverride);
         }
 
+        /// <summary>
+        /// Generates a blank LabelStrip.
+        /// </summary>
         public LabelStrip()
         {
             // Collection type Dependency properties.
             SetValue(UpperCellsPropertyKey, new CellCollection(this));
-            SetValue(LowerCellsPropertyKey, new CellCollection(this)); 
+            SetValue(LowerCellsPropertyKey, new CellCollection(this));
+            SetValue(MergedCellReferencesPropertyKey, new Dictionary<LabelCell, List<DimmerDistroUnit>>()); 
 
             // Initialize
             _UpperStackPanel.Orientation = Orientation.Horizontal;
@@ -58,6 +62,44 @@ namespace Dimmer_Labels_Wizard_WPF
 
             SetRow(_UpperStackPanel, 0);
             SetRow(_LowerStackPanel, 1);
+        }
+
+        public LabelStrip(List<LabelCell> upperCells, List<LabelCell> lowerCells, bool autoMergeCells)
+        {
+            // Collection type Dependency properties.
+            SetValue(UpperCellsPropertyKey, new CellCollection(this));
+            SetValue(LowerCellsPropertyKey, new CellCollection(this));
+            SetValue(MergedCellReferencesPropertyKey, new Dictionary<LabelCell, List<DimmerDistroUnit>>());
+
+            // Initialize
+            _UpperStackPanel.Orientation = Orientation.Horizontal;
+            _LowerStackPanel.Orientation = Orientation.Horizontal;
+            Children.Add(_UpperStackPanel);
+            Children.Add(_LowerStackPanel);
+
+            RowDefinitions.Add(_UpperGridRow);
+            RowDefinitions.Add(_LowerGridRow);
+
+            SetRow(_UpperStackPanel, 0);
+            SetRow(_LowerStackPanel, 1);
+
+            // Populate UpperCells Collection.
+            foreach (var element in upperCells)
+            {
+                UpperCells.Add(element);
+            }
+
+            // Populate LowerCells Collection.
+            foreach (var element in lowerCells)
+            {
+                LowerCells.Add(element);
+            }
+
+            if (autoMergeCells == true)
+            {
+                // Merge Cells.
+                throw new NotImplementedException();
+            }
         }
 
         public LabelStrip(LabelStripStorage storage)
@@ -87,6 +129,18 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+        public Dictionary<LabelCell, List<DimmerDistroUnit>> MergedCellReferences
+        {
+            get { return (Dictionary<LabelCell, List<DimmerDistroUnit>>)GetValue(MergedCellReferencesProperty); }
+        }
+
+        // Using a DependencyProperty as the backing store for MergedCellReferences.  This enables animation, styling, binding, etc...
+        public static readonly DependencyPropertyKey MergedCellReferencesPropertyKey =
+            DependencyProperty.RegisterReadOnly("MergedCellReferences", typeof(Dictionary<LabelCell, List<DimmerDistroUnit>>),
+                typeof(LabelStrip), new FrameworkPropertyMetadata(new Dictionary<LabelCell, List<DimmerDistroUnit>>()));
+
+        public static readonly DependencyProperty MergedCellReferencesProperty = MergedCellReferencesPropertyKey.DependencyProperty;
+
         public CellCollection UpperCells
         {
             get { return (CellCollection)GetValue(UpperCellsProperty); }
@@ -279,7 +333,11 @@ namespace Dimmer_Labels_Wizard_WPF
                     var cell = element as LabelCell;
                     if (instance._UpperStackPanel.Children.Contains(cell) == false)
                     {
+                        // Add to StackPanel
                         instance._UpperStackPanel.Children.Add(cell);
+
+                        // Connect Event Handler.
+                        cell.PropertyChanged += instance.UpperCell_PropertyChanged;
                     }
                 }
             }
@@ -289,9 +347,20 @@ namespace Dimmer_Labels_Wizard_WPF
                 foreach (var element in e.OldItems)
                 {
                     var cell = element as LabelCell;
+
+                    // Remove from StackPanel.
                     instance._UpperStackPanel.Children.Remove(cell);
+
+                    // Disconnect Event Handler.
+                    cell.PropertyChanged -= instance.UpperCell_PropertyChanged;
                 }
             }
+
+            //// Set LineWeights
+            //foreach (var element in collection)
+            //{
+            //    instance.SetLineWeight(element);
+            //}
         }
 
         private static void LowerCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -306,6 +375,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     if (instance._LowerStackPanel.Children.Contains(cell) == false)
                     {
                         instance._LowerStackPanel.Children.Add(cell);
+
+                        cell.PropertyChanged += instance.LowerCell_PropertyChanged;
                     }
                 }
             }
@@ -316,9 +387,218 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     var cell = element as LabelCell;
                     instance._LowerStackPanel.Children.Remove(cell);
+
+                    cell.PropertyChanged -= instance.LowerCell_PropertyChanged;
                 }
             }
         }
+
+        protected void UpperCell_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var cell = sender as LabelCell;
+
+            // LeftWeight.
+            if (e.PropertyName == nameof(cell.LeftWeight))
+            {
+                int cellIndex = UpperCells.IndexOf(cell);
+                double desiredWeight = cell.LeftWeight;
+
+                if (cellIndex == 0)
+                {
+                    // Lefthand Boundary Cell.
+                    cell.ActualLeftWeight = desiredWeight;
+                }
+
+                else
+                {
+                    // Non boundary Cell.
+                    cell.ActualLeftWeight = desiredWeight / 2;
+                    UpperCells[cellIndex - 1].ActualRightWeight = desiredWeight / 2;
+                }
+            }
+
+            // RightWeight
+            if (e.PropertyName == nameof(cell.RightWeight))
+            {
+                int cellIndex = UpperCells.IndexOf(cell);
+                double desiredWeight = cell.RightWeight;
+
+                if (cellIndex == UpperCells.Count - 1)
+                {
+                    // Righthand Boundary cell.
+                    cell.ActualRightWeight = desiredWeight;
+                }
+
+                else
+                {
+                    // Non Boundary cell.
+                    cell.ActualRightWeight = desiredWeight / 2;
+                    UpperCells[cellIndex + 1].ActualLeftWeight = desiredWeight / 2;
+                }
+            }
+        }
+
+        protected void LowerCell_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+
+        }
+
+        #endregion
+
+        #region Public Methods
+        public void Merge(List<LabelCell> mergingCells)
+        {
+            // Parameter checking.
+            bool parameterIsUpperCells = false;
+            bool parameterIsLowerCells = false;
+
+            foreach (var element in mergingCells)
+            {
+                if (UpperCells.Contains(element))
+                {
+                    parameterIsUpperCells = true;
+                }
+
+                else
+                {
+                    parameterIsUpperCells = false;
+                    break;
+                }
+            }
+
+            foreach (var element in mergingCells)
+            {
+                if (LowerCells.Contains(element))
+                {
+                    parameterIsLowerCells = true;
+                }
+
+                else
+                {
+                    parameterIsLowerCells = false;
+                    break;
+                }
+            }
+
+            if (parameterIsUpperCells == false && parameterIsLowerCells == false)
+            {
+                // mergeCells contains no Cells or contains cells from
+                // both UpperCell and LowerCell Collections.
+                throw new FormatException("LabelStrip.Merge()");
+            }
+
+            if (parameterIsUpperCells == true)
+            {
+                int startingIndex = mergingCells.Min(item => UpperCells.IndexOf(item));
+                
+                // Create new Merged Cell.
+                LabelCell newCell = MergeCells(mergingCells[0], mergingCells[1]);
+
+                // Collect References.
+                MergedCellReferences.Add(newCell, mergingCells.Select(item => item.PreviousReference).ToList());
+
+                // Insert New Cell
+                UpperCells.Insert(startingIndex, newCell);
+
+                // Remove redundant Cells.
+                foreach (var element in mergingCells)
+                {
+                    UpperCells.Remove(element);
+                }
+                            
+                            
+            }
+        }
+
+        #endregion
+
+        #region Private or Protected Methods
+        private static bool CanCellsMerge(LabelCell cellA, LabelCell cellB)
+        {
+            // Primary clauses.
+            if (cellA.CellDataMode != cellB.CellDataMode)
+            {
+                // Non matching Cell Data modes.
+                return false;
+            }
+
+            if (cellA.Rows.Count == 0 && cellB.Rows.Count == 0)
+            {
+                // No Rows present, IE They are blank Cells.
+                return false;
+            }
+
+
+            // Secondary clauses.
+            if (cellA.CellDataMode == CellDataMode.SingleField)
+            {
+                // Single Field Mode.
+                string aData = cellA.Rows.Count > 0 ? cellA.Rows.First().Data : string.Empty;
+                string bData = cellB.Rows.Count > 0 ? cellB.Rows.First().Data : string.Empty;
+
+                LabelField aDataField = cellA.Rows.Count > 0 ? cellA.Rows.First().DataField : LabelField.NoAssignment;
+                LabelField bDataField = cellB.Rows.Count > 0 ? cellB.Rows.First().DataField : LabelField.NoAssignment;
+
+                if (aData == bData && aDataField == bDataField)
+                {
+                    // Data and Data Fields Match.
+                    return true;
+                }
+
+                else
+                {
+                    return false;
+                }
+            }
+
+            else
+            {
+                // Mixed Field Mode.
+                List<CellRow> aRows = cellA.Rows.ToList();
+                List<CellRow> bRows = cellB.Rows.ToList();
+
+                // Primary Clauses.
+                if (aRows.Count != bRows.Count)
+                {
+                    return false;
+                }
+
+                if (aRows.Union(bRows, new CellRowDataValueComparer()).Count() == 0)
+                {
+                    // Union Operation return 0 count enumerable. aRows and bRows and Equal by Data Value
+                    // and DataField Value.
+                    return true;
+                }
+
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the resulting LabelCell after parameter Cells are merged together.
+        /// </summary>
+        /// <param name="leftCell"></param>
+        /// <param name="rightCell"></param>
+        /// <returns></returns>
+        private static LabelCell MergeCells(LabelCell leftCell, LabelCell rightCell)
+        {
+            DimmerDistroUnit previousReference = leftCell.PreviousReference;
+
+            LabelCell mergedCell = new LabelCell(previousReference);
+            mergedCell.Width = leftCell.Width + rightCell.Width;
+            mergedCell.Height = Math.Max(leftCell.Height, rightCell.Height);
+
+            foreach (var element in leftCell.Rows)
+            {
+                mergedCell.Rows.Add(new CellRow(mergedCell));
+            }
+
+            return mergedCell;
+        }
+
         #endregion
 
         #region Print Helper Methods
@@ -357,7 +637,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
-    
     public class LabelStripStorage
     {
         // Needs Re Implementation.

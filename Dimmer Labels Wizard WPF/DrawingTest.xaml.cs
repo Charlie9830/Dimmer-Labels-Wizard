@@ -71,21 +71,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        private void PrintDataModelButton_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = DataContext as DrawingTestViewModel;
-
-            if (viewModel.SelectedRow != null)
-            {
-                Console.WriteLine(viewModel.SelectedRow.DataField.ToString() + " : " +
-                    labelCell.PreviousReference.GetData(viewModel.SelectedRow.DataField));
-            }
-            else
-            {
-                Console.WriteLine("No Row Selected");
-            }
-        }
-
         private void SingleFieldCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             var checkBox = sender as CheckBox;
@@ -137,6 +122,49 @@ namespace Dimmer_Labels_Wizard_WPF
             else
             {
                 labelStrip.StripMode = LabelStripMode.Dual;
+            }
+        }
+
+        private void LineweightPlusButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var element in labelStrip.UpperCells)
+            {
+                element.LeftWeight += 1;
+                element.RightWeight += 1;
+            }
+        }
+
+        private void LineweightMinusButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var element in labelStrip.UpperCells)
+            {
+                element.LeftWeight -= 1;
+                element.RightWeight -= 1;
+            }
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (labelStrip.UpperCells.Count >= 2)
+            {
+                List<LabelCell> mergeList = new List<LabelCell>();
+                mergeList.Add(labelStrip.UpperCells[0]);
+                mergeList.Add(labelStrip.UpperCells[1]);
+
+                labelStrip.Merge(mergeList);
+            }
+        }
+
+        private void InitTestButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (labelStrip.UpperCells.Count >= 2)
+            {
+                labelStrip.UpperCells[0].Rows.Add(new CellRow(labelStrip.UpperCells[0]));
+                labelStrip.UpperCells[0].Rows.Add(new CellRow(labelStrip.UpperCells[0]));
+
+                labelStrip.UpperCells[0].Rows[0].Data = "One";
+                labelStrip.UpperCells[0].Rows[1].Data = "Two";
+
             }
         }
     }
