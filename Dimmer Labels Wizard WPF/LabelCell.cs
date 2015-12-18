@@ -552,34 +552,19 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (newValue == CellDataMode.SingleField)
             {
-                // Cell Data Mode has been Toggled to Single Field Mode. Delete existing Rows
-                // in preperation for new Rows being Generated.
+                // Cell Data Mode has been Toggled to Single Field Mode. Re Initialize Cell in Single
+                // Field Mode.
                 rows.Clear();
+
+                rows.Add(new CellRow(instance));
+                rows.Last().DataField = instance.SingleFieldDataField;
+                rows.Last().Data = instance.SingleFieldData;
 
                 // Initialize to SingleField Mode.
                 instance.RowHeightMode = CellRowHeightMode.Static;
             }
            
         }
-
-        /// <summary>
-        /// Sets the Data Property of a single Child Row based of it's current assigned Data Field. Should only be
-        /// used whilst Cell is in Mixed Field Mode.
-        /// </summary>
-        /// <param name="cellRow"></param>
-        /// <param name="cellParent"></param>
-        protected void SetRowData(CellRow cellRow, LabelCell cellParent)
-        {
-            DimmerDistroUnit reference = cellParent.PreviousReference;
-            CellDataMode cellDataMode = cellParent.CellDataMode;
-            LabelField dataField = cellRow.DataField;
-
-            if (cellDataMode == CellDataMode.MixedField)
-            {
-                cellRow.Data = reference.GetData(cellRow.DataField);
-            } 
-        }
-
         #endregion
 
         #region PropertyMetadata Overides.
@@ -604,6 +589,114 @@ namespace Dimmer_Labels_Wizard_WPF
 
             return height;
         }
+
+
+
+        public string SingleFieldData
+        {
+            get { return (string)GetValue(SingleFieldDataProperty); }
+            set { SetValue(SingleFieldDataProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SingleFieldData.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SingleFieldDataProperty =
+            DependencyProperty.Register("SingleFieldData", typeof(string), typeof(LabelCell),
+                new FrameworkPropertyMetadata(string.Empty, new PropertyChangedCallback(OnSingleFieldDataPropertyChanged)));
+
+        private static void OnSingleFieldDataPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            string newData = (string)e.NewValue;
+            ObservableCollection<CellRow> rowCollection = instance.Rows;
+            LabelField dataField = instance.SingleFieldDataField;
+
+            CurateRowQty(instance, newData);
+            rowCollection.First().DataField = dataField;
+            rowCollection.First().Data = newData;
+        }
+
+        public LabelField SingleFieldDataField
+        {
+            get { return (LabelField)GetValue(SingleFieldDataFieldProperty); }
+            set { SetValue(SingleFieldDataFieldProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SingleFieldDataFieldProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SingleFieldDataFieldProperty =
+            DependencyProperty.Register("SingleFieldDataField", typeof(LabelField), typeof(LabelCell),
+                new FrameworkPropertyMetadata(LabelField.NoAssignment, new PropertyChangedCallback(OnSingleFieldDataFieldPropertyChanged)));
+
+        private static void OnSingleFieldDataFieldPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            LabelField newDataField = (LabelField)e.NewValue;
+            DimmerDistroUnit reference = instance.PreviousReference;
+
+            instance.SingleFieldData = reference.GetData(newDataField);
+        }
+
+
+        public Typeface SingleFieldFont
+        {
+            get { return (Typeface)GetValue(SingleFieldFontProperty); }
+            set { SetValue(SingleFieldFontProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SingleFieldFont.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SingleFieldFontProperty =
+            DependencyProperty.Register("SingleFieldFont", typeof(Typeface), typeof(LabelCell),
+                new FrameworkPropertyMetadata(new Typeface("Arial"), new PropertyChangedCallback(OnSingleFieldFontPropertyChanged)));
+
+        private static void OnSingleFieldFontPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            ObservableCollection<CellRow> rowCollection = instance.Rows;
+            Typeface newFont = e.NewValue as Typeface;
+
+            foreach (var element in rowCollection)
+            {
+                element.Font = newFont;
+            }
+        }
+
+
+        public double SingleFieldDesiredFontSize
+        {
+            get { return (double)GetValue(SingleFieldDesiredFontSizeProperty); }
+            set { SetValue(SingleFieldDesiredFontSizeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SingleFieldDesiredFontSize.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SingleFieldDesiredFontSizeProperty =
+            DependencyProperty.Register("SingleFieldDesiredFontSize", typeof(double),
+                typeof(LabelCell), new FrameworkPropertyMetadata(12d, new PropertyChangedCallback(OnSingleFieldDesiredFontSizePropertyChanged)));
+
+        private static void OnSingleFieldDesiredFontSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            double newDesiredFontSize = (double)e.NewValue;
+            ObservableCollection<CellRow> rowCollection = instance.Rows;
+
+            rowCollection.First().DesiredFontSize = newDesiredFontSize;
+            instance.SingleFieldActualFontSize = rowCollection.First().ActualFontSize;
+        }
+
+        public double SingleFieldActualFontSize
+        {
+            get { return (double)GetValue(SingleFieldActualFontSizeProperty); }
+            set { SetValue(SingleFieldActualFontSizeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SingleFieldActualFontSize.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SingleFieldActualFontSizeProperty =
+            DependencyProperty.Register("SingleFieldActualFontSize", typeof(double), typeof(LabelCell), 
+                new FrameworkPropertyMetadata(12d, new PropertyChangedCallback(OnSingleFieldActualFontSizePropertyChanged)));
+
+        private static void OnSingleFieldActualFontSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            
+        }
+
         #endregion
 
         #region Overrides
@@ -673,7 +766,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 foreach (var element in e.NewItems)
                 {
                     var cellRow = element as CellRow;
-                    Grid.RowDefinitions.Add(cellRow);
+                    Grid.RowDefinitions.Insert(e.NewStartingIndex, cellRow);
                     cellRow.PropertyChanged += CellRow_PropertyChanged;
                 }
             }
@@ -727,10 +820,10 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Refresh Data Layouts.
-            //foreach (var element in collection)
-            //{
-            //     AssignDataLayouts(element);
-            //}
+            foreach (var element in collection)
+            {
+                AssignDataLayouts(element);
+            }
         }
 
         private void CellRow_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -779,6 +872,68 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion.
 
         #region Methods.
+        /// <summary>
+        /// Sets the Data Property of a single Child Row based of it's current assigned Data Field. Should only be
+        /// used whilst Cell is in Mixed Field Mode.
+        /// </summary>
+        /// <param name="cellRow"></param>
+        /// <param name="cellParent"></param>
+        protected void SetRowData(CellRow cellRow, LabelCell cellParent)
+        {
+            DimmerDistroUnit reference = cellParent.PreviousReference;
+            CellDataMode cellDataMode = cellParent.CellDataMode;
+            LabelField dataField = cellRow.DataField;
+
+            if (cellDataMode == CellDataMode.MixedField)
+            {
+                cellRow.Data = reference.GetData(cellRow.DataField);
+            }
+        }
+
+        /// <summary>
+        /// Edits the length of the RowCollection of the given LabelCell Instance. Use only when in SingleField Mode.
+        /// </summary>
+        /// <param name="currentRow"></param>
+        private static void CurateRowQty(LabelCell instance, string data)
+        {
+            if (instance.CellDataMode != CellDataMode.SingleField)
+            {
+                throw new FormatException("Given Instance of Labelcell is not in Single Field Mode");
+            }
+
+            ObservableCollection<CellRow> rows = instance.Rows;
+            LabelCell cellParent = instance;
+            LabelField dataField = instance.SingleFieldDataField;
+            char delimiter = ' ';
+            int rowQty = rows.Count;
+            int dataQty = data.Split(delimiter).Length;
+            int qtyDifference = rowQty - dataQty;
+
+            if (qtyDifference < 0)
+            {
+                // Row Deficit. Create new rows.
+                int count = Math.Abs(qtyDifference);
+
+                while (count > 0)
+                {
+                    rows.Add(new CellRow(cellParent));
+                    count--;
+                }
+            }
+
+            if (qtyDifference > 0)
+            {
+                // Data Deficit. Remove excess Rows.
+                int count = Math.Abs(qtyDifference);
+
+                while (count > 0)
+                {
+                    rows.Remove(rows.Last());
+                    count--;
+                }
+            }
+        }
+
         /// <summary>
         /// Sets and Unsets Cascading row flags and collections on objects residing in Rows collection.
         /// </summary>
@@ -856,9 +1011,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else
             {
-                // Cascaded Row.
-                CurateRowQty(targetRow);
-
                 char delimiter = ' ';
                 List<string> dataElements = data.Split(delimiter).ToList();
                 List<CellRow> cascadingRows = targetRow.CascadingRows;
@@ -930,60 +1082,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     listIndex++;
                 }
                 
-            }
-        }
-
-        /// <summary>
-        /// Will try to trim or expand the row Collection that the provided CellRow parameter belongs too.
-        /// </summary>
-        /// <param name="currentRow"></param>
-        private static void CurateRowQty(CellRow currentRow)
-        {
-            ObservableCollection<CellRow> rows = currentRow.CellParent.Rows;
-            LabelCell cellParent = currentRow.CellParent;
-            LabelField dataField = currentRow.DataField;
-            char delimiter = ' ';
-            int rowQty = rows.Count;
-            int dataQty = currentRow.Data.Split(delimiter).Length;
-            bool inSingleFieldMode = currentRow.CellParent.CellDataMode == CellDataMode.SingleField;
-
-
-            if (inSingleFieldMode == true)
-            {
-                // Row Collection is free to change Qty.
-                int qtyDifference = rowQty - dataQty;
-
-                if (qtyDifference < 0)
-                {
-                    // Row Deficit. Create new rows.
-                    int count = Math.Abs(qtyDifference);
-
-                    while (count >= 0)
-                    {
-                        rows.Add(new CellRow(cellParent));
-                        count--;
-                    }
-                }
-
-                if (qtyDifference > 0)
-                {
-                    // Data Deficit. Remove excess Rows.
-                    int count = Math.Abs(qtyDifference);
-
-                    while (count >= 0)
-                    {
-                        rows.Remove(rows.Last());
-                        count--;
-                    }
-                }
-
-                return;
-            }
-
-            else
-            {
-                // Row Collection should not change Qty. Do nothing.
-                return;
             }
         }
 
@@ -1268,16 +1366,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #endregion
     }
-
-    public class NeighbourCells
-    {
-        public LabelCell Left { get; set; }
-        public LabelCell Top { get; set; }
-        public LabelCell Right { get; set; }
-        public LabelCell Bottom { get; set; }
-
-    }
-    
+   
     public class LabelCellStorage
     {
         public DimmerDistroUnit PreviousReference;

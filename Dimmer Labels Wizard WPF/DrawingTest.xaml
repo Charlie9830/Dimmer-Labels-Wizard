@@ -96,15 +96,7 @@
 
         <TabItem Height="25" Width="130" Header="Test Area">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <StackPanel x:Name="stackPanel" Grid.Row="0">
-                    <TextBlock>
-                    "Hello World"
-                    </TextBlock>
-                </StackPanel>
+                <TextBox Text="Hello World" FontSize="28" BorderBrush="Transparent"/>
             </Grid>
         </TabItem>
     </TabControl>

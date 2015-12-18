@@ -60,6 +60,11 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (_SelectedRow != null)
                 {
+                    if (_SelectedRow.CellParent.CellDataMode == CellDataMode.SingleField)
+                    {
+                        return new BetterTypeface(_SelectedRow.CellParent.SingleFieldFont);
+                    }
+
                     return new BetterTypeface(_SelectedRow.Font);
                 }
                 else
@@ -72,13 +77,19 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (_SelectedRow != null)
                 {
-                    SelectedRow.Font = value;
+                    if (_SelectedRow.CellParent.CellDataMode == CellDataMode.SingleField)
+                    {
+                        _SelectedRow.CellParent.SingleFieldFont = value;
+                    }
+                    else
+                    {
+                        SelectedRow.Font = value;
+                    }
+                    
                     OnPropertyChanged("SelectedTypeface");
                 }
             }
         }
-
-
 
         protected LabelCell _LabelCell;
         public LabelCell LabelCell
@@ -136,14 +147,23 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                    if (_SelectedRow != null)
+                if (_SelectedRow != null)
+                {
+                    if (_SelectedRow.CellParent.CellDataMode == CellDataMode.SingleField)
+                    {
+                        return _SelectedRow.CellParent.SingleFieldData;
+                    }
+
+                    else
                     {
                         return _SelectedRow.Data;
                     }
-                    else
-                    {
-                        return "***";
-                    }
+                    
+                }
+                else
+                {
+                    return "***";
+                }
             }
             set
             {
@@ -151,7 +171,15 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     if (value != _SelectedRow.Data)
                     {
-                        _SelectedRow.Data = value;
+                        if (_SelectedRow.CellParent.CellDataMode == CellDataMode.SingleField)
+                        {
+                            _SelectedRow.CellParent.SingleFieldData = value;
+                        }
+                        else
+                        {
+                            _SelectedRow.Data = value;
+                        }
+                        
                         OnPropertyChanged("CellData");
                         OnPropertyChanged("FontSize");
                     }
@@ -166,7 +194,15 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (_SelectedRow != null)
                 {
-                    return _SelectedRow.DesiredFontSize;
+                    if (_SelectedRow.CellParent.CellDataMode == CellDataMode.SingleField)
+                    {
+                        return _SelectedRow.CellParent.SingleFieldActualFontSize;
+                    }
+
+                    else
+                    {
+                        return _SelectedRow.DesiredFontSize;
+                    }
                 }
                 else
                 {
@@ -177,11 +213,20 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (_SelectedRow != null)
                 {
-                    if (value != _SelectedRow.DesiredFontSize)
+                    if (_SelectedRow.CellParent.CellDataMode == CellDataMode.SingleField)
                     {
-                        _SelectedRow.DesiredFontSize = value;
-                        OnPropertyChanged("FontSize");
+                        _SelectedRow.CellParent.SingleFieldDesiredFontSize = value;
                     }
+
+                    else
+                    {
+                        if (value != _SelectedRow.DesiredFontSize)
+                        {
+                            _SelectedRow.DesiredFontSize = value;
+                        }
+                    }
+
+                    OnPropertyChanged("FontSize");
                 }
             }
         }

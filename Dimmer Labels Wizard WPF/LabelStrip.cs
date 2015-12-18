@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -322,7 +323,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
-        private static void UpperCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private static void UpperCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as CellCollection;
             LabelStrip instance = collection.Instance;
@@ -334,7 +335,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     if (instance._UpperStackPanel.Children.Contains(cell) == false)
                     {
                         // Add to StackPanel
-                        instance._UpperStackPanel.Children.Add(cell);
+                        instance._UpperStackPanel.Children.Insert(e.NewStartingIndex, cell);
 
                         // Connect Event Handler.
                         cell.PropertyChanged += instance.UpperCell_PropertyChanged;
@@ -374,7 +375,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     var cell = element as LabelCell;
                     if (instance._LowerStackPanel.Children.Contains(cell) == false)
                     {
-                        instance._LowerStackPanel.Children.Add(cell);
+                        instance._LowerStackPanel.Children.Insert(e.NewStartingIndex, cell);
 
                         cell.PropertyChanged += instance.LowerCell_PropertyChanged;
                     }
@@ -446,68 +447,74 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Public Methods
-        public void Merge(List<LabelCell> mergingCells)
+        public void Merge(LabelCell target, List<LabelCell> mergingCells)
         {
-            // Parameter checking.
-            bool parameterIsUpperCells = false;
-            bool parameterIsLowerCells = false;
+            // Parameter Checking
+            List<LabelCell> cells = new List<LabelCell>();
+            cells.AddRange(mergingCells);
+            cells.Add(target);
 
-            foreach (var element in mergingCells)
+            bool isAllUpperCells = cells.Where(item => UpperCells.Contains(item)).Count() == cells.Count;
+            bool isAllLowerCells = cells.Where(item => LowerCells.Contains(item)).Count() == cells.Count;
+
+            if (isAllUpperCells ^ isAllLowerCells == false)
             {
-                if (UpperCells.Contains(element))
-                {
-                    parameterIsUpperCells = true;
-                }
-
-                else
-                {
-                    parameterIsUpperCells = false;
-                    break;
-                }
+                throw new FormatException("mergingCells and target do not belong to the same Cells Collection.");
             }
 
-            foreach (var element in mergingCells)
-            {
-                if (LowerCells.Contains(element))
-                {
-                    parameterIsLowerCells = true;
-                }
+            // Function
 
-                else
-                {
-                    parameterIsLowerCells = false;
-                    break;
-                }
+            // Generate and Curate sourceCells.
+            List<LabelCell> sourceCells = new List<LabelCell>(mergingCells);
+
+            if (sourceCells.Contains(target))
+            {
+                sourceCells.Remove(target);
             }
 
-            if (parameterIsUpperCells == false && parameterIsLowerCells == false)
+            // Collect References.
+            if (MergedCellReferences.ContainsKey(target))
             {
-                // mergeCells contains no Cells or contains cells from
-                // both UpperCell and LowerCell Collections.
-                throw new FormatException("LabelStrip.Merge()");
-            }
+                // Dictionary entry already exists. Append to Dictionary Value List<> instead.
+                List<DimmerDistroUnit> references = MergedCellReferences[target];
 
-            if (parameterIsUpperCells == true)
-            {
-                int startingIndex = mergingCells.Min(item => UpperCells.IndexOf(item));
-                
-                // Create new Merged Cell.
-                LabelCell newCell = MergeCells(mergingCells[0], mergingCells[1]);
-
-                // Collect References.
-                MergedCellReferences.Add(newCell, mergingCells.Select(item => item.PreviousReference).ToList());
-
-                // Insert New Cell
-                UpperCells.Insert(startingIndex, newCell);
-
-                // Remove redundant Cells.
                 foreach (var element in mergingCells)
+                {
+                    if (references.Contains(element.PreviousReference) == false)
+                    {
+                        references.Add(element.PreviousReference);
+                    }
+                }
+            }
+
+            else
+            {
+                MergedCellReferences.Add(target, mergingCells.Select(item => item.PreviousReference).ToList());
+            }
+            
+            // Merge Cells
+            foreach (var element in sourceCells)
+            {
+                LabelStrip.MergeCells(target, element);
+            }
+
+            // Remove sourceCells from Collections.
+            if (isAllUpperCells == true)
+            {
+                foreach (var element in sourceCells)
                 {
                     UpperCells.Remove(element);
                 }
-                            
-                            
             }
+
+            if (isAllLowerCells == true)
+            {
+                foreach (var element in sourceCells)
+                {
+                    LowerCells.Remove(element);
+                }
+            }
+
         }
 
         #endregion
@@ -578,25 +585,14 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         /// <summary>
-        /// Returns the resulting LabelCell after parameter Cells are merged together.
+        /// Merges the Secondary cell into the Primary Cell.
         /// </summary>
         /// <param name="leftCell"></param>
         /// <param name="rightCell"></param>
         /// <returns></returns>
-        private static LabelCell MergeCells(LabelCell leftCell, LabelCell rightCell)
+        private static void MergeCells(LabelCell primaryCell, LabelCell secondaryCell)
         {
-            DimmerDistroUnit previousReference = leftCell.PreviousReference;
-
-            LabelCell mergedCell = new LabelCell(previousReference);
-            mergedCell.Width = leftCell.Width + rightCell.Width;
-            mergedCell.Height = Math.Max(leftCell.Height, rightCell.Height);
-
-            foreach (var element in leftCell.Rows)
-            {
-                mergedCell.Rows.Add(new CellRow(mergedCell));
-            }
-
-            return mergedCell;
+            primaryCell.Width += secondaryCell.Width;
         }
 
         #endregion
