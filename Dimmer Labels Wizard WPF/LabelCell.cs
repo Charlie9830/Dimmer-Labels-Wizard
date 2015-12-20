@@ -4,9 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Controls;
-using System.Windows;
 using System.Windows.Documents;
 using System.Globalization;
 using System.Windows.Data;
@@ -31,6 +32,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Text Grid Rendering Elements.
         protected Grid _Grid = new Grid();
+
+        private bool _InMouseSelectionEvent = false;
         #endregion
 
         #region Constructors
@@ -46,10 +49,12 @@ namespace Dimmer_Labels_Wizard_WPF
             options |= FrameworkPropertyMetadataOptions.AffectsParentMeasure;
 
             FrameworkPropertyMetadata heightPropertyMetadata =
-                new FrameworkPropertyMetadata(69d, options, null, new CoerceValueCallback(CoerceHeight));
+                new FrameworkPropertyMetadata(70d, options, null,
+                new CoerceValueCallback(CoerceHeight));
 
             FrameworkPropertyMetadata widthPropertyMetadata =
-                new FrameworkPropertyMetadata(69d, options, null, new CoerceValueCallback(CoerceWidth));
+                new FrameworkPropertyMetadata(70d, options, null,
+                new CoerceValueCallback(CoerceWidth));
 
             HeightProperty.OverrideMetadata(typeof(LabelCell), heightPropertyMetadata);
             WidthProperty.OverrideMetadata(typeof(LabelCell), widthPropertyMetadata);
@@ -63,7 +68,10 @@ namespace Dimmer_Labels_Wizard_WPF
             _Rows = new ObservableCollection<CellRow>();
             _Rows.CollectionChanged += Rows_CollectionChanged;
 
-            // Assign Grid to Content Property.
+            // Setup Grid
+            _Grid.Background = Brushes.White;
+            _Grid.HorizontalAlignment = HorizontalAlignment.Left;
+            _Grid.VerticalAlignment = VerticalAlignment.Top;
             Content = _Grid;
 
             RealWidth = 16;
@@ -71,10 +79,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
             PreviousReference = new DimmerDistroUnit();
 
-            // Unit Testing
-            Grid.ShowGridLines = true;
-
-            SnapsToDevicePixels = true;
+            // Collection Type Dependency Properties.
+            SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
         }
 
         /// <summary>
@@ -86,12 +92,14 @@ namespace Dimmer_Labels_Wizard_WPF
             _Rows = new ObservableCollection<CellRow>();
             _Rows.CollectionChanged += Rows_CollectionChanged;
 
-            // Assign Grid to Content Property.
+            // Setup Grid
+            _Grid.Background = Brushes.White;
             Content = _Grid;
 
-            PreviousReference = dataReference;
+            // Collection Type Dependency Properties.
+            SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
 
-            SnapsToDevicePixels = true;
+            PreviousReference = dataReference;
         }
         #endregion
 
@@ -156,9 +164,9 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             double lineWeight = (double)value;
 
-            if (lineWeight < 0)
+            if (lineWeight < 0d)
             {
-                return 0;
+                return 0d;
             }
 
             else
@@ -192,9 +200,9 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             double lineWeight = (double)value;
 
-            if (lineWeight < 0)
+            if (lineWeight < 0d)
             {
-                return 0;
+                return 0d;
             }
 
             else
@@ -229,9 +237,9 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             double lineWeight = (double)value;
 
-            if (lineWeight < 0)
+            if (lineWeight < 0d)
             {
-                return 0;
+                return 0d;
             }
 
             else
@@ -265,9 +273,9 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             double lineWeight = (double)value;
 
-            if (lineWeight < 0)
+            if (lineWeight < 0d)
             {
-                return 0;
+                return 0d;
             }
 
             else
@@ -300,16 +308,34 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static object CoerceActualLeftWeight(DependencyObject d, object value)
         {
+            var instance = d as LabelCell;
             double lineWeight = (double)value;
 
-            if (lineWeight < 0)
+            // Double Lineweight if Cell is Selected.
+            if (lineWeight < 0d)
             {
-                return 0;
+                if (instance.IsSelected)
+                {
+                    return 2d;
+                }
+
+                else
+                {
+                    return 0d;
+                }
             }
 
             else
             {
-                return lineWeight;
+                if (instance.IsSelected)
+                {
+                    return lineWeight * 2;
+                }
+
+                else
+                {
+                    return lineWeight;
+                }
             }
         }
 
@@ -333,25 +359,40 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static object CoerceActualTopWeight(DependencyObject d, object value)
         {
+            var instance = d as LabelCell;
             double lineWeight = (double)value;
 
-            if (lineWeight < 0)
+            // Double Lineweight if Cell is Selected.
+            if (lineWeight < 0d)
             {
-                return 0;
+                if (instance.IsSelected)
+                {
+                    return 2d;
+                }
+
+                else
+                {
+                    return 0d;
+                }
             }
 
             else
             {
-                return lineWeight;
+                if (instance.IsSelected)
+                {
+                    return lineWeight * 2;
+                }
+
+                else
+                {
+                    return lineWeight;
+                }
             }
         }
 
         private static void OnActualTopWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            
         }
-
-
 
         public double ActualRightWeight
         {
@@ -367,24 +408,40 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static object CoerceActualRightWeight(DependencyObject d, object value)
         {
+            var instance = d as LabelCell;
             double lineWeight = (double)value;
 
-            if (lineWeight < 0)
+            // Double Lineweight if Cell is Selected.
+            if (lineWeight < 0d)
             {
-                return 0;
+                if (instance.IsSelected)
+                {
+                    return 2d;
+                }
+
+                else
+                {
+                    return 0d;
+                }
             }
 
             else
             {
-                return lineWeight;
+                if (instance.IsSelected)
+                {
+                    return lineWeight * 2;
+                }
+
+                else
+                {
+                    return lineWeight;
+                }
             }
         }
 
         private static void OnActualRightWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
         }
-
-
 
         public double ActualBottomWeight
         {
@@ -400,22 +457,39 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static object CoerceActualBottomWeight(DependencyObject d, object value)
         {
+            var instance = d as LabelCell;
             double lineWeight = (double)value;
 
-            if (lineWeight < 0)
+            // Double Lineweight if Cell is Selected.
+            if (lineWeight < 0d)
             {
-                return 0;
+                if (instance.IsSelected)
+                {
+                    return 2d;
+                }
+
+                else
+                {
+                    return 0d;
+                }
             }
 
             else
             {
-                return lineWeight;
+                if (instance.IsSelected)
+                {
+                    return lineWeight * 2;
+                }
+
+                else
+                {
+                    return lineWeight;
+                }
             }
         }
 
         private static void OnActualBottomWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            
         }
 
         /// <summary>
@@ -591,7 +665,6 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-
         public string SingleFieldData
         {
             get { return (string)GetValue(SingleFieldDataProperty); }
@@ -697,20 +770,70 @@ namespace Dimmer_Labels_Wizard_WPF
             
         }
 
+        public ObservableCollection<CellRow> SelectedRows
+        {
+            get { return (ObservableCollection<CellRow>)GetValue(SelectedRowsProperty); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedRows.  This enables animation, styling, binding, etc...
+        public static readonly DependencyPropertyKey SelectedRowsPropertyKey =
+            DependencyProperty.RegisterReadOnly("SelectedRows", typeof(ObservableCollection<CellRow>), typeof(LabelCell),
+                new FrameworkPropertyMetadata(new ObservableCollection<CellRow>(),
+                    new PropertyChangedCallback(OnSelectedRowsPropertyChanged)));
+
+        public static readonly DependencyProperty SelectedRowsProperty = SelectedRowsPropertyKey.DependencyProperty;
+
+        private static void OnSelectedRowsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != null)
+            {
+                // Connect incoming Events.
+                var collection = e.NewValue as ObservableCollection<CellRow>;
+                collection.CollectionChanged += SelectedRows_CollectionChanged;
+            }
+
+            if (e.OldValue != null)
+            {
+                // Disconnect Outgoing events.
+                var collection = e.OldValue as ObservableCollection<CellRow>;
+                collection.CollectionChanged -= SelectedRows_CollectionChanged;
+
+            }
+        }
+
+
+
+        public bool IsSelected
+        {
+            get { return (bool)GetValue(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsSelected.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsSelectedProperty =
+            DependencyProperty.Register("IsSelected", typeof(bool), typeof(LabelCell),
+                new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnIsSelectedPropertyChanged)));
+
+        private static void OnIsSelectedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+
+            // Coerce Render State.
+            instance.CoerceValue(ActualLeftWeightProperty);
+            instance.CoerceValue(ActualTopWeightProperty);
+            instance.CoerceValue(ActualRightWeightProperty);
+            instance.CoerceValue(ActualBottomWeightProperty);
+
+            // Notify Parent LabelStrip.
+            OnPropertyChanged(instance, nameof(IsSelected));
+        }
+
+
         #endregion
 
         #region Overrides
         protected override void OnRender(DrawingContext drawingContext)
         {
-            #region TextGrid Rendering.
-
-            // Setup Grid.
-            _Grid.Width = Width;
-            _Grid.Height = Height;
-
-            #endregion
-
-            #region Outline Rendering
             // Declare Resources.
             var lineBrush = new SolidColorBrush(Colors.Black);
 
@@ -720,43 +843,58 @@ namespace Dimmer_Labels_Wizard_WPF
             var rightPen = new Pen(lineBrush, ActualRightWeight);
             var bottomPen = new Pen(lineBrush, ActualBottomWeight);
 
-            // Debugging.
-            //FormattedText left = new FormattedText(ActualLeftWeight.ToString(), CultureInfo.CurrentCulture,
-            //    FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Red);
+            // Points.
+            var leftA = new Point(ActualLeftWeight / 2, 0);
+            var leftB = new Point(ActualLeftWeight / 2, Height);
 
-            //FormattedText top = new FormattedText(ActualTopWeight.ToString(), CultureInfo.CurrentCulture,
-            //    FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Red);
+            var topA = new Point(0, ActualTopWeight / 2);
+            var topB = new Point(Width, ActualTopWeight / 2);
 
-            //FormattedText right = new FormattedText(ActualRightWeight.ToString(), CultureInfo.CurrentCulture,
-            //    FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Red);
+            var rightA = new Point(Width - (ActualRightWeight / 2), 0);
+            var rightB = new Point(Width - (ActualRightWeight / 2), Height);
 
-            //FormattedText bottom = new FormattedText(ActualBottomWeight.ToString(), CultureInfo.CurrentCulture,
-            //    FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Red);
-
-            // Corner Points.
-            var topLeft = new Point(0 + (LeftWeight / 4), 0 + (TopWeight / 4));
-            var topRight = new Point(Width - (RightWeight / 4), 0 + (TopWeight / 4));
-            var bottomRight = new Point(Width - (RightWeight / 4), Height - (BottomWeight / 4));
-            var bottomLeft = new Point(0 + (LeftWeight / 4), Height - (BottomWeight / 4));
-
+            var bottomA = new Point(0, Height - (ActualBottomWeight / 2));
+            var bottomB = new Point(Width, Height - (ActualBottomWeight / 2));
+            
             // Drawing 
-            drawingContext.DrawLine(leftPen, bottomLeft, topLeft);
-            drawingContext.DrawLine(topPen, topLeft, topRight);
-            drawingContext.DrawLine(rightPen, topRight, bottomRight);
-            drawingContext.DrawLine(bottomPen, bottomRight, bottomLeft);
+            drawingContext.DrawLine(leftPen, leftA, leftB);
+            drawingContext.DrawLine(topPen, topA, topB);
+            drawingContext.DrawLine(rightPen, rightA, rightB);
+            drawingContext.DrawLine(bottomPen, bottomA, bottomB);
 
-            // Debugging
-            //drawingContext.DrawText(left, new Point(topLeft.X, topLeft.Y + (Height / 2)));
-            //drawingContext.DrawText(top, new Point(topLeft.X + (Width / 2), topLeft.Y));
-            //drawingContext.DrawText(right, new Point(topRight.X, topRight.Y + (Height / 2)));
-            //drawingContext.DrawText(bottom, new Point(bottomLeft.X + (Width / 2), bottomLeft.Y));
-
-            #endregion
+            // Setup Grid.
+            _Grid.Width = Width - (ActualLeftWeight) - (ActualRightWeight);
+            _Grid.Height = Height - (ActualTopWeight) - (ActualBottomWeight);
+            _Grid.Margin = new Thickness(ActualLeftWeight, ActualTopWeight,
+                ActualRightWeight, ActualBottomWeight);
 
         }
         #endregion
 
         #region Event Handlers
+        private static void SelectedRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var collection = sender as ObservableCollection<CellRow>;
+
+            if (e.NewItems != null)
+            {
+                foreach (var element in e.NewItems)
+                {
+                    var row = element as CellRow;
+                    row.IsSelected = true;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (var element in e.OldItems)
+                {
+                    var row = element as CellRow;
+                    row.IsSelected = false;
+                }
+            }
+        }
+
         private void Rows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<CellRow>;
@@ -768,6 +906,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     var cellRow = element as CellRow;
                     Grid.RowDefinitions.Insert(e.NewStartingIndex, cellRow);
                     cellRow.PropertyChanged += CellRow_PropertyChanged;
+                    cellRow.MouseDown += CellRow_MouseDown;
+                    cellRow.MouseUp += CellRow_MouseUp;
                 }
             }
 
@@ -779,6 +919,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     Grid.RowDefinitions.Remove(cellRow);
                     Grid.Children.Remove(cellRow.TextBlock);
                     cellRow.PropertyChanged -= CellRow_PropertyChanged;
+                    cellRow.MouseDown -= CellRow_MouseDown;
+                    cellRow.MouseUp -= CellRow_MouseUp;
                 }
             }
 
@@ -831,6 +973,23 @@ namespace Dimmer_Labels_Wizard_WPF
             var cellRow = sender as CellRow;
             string propertyName = e.PropertyName;
 
+            // IsSelected.
+            if (propertyName == CellRow.IsSelectedProperty.Name)
+            {
+                if (_InMouseSelectionEvent == false)
+                {
+                    if (cellRow.IsSelected == true && SelectedRows.Contains(cellRow) == false)
+                    {
+                        SelectedRows.Add(cellRow);
+                    }
+
+                    else
+                    {
+                        SelectedRows.Remove(cellRow);
+                    }
+                }
+            }
+
             // Data
             if (propertyName == CellRow.DataProperty.Name)
             {
@@ -869,7 +1028,52 @@ namespace Dimmer_Labels_Wizard_WPF
                 AssignDataLayouts(cellRow);
             }
         }
+
+        #region Mouse Event Handlers
+        private void CellRow_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var row = sender as CellRow;
+
+            _InMouseSelectionEvent = true;
+
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                // Additive Selection.
+                // Add Row to Selection.
+                if (SelectedRows.Contains(row) == false)
+                {
+                    SelectedRows.Add(row);
+                }
+            }
+
+            else
+            {
+                // Exclusive Selection.
+
+                // Clear SelectedRows.
+                while (SelectedRows.Count > 0)
+                {
+                    SelectedRows.RemoveAt(SelectedRows.Count - 1);
+                }
+
+                // Add new Selection.
+                SelectedRows.Add(row);
+            }
+
+            _InMouseSelectionEvent = false;
+        }
+
+        private void CellRow_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            _InMouseSelectionEvent = true;
+
+
+            _InMouseSelectionEvent = false;
+        }
+
+        #endregion
         #endregion.
+
 
         #region Methods.
         /// <summary>

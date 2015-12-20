@@ -130,7 +130,9 @@ namespace Dimmer_Labels_Wizard_WPF
             foreach (var element in labelStrip.UpperCells)
             {
                 element.LeftWeight += 1;
+                element.TopWeight += 1;
                 element.RightWeight += 1;
+                element.BottomWeight += 1;
             }
         }
 
@@ -139,7 +141,9 @@ namespace Dimmer_Labels_Wizard_WPF
             foreach (var element in labelStrip.UpperCells)
             {
                 element.LeftWeight -= 1;
+                element.TopWeight -= 1;
                 element.RightWeight -= 1;
+                element.BottomWeight -= 1;
             }
         }
 

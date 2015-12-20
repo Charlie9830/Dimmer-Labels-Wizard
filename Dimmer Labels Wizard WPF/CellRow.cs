@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
@@ -34,9 +35,13 @@ namespace Dimmer_Labels_Wizard_WPF
             CellParent = parentLabelCell;
             DataField = LabelField.NoAssignment;
 
+            // Setup Border.
+            Border.Background = Brushes.White;
+
             // Setup TextBlock.
             TextBlock.VerticalAlignment = VerticalAlignment.Center;
             TextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            TextBlock.Background = Brushes.Transparent;
 
             // Initial Values.
             Data = CellParent.PreviousReference.GetData(DataField);
@@ -44,10 +49,16 @@ namespace Dimmer_Labels_Wizard_WPF
             Font = new Typeface("Arial");
             HeightMode = CellParent.RowHeightMode;
 
-            // Assign TextBlock to CellParent's Grid.
-            CellParent.Grid.Children.Add(TextBlock);
-        }
+            // Assign TextBlock to Border then Border to Cellparent's Grid.
+            Border.Child = TextBlock;
+            CellParent.Grid.Children.Add(Border);
 
+            // Events.
+            Border.MouseEnter += Border_MouseEnter;
+            Border.MouseDown += Border_MouseDown;
+            Border.MouseUp += Border_MouseUp;
+            Border.MouseLeave += Border_MouseLeave;
+        }
         #endregion
 
         #region Constants
@@ -60,6 +71,11 @@ namespace Dimmer_Labels_Wizard_WPF
         /// Abstract rendering Target. Do not write directly to this Field. Internal use only.
         /// </summary>
         public TextBlock TextBlock = new TextBlock();
+
+        /// <summary>
+        /// Abstract Rendering Target. Do not write directly to this Field. Internal use only.
+        /// </summary>
+        public Border Border = new Border();
 
         /// <summary>
         /// Tracks whether a Data Layout Pass is in progress or not.
@@ -149,8 +165,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
-
-
         public DataLayout DataLayout
         {
             get { return (DataLayout)GetValue(DataLayoutProperty); }
@@ -444,11 +458,42 @@ namespace Dimmer_Labels_Wizard_WPF
         private static void OnIndexPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as CellRow;
+            Grid.SetRow(instance.Border, (int)e.NewValue);
+        }
 
-            if (e.OldValue != e.NewValue)
+
+
+        public bool IsSelected
+        {
+            get { return (bool)GetValue(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsSelected.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsSelectedProperty =
+            DependencyProperty.Register("IsSelected", typeof(bool), typeof(CellRow),
+                new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnIsSelectedPropertyChanged)));
+
+        private static void OnIsSelectedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as CellRow;
+            bool selected = (bool)e.NewValue;
+
+            // Render Cell Selection State.
+            if (selected)
             {
-                Grid.SetRow(instance.TextBlock, (int)e.NewValue);
+                // Selected.
+                instance.Border.Background = Brushes.LightBlue;
             }
+
+            else
+            {
+                // Deselected.
+                instance.Border.Background = Brushes.White;
+            }
+
+            // Notify Parent Cell.
+            OnPropertyChanged(nameof(IsSelected), instance);
         }
 
         #endregion
@@ -457,6 +502,79 @@ namespace Dimmer_Labels_Wizard_WPF
         public override string ToString()
         {
             return "Row " + (Index + 1) + ":   " + Data; 
+        }
+        #endregion
+
+        #region Events
+        // MouseEnter.
+        public new event MouseEventHandler MouseEnter;
+
+        protected new void OnMouseEnter(MouseEventArgs e)
+        {
+            if (MouseEnter != null)
+            {
+                MouseEnter(this, e);
+            }
+        }
+
+        // MouseDown.
+        public new event MouseButtonEventHandler MouseDown;
+
+        protected new void OnMouseDown(MouseButtonEventArgs e)
+        {
+            if (MouseDown != null)
+            {
+                MouseDown(this, e);
+            }
+        }
+
+        // MouseUp.
+        public new event MouseButtonEventHandler MouseUp;
+
+        protected new void OnMouseUp(MouseButtonEventArgs e)
+        {
+            if (MouseUp != null)
+            {
+                MouseUp(this, e);
+            }
+        }
+
+        // MouseLeave.
+        public new event MouseEventHandler MouseLeave;
+
+        protected new void OnMouseLeave(MouseEventArgs e)
+        {
+            if (MouseLeave != null)
+            {
+                MouseLeave(this, e);
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        private void Border_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Forward Event.
+            OnMouseEnter(e);
+        }
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Forward Event.
+            OnMouseDown(e);
+        }
+
+        private void Border_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // Forward Event.
+            OnMouseUp(e);
+        }
+
+        private void Border_MouseLeave(object sender, MouseEventArgs e)
+        {
+            // Forward Event.
+            OnMouseLeave(e);
+            
         }
         #endregion
 

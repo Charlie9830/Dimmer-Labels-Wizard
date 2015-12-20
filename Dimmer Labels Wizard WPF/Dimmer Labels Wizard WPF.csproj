@@ -124,6 +124,9 @@
       <DependentUpon>LabelSetup.xaml</DependentUpon>
     </Compile>
     <Compile Include="LabelSetupViewModel.cs" />
+    <Compile Include="LabelsTest.xaml.cs">
+      <DependentUpon>LabelsTest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LabelStrip.cs" />
     <Compile Include="PopUpControlAdorner.cs" />
     <Compile Include="PrintRangeControl.xaml.cs">
@@ -141,6 +144,7 @@
     </Compile>
     <Compile Include="SerialConversion.cs" />
     <Compile Include="StyleTemplates.cs" />
+    <Compile Include="StyleTesting.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
@@ -200,6 +204,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LabelSetup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LabelsTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -6,7 +6,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="DrawingTest" Height="800" Width="800"
+        Title="DrawingTest" Height="800" Width="1200"
         Loaded="Window_Loaded">
 
     <Window.Resources>
@@ -26,16 +26,15 @@
     <TabControl>
         <TabItem Height="25" Width="130" Header="LabelStrip">
             <Grid>
-                <Grid x:Name="LabelStripArea" Margin="0,0,0,500">
+                <Grid x:Name="LabelStripArea" Margin="0,0,0,380">
                     <Grid.LayoutTransform>
-                        <ScaleTransform x:Name="GridScaleTransform" CenterX="0.5" CenterY="0.5">
-                        </ScaleTransform>
+                        <ScaleTransform x:Name="GridScaleTransform" CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
                     </Grid.LayoutTransform>
                     <local:LabelStrip x:Name="labelStrip" VerticalAlignment="Center" HorizontalAlignment="Center">
                     </local:LabelStrip>
                 </Grid>
 
-                <Grid x:Name="ControlArea" Margin="0,238,0,0">
+                <Grid x:Name="ControlArea" Margin="0,353,0,69">
                     <Button x:Name="AddCellButton" Content="Add Cell" HorizontalAlignment="Left" Margin="58,8,0,0" VerticalAlignment="Top" Width="75" Click="AddCellButton_Click"/>
                     <Button x:Name="RemoveCellButton" Content="Remove Cell" HorizontalAlignment="Left" Margin="138,8,0,0" VerticalAlignment="Top" Width="75" Click="RemoveCellButton_Click"/>
                     <Button x:Name="AddLowerCellButton" Content="Add Cell" HorizontalAlignment="Left" Margin="58,34,0,0" VerticalAlignment="Top" Width="75" Click="AddLowerCellButton_Click"/>
@@ -96,7 +95,7 @@
 
         <TabItem Height="25" Width="130" Header="Test Area">
             <Grid>
-                <TextBox Text="Hello World" FontSize="28" BorderBrush="Transparent"/>
+                <local:LabelCell/>
             </Grid>
         </TabItem>
     </TabControl>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
@@ -50,7 +51,8 @@ namespace Dimmer_Labels_Wizard_WPF
             // Collection type Dependency properties.
             SetValue(UpperCellsPropertyKey, new CellCollection(this));
             SetValue(LowerCellsPropertyKey, new CellCollection(this));
-            SetValue(MergedCellReferencesPropertyKey, new Dictionary<LabelCell, List<DimmerDistroUnit>>()); 
+            SetValue(MergedCellReferencesPropertyKey, new Dictionary<LabelCell, List<DimmerDistroUnit>>());
+            SetValue(SelectedCellsPropertyKey, new ObservableCollection<LabelCell>());
 
             // Initialize
             _UpperStackPanel.Orientation = Orientation.Horizontal;
@@ -71,6 +73,7 @@ namespace Dimmer_Labels_Wizard_WPF
             SetValue(UpperCellsPropertyKey, new CellCollection(this));
             SetValue(LowerCellsPropertyKey, new CellCollection(this));
             SetValue(MergedCellReferencesPropertyKey, new Dictionary<LabelCell, List<DimmerDistroUnit>>());
+            SetValue(SelectedCellsPropertyKey, new ObservableCollection<LabelCell>());
 
             // Initialize
             _UpperStackPanel.Orientation = Orientation.Horizontal;
@@ -123,6 +126,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected RowDefinition _UpperGridRow = new RowDefinition();
         protected RowDefinition _LowerGridRow = new RowDefinition();
+
+        private bool _InMouseSelectionEvent = false;
         #endregion
 
         #region CLR Properties
@@ -232,6 +237,36 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
 
+        public ObservableCollection<LabelCell> SelectedCells
+        {
+            get { return (ObservableCollection<LabelCell>)GetValue(SelectedCellsProperty); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedCells.  This enables animation, styling, binding, etc...
+        public static readonly DependencyPropertyKey SelectedCellsPropertyKey =
+            DependencyProperty.RegisterReadOnly("SelectedCells", typeof(ObservableCollection<LabelCell>), typeof(LabelStrip),
+                new FrameworkPropertyMetadata(new ObservableCollection<LabelCell>(),
+                    new PropertyChangedCallback(OnSelectedCellsPropertyChanged)));
+
+        public static readonly DependencyProperty SelectedCellsProperty = SelectedCellsPropertyKey.DependencyProperty;
+
+        private static void OnSelectedCellsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            // Disconnect Outgoing event.
+            if (e.OldValue != null)
+            {
+                var collection = e.OldValue as ObservableCollection<LabelCell>;
+                collection.CollectionChanged -= SelectedCells_CollectionChanged;
+            }
+
+            // Connect incoming event.
+            if (e.NewValue != null)
+            {
+                var collection = e.NewValue as ObservableCollection<LabelCell>;
+                collection.CollectionChanged += SelectedCells_CollectionChanged;
+            }
+        }
+
         #endregion
 
         #region Override and Overriden Handlers
@@ -339,6 +374,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                         // Connect Event Handler.
                         cell.PropertyChanged += instance.UpperCell_PropertyChanged;
+                        cell.MouseDown += instance.Cell_MouseDown;
                     }
                 }
             }
@@ -354,14 +390,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Disconnect Event Handler.
                     cell.PropertyChanged -= instance.UpperCell_PropertyChanged;
+                    cell.MouseDown -= instance.Cell_MouseDown;
                 }
             }
-
-            //// Set LineWeights
-            //foreach (var element in collection)
-            //{
-            //    instance.SetLineWeight(element);
-            //}
         }
 
         private static void LowerCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -378,6 +409,7 @@ namespace Dimmer_Labels_Wizard_WPF
                         instance._LowerStackPanel.Children.Insert(e.NewStartingIndex, cell);
 
                         cell.PropertyChanged += instance.LowerCell_PropertyChanged;
+                        cell.MouseDown += instance.Cell_MouseDown;
                     }
                 }
             }
@@ -390,6 +422,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     instance._LowerStackPanel.Children.Remove(cell);
 
                     cell.PropertyChanged -= instance.LowerCell_PropertyChanged;
+                    cell.MouseDown -= instance.Cell_MouseDown;
                 }
             }
         }
@@ -397,6 +430,23 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void UpperCell_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var cell = sender as LabelCell;
+
+            // IsSelected
+            if (e.PropertyName == nameof(cell.IsSelected))
+            {
+                if (_InMouseSelectionEvent == false)
+                {
+                    if (cell.IsSelected == true && SelectedCells.Contains(cell) == false)
+                    {
+                        SelectedCells.Add(cell);
+                    }
+
+                    else
+                    {
+                        SelectedCells.Remove(cell);
+                    }
+                }
+            }
 
             // LeftWeight.
             if (e.PropertyName == nameof(cell.LeftWeight))
@@ -418,6 +468,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
 
+            // TopWeight
+            if (e.PropertyName == nameof(cell.TopWeight))
+            {
+                cell.ActualTopWeight = cell.TopWeight;
+            }
+
             // RightWeight
             if (e.PropertyName == nameof(cell.RightWeight))
             {
@@ -437,12 +493,77 @@ namespace Dimmer_Labels_Wizard_WPF
                     UpperCells[cellIndex + 1].ActualLeftWeight = desiredWeight / 2;
                 }
             }
+
+            // BottomWeight
+            if (e.PropertyName == nameof(cell.BottomWeight))
+            {
+                cell.ActualBottomWeight = cell.BottomWeight;
+            }
         }
 
         protected void LowerCell_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
         }
+
+        private static void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var collection = sender as ObservableCollection<LabelCell>;
+
+            if (e.NewItems != null)
+            {
+                foreach (var element in e.NewItems)
+                {
+                    var cell = element as LabelCell;
+                    cell.IsSelected = true;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (var element in e.OldItems)
+                {
+                    var cell = element as LabelCell;
+                    cell.IsSelected = false;
+                }
+            }
+        }
+
+        #region Mouse Event Handlers.
+        private void Cell_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var cell = sender as LabelCell;
+
+            _InMouseSelectionEvent = true;
+
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                // Additive Selection.
+                // Add Row to Selection.
+                if (UpperCells.Contains(cell) == false && LowerCells.Contains(cell) == false)
+                {
+                    SelectedCells.Add(cell);
+                }
+            }
+
+            else
+            {
+                // Exclusive Selection.
+
+                // Clear SelectedRows.
+                while (SelectedCells.Count > 0)
+                {
+                    SelectedCells.RemoveAt(SelectedCells.Count - 1);
+                }
+
+                // Add new Selection.
+                SelectedCells.Add(cell);
+            }
+
+            _InMouseSelectionEvent = false;
+        }
+
+        #endregion
 
         #endregion
 
