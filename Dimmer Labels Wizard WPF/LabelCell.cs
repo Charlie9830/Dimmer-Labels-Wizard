@@ -20,12 +20,10 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         #region Fields.
         // Constants
-        protected const double HeaderSingleLabelHeightDownFactor = 0.25d;
-        protected const double FooterSingleLabelHeightDownFactor = 0.75d;
         protected const double UnitConversionRatio = 96d / 25.4d;
 
         // Properties.
-        public DimmerDistroUnit PreviousReference { get; set; }
+        public DimmerDistroUnit DataReference { get; set; }
 
         protected SolidColorBrush _TextBrush;
         protected SolidColorBrush _Background;
@@ -74,10 +72,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _Grid.VerticalAlignment = VerticalAlignment.Top;
             Content = _Grid;
 
-            RealWidth = 16;
-            RealHeight = 18;
-
-            PreviousReference = new DimmerDistroUnit();
+            DataReference = new DimmerDistroUnit();
 
             // Collection Type Dependency Properties.
             SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
@@ -99,7 +94,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Collection Type Dependency Properties.
             SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
 
-            PreviousReference = dataReference;
+            DataReference = dataReference;
         }
         #endregion
 
@@ -137,6 +132,97 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+
+        public List<CellRowTemplate> RowTemplates
+        {
+            get { return (List<CellRowTemplate>)GetValue(RowTemplatesProperty); }
+            set { SetValue(RowTemplatesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for RowTemplates.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RowTemplatesProperty =
+            DependencyProperty.Register("RowTemplates", typeof(List<CellRowTemplate>),
+                typeof(LabelCell), new FrameworkPropertyMetadata(new List<CellRowTemplate>(),
+                    new PropertyChangedCallback(OnCellRowTemplatesPropertyChanged)));
+
+        private static void OnCellRowTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            var templates = e.NewValue as List<CellRowTemplate>;
+            ObservableCollection<CellRow> rows = instance.Rows;
+
+            // Assign Templates to Rows.
+            for (int index = 0; index < templates.Count && index < rows.Count; index++)
+            {
+                rows[index].Style = templates[index];
+            }
+        }
+
+        public int RowCount
+        {
+            get { return (int)GetValue(RowCountProperty); }
+            set { SetValue(RowCountProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for RowCount.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RowCountProperty =
+            DependencyProperty.Register("RowCount", typeof(int), typeof(LabelCell),
+                new FrameworkPropertyMetadata(0, new PropertyChangedCallback(OnRowCountPropertyChanged),
+                    new CoerceValueCallback(CoerceRowCount)));
+
+        private static object CoerceRowCount(DependencyObject d, object value)
+        {
+            int count = (int)value;
+
+            if (count < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return count;
+            }
+        }
+
+        private static void OnRowCountPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            int newCount = (int)e.NewValue;
+            int oldCount = (int)e.OldValue;
+            int difference = newCount - oldCount;
+            ObservableCollection<CellRow> rows = instance.Rows;
+            int collectionCount = rows.Count;
+
+            if (newCount == collectionCount)
+            {
+                // Collection modification has been triggered elsewhere,
+                // and has already taken place. No further action is 
+                // required from RowCount.
+                return;
+            }
+
+            if (difference < 0)
+            {
+                difference = Math.Abs(difference);
+
+                // Decrease collection Size.
+                for (int count = 1; count <= difference; count++)
+                {
+                    rows.RemoveAt(rows.Count - 1);
+                }
+            }
+
+            else if (difference > 0)
+            {
+                // Increase collection Size.
+                for (int count = 1; count <= difference; count++)
+                {
+                    rows.Add(new CellRow(instance));
+                }
+            }
+        }
+
         public bool IsMerged
         {
             get { return (bool)GetValue(IsMergedProperty); }
@@ -492,59 +578,6 @@ namespace Dimmer_Labels_Wizard_WPF
         {
         }
 
-        /// <summary>
-        /// Gets or Sets the Width of the Cell in Millimetres. This is a Dependency Property.
-        /// </summary>
-        public double RealWidth
-        {
-            get { return (double)GetValue(RealWidthProperty); }
-            set { SetValue(RealWidthProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for RealWidth.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RealWidthProperty =
-            DependencyProperty.Register("RealWidth", typeof(double),
-                typeof(LabelCell), new FrameworkPropertyMetadata(0d, 
-                    new PropertyChangedCallback(OnRealWidthPropertyChanged)));
-
-        private static void OnRealWidthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as LabelCell;
-            double newValue = (double)e.NewValue;
-            double oldValue = (double)e.OldValue;
-
-            if (newValue != oldValue)
-            {
-                instance.Width = newValue * UnitConversionRatio;
-            }
-        }
-
-        /// <summary>
-        /// Gets or Sets the Height of the Cell in Millimetres. This is a Dependency Property.
-        /// </summary>
-        public double RealHeight
-        {
-            get { return (double)GetValue(RealHeightProperty); }
-            set { SetValue(RealHeightProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for RealHeight.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RealHeightProperty =
-            DependencyProperty.Register("RealHeight", typeof(double), typeof(LabelCell),
-                new FrameworkPropertyMetadata(0d, new PropertyChangedCallback(OnRealHeightPropertyChanged)));
-
-        private static void OnRealHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as LabelCell;
-            double newValue = (double)e.NewValue;
-            double oldValue = (double)e.OldValue;
-
-            if (newValue != oldValue)
-            {
-                instance.Height = newValue * UnitConversionRatio;
-            }
-        }
-
         public CellRowHeightMode RowHeightMode
         {
             get { return (CellRowHeightMode)GetValue(RowHeightModeProperty); }
@@ -630,9 +663,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Field Mode.
                 rows.Clear();
 
-                rows.Add(new CellRow(instance));
+                instance.RowCount = 1;
                 rows.Last().DataField = instance.SingleFieldDataField;
-                rows.Last().Data = instance.SingleFieldData;
+                rows.Last().Data = instance.SingleFieldData;     
 
                 // Initialize to SingleField Mode.
                 instance.RowHeightMode = CellRowHeightMode.Static;
@@ -658,10 +691,7 @@ namespace Dimmer_Labels_Wizard_WPF
         /// <returns></returns>
         private static object CoerceHeight(DependencyObject d, object value)
         {
-            var instance = d as LabelCell;
-            var height = (double)value;
-
-            return height;
+            return value;
         }
 
 
@@ -703,7 +733,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as LabelCell;
             LabelField newDataField = (LabelField)e.NewValue;
-            DimmerDistroUnit reference = instance.PreviousReference;
+            DimmerDistroUnit reference = instance.DataReference;
 
             instance.SingleFieldData = reference.GetData(newDataField);
         }
@@ -863,8 +893,14 @@ namespace Dimmer_Labels_Wizard_WPF
             drawingContext.DrawLine(bottomPen, bottomA, bottomB);
 
             // Setup Grid.
-            _Grid.Width = Width - (ActualLeftWeight) - (ActualRightWeight);
-            _Grid.Height = Height - (ActualTopWeight) - (ActualBottomWeight);
+            // Don't set Grid Width or Height too less than zero.
+            double gridWidth = Width - (ActualLeftWeight) - (ActualRightWeight);
+            _Grid.Width = (gridWidth < 0d) ? 0d : gridWidth;
+
+            
+            double gridHeight = Height - (ActualTopWeight) - (ActualBottomWeight);
+            _Grid.Height = (gridHeight) < 0d ? 0d : gridHeight;
+
             _Grid.Margin = new Thickness(ActualLeftWeight, ActualTopWeight,
                 ActualRightWeight, ActualBottomWeight);
 
@@ -898,6 +934,7 @@ namespace Dimmer_Labels_Wizard_WPF
         private void Rows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<CellRow>;
+            int newIndex = e.NewStartingIndex;
             // Keep Grid.RowDefinitions explicitly linked to Rows Collection.
             if (e.NewItems != null)
             {
@@ -908,6 +945,12 @@ namespace Dimmer_Labels_Wizard_WPF
                     cellRow.PropertyChanged += CellRow_PropertyChanged;
                     cellRow.MouseDown += CellRow_MouseDown;
                     cellRow.MouseUp += CellRow_MouseUp;
+
+                    // Assign template.
+                    if (newIndex < RowTemplates.Count)
+                    {
+                        collection[newIndex].Style = RowTemplates[newIndex];
+                    }
                 }
             }
 
@@ -931,6 +974,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 Grid.RowDefinitions.Clear();
                 Grid.Children.Clear();
             }
+
+            // Push new Count back to RowCount.
+            RowCount = collection.Count;
 
             // Update Row Indexes and Coerce RowHeights.
             int rowIndexCounter = 0;
@@ -1006,7 +1052,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
 
                 // Update Model.
-                PreviousReference.SetData(cellRow.Data, cellRow.DataField);
+                DataReference.SetData(cellRow.Data, cellRow.DataField);
 
                 // Assign Data Layout(s).
                 AssignDataLayouts(cellRow);
@@ -1016,7 +1062,7 @@ namespace Dimmer_Labels_Wizard_WPF
             if (propertyName == CellRow.DataFieldProperty.Name)
             {
                 // Collect new Data.
-                cellRow.Data = PreviousReference.GetData(cellRow.DataField);
+                cellRow.Data = DataReference.GetData(cellRow.DataField);
 
                 // Update Cascading State.
                 SetCascadingRows(Rows.ToList());
@@ -1084,7 +1130,7 @@ namespace Dimmer_Labels_Wizard_WPF
         /// <param name="cellParent"></param>
         protected void SetRowData(CellRow cellRow, LabelCell cellParent)
         {
-            DimmerDistroUnit reference = cellParent.PreviousReference;
+            DimmerDistroUnit reference = cellParent.DataReference;
             CellDataMode cellDataMode = cellParent.CellDataMode;
             LabelField dataField = cellRow.DataField;
 
@@ -1536,7 +1582,7 @@ namespace Dimmer_Labels_Wizard_WPF
             storage.TextColor = new ByteColor(_TextBrush.Color);
             storage.BackgroundColor = new ByteColor(_Background.Color);
 
-            storage.PreviousReference = PreviousReference;
+            storage.PreviousReference = DataReference;
 
             return storage;
         }

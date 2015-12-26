@@ -37,7 +37,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
         {
-            var window = new DrawingTest();
+            var window = new Editor();
             window.ShowDialog();
 
             Application.Current.Shutdown();

@@ -31,13 +31,8 @@ namespace Dimmer_Labels_Wizard_WPF
             unit.InstrumentName = "Polaris";
             unit.MulticoreName = "LX2A";
 
-            labelCell.PreviousReference = unit;
+            labelCell.DataReference = unit;
 
-            // Cascading Rows Test Initialization.
-            labelCell.Rows.Add(new CellRow(labelCell));
-
-
-            viewModel.SelectedRow = labelCell.Rows.First();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -86,32 +81,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        private void AddCellButton_Click(object sender, RoutedEventArgs e)
-        {
-            labelStrip.UpperCells.Add(new LabelCell());
-        }
-
-        private void RemoveCellButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (labelStrip.UpperCells.Count > 0)
-            {
-                labelStrip.UpperCells.RemoveAt(labelStrip.UpperCells.Count - 1);
-            }
-        }
-
-        private void RemoveLowerCellButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (labelStrip.LowerCells.Count > 0)
-            {
-                labelStrip.LowerCells.RemoveAt(labelStrip.LowerCells.Count - 1);
-            }
-        }
-
-        private void AddLowerCellButton_Click(object sender, RoutedEventArgs e)
-        {
-            labelStrip.LowerCells.Add(new LabelCell());
-        }
-
         private void StripModeToggleButton_Click(object sender, RoutedEventArgs e)
         {
             if (labelStrip.StripMode == LabelStripMode.Dual)
@@ -149,26 +118,22 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
-            if (labelStrip.UpperCells.Count >= 3)
-            {
-                List<LabelCell> mergeList = new List<LabelCell>();
-                mergeList.Add(labelStrip.UpperCells[1]);
-                mergeList.Add(labelStrip.UpperCells[2]);
-
-                labelStrip.Merge(labelStrip.UpperCells[0], mergeList);
-            }
         }
 
         private void InitTestButton_Click(object sender, RoutedEventArgs e)
         {
-            if (labelStrip.UpperCells.Count >= 2)
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            labelStrip.UpperCells.Add(new LabelCell());
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (labelStrip.UpperCells.Count != 0)
             {
-                labelStrip.UpperCells[0].Rows.Add(new CellRow(labelStrip.UpperCells[0]));
-                labelStrip.UpperCells[1].Rows.Add(new CellRow(labelStrip.UpperCells[1]));
-
-                labelStrip.UpperCells[0].Rows[0].Data = "Test Data";
-                labelStrip.UpperCells[1].Rows[0].Data = "Test Data";
-
+                labelStrip.UpperCells.RemoveAt(labelStrip.UpperCells.Count - 1);
             }
         }
     }

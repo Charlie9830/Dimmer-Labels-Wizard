@@ -33,7 +33,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             CellParent = parentLabelCell;
-            DataField = LabelField.NoAssignment;
 
             // Setup Border.
             Border.Background = Brushes.White;
@@ -43,10 +42,6 @@ namespace Dimmer_Labels_Wizard_WPF
             TextBlock.HorizontalAlignment = HorizontalAlignment.Center;
             TextBlock.Background = Brushes.Transparent;
 
-            // Initial Values.
-            Data = CellParent.PreviousReference.GetData(DataField);
-            DesiredFontSize = 12;
-            Font = new Typeface("Arial");
             HeightMode = CellParent.RowHeightMode;
 
             // Assign TextBlock to Border then Border to Cellparent's Grid.
@@ -234,7 +229,7 @@ namespace Dimmer_Labels_Wizard_WPF
         // Using a DependencyProperty as the backing store for DataField.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DataFieldProperty =
             DependencyProperty.Register("DataField", typeof(LabelField), typeof(CellRow),
-                new FrameworkPropertyMetadata(LabelField.Custom, new PropertyChangedCallback(OnDataFieldPropertyChanged)));
+                new FrameworkPropertyMetadata(LabelField.NoAssignment, new PropertyChangedCallback(OnDataFieldPropertyChanged)));
 
         private static void OnDataFieldPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -255,7 +250,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Font Size Backing Field.
         public static readonly DependencyProperty DesiredFontSizeProperty =
-            DependencyProperty.Register("DesiredFontSize", typeof(double), typeof(CellRow), new FrameworkPropertyMetadata(1d, 
+            DependencyProperty.Register("DesiredFontSize", typeof(double), typeof(CellRow), new FrameworkPropertyMetadata(12d, 
                 new PropertyChangedCallback(OnDesiredFontSizePropertyChanged), new CoerceValueCallback(CoerceDesiredFontSize)));
 
         // Property Changed Callback Handler.
@@ -307,7 +302,7 @@ namespace Dimmer_Labels_Wizard_WPF
         // Using a DependencyProperty as the backing store for ActualFontSize.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ActualFontSizeProperty =
             DependencyProperty.Register("ActualFontSize", typeof(double), typeof(CellRow),
-                new FrameworkPropertyMetadata(1d, new PropertyChangedCallback(OnActualFontSizePropertyChanged),
+                new FrameworkPropertyMetadata(12d, new PropertyChangedCallback(OnActualFontSizePropertyChanged),
                     new CoerceValueCallback(CoerceActualFontSize)));
 
         private static object CoerceActualFontSize(DependencyObject d, object value)
@@ -350,7 +345,7 @@ namespace Dimmer_Labels_Wizard_WPF
         // Using a DependencyProperty as the backing store for Font.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty FontProperty =
             DependencyProperty.Register("Font", typeof(Typeface), typeof(CellRow), 
-                new FrameworkPropertyMetadata(new Typeface("Wingdings"),
+                new FrameworkPropertyMetadata(new Typeface("Arial"),
                     new PropertyChangedCallback(OnFontPropertyChanged)));
 
         private static void OnFontPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -400,9 +395,10 @@ namespace Dimmer_Labels_Wizard_WPF
         private static object CoerceRowHeight(DependencyObject d, object value)
         {
             var instance = d as CellRow;
+
             // rowQty must atleast be 0. This method belongs to a Row Object, therefore, abstractly, atleast one
             // must exist in the collection. It may just not have been added yet.
-            int rowQty = instance.CellParent.Rows.Count == 0 ? 1 : instance.CellParent.Rows.Count;
+            int rowQty = instance.CellParent.RowCount == 0 ? 1 : instance.CellParent.RowCount;
             double cellHeight = instance.CellParent.Height;
             string data = instance.Data;
             Typeface font = instance.Font;

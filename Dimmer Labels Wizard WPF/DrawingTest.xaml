@@ -21,12 +21,23 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
 
+        <Style x:Key="testStyle" TargetType="local:LabelStrip">
+            <Style.Setters>
+                <Setter Property="LineWeight" Value="1"/>
+                <Setter Property="StripMode" Value="Dual"/>
+                <Setter Property="UpperCellCount" Value="1"/>
+                <Setter Property="LowerCellCount" Value="1"/>
+                <Setter Property="StripHeight" Value="70"/>
+
+            </Style.Setters>
+        </Style>
+        
     </Window.Resources>
 
     <TabControl>
         <TabItem Height="25" Width="130" Header="LabelStrip">
             <Grid>
-                <Grid x:Name="LabelStripArea" Margin="0,0,0,380">
+                <Grid x:Name="LabelStripArea" Margin="-2,0,2,380">
                     <Grid.LayoutTransform>
                         <ScaleTransform x:Name="GridScaleTransform" CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5"/>
                     </Grid.LayoutTransform>
@@ -35,12 +46,7 @@
                 </Grid>
 
                 <Grid x:Name="ControlArea" Margin="0,353,0,69">
-                    <Button x:Name="AddCellButton" Content="Add Cell" HorizontalAlignment="Left" Margin="58,8,0,0" VerticalAlignment="Top" Width="75" Click="AddCellButton_Click"/>
-                    <Button x:Name="RemoveCellButton" Content="Remove Cell" HorizontalAlignment="Left" Margin="138,8,0,0" VerticalAlignment="Top" Width="75" Click="RemoveCellButton_Click"/>
-                    <Button x:Name="AddLowerCellButton" Content="Add Cell" HorizontalAlignment="Left" Margin="58,34,0,0" VerticalAlignment="Top" Width="75" Click="AddLowerCellButton_Click"/>
-                    <Button x:Name="RemoveLowerCellButton" Content="Remove Cell" HorizontalAlignment="Left" Margin="138,34,0,0" VerticalAlignment="Top" Width="75" Click="RemoveLowerCellButton_Click"/>
-                    <Label x:Name="label4" Content="Upper" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
-                    <Label x:Name="label4_Copy" Content="Lower" HorizontalAlignment="Left" Margin="10,32,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="label4" Content="Upper Cell Count" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
                     <Button x:Name="StripModeToggleButton" Content="Toggle" HorizontalAlignment="Left" Margin="366,10,0,0" VerticalAlignment="Top" Width="75" Click="StripModeToggleButton_Click"/>
                     <Label x:Name="label5" Content="Mode" HorizontalAlignment="Left" Margin="250,8,0,0" VerticalAlignment="Top"/>
                     <Label x:Name="label5_Copy" Content="{Binding ElementName=labelStrip, Path=StripMode}" HorizontalAlignment="Left" Margin="296,8,0,0" VerticalAlignment="Top"/>
@@ -51,8 +57,15 @@
                     <Slider x:Name="slider_Copy" Maximum="8" Minimum="1" SmallChange="0.5" LargeChange="1" Value="{Binding ScaleY, ElementName=GridScaleTransform}" HorizontalAlignment="Left" Margin="563,39,0,0" VerticalAlignment="Top" Width="209"/>
                     <Label x:Name="label7" Content="X Scale" HorizontalAlignment="Left" Margin="511,10,0,0" VerticalAlignment="Top"/>
                     <Label x:Name="label7_Copy" Content="Y Scale" HorizontalAlignment="Left" Margin="510,38,0,0" VerticalAlignment="Top"/>
-                    <Button x:Name="TestButton" Content="Run Test" Background="Green" HorizontalAlignment="Left" Margin="58,104,0,0" VerticalAlignment="Top" Width="155" Click="TestButton_Click"/>
-                    <Button x:Name="InitTestButton" Content="Initialize Test" Background="Yellow" HorizontalAlignment="Left" Margin="58,77,0,0" VerticalAlignment="Top" Width="155" Click="InitTestButton_Click"/>
+                    <Button x:Name="TestButton" Content="Run Test" Background="Green" HorizontalAlignment="Left" Margin="45,194,0,0" VerticalAlignment="Top" Width="155" Click="TestButton_Click"/>
+                    <Button x:Name="InitTestButton" Content="Initialize Test" Background="Yellow" HorizontalAlignment="Left" Margin="45,167,0,0" VerticalAlignment="Top" Width="155" Click="InitTestButton_Click"/>
+                    <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="321,85,0,0" TextWrapping="Wrap" Text="{Binding ElementName=labelStrip, Path=StripHeight}" VerticalAlignment="Top" Width="120"/>
+                    <Label x:Name="label6_Copy" Content="Height" HorizontalAlignment="Left" Margin="259,82,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="textBox4" HorizontalAlignment="Left" Height="23" Margin="115,6,0,0" TextWrapping="Wrap" Text="{Binding ElementName=labelStrip, Path=UpperCellCount}" VerticalAlignment="Top" Width="60"/>
+                    <Button x:Name="AddButton" Content="Add" HorizontalAlignment="Left" Margin="10,82,0,0" VerticalAlignment="Top" Width="75" Click="AddButton_Click"/>
+                    <Button x:Name="RemoveButton" Content="Remove" HorizontalAlignment="Left" Margin="100,82,0,0" VerticalAlignment="Top" Width="75" Click="RemoveButton_Click"/>
+                    <Label x:Name="label4_Copy" Content="Lower Cell Count" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="textBox4_Copy" HorizontalAlignment="Left" Height="23" Margin="115,39,0,0" TextWrapping="Wrap" Text="{Binding LowerCellCount, ElementName=labelStrip}" VerticalAlignment="Top" Width="60"/>
                 </Grid>
             </Grid>
         </TabItem>
@@ -89,13 +102,19 @@
                 <Label x:Name="label2_Copy1" Content="Font" HorizontalAlignment="Left" Margin="640,74,0,0" VerticalAlignment="Top"/>
                 <ComboBox x:Name="comboBox3" ItemsSource="{Binding Path=SystemTypefaces}" SelectedItem="{Binding Path=SelectedTypeface}" HorizontalAlignment="Left" Margin="640,100,0,0" VerticalAlignment="Top" Width="120"/>
                 <CheckBox x:Name="SingleFieldCheckBox" Content="SingleField" IsChecked="{Binding Path=SingleFieldModeActive}" HorizontalAlignment="Left" Margin="609,340,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="textBox5" HorizontalAlignment="Left" Height="23" Margin="640,189,0,0" TextWrapping="Wrap" Text="{Binding ElementName=labelCell, Path=RowCount}" VerticalAlignment="Top" Width="120"/>
+                <Label x:Name="label8" Content="Row Count" HorizontalAlignment="Left" Margin="558,189,0,0" VerticalAlignment="Top"/>
 
             </Grid>
         </TabItem>
 
-        <TabItem Height="25" Width="130" Header="Test Area">
+        <TabItem Height="25" Width="200" Header="Test Area">
             <Grid>
-                <local:LabelCell/>
+                <local:LabelStrip VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <local:LabelStrip.Style>
+                        <local:LabelStripTemplate/>
+                    </local:LabelStrip.Style>
+                </local:LabelStrip>
             </Grid>
         </TabItem>
     </TabControl>

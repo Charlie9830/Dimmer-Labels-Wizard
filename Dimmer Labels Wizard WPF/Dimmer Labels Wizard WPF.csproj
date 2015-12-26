@@ -69,7 +69,11 @@
       <DependentUpon>BackgroundColorTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="BackgroundColorTableViewModel.cs" />
-    <Compile Include="CellCollection.cs" />
+    <Compile Include="Editor.xaml.cs">
+      <DependentUpon>Editor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditorViewModel.cs" />
+    <Compile Include="SpecializedCollections.cs" />
     <Compile Include="CellRow.cs" />
     <Compile Include="DataHandling.cs" />
     <Compile Include="DataLayout.cs" />
@@ -144,7 +148,6 @@
     </Compile>
     <Compile Include="SerialConversion.cs" />
     <Compile Include="StyleTemplates.cs" />
-    <Compile Include="StyleTesting.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
@@ -168,6 +171,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DrawingTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Editor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

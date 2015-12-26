@@ -21,4 +21,5 @@ namespace Dimmer_Labels_Wizard_WPF
             Instance = ownerClassInstance;
         }
     }
+
 }
