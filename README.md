@@ -1,5 +1,5 @@
 # Dimmer-Labels-Wizard
-A Wizard to Automate the process of Creating Dimmer and Distro Labels
+An Application designed to streamline the creation of Labels for Power Distribution systems in the Theatre and Entertainment Lighting industry.
 
 Licenses:
 
