@@ -847,6 +847,16 @@ namespace Dimmer_Labels_Wizard_WPF
         private static void OnIsSelectedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelCell;
+            var newValue = (bool)e.NewValue;
+
+            // If Cell has been Deselected, deselect child Rows.
+            if (newValue == false)
+            {
+                while (instance.SelectedRows.Count > 0)
+                {
+                    instance.SelectedRows.RemoveAt(instance.SelectedRows.Count - 1);
+                }
+            }
 
             // Coerce Render State.
             instance.CoerceValue(ActualLeftWeightProperty);

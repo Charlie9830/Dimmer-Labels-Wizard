@@ -52,11 +52,6 @@ namespace Dimmer_Labels_Wizard_WPF
             SetValue(UpperCellsPropertyKey, new CellCollection(this));
             SetValue(LowerCellsPropertyKey, new CellCollection(this));
             SetValue(MergedCellReferencesPropertyKey, new Dictionary<LabelCell, List<DimmerDistroUnit>>());
-            SetValue(SelectedCellsPropertyKey, new ObservableCollection<LabelCell>());
-            SetValue(UnitsPropertyKey, new List<DimmerDistroUnit>());
-
-            // Bindable Collection Type Depenendency Properties.
-            SetValue(UnitsPropertyKey, new ObservableCollection<DimmerDistroUnit>());
 
             // Initialize
             _UpperStackPanel.Orientation = Orientation.Horizontal;
@@ -75,6 +70,7 @@ namespace Dimmer_Labels_Wizard_WPF
             SetRow(_UpperStackPanel, 0);
             SetRow(_LowerStackPanel, 2);
         }
+
 
         public LabelStrip(LabelStripStorage storage)
         {
@@ -103,24 +99,47 @@ namespace Dimmer_Labels_Wizard_WPF
         private bool _InMouseSelectionEvent = false;
         #endregion
 
-        #region CLR Properties
-
+        #region CLR Properties.
         #endregion
 
         #region Dependency Properties
 
 
-        public IList<DimmerDistroUnit> Units
+        public IEnumerable<DimmerDistroUnit> DataSource
         {
-            get { return (IList<DimmerDistroUnit>)GetValue(UnitsProperty); }
-            set { SetValue(UnitsPropertyKey, value); }
+            get { return (IEnumerable<DimmerDistroUnit>)GetValue(DataSourceProperty); }
+            set { SetValue(DataSourceProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Units.  This enables animation, styling, binding, etc...
-        public static readonly DependencyPropertyKey UnitsPropertyKey =
-            DependencyProperty.RegisterReadOnly("Units", typeof(IList<DimmerDistroUnit>), typeof(LabelStrip), new FrameworkPropertyMetadata(null));
+        // Using a DependencyProperty as the backing store for DataSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DataSourceProperty =
+            DependencyProperty.Register("DataSource", typeof(IEnumerable<DimmerDistroUnit>),
+                typeof(LabelStrip), new FrameworkPropertyMetadata(null,
+                    new PropertyChangedCallback(OnDataSourcePropertyChanged)));
 
-        public static readonly DependencyProperty UnitsProperty = UnitsPropertyKey.DependencyProperty;
+        private static void OnDataSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelStrip;
+
+            INotifyCollectionChanged newCollection = e.NewValue as INotifyCollectionChanged;
+            INotifyCollectionChanged oldCollection = e.OldValue as INotifyCollectionChanged;
+
+            if (oldCollection != null)
+            {
+                oldCollection.CollectionChanged -= instance.DataSource_CollectionChanged;
+            }
+
+            if (newCollection != null)
+            {
+                newCollection.CollectionChanged += instance.DataSource_CollectionChanged;
+
+                // Handle already existing items.
+                instance.RefreshCellDataSources(newCollection as IEnumerable<DimmerDistroUnit>);
+                
+            }
+        }
+
+      
 
         public LabelCellTemplate UpperCellsTemplate
         {
@@ -405,6 +424,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public static readonly DependencyProperty MergedCellReferencesProperty = MergedCellReferencesPropertyKey.DependencyProperty;
 
+
+
         public CellCollection UpperCells
         {
             get { return (CellCollection)GetValue(UpperCellsProperty); }
@@ -498,33 +519,35 @@ namespace Dimmer_Labels_Wizard_WPF
 
        
 
-        public ObservableCollection<LabelCell> SelectedCells
+        public IEnumerable<LabelCell> SelectedCells
         {
-            get { return (ObservableCollection<LabelCell>)GetValue(SelectedCellsProperty); }
+            get { return (IEnumerable<LabelCell>)GetValue(SelectedCellsProperty); }
+            set { SetValue(SelectedCellsProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for SelectedCells.  This enables animation, styling, binding, etc...
-        public static readonly DependencyPropertyKey SelectedCellsPropertyKey =
-            DependencyProperty.RegisterReadOnly("SelectedCells", typeof(ObservableCollection<LabelCell>), typeof(LabelStrip),
-                new FrameworkPropertyMetadata(new ObservableCollection<LabelCell>(),
+        public static readonly DependencyProperty SelectedCellsProperty =
+            DependencyProperty.Register("SelectedCells", typeof(IEnumerable<LabelCell>), typeof(LabelStrip),
+                new FrameworkPropertyMetadata(new List<LabelCell>(),
                     new PropertyChangedCallback(OnSelectedCellsPropertyChanged)));
-
-        public static readonly DependencyProperty SelectedCellsProperty = SelectedCellsPropertyKey.DependencyProperty;
 
         private static void OnSelectedCellsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            // Disconnect Outgoing event.
-            if (e.OldValue != null)
+            var instance = d as LabelStrip;
+
+            Console.WriteLine("OnSelectedCellsPropertyChanged");
+
+            INotifyCollectionChanged newCollection = e.NewValue as INotifyCollectionChanged;
+            INotifyCollectionChanged oldCollection = e.OldValue as INotifyCollectionChanged;
+
+            if (oldCollection != null)
             {
-                var collection = e.OldValue as ObservableCollection<LabelCell>;
-                collection.CollectionChanged -= SelectedCells_CollectionChanged;
+                oldCollection.CollectionChanged -= SelectedCells_CollectionChanged;
             }
 
-            // Connect incoming event.
-            if (e.NewValue != null)
+            if (newCollection != null)
             {
-                var collection = e.NewValue as ObservableCollection<LabelCell>;
-                collection.CollectionChanged += SelectedCells_CollectionChanged;
+                newCollection.CollectionChanged += SelectedCells_CollectionChanged;
             }
         }
 
@@ -645,7 +668,13 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
+        private void DataSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var collection = sender as IEnumerable<DimmerDistroUnit>;
 
+            // Refresh Cell Data Sources.
+            RefreshCellDataSources(collection);
+        }
 
         private static void UpperCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -769,12 +798,14 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     if (cell.IsSelected == true && SelectedCells.Contains(cell) == false)
                     {
-                        SelectedCells.Add(cell);
+                        ((IList<LabelCell>)SelectedCells).Add(cell);
+                        cell.IsSelected = true;
                     }
 
                     else
                     {
-                        SelectedCells.Remove(cell);
+                        ((IList<LabelCell>)SelectedCells).Remove(cell);
+                        cell.IsSelected = false;
                     }
                 }
             }
@@ -839,25 +870,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            Console.WriteLine("SelectedCells_CollectionChanged");
             var collection = sender as ObservableCollection<LabelCell>;
-
-            if (e.NewItems != null)
-            {
-                foreach (var element in e.NewItems)
-                {
-                    var cell = element as LabelCell;
-                    cell.IsSelected = true;
-                }
-            }
-
-            if (e.OldItems != null)
-            {
-                foreach (var element in e.OldItems)
-                {
-                    var cell = element as LabelCell;
-                    cell.IsSelected = false;
-                }
-            }
         }
 
         #region Mouse Event Handlers.
@@ -870,10 +884,11 @@ namespace Dimmer_Labels_Wizard_WPF
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 // Additive Selection.
-                // Add Row to Selection.
-                if (UpperCells.Contains(cell) == false && LowerCells.Contains(cell) == false)
+                // Add Cell to Selection.
+                if (SelectedCells.Contains(cell) == false)
                 {
-                    SelectedCells.Add(cell);
+                    ((IList<LabelCell>)SelectedCells).Add(cell);
+                    cell.IsSelected = true;
                 }
             }
 
@@ -882,13 +897,15 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Exclusive Selection.
 
                 // Clear SelectedRows.
-                while (SelectedCells.Count > 0)
+                while (SelectedCells.Count() > 0)
                 {
-                    SelectedCells.RemoveAt(SelectedCells.Count - 1);
+                    ((IList<LabelCell>)SelectedCells).ElementAt(SelectedCells.Count() - 1).IsSelected = false;
+                    ((IList<LabelCell>)SelectedCells).RemoveAt(SelectedCells.Count() - 1);
                 }
 
                 // Add new Selection.
-                SelectedCells.Add(cell);
+                ((IList<LabelCell>)SelectedCells).Add(cell);
+                cell.IsSelected = true;
             }
 
             _InMouseSelectionEvent = false;
@@ -972,6 +989,28 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Private or Protected Methods
+        /// <summary>
+        /// Refreshes Cell Collections with new Data Source.
+        /// </summary>
+        /// <param name="newDataSource"></param>
+        private void RefreshCellDataSources(IEnumerable<DimmerDistroUnit> newDataSource)
+        {
+            UpperCellCount = newDataSource.Count();
+            LowerCellCount = newDataSource.Count();
+
+            // Assign UpperCell Data References.
+            for (int index = 0; index < UpperCells.Count && index < newDataSource.Count(); index++)
+            {
+                UpperCells[index].DataReference = newDataSource.ElementAt(index);
+            }
+
+            // Assign LowerCell Data References.
+            for (int index = 0; index < LowerCells.Count && index < newDataSource.Count(); index++)
+            {
+                LowerCells[index].DataReference = DataSource.ElementAt(index);
+            }
+        }
+
         /// <summary>
         /// Sets the Heights of Child Cells.
         /// </summary>

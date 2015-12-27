@@ -21,12 +21,12 @@ namespace Dimmer_Labels_Wizard_WPF
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "102", Position = "LX5", MulticoreName = "LX5X" });
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "103", Position = "LX5", MulticoreName = "LX5X" });
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "104", Position = "LX5", MulticoreName = "LX5X" });
-                                                                                                                
+
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "105", Position = "LX5", MulticoreName = "LX5Y" });
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "106", Position = "LX5", MulticoreName = "LX5Y" });
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "107", Position = "LX5", MulticoreName = "LX5Y" });
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "108", Position = "LX5", MulticoreName = "LX5Y" });
-                                                                                                                
+
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "109", Position = "LX5", MulticoreName = "LX5Z" });
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "110", Position = "LX5", MulticoreName = "LX5Z" });
             Units.Add(new DimmerDistroUnit() { ChannelNumber = "111", Position = "LX5", MulticoreName = "LX5Z" });
@@ -105,6 +105,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Connect Event handler for future Row Selection changes.
                     cell.SelectedRows.CollectionChanged += SelectedCells_SelectedRows_CollectionChanged;
                 }
+
+                Console.WriteLine("Selected Cells Count = {0}", SelectedCells.Count);
+                Console.WriteLine("Selected Rows Count = {0}", SelectedRows.Count);
 
                 OnPropertyChanged(nameof(SelectedData));
                 OnPropertyChanged(nameof(SelectedCells));

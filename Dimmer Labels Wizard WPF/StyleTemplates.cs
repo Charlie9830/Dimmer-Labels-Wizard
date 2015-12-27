@@ -16,7 +16,6 @@ namespace Dimmer_Labels_Wizard_WPF
             TargetType = typeof(LabelStrip);
 
             // Setters.
-            Setters.Add(new Setter(LabelStrip.UpperCellCountProperty, 1));
             Setters.Add(new Setter(LabelStrip.StripModeProperty, LabelStripMode.Dual));
             Setters.Add(new Setter(LabelStrip.LineWeightProperty, 1d));
             Setters.Add(new Setter(LabelStrip.StripHeightProperty, 70d));
