@@ -17,7 +17,7 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Border x:Name="LabelStripArea" BorderThickness="2" BorderBrush="Black" Grid.Row="0">
-            <local:LabelStrip x:Name="LabelStrip" DataSource="{Binding Path=Units}" SelectedCells="{Binding Path=SelectedCells}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <local:LabelStrip x:Name="LabelStrip" DataSource="{Binding Path=Units}"  SelectedCells="{Binding Path=SelectedCells}">
                 <local:LabelStrip.Style>
                     <local:LabelStripTemplate/>
                 </local:LabelStrip.Style>

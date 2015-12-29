@@ -109,12 +109,23 @@
         </TabItem>
 
         <TabItem Height="25" Width="200" Header="Test Area">
-            <Grid>
-                <local:LabelStrip VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <local:LabelStrip.Style>
-                        <local:LabelStripTemplate/>
-                    </local:LabelStrip.Style>
-                </local:LabelStrip>
+            <Grid ShowGridLines="True">
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="UpperDeadSpace" Height="1*"/>
+                    <RowDefinition x:Name="UpperContent" Height="70"/>
+                    <RowDefinition x:Name="Divider" Height="40"/>
+                    <RowDefinition x:Name="LowerContent" Height="60"/>
+                    <RowDefinition x:Name="LowerDeadSpace" Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftDeadSpace" Width="1*"/>
+                    <ColumnDefinition x:Name="ContentColumn" Width="840"/>
+                    <ColumnDefinition x:Name="RightDeadSpace" Width="1*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid Background="Red" Grid.Column="1" Grid.Row="1"/>
+                <Grid Background="Green" Grid.Column="1" Grid.Row="2"/>
+                <Grid Background="Blue" Grid.Column="1" Grid.Row="3"/>
             </Grid>
         </TabItem>
     </TabControl>

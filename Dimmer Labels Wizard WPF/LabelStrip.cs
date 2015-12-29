@@ -21,26 +21,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Constructors
         static LabelStrip()
         {
-            // Metadata Options.
-            FrameworkPropertyMetadataOptions options = FrameworkPropertyMetadataOptions.AffectsArrange;
-            options |= FrameworkPropertyMetadataOptions.AffectsMeasure;
-            options |= FrameworkPropertyMetadataOptions.AffectsRender;
-            options |= FrameworkPropertyMetadataOptions.AffectsParentArrange;
-            options |= FrameworkPropertyMetadataOptions.AffectsParentMeasure;
 
-            // Override Width Property.
-            var widthOverride = new FrameworkPropertyMetadata(double.NaN, options,
-                new PropertyChangedCallback(OnWidthPropertyChanged),
-                    new CoerceValueCallback(CoerceWidthProperty));
-
-            WidthProperty.OverrideMetadata(typeof(LabelStrip), widthOverride);
-
-            // Override Height Property.
-            var heightOverride = new FrameworkPropertyMetadata(double.NaN, options,
-                new PropertyChangedCallback(OnHeightPropertyChanged),
-                    new CoerceValueCallback(CoerceHeightProperty));
-
-            HeightProperty.OverrideMetadata(typeof(LabelStrip), heightOverride);
         }
 
         /// <summary>
@@ -59,18 +40,44 @@ namespace Dimmer_Labels_Wizard_WPF
             Children.Add(_UpperStackPanel);
             Children.Add(_LowerStackPanel);
 
-            RowDefinitions.Add(_UpperGridRow);
+            // Row Defintion. (Executed order affects Visual Order).
+            RowDefinitions.Add(_UpperDeadSpaceGridRow);
+            RowDefinitions.Add(_UpperContentGridRow);
             RowDefinitions.Add(_DividerGridRow);
-            RowDefinitions.Add(_LowerGridRow);
+            RowDefinitions.Add(_LowerContentGridRow);
+            RowDefinitions.Add(_LowerDeadSpaceGridRow);
 
-            _UpperGridRow.Height = new GridLength(70);
+            // Column Defintion. (Executed order affects Visual Order).
+            ColumnDefinitions.Add(_LeftDeadSpaceGridColumn);
+            ColumnDefinitions.Add(_ContentGridColumn);
+            ColumnDefinitions.Add(_RightDeadSpaceGridColumn);
+
+            // Row Height Setting.
+            _UpperDeadSpaceGridRow.Height = new GridLength(1d, GridUnitType.Star);
+            _UpperContentGridRow.Height = new GridLength(70d, GridUnitType.Auto);
             _DividerGridRow.Height = new GridLength(_StripDividerDistance);
-            _LowerGridRow.Height = new GridLength(70);
+            _LowerContentGridRow.Height = new GridLength(70d, GridUnitType.Auto);
+            _LowerDeadSpaceGridRow.Height = new GridLength(1d, GridUnitType.Star);
 
-            SetRow(_UpperStackPanel, 0);
-            SetRow(_LowerStackPanel, 2);
+            // Column Width Setting.
+            _LeftDeadSpaceGridColumn.Width = new GridLength(1d, GridUnitType.Star);
+            _ContentGridColumn.Width = new GridLength(1d, GridUnitType.Auto);
+            _RightDeadSpaceGridColumn.Width = new GridLength(1d, GridUnitType.Star);
+
+            // Row Setting.
+            SetRow(_UpperStackPanel, 1);
+            SetRow(_LowerStackPanel, 3);
+
+            // Column Setting.
+            SetColumn(_UpperStackPanel, 1);
+            SetColumn(_LowerStackPanel, 1);
+
+            // Background. (Background must be set to a Brush in order to consume Mouse Events.)
+            Background = Brushes.Transparent;
+
+            // Events
+            MouseDown += LabelStrip_MouseDown;
         }
-
 
         public LabelStrip(LabelStripStorage storage)
         {
@@ -89,12 +96,21 @@ namespace Dimmer_Labels_Wizard_WPF
         public RackType RackUnitType;
         public int RackNumber;
 
+        // StackPanels.
         protected StackPanel _UpperStackPanel = new StackPanel();
         protected StackPanel _LowerStackPanel = new StackPanel();
 
-        protected RowDefinition _UpperGridRow = new RowDefinition();
+        // Grid Row Definitions.
+        protected RowDefinition _UpperDeadSpaceGridRow = new RowDefinition();
+        protected RowDefinition _UpperContentGridRow = new RowDefinition();
         protected RowDefinition _DividerGridRow = new RowDefinition();
-        protected RowDefinition _LowerGridRow = new RowDefinition();
+        protected RowDefinition _LowerContentGridRow = new RowDefinition();
+        protected RowDefinition _LowerDeadSpaceGridRow = new RowDefinition();
+
+        // Grid Column Defintions.
+        protected ColumnDefinition _LeftDeadSpaceGridColumn = new ColumnDefinition();
+        protected ColumnDefinition _ContentGridColumn = new ColumnDefinition();
+        protected ColumnDefinition _RightDeadSpaceGridColumn = new ColumnDefinition();
 
         private bool _InMouseSelectionEvent = false;
         #endregion
@@ -164,7 +180,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 element.Style = template;
             }
         }
-
 
 
         public LabelCellTemplate LowerCellsTemplate
@@ -510,11 +525,23 @@ namespace Dimmer_Labels_Wizard_WPF
         private static void OnStripModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelStrip;
-       
+            var value = (LabelStripMode)e.NewValue;
+
             // Push new Heights to Child Cells.
             AdjustCellHeights(instance);
 
-            instance.CoerceValue(HeightProperty);
+            // Set state of Divider Row.
+            if (value == LabelStripMode.Dual)
+            {
+                instance._DividerGridRow.Height = new GridLength(_StripDividerDistance);
+            }
+
+            else
+            {
+                instance._DividerGridRow.Height = new GridLength(0d);
+            }
+
+            // instance.CoerceValue(HeightProperty);
         }
 
        
@@ -552,117 +579,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Override and Overriden Handlers
-        private static object CoerceWidthProperty(DependencyObject d, object value)
-        {
-            var instance = d as LabelStrip;
-            double width = (double)value;
-            IEnumerable<LabelCell> upperCells = instance.UpperCells;
-            IEnumerable<LabelCell> lowerCells = instance.LowerCells;
-
-            if (upperCells.Count() == 0 && lowerCells.Count() == 0)
-            {
-                return double.NaN;
-            }
-
-            // Calculate Total Width's.
-            double upperTotalWidth = 0;
-            double lowerTotalWidth = 0;
-
-            foreach (var element in upperCells)
-            {
-                upperTotalWidth += element.Width;
-            }
-
-            foreach (var element in lowerCells)
-            {
-                lowerTotalWidth += element.Width;
-            }
-
-            // Return the larger of the two width's.
-            return Math.Max(upperTotalWidth, lowerTotalWidth);
-        }
-
-        private static void OnWidthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            
-        }
-
-        private static object CoerceHeightProperty(DependencyObject d, object value)
-        {
-            var instance = d as LabelStrip;
-            double height = (double)value;
-            LabelStripMode stripMode = instance.StripMode;
-            double seperationDistance = _StripDividerDistance;
-            List<LabelCell> upperCells = instance.UpperCells.ToList();
-            List<LabelCell> lowerCells = instance.LowerCells.ToList();
-
-            if (height < 0)
-            {
-                return 0d;
-            }
-
-            if (upperCells.Count == 0 && lowerCells.Count == 0)
-            {
-                return double.NaN;
-            }
-
-            // Calculate heights of tallest Upper and Lower Cells.
-            double upperHeight = 0;
-            double lowerHeight = 0;
-            
-            if (upperCells.Count != 0)
-            {
-               upperHeight = upperCells.OrderBy(item => item.Height).Last().Height;
-            }
-             
-            if (lowerCells.Count != 0)
-            {
-                lowerHeight = lowerCells.OrderBy(item => item.Height).Last().Height;
-            }
-
-            double totalHeight = 0;
-            switch (stripMode)
-            {
-                case LabelStripMode.Single:
-                    totalHeight = lowerHeight + upperHeight;
-                    break;
-                case LabelStripMode.Dual:
-                    totalHeight = lowerHeight + upperHeight + seperationDistance;
-                    break;
-            }
-
-            return totalHeight;
-            
-        }
-
-        private static void OnHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as LabelStrip;
-            CellCollection upperCells = instance.UpperCells;
-            CellCollection lowerCells = instance.LowerCells;
-            LabelStripMode stripMode = instance.StripMode;
-
-            // Calculate tallest upper and lower Cells.
-            double upperHeight = 0;
-            double lowerHeight = 0;
-
-            if (upperCells.Count != 0)
-            {
-                upperHeight = upperCells.OrderBy(item => item.Height).Last().Height;
-            }
-
-            if (lowerCells.Count != 0)
-            {
-                lowerHeight = lowerCells.OrderBy(item => item.Height).Last().Height;
-            }
-
-            // Update GridRow Heights.
-            instance._UpperGridRow.Height = new GridLength(upperHeight);
-            instance._DividerGridRow.Height = stripMode == LabelStripMode.Dual ? new GridLength(_StripDividerDistance) :
-                new GridLength(0d);
-            instance._LowerGridRow.Height = new GridLength(lowerHeight);
-            
-        }
+        
         #endregion
 
         #region Event Handlers
@@ -887,6 +804,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     ((IList<LabelCell>)SelectedCells).Add(cell);
                     cell.IsSelected = true;
                 }
+
+                // Short out Event.
+                e.Handled = true;
             }
 
             else
@@ -927,11 +847,32 @@ namespace Dimmer_Labels_Wizard_WPF
                     ((IList<LabelCell>)SelectedCells).Add(cell);
                     cell.IsSelected = true;
                 }
+
+                // Short out Event.
+                e.Handled = true;
             }
 
             _InMouseSelectionEvent = false;
         }
 
+        private void LabelStrip_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // A Mouse down event has been triggered within the LabelStrip and has
+            // not been Short Circuited by the Cell_MouseDown event Handler.
+            if (SelectedCells.Count() > 0)
+            {
+                _InMouseSelectionEvent = true;
+
+                // Clear Selections.
+                while (SelectedCells.Count() > 0)
+                {
+                    SelectedCells.ElementAt(SelectedCells.Count() - 1).IsSelected = false;
+                    ((IList<LabelCell>)SelectedCells).RemoveAt(SelectedCells.Count() - 1);
+                }
+
+                _InMouseSelectionEvent = false;
+            }
+        }
         #endregion
 
         #endregion
