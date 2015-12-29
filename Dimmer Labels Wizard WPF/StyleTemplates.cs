@@ -36,21 +36,26 @@ namespace Dimmer_Labels_Wizard_WPF
             // Setters.
             Setters.Add(new Setter(LabelCell.WidthProperty, 70d));
             Setters.Add(new Setter(LabelCell.CellDataModeProperty, CellDataMode.MixedField));
-            Setters.Add(new Setter(LabelCell.RowCountProperty, 2));
+            Setters.Add(new Setter(LabelCell.RowCountProperty, 3));
+            Setters.Add(new Setter(LabelCell.RowHeightModeProperty, CellRowHeightMode.Static));
 
             // Child Template
             List<CellRowTemplate> cellRowTemplates = new List<CellRowTemplate>();
 
             cellRowTemplates.Add(new CellRowTemplate());
+            cellRowTemplates.Last().Setters.Add(new Setter(CellRow.DataFieldProperty, LabelField.Position));
+            cellRowTemplates.Last().Setters.Add(new Setter(CellRow.DesiredFontSizeProperty, 12d));
+            cellRowTemplates.Last().Setters.Add(new Setter(CellRow.FontProperty, new Typeface("Arial")));
+
+            cellRowTemplates.Add(new CellRowTemplate());
             cellRowTemplates.Last().Setters.Add(new Setter(CellRow.DataFieldProperty, LabelField.ChannelNumber));
-            cellRowTemplates.Last().Setters.Add(new Setter(CellRow.DesiredFontSizeProperty, 14d));
+            cellRowTemplates.Last().Setters.Add(new Setter(CellRow.DesiredFontSizeProperty, 16d));
             cellRowTemplates.Last().Setters.Add(new Setter(CellRow.FontProperty, new Typeface("Arial")));
 
             cellRowTemplates.Add(new CellRowTemplate());
             cellRowTemplates.Last().Setters.Add(new Setter(CellRow.DataFieldProperty, LabelField.InstrumentName));
             cellRowTemplates.Last().Setters.Add(new Setter(CellRow.DesiredFontSizeProperty, 12d));
             cellRowTemplates.Last().Setters.Add(new Setter(CellRow.FontProperty, new Typeface("Arial")));
-
 
             Setters.Add(new Setter(LabelCell.RowTemplatesProperty, cellRowTemplates));
         }

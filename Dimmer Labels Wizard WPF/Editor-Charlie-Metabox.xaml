@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="Editor" Height="700" Width="1200">
+        Title="Editor" Height="900" Width="1200">
     
     <Window.DataContext>
         <local:EditorViewModel/>
@@ -17,7 +17,7 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Border x:Name="LabelStripArea" BorderThickness="2" BorderBrush="Black" Grid.Row="0">
-            <local:LabelStrip x:Name="LabelStrip" DataSource="{Binding Path=Units}" SelectedCells="{Binding Path=SelectedCells}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <local:LabelStrip x:Name="LabelStrip" Units="{Binding Path=Units}" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <local:LabelStrip.Style>
                     <local:LabelStripTemplate/>
                 </local:LabelStrip.Style>
@@ -25,8 +25,7 @@
         </Border>
         <Border x:Name="ControlsArea" BorderThickness="2" BorderBrush="Black" Grid.Row="1">
             <Grid>
-                <TextBlock x:Name="textBlock" Background="LightCyan" HorizontalAlignment="Left" Margin="29,19,0,0" TextWrapping="Wrap" Text="{Binding Path=DebugOutput}" VerticalAlignment="Top" Height="136" Width="169"/>
-                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="213,19,0,0" TextWrapping="Wrap" Text="{Binding Path=SelectedData}" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding Path=SelectedData}"  VerticalAlignment="Top" Width="120"/>
             </Grid>
         </Border>
     </Grid>

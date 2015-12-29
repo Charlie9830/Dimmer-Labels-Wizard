@@ -136,5 +136,10 @@ namespace Dimmer_Labels_Wizard_WPF
                 labelStrip.UpperCells.RemoveAt(labelStrip.UpperCells.Count - 1);
             }
         }
+
+        private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

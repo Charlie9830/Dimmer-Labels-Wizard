@@ -600,34 +600,32 @@ namespace Dimmer_Labels_Wizard_WPF
             double cellHeight = instance.Height;
             double staticHeight = cellHeight / rowQty;
 
-            if (newValue != oldValue)
+            switch (newValue)
             {
-                switch (newValue)
-                {
-                    case CellRowHeightMode.Static:
-                        foreach (var element in rows)
-                        {
-                            element.HeightMode = newValue;
-                            element.RowHeight = staticHeight;
-                        }
-                        break;
-                    case CellRowHeightMode.Automatic:
-                        foreach (var element in rows)
-                        {
-                            element.HeightMode = newValue;
-                        }
-                        break;
-                    case CellRowHeightMode.Manual:
-                        foreach (var element in rows)
-                        {
-                            element.HeightMode = newValue;
-                            // Throw Exception. Need some way of Translating Users Selection of Row Percentages
-                            // to the actual Rows Here. Perhaps a List of Values generated during setup Dialog.
-                            throw new NotImplementedException("Feature not fully Implemented Yet.");
-                        }
-                        break;
-                }
+                case CellRowHeightMode.Static:
+                    foreach (var element in rows)
+                    {
+                        element.HeightMode = newValue;
+                        element.RowHeight = staticHeight;
+                    }
+                    break;
+                case CellRowHeightMode.Automatic:
+                    foreach (var element in rows)
+                    {
+                        element.HeightMode = newValue;
+                    }
+                    break;
+                case CellRowHeightMode.Manual:
+                    foreach (var element in rows)
+                    {
+                        element.HeightMode = newValue;
+                        // Throw Exception. Need some way of Translating Users Selection of Row Percentages
+                        // to the actual Rows Here. Perhaps a List of Values generated during setup Dialog.
+                        throw new NotImplementedException("Implement this Feature Charlie!");
+                    }
+                    break;
             }
+            
         }
 
         public CellDataMode CellDataMode
@@ -1117,6 +1115,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             _InMouseSelectionEvent = false;
+
         }
 
         private void CellRow_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)

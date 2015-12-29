@@ -535,8 +535,6 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as LabelStrip;
 
-            Console.WriteLine("OnSelectedCellsPropertyChanged");
-
             INotifyCollectionChanged newCollection = e.NewValue as INotifyCollectionChanged;
             INotifyCollectionChanged oldCollection = e.OldValue as INotifyCollectionChanged;
 
@@ -870,7 +868,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            Console.WriteLine("SelectedCells_CollectionChanged");
             var collection = sender as ObservableCollection<LabelCell>;
         }
 
@@ -895,17 +892,41 @@ namespace Dimmer_Labels_Wizard_WPF
             else
             {
                 // Exclusive Selection.
-
-                // Clear SelectedRows.
-                while (SelectedCells.Count() > 0)
+                if (cell.IsSelected == true)
                 {
-                    ((IList<LabelCell>)SelectedCells).ElementAt(SelectedCells.Count() - 1).IsSelected = false;
-                    ((IList<LabelCell>)SelectedCells).RemoveAt(SelectedCells.Count() - 1);
-                }
+                    // Exclusive Selection with actively selected Rows, Don't dump selected Rows.
 
-                // Add new Selection.
-                ((IList<LabelCell>)SelectedCells).Add(cell);
-                cell.IsSelected = true;
+                    // Clear SelectedRows EXCEPT the Cell that generated the Event.
+                    for (int index = 0; index < SelectedCells.Count();)
+                    {
+                        if (SelectedCells.ElementAt(index) != cell)
+                        {
+                            SelectedCells.ElementAt(index).IsSelected = false;
+                            ((IList<LabelCell>)SelectedCells).RemoveAt(index);
+                        }
+
+                        else
+                        {
+                            index++;
+                        }
+                    }
+                }
+                
+                else
+                {
+                    // Selection has shifted to a new Cell. Okay it dump currently selected Cells AND rows.
+
+                    // Clear SelectedRows.
+                    while (SelectedCells.Count() > 0)
+                    {
+                        SelectedCells.ElementAt(SelectedCells.Count() - 1).IsSelected = false;
+                        ((IList<LabelCell>)SelectedCells).RemoveAt(SelectedCells.Count() - 1);
+                    }
+
+                    // Add new Selection.
+                    ((IList<LabelCell>)SelectedCells).Add(cell);
+                    cell.IsSelected = true;
+                }
             }
 
             _InMouseSelectionEvent = false;
