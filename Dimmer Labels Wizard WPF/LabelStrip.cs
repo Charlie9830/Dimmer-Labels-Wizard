@@ -567,12 +567,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (oldCollection != null)
             {
-                oldCollection.CollectionChanged -= SelectedCells_CollectionChanged;
+                oldCollection.CollectionChanged -= instance.SelectedCells_CollectionChanged;
             }
 
             if (newCollection != null)
             {
-                newCollection.CollectionChanged += SelectedCells_CollectionChanged;
+                newCollection.CollectionChanged += instance.SelectedCells_CollectionChanged;
             }
         }
 
@@ -783,9 +783,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
         }
 
-        private static void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            var collection = sender as ObservableCollection<LabelCell>;
+
         }
 
         #region Mouse Event Handlers.

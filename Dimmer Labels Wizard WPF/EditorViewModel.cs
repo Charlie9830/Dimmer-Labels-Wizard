@@ -246,8 +246,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
         }
+        #endregion
 
-
+        #region Test Code
         #endregion
 
     }
