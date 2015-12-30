@@ -21,10 +21,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public void PrepareSerialization()
         {
-            foreach (var element in Globals.LabelStrips)
-            {
-                LabelStrips.Add(element.GenerateStorage());
-            }
 
             foreach (var element in Globals.DimmerDistroUnits)
             {
@@ -68,12 +64,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public void UpdateToApplication(ApplicationSerialization applicationStorage)
         {
-            Globals.LabelStrips.Clear();
-
-            foreach (var element in applicationStorage.LabelStrips)
-            {
-                Globals.LabelStrips.Add(new LabelStrip(element));
-            }
+           
 
             foreach (var element in applicationStorage.DimmerDistroUnits)
             {

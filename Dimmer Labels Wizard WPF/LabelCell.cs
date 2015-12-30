@@ -59,7 +59,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         /// <summary>
-        /// Will Generate a LabelCell with a blank DimmerDistroUnit Data Model. Use for Examples and Testing.
+        /// Constructs a LabelCell.
         /// </summary>
         public LabelCell()
         {
@@ -76,25 +76,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Collection Type Dependency Properties.
             SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
-        }
-
-        /// <summary>
-        /// Constructs a LabelCell with data Bound to dataReference parameter.
-        /// </summary>
-        /// <param name="dataReference"></param>
-        public LabelCell(DimmerDistroUnit dataReference)
-        {
-            _Rows = new ObservableCollection<CellRow>();
-            _Rows.CollectionChanged += Rows_CollectionChanged;
-
-            // Setup Grid
-            _Grid.Background = Brushes.White;
-            Content = _Grid;
-
-            // Collection Type Dependency Properties.
-            SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
-
-            DataReference = dataReference;
         }
         #endregion
 

@@ -25,8 +25,6 @@ namespace Dimmer_Labels_Wizard_WPF
         public PrintWindow()
         {
             InitializeComponent();
-            DistroPrintRangeControl.ViewModel.SetupControl(Globals.LabelStrips, RackType.Distro,"A");
-            DimmerPrintRangeControl.ViewModel.SetupControl(Globals.LabelStrips, RackType.Dimmer,"B");
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

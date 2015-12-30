@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Media;
+
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -17,8 +19,8 @@ namespace Dimmer_Labels_Wizard_WPF
         public static List<DimmerDistroUnit> DimmerDistroUnits = new List<DimmerDistroUnit>();
         public static SortOrder DimmerDistroSortOrder { get; set; }
 
-        // List to Hold LabelStrip Objects
-        public static List<LabelStrip> LabelStrips = new List<LabelStrip>();
+        // List to Hold StripData Objects.
+        public static ObservableCollection<StripData> Strips = new ObservableCollection<StripData>();
 
         // Color Dictionary
         public static Dictionary<DimmerDistroUnit, SolidColorBrush> LabelColors = 

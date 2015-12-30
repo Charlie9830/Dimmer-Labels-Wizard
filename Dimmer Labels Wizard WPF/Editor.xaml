@@ -5,29 +5,200 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="Editor" Height="700" Width="1200">
-    
+        Title="Editor" Height="700" Width="1500">
+
     <Window.DataContext>
         <local:EditorViewModel/>
     </Window.DataContext>
-    
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="ToolBarBackgroundKey" Color="LightGray"/>
+        <Thickness x:Key="StackPanelItemsOffset" Left="5" Right="5"/>
+
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
+            <!-- 0: Main Menu -->
+            <RowDefinition Height="20"/>
+            <!-- 1: Appearance Controls -->
+            <RowDefinition Height="120"/>
+            <!-- 2: Data Controls -->
+            <RowDefinition Height="35"/>
+            <!-- 3: LabelStrip -->
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <!-- 4: StatusBar -->
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-        <Border x:Name="LabelStripArea" BorderThickness="2" BorderBrush="Black" Grid.Row="0">
+        <Grid.ColumnDefinitions>
+            <!-- Templates Expander -->
+            <ColumnDefinition Width="auto"/>
+            <!-- Main -->
+            <ColumnDefinition Width="1*"/>
+            <!-- Database Expander -->
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Border x:Name="LabelStripArea" BorderThickness="1" Grid.Row="3" Grid.Column="1" BorderBrush="Black">
             <local:LabelStrip x:Name="LabelStrip" DataSource="{Binding Path=Units}"  SelectedCells="{Binding Path=SelectedCells}">
                 <local:LabelStrip.Style>
                     <local:LabelStripTemplate/>
                 </local:LabelStrip.Style>
             </local:LabelStrip>
         </Border>
-        <Border x:Name="ControlsArea" BorderThickness="2" BorderBrush="Black" Grid.Row="1">
-            <Grid>
-                <TextBlock x:Name="textBlock" Background="LightCyan" HorizontalAlignment="Left" Margin="29,19,0,0" TextWrapping="Wrap" Text="{Binding Path=DebugOutput}" VerticalAlignment="Top" Height="136" Width="169"/>
-                <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="213,19,0,0" TextWrapping="Wrap" Text="{Binding Path=SelectedData}" VerticalAlignment="Top" Width="120"/>
-            </Grid>
+        <Border x:Name="DebugArea" BorderThickness="2" BorderBrush="Black" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
+            <StatusBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <StatusBarItem HorizontalAlignment="Left" Width="400">
+                    <TextBlock Text="C://Windows/Users/ExampleUser/ExampleFilePath.lab"/>
+                </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="400">
+                    <Border Background="Green" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <TextBlock Text="Template Status" HorizontalAlignment="Center"/>
+                    </Border>
+                </StatusBarItem>
+            </StatusBar>
         </Border>
+        <Menu x:Name="MainMenu" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Top" Width="auto">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open"/>
+                <MenuItem Header="_Save"/>
+                <MenuItem Header="_Save As"/>
+                <Separator/>
+                <MenuItem Header="_Import Templates"/>
+                <MenuItem Header="_Export Templates"/>
+                <Separator/>
+                <MenuItem Header="_Page Setup"/>
+                <MenuItem Header="_Print"/>
+                <Separator/>
+                <MenuItem Header="_Exit"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Copy"/>
+                <MenuItem Header="_Paste"/>
+            </MenuItem>
+            <MenuItem Header="_View"/>
+            <MenuItem Header="_Manage">
+                <MenuItem Header="_Templates"/>
+                <MenuItem Header="_Database"/>
+                <MenuItem Header="_Labels"/>
+            </MenuItem>
+            <MenuItem Header="_Help"/>
+        </Menu>
+        <ToolBarTray HorizontalAlignment="Stretch" Height="120" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Stretch" Background="{StaticResource ToolBarBackgroundKey}">
+            <ToolBar Width="400" Height="120"  Header="Label" Background="{StaticResource ToolBarBackgroundKey}">
+                <DockPanel>
+                    <ListBox DockPanel.Dock="Left" Height="110" Width="210" ItemsSource="{Binding Path=Strips}" SelectedItem="{Binding Path=SelectedStrip}"/>
+                    <Grid DockPanel.Dock="Right">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="W:" Grid.Row="0" Grid.Column="0"/>
+                        <TextBox Grid.Row="0" Height="18" Width="75" Grid.Column="1"/>
+                        <Label Content="mm" Grid.Row="0" Grid.Column="2"/>
+                        <Label Content="H:" Grid.Row="1" Grid.Column="0"/>
+                        <TextBox Grid.Row="1" Height="18" Width="75" Grid.Column="1"/>
+                        <Label Content="mm" Grid.Row="1" Grid.Column="2"/>
+                        <ComboBox x:Name="comboBox" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="5" Grid.Row="2" VerticalAlignment="Top" Width="120"/>
+
+                    </Grid>
+                </DockPanel>
+            </ToolBar>
+            <ToolBar Width="350" Height="120" Header="Cell" Background="{StaticResource ToolBarBackgroundKey}">
+                <DockPanel>
+                    <Grid DockPanel.Dock="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="W:" Grid.Row="0" Grid.Column="0"/>
+                        <TextBox Grid.Row="0" Height="18" Width="75" Grid.Column="1"/>
+                        <Label Content="mm" Grid.Row="0" Grid.Column="2"/>
+                        <Label Content="H:" Grid.Row="1" Grid.Column="0"/>
+                        <TextBox Grid.Row="1" Height="18" Width="75" Grid.Column="1"/>
+                        <Label Content="mm" Grid.Row="1" Grid.Column="2"/>
+                        <ComboBox x:Name="comboBox_Copy" HorizontalAlignment="Left" Margin="5" Grid.Row="2" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="3"/>
+                    </Grid>
+                    <ComboBox Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5"/>
+                    <ComboBox Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5"/>
+                </DockPanel>
+            </ToolBar>
+            <ToolBar Width="350" Height="120" Header="Row" Background="{StaticResource ToolBarBackgroundKey}"/>
+            <ToolBar Width="350" Height="120" Header="View" Background="{StaticResource ToolBarBackgroundKey}">
+                <Label x:Name="label" Content="Center View, Pan, Zoom In/Out, Zoom to Fit" VerticalAlignment="Top" Margin="0,10,0,0" Height="91" Width="261"/>
+            </ToolBar>
+        </ToolBarTray>
+
+        <StackPanel Background="Gray" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+            <ComboBox Width="135" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <TextBox Width="70" Height="25" Margin="5"/>
+            <Label Content="B" HorizontalContentAlignment="Center" Width="20" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Label Content="I" HorizontalContentAlignment="Center" Width="20" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Label Content="U" HorizontalContentAlignment="Center" Width="20" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <ComboBox Width="135" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <TextBox Width="250" Height="25" Text="{Binding Path=SelectedData}" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Button x:Name="AddButton" Content="Add" Width="75" Click="AddButton_Click"/>
+            <Button x:Name="Remove" Content="Remove" Width="75" Click="Remove_Click"/>
+        </StackPanel>
+        <Expander Background="LightGray" x:Name="expanderLeft" Header="Templates" ExpandDirection="Right" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch" Height="457">
+            <Grid Background="LightGray" Width="250">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Margin="5,5"/>
+                <Button x:Name="button" Content="New" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="75"/>
+                <Button x:Name="button_Copy" Content="Edit" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75"/>
+            </Grid>
+        </Expander>
+        <Expander Background="LightGray" x:Name="expanderRight" Header="Database" ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="3" VerticalAlignment="Stretch" Height="457" Grid.Column="2">
+            <Grid Background="LightGray" Width="250">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Left Hand Column -->
+                <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Label Content="Dimmer Number" Height="25" Margin="5"/>
+                    <Label Content="Channel Number" Height="25" Margin="5"/>
+                    <Label Content="Position" Height="25" Margin="5"/>
+                    <Label Content="Instrument Name" Height="25" Margin="5"/>
+                    <Label Content="Custom" Height="25" Margin="5"/>
+                    <Separator Width="auto" Margin="5"/>
+                    <Label Content="User Field 1" Height="25" Margin="5"/>
+                    <Label Content="User Field 2" Height="25" Margin="5"/>
+                    <Label Content="User Field 3" Height="25" Margin="5"/>
+                    <Label Content="User Field 4" Height="25" Margin="5"/>
+                </StackPanel>
+
+                <!-- Right Hand Column-->
+                <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                    <Separator Width="auto" Margin="5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                </StackPanel>
+            </Grid>
+        </Expander>
+
     </Grid>
 </Window>
