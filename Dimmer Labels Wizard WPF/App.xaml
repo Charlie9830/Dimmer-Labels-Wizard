@@ -5,6 +5,7 @@
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="Dimmer_Labels_Wizard_WPF.App"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Help Button -->
         <Image x:Key="HelpIcon24" Source="/Resources/help-circled-24-000000.png" Stretch="Uniform"/>
         <Style x:Key="HelpButton" TargetType="{x:Type Button}">
             <Style.Setters>
@@ -30,5 +31,6 @@
                 </Setter>
             </Style.Setters>
         </Style>
+
     </Application.Resources>
 </Application>

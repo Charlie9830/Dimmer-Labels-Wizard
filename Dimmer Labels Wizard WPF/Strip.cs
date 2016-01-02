@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public class StripData
+    public class Strip
     {
-        public StripData()
+        public Strip()
         {
             Units.CollectionChanged += Units_CollectionChanged;
         }
@@ -32,6 +32,15 @@ namespace Dimmer_Labels_Wizard_WPF
                 return Units.Count;
             }
         }
+
+        private LabelStripTemplate _AssignedTemplate;
+
+        public LabelStripTemplate AssignedTemplate
+        {
+            get { return _AssignedTemplate; }
+            set { _AssignedTemplate = value; }
+        }
+
         #endregion
 
         #region Event Handlers

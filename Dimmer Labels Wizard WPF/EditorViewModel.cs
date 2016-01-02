@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Windows;
+using System.Windows.Media;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,64 +17,141 @@ namespace Dimmer_Labels_Wizard_WPF
             SelectedCells.CollectionChanged += SelectedCells_CollectionChanged;
             SelectedRows.CollectionChanged += SelectedRows_CollectionChanged;
             Units.CollectionChanged += Units_CollectionChanged;
+            StripTemplates.CollectionChanged += StripTemplates_CollectionChanged;
 
             #region Testing Code
             // Testing
-            //StripData strip1 = new StripData();
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "101", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "102", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "103", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "104", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "105", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "106", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "107", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "108", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "109", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "110", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "111", Position = "LX5", InstrumentName = "Alpha" });
-            //strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "112", Position = "LX5", InstrumentName = "Alpha" });
+            Strip strip1 = new Strip();
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "101", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 1 });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "102", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 2 });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "103", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 3  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "104", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 4  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "105", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 5  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "106", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 6  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "107", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 7  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "108", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 8  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "109", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 9  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "110", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 10  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "111", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 11  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "112", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 12 });
 
-            //StripData strip2 = new StripData();
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "81", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "82", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "83", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "84", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "85", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "86", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "87", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "88", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "89", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "90", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "91", Position = "LX3", InstrumentName = "VL1k" });
-            //strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "92", Position = "LX3", InstrumentName = "VL1k" });
+            Strip strip2 = new Strip();
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "81", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 13 });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "82", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 14  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "83", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 15  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "84", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 16  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "85", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 17  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "86", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 18  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "87", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 19  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "88", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 20  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "89", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 21  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "90", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 22  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "91", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 23  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "92", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 24  });
 
-            //Globals.Strips.Add(strip1);
-            //Globals.Strips.Add(strip2);
+            var template1 = new LabelStripTemplate(Globals.BaseLabelStripTemplate);
+            template1.Name = "template1, Based on BaseLabelStripTemplate";
+            template1.StripMode = LabelStripMode.Dual;
 
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "101", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "102", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "103", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "104", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "105", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "106", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "107", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "108", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "109", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "110", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "111", Position = "LX5", InstrumentName = "Alpha" });
-            Units.Add(new DimmerDistroUnit() { ChannelNumber = "112", Position = "LX5", InstrumentName = "Alpha" });
+            var template2 = new LabelStripTemplate(template1);
+            template2.Name = "template2, Based on template1";
+            template2.StripHeight = 140d;
+            template2.StripMode = LabelStripMode.Single;
+
+            strip1.AssignedTemplate = template1;
+            strip2.AssignedTemplate = template2;
+
+            template1.AssignedToStrips.Add(strip1);
+            template2.AssignedToStrips.Add(strip2);
+
+            Globals.Templates.Add(template1);
+            Globals.Templates.Add(template2);
+            Globals.Strips.Add(strip1);
+            Globals.Strips.Add(strip2);
             #endregion
 
             // Global Event Subscriptions.
             Globals.Strips.CollectionChanged += Strips_CollectionChanged;
+
         }
 
         #region Fields
         private const string _NonEqualData = "***";
+
+        private LabelField[] _LabelFields =
+        {
+            LabelField.ChannelNumber, LabelField.Custom, LabelField.InstrumentName,
+            LabelField.MulticoreName, LabelField.NoAssignment, LabelField.Position, LabelField.UserField1,
+            LabelField.UserField2, LabelField.UserField3, LabelField.UserField4
+        };
+
+        private LabelStripMode[] _LabelStripModes =
+        {
+            LabelStripMode.Single, LabelStripMode.Dual
+        };
+
         #endregion
 
         #region CLR Properties - Binding Targets
-        public ObservableCollection<StripData> Strips
+        private LabelStripMode _SelectedLabelStripMode;
+
+        public LabelStripMode SelectedLabelStripMode
+        {
+            get { return _SelectedLabelStripMode; }
+            set { _SelectedLabelStripMode = value; }
+        }
+
+
+        private LabelStripTemplate _DisplayedTemplate;
+
+        public LabelStripTemplate DisplayedTemplate
+        {
+            get { return _DisplayedTemplate; }
+            set { _DisplayedTemplate = value; }
+        }
+
+        private LabelStripTemplate _SelectedStripTemplate;
+
+        public LabelStripTemplate SelectedStripTemplate
+        {
+            get
+            {
+                return _SelectedStripTemplate;
+            }
+            set
+            {
+                if (value != _SelectedStripTemplate)
+                {
+                    _SelectedStripTemplate = value;
+                    OnPropertyChanged(nameof(SelectedStripTemplate));
+                }
+            }
+        }
+
+        public ObservableCollection<LabelStripTemplate> StripTemplates
+        {
+            get { return Globals.Templates; }
+            set { Globals.Templates = value; }
+        }
+
+
+        public LabelStripMode[] LabelStripModes
+        {
+            get
+            {
+                return _LabelStripModes;
+            }
+        }
+
+        public LabelField[] LabelFields
+        {
+            get
+            {
+                return _LabelFields;
+            }
+        }
+
+        public ObservableCollection<Strip> Strips
         {
             get
             {
@@ -85,9 +164,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
         }
 
-        private StripData _SelectedStrip;
+        private Strip _SelectedStrip;
 
-        public StripData SelectedStrip
+        public Strip SelectedStrip
         {
             get
             {
@@ -154,8 +233,14 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
+        private void StripTemplates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            
+        }
+
         private void Strips_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+           
             OnPropertyChanged(nameof(Strips));
         }
 
@@ -202,7 +287,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void SelectedRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            WriteDebugOutput("SelectedRows.Count = " + SelectedRows.Count);
             OnPropertyChanged(nameof(SelectedRows));
             OnPropertyChanged(nameof(SelectedData));
         }
@@ -242,7 +326,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
-        private void PresentStripData(StripData value)
+        private void PresentStripData(Strip value)
         {
             // Clear Selections.
             ClearSelections();
@@ -259,13 +343,24 @@ namespace Dimmer_Labels_Wizard_WPF
                 Units.Add(element);
             }
 
-            // Retreive and Load Template.
+            // Retrieve and Load Template.
+            LoadStyle(value);
 
             // Notify Listeners.
             OnPropertyChanged(nameof(Units));
             OnPropertyChanged(nameof(SelectedCells));
         }
 
+        private void LoadStyle(Strip strip)
+        {
+            DisplayedTemplate = strip.AssignedTemplate;
+
+            // Appearance Controls
+            SelectedLabelStripMode = (LabelStripMode)DisplayedTemplate.StripMode;
+
+            OnPropertyChanged(nameof(DisplayedTemplate));
+            OnPropertyChanged(nameof(SelectedLabelStripMode));
+        }
 
         private void WriteDebugOutput(string message)
         {
@@ -346,16 +441,6 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 SelectedCells.RemoveAt(SelectedCells.Count - 1);
             }
-        }
-
-        public void AddUnit()
-        {
-            Units.Add(new DimmerDistroUnit() { Position = "New Unit" });
-        }
-
-        public void RemoveUnit()
-        {
-            Units.Remove(Units.Last());
         }
         #endregion
     }

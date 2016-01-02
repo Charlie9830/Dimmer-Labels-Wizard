@@ -69,6 +69,7 @@
       <DependentUpon>BackgroundColorTable.xaml</DependentUpon>
     </Compile>
     <Compile Include="BackgroundColorTableViewModel.cs" />
+    <Compile Include="Comparators.cs" />
     <Compile Include="Editor.xaml.cs">
       <DependentUpon>Editor.xaml</DependentUpon>
     </Compile>
@@ -147,7 +148,7 @@
       <DependentUpon>SanitizationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SerialConversion.cs" />
-    <Compile Include="StripData.cs" />
+    <Compile Include="Strip.cs" />
     <Compile Include="StyleTemplates.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>

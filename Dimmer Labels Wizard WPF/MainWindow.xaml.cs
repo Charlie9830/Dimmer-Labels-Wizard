@@ -24,6 +24,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public MainWindow()
         {
             InitializeComponent();
+            
             Application.Current.ShutdownMode = ShutdownMode.OnLastWindowClose;
             
         }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Media;
-
+using System.Windows;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -20,7 +20,35 @@ namespace Dimmer_Labels_Wizard_WPF
         public static SortOrder DimmerDistroSortOrder { get; set; }
 
         // List to Hold StripData Objects.
-        public static ObservableCollection<StripData> Strips = new ObservableCollection<StripData>();
+        public static ObservableCollection<Strip> Strips = new ObservableCollection<Strip>();
+
+        public static CellRowTemplate BaseCellRowTemplate = new CellRowTemplate()
+        {
+            Font = new Typeface("Arial"),
+            DesiredFontSize = 12d,
+            DataField = LabelField.NoAssignment,
+        };
+
+        public static LabelCellTemplate BaseLabelCellTemplate = new LabelCellTemplate()
+        {
+            CellDataMode = CellDataMode.MixedField,
+            RowCount = 0,
+            Width = 70d,
+            RowHeightMode = CellRowHeightMode.Static,
+            CellRowTemplates = new List<CellRowTemplate>() as IEnumerable<CellRowTemplate>,
+        };
+
+        public static LabelStripTemplate BaseLabelStripTemplate = new LabelStripTemplate()
+        {
+            StripHeight = 70d,
+            StripMode = LabelStripMode.Dual,
+            UpperCellsTemplate = BaseLabelCellTemplate,
+            LowerCellsTemplate = BaseLabelCellTemplate,
+            Name = "Base LabelStrip Template"
+        };
+
+        public static ObservableCollection<LabelStripTemplate> Templates = 
+            new ObservableCollection<LabelStripTemplate>();
 
         // Color Dictionary
         public static Dictionary<DimmerDistroUnit, SolidColorBrush> LabelColors = 

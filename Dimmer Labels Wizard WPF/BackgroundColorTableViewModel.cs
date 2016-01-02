@@ -532,26 +532,4 @@ namespace Dimmer_Labels_Wizard_WPF
 
         
     }
-
-    public class SolidColorBrushComparer : IEqualityComparer<SolidColorBrush>
-    {
-        #region Interface Implementations
-        public bool Equals(SolidColorBrush x, SolidColorBrush y)
-        {
-            if (x.Color == y.Color)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public int GetHashCode(SolidColorBrush obj)
-        {
-            return obj.GetHashCode();
-        }
-        #endregion
-    }
 }

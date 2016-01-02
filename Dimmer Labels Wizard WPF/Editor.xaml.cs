@@ -23,17 +23,5 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             InitializeComponent();
         }
-
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            var vm = DataContext as EditorViewModel;
-            vm.AddUnit();
-        }
-
-        private void Remove_Click(object sender, RoutedEventArgs e)
-        {
-            var vm = DataContext as EditorViewModel;
-            vm.RemoveUnit();
-        }
     }
 }

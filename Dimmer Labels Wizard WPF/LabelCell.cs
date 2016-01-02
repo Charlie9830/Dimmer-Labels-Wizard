@@ -22,9 +22,6 @@ namespace Dimmer_Labels_Wizard_WPF
         // Constants
         protected const double UnitConversionRatio = 96d / 25.4d;
 
-        // Properties.
-        public DimmerDistroUnit DataReference { get; set; }
-
         protected SolidColorBrush _TextBrush;
         protected SolidColorBrush _Background;
 
@@ -72,8 +69,6 @@ namespace Dimmer_Labels_Wizard_WPF
             _Grid.VerticalAlignment = VerticalAlignment.Top;
             Content = _Grid;
 
-            DataReference = new DimmerDistroUnit();
-
             // Collection Type Dependency Properties.
             SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
         }
@@ -113,6 +108,61 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+
+
+        public DimmerDistroUnit DataReference
+        {
+            get { return (DimmerDistroUnit)GetValue(DataReferenceProperty); }
+            set { SetValue(DataReferenceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DataReference.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DataReferenceProperty =
+            DependencyProperty.Register("DataReference", typeof(DimmerDistroUnit),
+                typeof(LabelCell), new FrameworkPropertyMetadata(null,
+                    new PropertyChangedCallback(OnDataReferencePropertyChanged)));
+
+        private static void OnDataReferencePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            var dataMode = instance.CellDataMode;
+            var rows = instance.Rows;
+            var newValue = e.NewValue as DimmerDistroUnit;
+
+            if (newValue != null)
+            {
+                if (dataMode == CellDataMode.SingleField)
+                {
+                    instance.SingleFieldData = newValue.GetData(instance.SingleFieldDataField);
+                }
+
+                else
+                {
+                    foreach (var element in rows)
+                    {
+                        element.Data = newValue.GetData(element.DataField);
+                    }
+                }
+            }
+
+            else
+            {
+                // DataReference has been set to null.
+                if (dataMode == CellDataMode.SingleField)
+                {
+                    instance.SingleFieldData = "No Reference";
+                }
+
+                else
+                {
+                    foreach (var element in rows)
+                    {
+                        element.Data = "No Reference";
+                    }
+                }
+            }
+            
+        }
 
         public List<CellRowTemplate> RowTemplates
         {
@@ -714,7 +764,15 @@ namespace Dimmer_Labels_Wizard_WPF
             LabelField newDataField = (LabelField)e.NewValue;
             DimmerDistroUnit reference = instance.DataReference;
 
-            instance.SingleFieldData = reference.GetData(newDataField);
+            if (reference != null)
+            {
+                instance.SingleFieldData = reference.GetData(newDataField);
+            }
+
+            else
+            {
+                instance.SingleFieldData = "No Reference";
+            }
         }
 
 
@@ -1041,7 +1099,10 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
 
                 // Update Model.
-                DataReference.SetData(cellRow.Data, cellRow.DataField);
+                if (DataReference != null)
+                {
+                    DataReference.SetData(cellRow.Data, cellRow.DataField);
+                }
 
                 // Assign Data Layout(s).
                 AssignDataLayouts(cellRow);
@@ -1051,7 +1112,10 @@ namespace Dimmer_Labels_Wizard_WPF
             if (propertyName == CellRow.DataFieldProperty.Name)
             {
                 // Collect new Data.
-                cellRow.Data = DataReference.GetData(cellRow.DataField);
+                if (DataReference != null)
+                {
+                    cellRow.Data = DataReference.GetData(cellRow.DataField);
+                }
 
                 // Update Cascading State.
                 SetCascadingRows(Rows.ToList());
@@ -1124,9 +1188,12 @@ namespace Dimmer_Labels_Wizard_WPF
             CellDataMode cellDataMode = cellParent.CellDataMode;
             LabelField dataField = cellRow.DataField;
 
-            if (cellDataMode == CellDataMode.MixedField)
+            if (reference != null)
             {
-                cellRow.Data = reference.GetData(cellRow.DataField);
+                if (cellDataMode == CellDataMode.MixedField)
+                {
+                    cellRow.Data = reference.GetData(cellRow.DataField);
+                }
             }
         }
 
