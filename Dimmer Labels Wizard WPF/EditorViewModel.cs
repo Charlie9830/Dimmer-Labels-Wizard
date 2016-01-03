@@ -90,15 +90,66 @@ namespace Dimmer_Labels_Wizard_WPF
             LabelStripMode.Single, LabelStripMode.Dual
         };
 
+        private List<string> _TemplateChangesRegister = new List<string>();
+
         #endregion
 
         #region CLR Properties - Binding Targets
+        public string TemplateStatusText
+        {
+            get
+            {
+                if (_TemplateChangesPending)
+                { return "Template Changes Pending"; }
+
+                else
+                { return "Template up to date."; }
+            }
+        }
+
+        private bool _TemplateChangesPending = false;
+
+        public bool TemplateChangesPending
+        {
+            get { return _TemplateChangesPending; }
+            set
+            {
+                if (value != _TemplateChangesPending)
+                {
+                    _TemplateChangesPending = value;
+                    OnPropertyChanged(nameof(TemplateChangesPending));
+                    OnPropertyChanged(nameof(TemplateStatusText));
+                }
+            }
+        }
+
         private LabelStripMode _SelectedLabelStripMode;
 
         public LabelStripMode SelectedLabelStripMode
         {
-            get { return _SelectedLabelStripMode; }
-            set { _SelectedLabelStripMode = value; }
+            get
+            {
+                return _SelectedLabelStripMode;
+            }
+            set
+            {
+                if (value != _SelectedLabelStripMode)
+                {
+                    // Refresh Displayed Template.
+                    DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
+                    {
+                        StripMode = value
+                    };
+
+                    // Register.
+                    RegisterTemplateChange(nameof(LabelStripTemplate.StripMode));
+
+                    _SelectedLabelStripMode = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedLabelStripMode));
+                }
+            }
         }
 
 
@@ -107,7 +158,14 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelStripTemplate DisplayedTemplate
         {
             get { return _DisplayedTemplate; }
-            set { _DisplayedTemplate = value; }
+            set
+            {
+                if (value != _DisplayedTemplate)
+                {
+                    _DisplayedTemplate = value;
+                    OnPropertyChanged(nameof(DisplayedTemplate));
+                }
+            }
         }
 
         private LabelStripTemplate _SelectedStripTemplate;
@@ -344,22 +402,45 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Retrieve and Load Template.
-            LoadStyle(value);
+            LoadTemplate(value);
 
             // Notify Listeners.
             OnPropertyChanged(nameof(Units));
             OnPropertyChanged(nameof(SelectedCells));
         }
 
-        private void LoadStyle(Strip strip)
+        private void LoadTemplate(Strip strip)
         {
             DisplayedTemplate = strip.AssignedTemplate;
 
             // Appearance Controls
-            SelectedLabelStripMode = (LabelStripMode)DisplayedTemplate.StripMode;
+            _SelectedLabelStripMode = DisplayedTemplate.StripMode;
 
-            OnPropertyChanged(nameof(DisplayedTemplate));
+            // Notify.
             OnPropertyChanged(nameof(SelectedLabelStripMode));
+        }
+
+        private void RegisterTemplateChange(string propertyName)
+        {
+            if (_TemplateChangesRegister.Contains(propertyName) == false)
+            {
+                _TemplateChangesRegister.Add(propertyName);
+            }
+
+            if (TemplateChangesPending == false)
+            {
+                TemplateChangesPending = true;
+            }
+        }
+
+        private void ClearTemplateChangeRegister()
+        {
+            _TemplateChangesRegister.Clear();
+
+            if (TemplateChangesPending == true)
+            {
+                TemplateChangesPending = false;
+            }
         }
 
         private void WriteDebugOutput(string message)

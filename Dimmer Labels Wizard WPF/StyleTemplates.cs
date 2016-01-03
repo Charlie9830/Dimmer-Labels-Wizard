@@ -81,14 +81,8 @@ namespace Dimmer_Labels_Wizard_WPF
             return query;
         }
 
-        public void SetSetterValue(DependencyProperty property, object value, Type expectedType)
+        public void SetSetterValue(DependencyProperty property, object value)
         {
-            if (value.GetType() != property.PropertyType)
-            {
-                // Incorrect Type.
-                throw new InvalidCastException("Type Error");
-            }
-
             if (GetSetter(property, Setters) == null)
             {
                 // Add new Setter
@@ -123,53 +117,53 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Styling Values.
         // Upper Cells Template
-        public object UpperCellsTemplate
+        public LabelCellTemplate UpperCellsTemplate
         {
             get
             {
-                return GetSetterValue(LabelStrip.UpperCellsTemplateProperty);
+                return (LabelCellTemplate)GetSetterValue(LabelStrip.UpperCellsTemplateProperty);
             }
             set
             {
-                SetSetterValue(LabelStrip.UpperCellsTemplateProperty, value, typeof(LabelCellTemplate));
+                SetSetterValue(LabelStrip.UpperCellsTemplateProperty, value);
             }
         }
 
-        public object LowerCellsTemplate
+        public LabelCellTemplate LowerCellsTemplate
         {
             get
             {
-                return GetSetterValue(LabelStrip.LowerCellsTemplateProperty);
+                return (LabelCellTemplate)GetSetterValue(LabelStrip.LowerCellsTemplateProperty);
             }
             set
             {
-                SetSetterValue(LabelStrip.LowerCellsTemplateProperty, value, typeof(LabelCellTemplate));
+                SetSetterValue(LabelStrip.LowerCellsTemplateProperty, value);
             }
         }
 
         // Strip Height
-        public object StripHeight
+        public double StripHeight
         {
             get
             {
-                return GetSetterValue(LabelStrip.StripHeightProperty);
+                return (double)GetSetterValue(LabelStrip.StripHeightProperty);
             }
             set
             {
-                SetSetterValue(LabelStrip.StripHeightProperty, value, typeof(double));
+                SetSetterValue(LabelStrip.StripHeightProperty, value);
             }
         }
 
         // Strip Mode.
-        public object StripMode
+        public LabelStripMode StripMode
         {
             get
             {
-                return GetSetterValue(LabelStrip.StripModeProperty);
+                return (LabelStripMode)GetSetterValue(LabelStrip.StripModeProperty);
             }
             set
             {
-                SetSetterValue(LabelStrip.StripModeProperty, value, typeof(LabelStripMode));
+                SetSetterValue(LabelStrip.StripModeProperty, value);
             }
         }
         #endregion
@@ -190,67 +184,67 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // Cell Row Templates
-        public object CellRowTemplates
+        public IEnumerable<CellRowTemplate> CellRowTemplates
         {
             get
             {
-                return GetSetterValue(LabelCell.RowTemplatesProperty);
+                return (IEnumerable<CellRowTemplate>)GetSetterValue(LabelCell.RowTemplatesProperty);
             }
             set
             {
-                SetSetterValue(LabelCell.RowTemplatesProperty, value, typeof(IEnumerable<CellRowTemplate>));
+                SetSetterValue(LabelCell.RowTemplatesProperty, value);
             }
         }
         
         // Row Height Mode.
-        public object RowHeightMode
+        public CellRowHeightMode RowHeightMode
         {
             get
             {
-                return GetSetterValue(LabelCell.RowHeightModeProperty);
+                return (CellRowHeightMode)GetSetterValue(LabelCell.RowHeightModeProperty);
             }
             set
             {
-                SetSetterValue(LabelCell.RowHeightModeProperty, value, typeof(CellRowHeightMode));
+                SetSetterValue(LabelCell.RowHeightModeProperty, value);
             }
         }
 
         // Row Count.
-        public object RowCount
+        public int RowCount
         {
             get
             {
-                return GetSetterValue(LabelCell.RowCountProperty);
+                return (int)GetSetterValue(LabelCell.RowCountProperty);
             }
             set
             {
-                SetSetterValue(LabelCell.RowCountProperty, value, typeof(int));
+                SetSetterValue(LabelCell.RowCountProperty, value);
             }
         }
 
         // Width.
-        public object Width
+        public double Width
         {
             get
             {
-                return GetSetterValue(LabelCell.WidthProperty);
+                return (double)GetSetterValue(LabelCell.WidthProperty);
             }
             set
             {
-                SetSetterValue(LabelCell.WidthProperty, value, typeof(double));
+                SetSetterValue(LabelCell.WidthProperty, value);
             }
         }
 
         // Cell Data Mode.
-        public object CellDataMode
+        public CellDataMode CellDataMode
         {
             get
             {
-                return GetSetterValue(LabelCell.CellDataModeProperty);
+                return (CellDataMode)GetSetterValue(LabelCell.CellDataModeProperty);
             }
             set
             {
-                SetSetterValue(LabelCell.CellDataModeProperty, value, typeof(CellDataMode));
+                SetSetterValue(LabelCell.CellDataModeProperty, value);
             }
         }
 
@@ -265,41 +259,41 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // DataField.
-        public object DataField
+        public LabelField DataField
         {
             get
             {
-                return GetSetterValue(CellRow.DataFieldProperty);
+                return (LabelField)GetSetterValue(CellRow.DataFieldProperty);
             }
             set
             {
-                SetSetterValue(CellRow.DataFieldProperty, value, typeof(LabelField));
+                SetSetterValue(CellRow.DataFieldProperty, value);
             }
         }
 
         // Font.
-        public object Font
+        public Typeface Font
         {
             get
             {
-                return GetSetterValue(CellRow.FontProperty);
+                return (Typeface)GetSetterValue(CellRow.FontProperty);
             }
             set
             {
-                SetSetterValue(CellRow.FontProperty, value, typeof(Typeface));
+                SetSetterValue(CellRow.FontProperty, value);
             }
         }
 
         // Desired Font Size.
-        public object DesiredFontSize
+        public double DesiredFontSize
         {
             get
             {
-                return GetSetterValue(CellRow.DesiredFontSizeProperty);
+                return (double)GetSetterValue(CellRow.DesiredFontSizeProperty);
             }
             set
             {
-                SetSetterValue(CellRow.DesiredFontSizeProperty, value, typeof(double));
+                SetSetterValue(CellRow.DesiredFontSizeProperty, value);
             }
         }
     }

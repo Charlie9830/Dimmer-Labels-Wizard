@@ -47,11 +47,6 @@
                 <StatusBarItem HorizontalAlignment="Left" Width="400">
                     <TextBlock Text="C://Windows/Users/ExampleUser/ExampleFilePath.lab"/>
                 </StatusBarItem>
-                <StatusBarItem HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="400">
-                    <Border Background="Green" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <TextBlock Text="Template Status" HorizontalAlignment="Center"/>
-                    </Border>
-                </StatusBarItem>
             </StatusBar>
         </Border>
         <Menu x:Name="MainMenu" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Top" Width="auto">
@@ -137,6 +132,11 @@
         </ToolBarTray>
 
         <StackPanel Background="Gray" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+            <TextBlock x:Name="textBlock" TextWrapping="Wrap" VerticalAlignment="Center" Width="150" Text="{Binding Path=TemplateStatusText}" Margin="5,10,5,9"/>
+            <Button x:Name="button1" IsEnabled="{Binding Path=TemplateChangesPending}"  Content="Apply" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Button x:Name="button1_Copy" IsEnabled="{Binding Path=TemplateChangesPending}" Content="Discard" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Button x:Name="button1_Copy1" Content="Break" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="{StaticResource StackPanelItemsOffset}"/>
             <ComboBox Width="135" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
             <TextBox Width="70" Height="25" Margin="5"/>
             <Label Content="B" HorizontalContentAlignment="Center" Width="20" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
@@ -145,6 +145,7 @@
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="{StaticResource StackPanelItemsOffset}"/>
             <ComboBox Width="135" Height="25"  Margin="{StaticResource StackPanelItemsOffset}"/>
             <TextBox Width="250" Height="25" Text="{Binding Path=SelectedData}" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="{StaticResource StackPanelItemsOffset}"/>
         </StackPanel>
         <Expander Background="LightGray" x:Name="expanderLeft" Header="Templates" ExpandDirection="Right" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch">
             <Grid Background="LightGray" Width="250">
