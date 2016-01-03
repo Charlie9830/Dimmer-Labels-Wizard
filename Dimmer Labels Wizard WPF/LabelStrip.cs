@@ -155,55 +155,56 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-      
-
-        public LabelCellTemplate UpperCellsTemplate
+        public List<LabelCellTemplate> UpperCellTemplates
         {
-            get { return (LabelCellTemplate)GetValue(UpperCellsTemplateProperty); }
-            set { SetValue(UpperCellsTemplateProperty, value); }
+            get { return (List<LabelCellTemplate>)GetValue(UpperCellTemplatesProperty); }
+            set { SetValue(UpperCellTemplatesProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for UpperCellsTemplate.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty UpperCellsTemplateProperty =
-            DependencyProperty.Register("UpperCellsTemplate", typeof(LabelCellTemplate),
-                typeof(LabelStrip), new FrameworkPropertyMetadata(null,
-                    new PropertyChangedCallback(OnUpperCellsTemplatePropertyChanged)));
+        public static readonly DependencyProperty UpperCellTemplatesProperty =
+            DependencyProperty.Register("UpperCellTemplates", typeof(List<LabelCellTemplate>),
+                typeof(LabelStrip), new FrameworkPropertyMetadata(new List<LabelCellTemplate>(),
+                    new PropertyChangedCallback(OnUpperCellTemplatesPropertyChanged)));
 
-        private static void OnUpperCellsTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnUpperCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelStrip;
-            var template = e.NewValue as LabelCellTemplate;
+            var templates = e.NewValue as IEnumerable<LabelCellTemplate>;
+            var upperCells = instance.UpperCells;
 
             // Push changed style to Upper Cell Elements.
-            foreach (var element in instance.UpperCells)
+            for (int index = 0; index < templates.Count() && index < upperCells.Count; index++ )
             {
-                element.Style = template;
+                upperCells[index].Style = templates.ElementAt(index);
             }
         }
 
 
-        public LabelCellTemplate LowerCellsTemplate
+        public List<LabelCellTemplate> LowerCellTemplates
         {
-            get { return (LabelCellTemplate)GetValue(LowerCellsTemplateProperty); }
-            set { SetValue(LowerCellsTemplateProperty, value); }
+            get { return (List<LabelCellTemplate>)GetValue(LowerCellTemplatesProperty); }
+            set { SetValue(LowerCellTemplatesProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for LowerCellsTemplate.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty LowerCellsTemplateProperty =
-            DependencyProperty.Register("LowerCellsTemplate", typeof(LabelCellTemplate), typeof(LabelStrip),
-                new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnLowerCellsTemplatePropertyChanged)));
+        public static readonly DependencyProperty LowerCellTemplatesProperty =
+            DependencyProperty.Register("LowerCellTemplates", typeof(List<LabelCellTemplate>), typeof(LabelStrip),
+                new FrameworkPropertyMetadata(new List<LabelCellTemplate>(), new PropertyChangedCallback(OnLowerCellTemplatesPropertyChanged)));
 
-        private static void OnLowerCellsTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnLowerCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelStrip;
-            var template = e.NewValue as LabelCellTemplate;
+            var templates = e.NewValue as IEnumerable<LabelCellTemplate>;
+            var lowerCells = instance.LowerCells;
 
-            // Push changed style to Lower Cell Elements.
-            foreach (var element in instance.LowerCells)
+            // Push changed style to Upper Cell Elements.
+            for (int index = 0; index < templates.Count() && index < lowerCells.Count; index++ )
             {
-                element.Style = template;
+                lowerCells[index].Style = templates.ElementAt(index);
             }
         }
+
 
         public double StripHeight
         {
@@ -616,8 +617,11 @@ namespace Dimmer_Labels_Wizard_WPF
                             cell.Height = instance.StripHeight * _SingleLabelStripUpperHeightRatio;
                         }
 
-                        // Set Template.
-                        cell.Style = instance.UpperCellsTemplate;
+                        // Set Template
+                        if (collection.IndexOf(cell) < instance.LowerCellTemplates.Count)
+                        {
+                            cell.Style = instance.LowerCellTemplates[collection.IndexOf(cell)];
+                        }
 
                         // Connect Event Handler.
                         cell.PropertyChanged += instance.UpperCell_PropertyChanged;
@@ -674,8 +678,11 @@ namespace Dimmer_Labels_Wizard_WPF
                         }
 
                         // Set Template
-                        cell.Style = instance.LowerCellsTemplate;
-
+                        if (collection.IndexOf(cell) < instance.LowerCellTemplates.Count)
+                        {
+                            cell.Style = instance.LowerCellTemplates[collection.IndexOf(cell)];
+                        }
+                        
                         // Connect event Handlers.
                         cell.PropertyChanged += instance.LowerCell_PropertyChanged;
                         cell.MouseDown += instance.Cell_MouseDown;

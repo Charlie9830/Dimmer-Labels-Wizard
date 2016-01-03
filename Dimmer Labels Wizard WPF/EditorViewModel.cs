@@ -55,7 +55,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             var template2 = new LabelStripTemplate(template1);
             template2.Name = "template2, Based on template1";
-            template2.StripHeight = 140d;
+            template2.StripHeight = 70d;
             template2.StripMode = LabelStripMode.Single;
 
             strip1.AssignedTemplate = template1;
@@ -76,6 +76,8 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         #region Fields
+        private static double unitConversionRatio = 96d / 25.4d;
+
         private const string _NonEqualData = "***";
 
         private LabelField[] _LabelFields =
@@ -95,6 +97,48 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region CLR Properties - Binding Targets
+        private double _StripWidthmm;
+
+        public double StripWidthmm
+        {
+            get { return _StripWidthmm; }
+            set
+            {
+                if (_StripWidthmm != value)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+        }
+
+        private double _StripHeightmm;
+
+        public double StripHeightmm
+        {
+            get
+            { return Math.Round(_StripHeightmm,2); }
+
+            set
+            {
+                if (_StripHeightmm != value)
+                {
+                    // Refresh Display Template.
+                    DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
+                    {
+                        StripHeight = value * unitConversionRatio
+                    };
+
+                    // Register
+                    RegisterTemplateChange(nameof(StripHeightmm));
+
+                    _StripHeightmm = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(StripHeightmm));
+                }
+            }
+        }
+
         public string TemplateStatusText
         {
             get
@@ -415,9 +459,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Appearance Controls
             _SelectedLabelStripMode = DisplayedTemplate.StripMode;
+            _StripHeightmm = DisplayedTemplate.StripHeight / unitConversionRatio;
 
             // Notify.
             OnPropertyChanged(nameof(SelectedLabelStripMode));
+            OnPropertyChanged(nameof(StripHeightmm));
         }
 
         private void RegisterTemplateChange(string propertyName)

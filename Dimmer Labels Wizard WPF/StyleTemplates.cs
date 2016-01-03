@@ -117,27 +117,27 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Styling Values.
         // Upper Cells Template
-        public LabelCellTemplate UpperCellsTemplate
+        public IEnumerable<LabelCellTemplate> UpperCellTemplates
         {
             get
             {
-                return (LabelCellTemplate)GetSetterValue(LabelStrip.UpperCellsTemplateProperty);
+                return (IEnumerable<LabelCellTemplate>)GetSetterValue(LabelStrip.UpperCellTemplatesProperty);
             }
             set
             {
-                SetSetterValue(LabelStrip.UpperCellsTemplateProperty, value);
+                SetSetterValue(LabelStrip.UpperCellTemplatesProperty, value);
             }
         }
 
-        public LabelCellTemplate LowerCellsTemplate
+        public IEnumerable<LabelCellTemplate> LowerCellTemplates
         {
             get
             {
-                return (LabelCellTemplate)GetSetterValue(LabelStrip.LowerCellsTemplateProperty);
+                return (IEnumerable<LabelCellTemplate>)GetSetterValue(LabelStrip.LowerCellTemplatesProperty);
             }
             set
             {
-                SetSetterValue(LabelStrip.LowerCellsTemplateProperty, value);
+                SetSetterValue(LabelStrip.LowerCellTemplatesProperty, value);
             }
         }
 
@@ -181,6 +181,12 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelCellTemplate()
         {
             TargetType = typeof(LabelCell);
+        }
+
+        public LabelCellTemplate(LabelCellTemplate basedOn)
+        {
+            TargetType = typeof(LabelCell);
+            BasedOn = basedOn;
         }
 
         // Cell Row Templates
@@ -248,7 +254,57 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        // Left Weight
+        public double LeftWeight
+        {
+            get
+            {
+                return (double)GetSetterValue(LabelCell.LeftWeightProperty);
+            }
+            set
+            {
+                SetSetterValue(LabelCell.LeftWeightProperty, value);
+            }
+        }
 
+        // Top Weight
+        public double TopWeight
+        {
+            get
+            {
+                return (double)GetSetterValue(LabelCell.TopWeightProperty);
+            }
+            set
+            {
+                SetSetterValue(LabelCell.TopWeightProperty, value);
+            }
+        }
+
+        // Right Weight
+        public double RightWeight
+        {
+            get
+            {
+                return (double)GetSetterValue(LabelCell.RightWeightProperty);
+            }
+            set
+            {
+                SetSetterValue(LabelCell.RightWeightProperty, value);
+            }
+        }
+
+        // Bottom Weight
+        public double BottomWeight
+        {
+            get
+            {
+                return (double)GetSetterValue(LabelCell.BottomWeightProperty);
+            }
+            set
+            {
+                SetSetterValue(LabelCell.BottomWeightProperty, value);
+            }
+        }
     }
 
     public class CellRowTemplate : LabelStripTemplateBase
