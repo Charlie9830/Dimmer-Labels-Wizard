@@ -116,6 +116,19 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region Styling Values.
+        // StripWdith
+        public double StripWidth
+        {
+            get
+            {
+                return (double)GetSetterValue(LabelStrip.StripWidthProperty);
+            }
+            set
+            {
+                SetSetterValue(LabelStrip.StripWidthProperty, value);
+            }
+        }
+
         // Upper Cells Template
         public IEnumerable<LabelCellTemplate> UpperCellTemplates
         {

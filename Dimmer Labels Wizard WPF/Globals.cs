@@ -33,7 +33,6 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             CellDataMode = CellDataMode.MixedField,
             RowCount = 0,
-            Width = 70d,
             RowHeightMode = CellRowHeightMode.Static,
             LeftWeight = 1d,
             TopWeight = 1d,
@@ -45,6 +44,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public static LabelStripTemplate BaseLabelStripTemplate = new LabelStripTemplate()
         {
             StripHeight = 70d,
+            StripWidth = 70d * 12,
             StripMode = LabelStripMode.Dual,
             UpperCellTemplates = new List<LabelCellTemplate>() as IEnumerable<LabelCellTemplate>,
             LowerCellTemplates = new List<LabelCellTemplate>() as IEnumerable<LabelCellTemplate>,

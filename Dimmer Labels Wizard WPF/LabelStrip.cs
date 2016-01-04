@@ -121,6 +121,55 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Dependency Properties
 
 
+        public double StripWidth
+        {
+            get { return (double)GetValue(StripWidthProperty); }
+            set { SetValue(StripWidthProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for StripWidth.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StripWidthProperty =
+            DependencyProperty.Register("StripWidth", typeof(double), typeof(LabelStrip),
+                new FrameworkPropertyMetadata(1d, new PropertyChangedCallback(OnStripWidthPropertyChanged),
+                    new CoerceValueCallback(CoerceStripWidth)));
+
+        private static object CoerceStripWidth(DependencyObject d, object value)
+        {
+            var width = (double)value;
+
+            if (width < 1d)
+            {
+                return 1d;
+            }
+            else
+            {
+                return width;
+            }
+        }
+
+        private static void OnStripWidthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelStrip;
+            var upperCells = instance.UpperCells;
+            var upperCellCount = instance.UpperCellCount;
+            var lowerCellCount = instance.LowerCellCount;
+            var lowerCells = instance.LowerCells;
+            var newValue = (double)e.NewValue;
+            double newUpperWidth = newValue / upperCellCount;
+            double newLowerWidth = newValue / lowerCellCount;
+
+            // Push new Width to child Cells.
+            foreach (var element in upperCells)
+            {
+                element.Width = newUpperWidth;
+            }
+
+            foreach (var element in lowerCells)
+            {
+                element.Width = newLowerWidth;
+            }
+        }
+
         public IEnumerable<DimmerDistroUnit> DataSource
         {
             get { return (IEnumerable<DimmerDistroUnit>)GetValue(DataSourceProperty); }
@@ -617,6 +666,7 @@ namespace Dimmer_Labels_Wizard_WPF
                             cell.Height = instance.StripHeight * _SingleLabelStripUpperHeightRatio;
                         }
 
+
                         // Set Template
                         if (collection.IndexOf(cell) < instance.LowerCellTemplates.Count)
                         {
@@ -645,6 +695,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
 
+            // Set Cell Widths.
+            foreach (var cell in collection)
+            {
+                cell.Width = instance.StripWidth / collection.Count;
+            }
+
             // Coercion.
             instance.CoerceValue(HeightProperty);
 
@@ -665,6 +721,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         // Add to Stackpanel
                         instance._LowerStackPanel.Children.Insert(e.NewStartingIndex, cell);
+
+                        // Set Width.
+                        cell.Width = instance.StripWidth / instance.LowerCellCount;
 
                         // Set Height
                         if (instance.StripMode == LabelStripMode.Dual)
@@ -700,6 +759,12 @@ namespace Dimmer_Labels_Wizard_WPF
                     cell.PropertyChanged -= instance.LowerCell_PropertyChanged;
                     cell.MouseDown -= instance.Cell_MouseDown;
                 }
+            }
+
+            // Set Cell Widths.
+            foreach (var cell in collection)
+            {
+                cell.Width = instance.StripWidth / collection.Count;
             }
 
             // Coercion.

@@ -91,12 +91,14 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="W:" Grid.Row="0" Grid.Column="0"/>
-                        <TextBox Grid.Row="0" Height="20" Width="75" Grid.Column="1"/>
+                        <TextBox Grid.Row="0" Text="{Binding Path=StripWidthmm}"  Height="20" Width="75" Grid.Column="1"/>
                         <Label Content="mm" Grid.Row="0" Grid.Column="2"/>
                         <Label Content="H:" Grid.Row="1" Grid.Column="0"/>
                         <TextBox Grid.Row="1"  Text="{Binding Path=StripHeightmm}" Height="20" Width="75" Grid.Column="1"/>
                         <Label Content="mm" Grid.Row="1" Grid.Column="2"/>
                         <ComboBox x:Name="comboBox" Grid.ColumnSpan="3" ItemsSource="{Binding Path=LabelStripModes}" SelectedItem="{Binding Path=SelectedLabelStripMode}"  HorizontalAlignment="Left" Margin="5" Grid.Row="2" VerticalAlignment="Top" Width="120"/>
+                        <Label Content="W:" Grid.Row="1" Grid.Column="2" Margin="139,0,-132,0"/>
+                        <Label Content="H:" Grid.Row="2" Grid.Column="2" Margin="139,0,-132,6"/>
                     </Grid>
                 </DockPanel>
             </ToolBar>
@@ -113,6 +115,13 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
+                        <Label Content="W:" Grid.Row="0" Grid.Column="0"/>
+                        <Label Content="70" Grid.Row="0" Grid.Column="1"/>
+                        <Label Content="mm" Grid.Row="0" Grid.Column="2"/>
+                        <Label Content="H:" Grid.Row="1" Grid.Column="0"/>
+                        <Label Content="70" Grid.Row="1" Grid.Column="1"/>
+                        <Label Content="mm" Grid.Row="1" Grid.Column="2"/>
+
                         <ComboBox x:Name="comboBox_Copy" HorizontalAlignment="Left" Margin="5" Grid.Row="2" VerticalAlignment="Top" Width="120" Grid.ColumnSpan="3"/>
                     </Grid>
                     <ComboBox Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5"/>

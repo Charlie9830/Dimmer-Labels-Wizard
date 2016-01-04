@@ -19,6 +19,9 @@ namespace Dimmer_Labels_Wizard_WPF
             Units.CollectionChanged += Units_CollectionChanged;
             StripTemplates.CollectionChanged += StripTemplates_CollectionChanged;
 
+            // Global Event Subscriptions.
+            Globals.Strips.CollectionChanged += Strips_CollectionChanged;
+
             #region Testing Code
             // Testing
             Strip strip1 = new Strip();
@@ -70,9 +73,6 @@ namespace Dimmer_Labels_Wizard_WPF
             Globals.Strips.Add(strip2);
             #endregion
 
-            // Global Event Subscriptions.
-            Globals.Strips.CollectionChanged += Strips_CollectionChanged;
-
         }
 
         #region Fields
@@ -101,12 +101,24 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public double StripWidthmm
         {
-            get { return _StripWidthmm; }
+            get { return Math.Round(_StripWidthmm,2); }
             set
             {
                 if (_StripWidthmm != value)
                 {
-                    throw new NotImplementedException();
+                    // Refresh Display Template.
+                    DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
+                    {
+                        StripWidth = value * unitConversionRatio
+                    };
+
+                    // Register
+                    RegisterTemplateChange(nameof(StripWidthmm));
+
+                    _StripWidthmm = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(StripWidthmm));
                 }
             }
         }
@@ -277,8 +289,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
             set
             {
-                _SelectedStrip = value;
-                PresentStripData(value);
+                if (_SelectedStrip != value)
+                {
+                    _SelectedStrip = value;
+                    PresentStripData(value);
+                    OnPropertyChanged(nameof(SelectedStrip));
+                }
+                
             }
         }
 
@@ -342,8 +359,18 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void Strips_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-           
+            var collection = sender as ObservableCollection<Strip>;
             OnPropertyChanged(nameof(Strips));
+
+            if (collection.Count > 0)
+            {
+                SelectedStrip = collection.First();
+            }
+
+            else
+            {
+                SelectedStrip = null;
+            }
         }
 
         private void Units_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -459,10 +486,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Appearance Controls
             _SelectedLabelStripMode = DisplayedTemplate.StripMode;
+            _StripWidthmm = DisplayedTemplate.StripWidth / unitConversionRatio;
             _StripHeightmm = DisplayedTemplate.StripHeight / unitConversionRatio;
 
             // Notify.
             OnPropertyChanged(nameof(SelectedLabelStripMode));
+            OnPropertyChanged(nameof(StripWidthmm));
             OnPropertyChanged(nameof(StripHeightmm));
         }
 
