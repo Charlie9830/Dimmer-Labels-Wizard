@@ -74,6 +74,7 @@
       <DependentUpon>Editor.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorViewModel.cs" />
+    <Compile Include="RelayCommand.cs" />
     <Compile Include="SpecializedCollections.cs" />
     <Compile Include="CellRow.cs" />
     <Compile Include="DataHandling.cs" />

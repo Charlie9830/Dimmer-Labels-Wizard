@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Input;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -71,6 +72,7 @@ namespace Dimmer_Labels_Wizard_WPF
             Globals.Templates.Add(template2);
             Globals.Strips.Add(strip1);
             Globals.Strips.Add(strip2);
+
             #endregion
 
         }
@@ -348,6 +350,10 @@ namespace Dimmer_Labels_Wizard_WPF
             set { _SelectedRows = value; }
         }
 
+
+        #endregion
+
+        #region Commands
 
         #endregion
 
