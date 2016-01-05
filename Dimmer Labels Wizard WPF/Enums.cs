@@ -25,7 +25,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
     public enum LabelStripMode { Single, Dual};
 
-    public enum LabelStripVerticalPosition { Header, Footer};
+    public enum CellVerticalPosition { Upper, Lower};
 
     public enum ScaleDirection { Horizontal, Vertical, Both};
 

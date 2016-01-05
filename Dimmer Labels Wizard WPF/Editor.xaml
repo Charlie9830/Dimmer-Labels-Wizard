@@ -128,9 +128,46 @@
                     <ComboBox Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5"/>
                 </DockPanel>
             </ToolBar>
-            <ToolBar Width="350" Height="120" Header="Row" Background="{StaticResource ToolBarBackgroundKey}"/>
-            <ToolBar Width="350" Height="120" Header="View" Background="{StaticResource ToolBarBackgroundKey}">
-                <Label x:Name="label" Content="Center View, Pan, Zoom In/Out, Zoom to Fit" VerticalAlignment="Top" Margin="0,10,0,0" Height="91" Width="261"/>
+            <ToolBar Width="400" Height="120" Header="Rows" Background="{StaticResource ToolBarBackgroundKey}">
+                <DockPanel>
+                    <ListBox x:Name="listBox" DockPanel.Dock="Left" Height="110" Width="210" VerticalAlignment="Top"/>
+                    <Grid DockPanel.Dock="Right" Width="125" Height="110">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="button2" Content="Add" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75"/>
+                        <Button x:Name="button2_Copy" Content="Remove" Grid.Row="1" Grid.ColumnSpan="2"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="75"/>
+                        <Button x:Name="button2_Copy1" Content="^" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="25"/>
+                        <Button x:Name="button2_Copy2" Content="V" Grid.Row="2" Grid.Column="1"  HorizontalAlignment="Center"  VerticalAlignment="Center" Width="25"/>
+                        <ComboBox x:Name="comboBox1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Width="120"/>
+
+                    </Grid>
+                </DockPanel>
+            </ToolBar>
+            <ToolBar Width="150" Height="120" Header="View" Background="{StaticResource ToolBarBackgroundKey}">
+                <Grid Width="75" Height="110">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="button3" Content="+" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="25"/>
+                    <Button x:Name="button3_Copy" Content="+" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="24" Grid.Column="1"/>
+                    <Button x:Name="button3_Copy1" Content="Fit" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="24" Grid.Row="1"/>
+                    <Button x:Name="button3_Copy2" Content="Pan" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="24" Grid.Row="1" Grid.Column="1"/>
+
+                </Grid>
             </ToolBar>
         </ToolBarTray>
 

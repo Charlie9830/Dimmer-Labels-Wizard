@@ -655,6 +655,9 @@ namespace Dimmer_Labels_Wizard_WPF
                         // Add to StackPanel
                         instance._UpperStackPanel.Children.Insert(e.NewStartingIndex, cell);
 
+                        // Set Vertical Position Flag.
+                        cell.CellVerticalPosition = CellVerticalPosition.Upper;
+
                         // Set Height.
                         if (instance.StripMode == LabelStripMode.Dual)
                         {
@@ -701,6 +704,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 cell.Width = instance.StripWidth / collection.Count;
             }
 
+            // Update Horizontal Position Indexes.
+            for(int index = 0; index < collection.Count; index++)
+            {
+                collection[index].HorizontalIndex = index;
+            }
+
             // Coercion.
             instance.CoerceValue(HeightProperty);
 
@@ -721,6 +730,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         // Add to Stackpanel
                         instance._LowerStackPanel.Children.Insert(e.NewStartingIndex, cell);
+
+                        // Set Vertical Position Flag.
+                        cell.CellVerticalPosition = CellVerticalPosition.Lower;
 
                         // Set Width.
                         cell.Width = instance.StripWidth / instance.LowerCellCount;
@@ -765,6 +777,12 @@ namespace Dimmer_Labels_Wizard_WPF
             foreach (var cell in collection)
             {
                 cell.Width = instance.StripWidth / collection.Count;
+            }
+
+            // Update Horizontal Position Indexes.
+            for (int index = 0; index < collection.Count; index++)
+            {
+                collection[index].HorizontalIndex = index;
             }
 
             // Coercion.

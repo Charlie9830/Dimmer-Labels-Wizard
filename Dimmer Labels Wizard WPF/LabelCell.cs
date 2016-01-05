@@ -105,6 +105,23 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        private CellVerticalPosition _CellVerticalPosition;
+
+        public CellVerticalPosition CellVerticalPosition
+        {
+            get { return _CellVerticalPosition; }
+            set { _CellVerticalPosition = value; }
+        }
+
+        private int _HorizontalIndex;
+
+        public int HorizontalIndex
+        {
+            get { return _HorizontalIndex; }
+            set { _HorizontalIndex = value; }
+        }
+
+
         #endregion
 
         #region Dependency Properties
