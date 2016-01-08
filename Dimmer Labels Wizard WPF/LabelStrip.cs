@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Globalization;
 using System.Printing;
+using System.Diagnostics;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -32,7 +33,6 @@ namespace Dimmer_Labels_Wizard_WPF
             // Collection type Dependency properties.
             SetValue(UpperCellsPropertyKey, new CellCollection(this));
             SetValue(LowerCellsPropertyKey, new CellCollection(this));
-            SetValue(MergedCellReferencesPropertyKey, new Dictionary<LabelCell, List<DimmerDistroUnit>>());
 
             // Initialize
             _UpperStackPanel.Orientation = Orientation.Horizontal;
@@ -121,6 +121,63 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Dependency Properties
 
 
+
+        public IEnumerable<Merge> Mergers
+        {
+            get { return (IEnumerable<Merge>)GetValue(MergersProperty); }
+            set { SetValue(MergersProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Mergers.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MergersProperty =
+            DependencyProperty.Register("Mergers", typeof(IEnumerable<Merge>), typeof(LabelStrip),
+                new PropertyMetadata(null, new PropertyChangedCallback(OnMergersPropertyChanged)));
+
+        private static void OnMergersPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelStrip;
+            INotifyCollectionChanged newCollection = e.NewValue as INotifyCollectionChanged;
+            INotifyCollectionChanged oldCollection = e.OldValue as INotifyCollectionChanged;
+
+            if (oldCollection != null)
+            {
+                oldCollection.CollectionChanged -= instance.Mergers_CollectionChanged;
+            }
+
+            if (newCollection != null)
+            {
+                newCollection.CollectionChanged += instance.Mergers_CollectionChanged;
+
+                // Handle Existing Elements
+                var collection = e.NewValue as IEnumerable<Merge>;
+                foreach (var element in collection)
+                {
+                    instance.Merge(element);
+                }
+            }
+        }
+
+        private void Mergers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (var element in e.NewItems)
+                {
+                    var merge = element as Merge;
+                    Merge(merge);
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (var element in e.OldItems)
+                {
+                    var merge = element as Merge;
+                    DeMerge(merge);
+                }
+            }
+        }
+
         public double StripWidth
         {
             get { return (double)GetValue(StripWidthProperty); }
@@ -200,7 +257,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 // Handle already existing items.
                 instance.RefreshCellDataSources(newCollection as IEnumerable<DimmerDistroUnit>);
-                
             }
         }
 
@@ -477,18 +533,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public Dictionary<LabelCell, List<DimmerDistroUnit>> MergedCellReferences
-        {
-            get { return (Dictionary<LabelCell, List<DimmerDistroUnit>>)GetValue(MergedCellReferencesProperty); }
-        }
-
-        // Using a DependencyProperty as the backing store for MergedCellReferences.  This enables animation, styling, binding, etc...
-        public static readonly DependencyPropertyKey MergedCellReferencesPropertyKey =
-            DependencyProperty.RegisterReadOnly("MergedCellReferences", typeof(Dictionary<LabelCell, List<DimmerDistroUnit>>),
-                typeof(LabelStrip), new FrameworkPropertyMetadata(new Dictionary<LabelCell, List<DimmerDistroUnit>>()));
-
-        public static readonly DependencyProperty MergedCellReferencesProperty = MergedCellReferencesPropertyKey.DependencyProperty;
-
+      
 
 
         public CellCollection UpperCells
@@ -701,11 +746,11 @@ namespace Dimmer_Labels_Wizard_WPF
             // Set Cell Widths.
             foreach (var cell in collection)
             {
-                cell.Width = instance.StripWidth / collection.Count;
+                cell.BaseWidth = instance.StripWidth / instance.DataSource.Count();
             }
 
             // Update Horizontal Position Indexes.
-            for(int index = 0; index < collection.Count; index++)
+            for (int index = 0; index < collection.Count; index++)
             {
                 collection[index].HorizontalIndex = index;
             }
@@ -733,9 +778,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
                         // Set Vertical Position Flag.
                         cell.CellVerticalPosition = CellVerticalPosition.Lower;
-
-                        // Set Width.
-                        cell.Width = instance.StripWidth / instance.LowerCellCount;
 
                         // Set Height
                         if (instance.StripMode == LabelStripMode.Dual)
@@ -776,7 +818,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Set Cell Widths.
             foreach (var cell in collection)
             {
-                cell.Width = instance.StripWidth / collection.Count;
+                cell.BaseWidth = instance.StripWidth / instance.DataSource.Count();
             }
 
             // Update Horizontal Position Indexes.
@@ -968,76 +1010,85 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Public Methods
-        public void Merge(LabelCell target, List<LabelCell> mergingCells)
+        public void Merge(Merge mergeInstructions)
         {
-            // Parameter Checking
-            List<LabelCell> cells = new List<LabelCell>();
-            cells.AddRange(mergingCells);
-            cells.Add(target);
+            // Collect CellsList.
+            ObservableCollection<LabelCell> cellCollection;
 
-            bool isAllUpperCells = cells.Where(item => UpperCells.Contains(item)).Count() == cells.Count;
-            bool isAllLowerCells = cells.Where(item => LowerCells.Contains(item)).Count() == cells.Count;
-
-            if (isAllUpperCells ^ isAllLowerCells == false)
+            if (mergeInstructions.VerticalPosition == CellVerticalPosition.Upper)
             {
-                throw new FormatException("mergingCells and target do not belong to the same Cells Collection.");
+                cellCollection = UpperCells;
+                
+            }
+            else
+            {
+                cellCollection = LowerCells;
             }
 
-            // Function
+            List<LabelCell> cellsList = cellCollection.ToList();
 
-            // Generate and Curate sourceCells.
-            List<LabelCell> sourceCells = new List<LabelCell>(mergingCells);
+            LabelCell primaryCell = cellsList.Find(item => item.DataReference == mergeInstructions.PrimaryUnit);
+            var consumedCells = cellsList.Where(item => mergeInstructions.ConsumedUnits.Contains(item.DataReference));
 
-            if (sourceCells.Contains(target))
+            // Expand primaryCell's Dimensions
+            double newWidth = primaryCell.Width;
+            foreach (var element in consumedCells)
             {
-                sourceCells.Remove(target);
+                newWidth += element.Width;
             }
 
-            // Collect References.
-            if (MergedCellReferences.ContainsKey(target))
+            primaryCell.Width = newWidth;
+            
+            // Remove Consumed Cells via Removal of their Data Source Objects.
+            foreach (var element in consumedCells)
             {
-                // Dictionary entry already exists. Append to Dictionary Value List<> instead.
-                List<DimmerDistroUnit> references = MergedCellReferences[target];
+                cellCollection.Remove(element);
+            }
 
-                foreach (var element in mergingCells)
-                {
-                    if (references.Contains(element.DataReference) == false)
-                    {
-                        references.Add(element.DataReference);
-                    }
-                }
+            // Store consumed Data References.
+            primaryCell.ConsumedReferences = new List<DimmerDistroUnit>(mergeInstructions.ConsumedUnits);
+        }
+
+        public void DeMerge(Merge mergeInstructions)
+        {
+            ObservableCollection<LabelCell> cellCollection;
+
+            if (mergeInstructions.VerticalPosition == CellVerticalPosition.Upper)
+            {
+                cellCollection = UpperCells;
+
+            }
+            else
+            {
+                cellCollection = LowerCells;
+            }
+
+            List<LabelCell> cellsList = cellCollection.ToList();
+
+            LabelCell primaryCell = cellsList.Find(item => item.DataReference == mergeInstructions.PrimaryUnit);
+            int primaryCellIndex = cellsList.IndexOf(primaryCell);
+
+            // Set Primary Cell back to it's Base Dimensions.
+            primaryCell.Width = primaryCell.BaseWidth;
+
+            // Generate new Cells.
+            if (mergeInstructions.VerticalPosition == CellVerticalPosition.Upper)
+            {
+                UpperCellCount += mergeInstructions.ConsumedUnits.Count();
             }
 
             else
             {
-                MergedCellReferences.Add(target, mergingCells.Select(item => item.DataReference).ToList());
-            }
-            
-            // Merge Cells
-            foreach (var element in sourceCells)
-            {
-                LabelStrip.MergeCells(target, element);
+                LowerCellCount += mergeInstructions.ConsumedUnits.Count();
             }
 
-            // Remove sourceCells from Collections.
-            if (isAllUpperCells == true)
-            {
-                foreach (var element in sourceCells)
-                {
-                    UpperCells.Remove(element);
-                }
-            }
+            // Clear Primary Cells ConsumedReferences List.
+            primaryCell.ConsumedReferences.Clear();
 
-            if (isAllLowerCells == true)
-            {
-                foreach (var element in sourceCells)
-                {
-                    LowerCells.Remove(element);
-                }
-            }
+            // Force Refresh of Cell Data References.
+            RefreshCellDataSources(DataSource);
 
         }
-
         #endregion
 
         #region Private or Protected Methods
@@ -1050,16 +1101,55 @@ namespace Dimmer_Labels_Wizard_WPF
             UpperCellCount = newDataSource.Count();
             LowerCellCount = newDataSource.Count();
 
-            // Assign UpperCell Data References.
-            for (int index = 0; index < UpperCells.Count && index < newDataSource.Count(); index++)
+            // Assign UpperCells DataReferences
+            IEnumerator<LabelCell> upperCellsEnum = UpperCells.GetEnumerator();
+            IEnumerator<DimmerDistroUnit> dataSourceEnum = newDataSource.GetEnumerator();
+
+            // Iterate both UpperCells and DataSource.
+            while (upperCellsEnum.MoveNext() && dataSourceEnum.MoveNext())
             {
-                UpperCells[index].DataReference = newDataSource.ElementAt(index);
+                // Set Primary Data Reference.
+                upperCellsEnum.Current.DataReference = dataSourceEnum.Current;
+
+                if (upperCellsEnum.Current.IsMerged == true)
+                {
+                    // Cell is Merged, Set Consumed References.
+                    int consumedReferencesCount = upperCellsEnum.Current.ConsumedReferences.Count;
+
+                    for (int index = 0; index < consumedReferencesCount; index++)
+                    {
+                        if (dataSourceEnum.MoveNext())
+                        {
+                            upperCellsEnum.Current.ConsumedReferences[index] = dataSourceEnum.Current;
+                        }
+                    }
+                }
             }
 
-            // Assign LowerCell Data References.
-            for (int index = 0; index < LowerCells.Count && index < newDataSource.Count(); index++)
+            // Reset
+            dataSourceEnum.Reset();
+
+            IEnumerator<LabelCell> lowerCellsEnum = LowerCells.GetEnumerator();
+
+            // Iterate both LowerCells and DataSource.
+            while (lowerCellsEnum.MoveNext() && dataSourceEnum.MoveNext())
             {
-                LowerCells[index].DataReference = DataSource.ElementAt(index);
+                // Set Primary Data Reference.
+                lowerCellsEnum.Current.DataReference = dataSourceEnum.Current;
+
+                if (lowerCellsEnum.Current.IsMerged == true)
+                {
+                    // Cell is Merged, Set Consumed References.
+                    int consumedReferencesCount = lowerCellsEnum.Current.ConsumedReferences.Count;
+
+                    for (int index = 0; index < consumedReferencesCount; index++)
+                    {
+                        if (dataSourceEnum.MoveNext())
+                        {
+                            upperCellsEnum.Current.ConsumedReferences[index] = dataSourceEnum.Current;
+                        }
+                    }
+                }
             }
         }
 
@@ -1171,16 +1261,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        /// <summary>
-        /// Merges the Secondary cell into the Primary Cell.
-        /// </summary>
-        /// <param name="leftCell"></param>
-        /// <param name="rightCell"></param>
-        /// <returns></returns>
-        private static void MergeCells(LabelCell primaryCell, LabelCell secondaryCell)
-        {
-            primaryCell.Width += secondaryCell.Width;
-        }
 
         #endregion
 

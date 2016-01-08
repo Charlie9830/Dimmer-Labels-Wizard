@@ -23,21 +23,25 @@ namespace Dimmer_Labels_Wizard_WPF
             // Global Event Subscriptions.
             Globals.Strips.CollectionChanged += Strips_CollectionChanged;
 
+            // Commands.
+            _MergeSelectedCellsCommand = new RelayCommand(MergeSelectedCellsExecute, MergeSelectedCellsCanExecute);
+            _SplitSelectedCellsCommand = new RelayCommand(SplitSelectedCellsExecute, SplitSelectedCellsCanExecute);
+
             #region Testing Code
             // Testing
             Strip strip1 = new Strip();
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "101", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 1 });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "102", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 2 });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "103", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 3  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "104", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 4  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "105", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 5  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "106", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 6  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "107", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 7  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "108", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 8  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "109", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 9  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "110", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 10  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "111", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 11  });
-            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "112", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 12 });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "1", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 1 });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "2", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 2 });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "3", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 3  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "4", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 4  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "5", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 5  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "6", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 6  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "7", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 7  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "8", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 8  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "9", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 9  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "10", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 10  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "11", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 11  });
+            strip1.Units.Add(new DimmerDistroUnit() { ChannelNumber = "12", Position = "LX5", InstrumentName = "Alpha", DimmerNumber = 12 });
 
             Strip strip2 = new Strip();
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "81", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 13 });
@@ -53,9 +57,26 @@ namespace Dimmer_Labels_Wizard_WPF
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "91", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 23  });
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "92", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 24  });
 
+            var rowTemplates = new List<CellRowTemplate>();
+            rowTemplates.Add(new CellRowTemplate() { DataField = LabelField.ChannelNumber});
+            var cellTemplate = new LabelCellTemplate(Globals.BaseLabelCellTemplate)
+            {
+                CellDataMode = CellDataMode.MixedField,
+                RowCount = 1,
+                CellRowTemplates = rowTemplates,
+            };
+
+            var cellTemplates = new List<LabelCellTemplate>();
+            for (int count = 0; count < 12; count++)
+            {
+                cellTemplates.Add(cellTemplate);
+            }
+
             var template1 = new LabelStripTemplate(Globals.BaseLabelStripTemplate);
             template1.Name = "template1, Based on BaseLabelStripTemplate";
             template1.StripMode = LabelStripMode.Dual;
+            template1.UpperCellTemplates = cellTemplates;
+            template1.LowerCellTemplates = cellTemplates;
 
             var template2 = new LabelStripTemplate(template1);
             template2.Name = "template2, Based on template1";
@@ -99,6 +120,15 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region CLR Properties - Binding Targets
+        private ObservableCollection<Merge> _Mergers = new ObservableCollection<Merge>();
+
+        public ObservableCollection<Merge> Mergers
+        {
+            get { return _Mergers; }
+            set { _Mergers = value; }
+        }
+
+
         private double _StripWidthmm;
 
         public double StripWidthmm
@@ -341,6 +371,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+
         #region CLR Properties.
         private ObservableCollection<CellRow> _SelectedRows = new ObservableCollection<CellRow>();
 
@@ -354,7 +385,70 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Commands
+        // Merge Cells
+        private RelayCommand _MergeSelectedCellsCommand;
 
+        public ICommand MergeSelectedCellsCommand
+        {
+            get
+            {
+                return _MergeSelectedCellsCommand;
+            }
+        }
+
+        protected void MergeSelectedCellsExecute(object parameter)
+        {
+            MergeSelections();
+        }
+
+        protected bool MergeSelectedCellsCanExecute(object parameter)
+        {
+            if (SelectedCells.Count <= 1)
+            {
+                // No Cells Selected.
+                return false;
+            }
+
+            if (SelectedCells.All(item => item.CellVerticalPosition == CellVerticalPosition.Upper) ^
+            SelectedCells.All(item => item.CellVerticalPosition == CellVerticalPosition.Lower))
+            {
+                // Cell selection bridges between Upper and Lower Cells
+                return true;
+            }
+
+            return false;
+        }
+
+
+
+        // Split Cells / DeMerge Cells.
+        private RelayCommand _SplitSelectedCellsCommand;
+
+        public ICommand SplitSelectedCellsCommand
+        {
+            get
+            {
+                return _SplitSelectedCellsCommand;
+            }
+        }
+
+        protected void SplitSelectedCellsExecute(object parameter)
+        {
+            DeMergeSelections();
+        }
+
+        protected bool SplitSelectedCellsCanExecute(object parameter)
+        {
+            if (SelectedCells.All(item => item.IsMerged == true))
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+        }
         #endregion
 
         #region Event Handlers
@@ -402,8 +496,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Connect Event handler for future Row Selection changes.
                     cell.SelectedRows.CollectionChanged += SelectedCells_SelectedRows_CollectionChanged;
                 }
-
-                OnPropertyChanged(nameof(SelectedCells));
             }
 
             if (e.OldItems != null)
@@ -414,10 +506,15 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     cell.SelectedRows.CollectionChanged -= SelectedCells_SelectedRows_CollectionChanged;
                 }
-
-                OnPropertyChanged(nameof(SelectedData));
-                OnPropertyChanged(nameof(SelectedCells));
             }
+
+            // Property Notifications
+            OnPropertyChanged(nameof(SelectedData));
+            OnPropertyChanged(nameof(SelectedCells));
+
+            // Command CanExecute Notifications.
+            _MergeSelectedCellsCommand.RaiseCanExecute();
+            _SplitSelectedCellsCommand.RaiseCanExecute();
         }
 
         private void SelectedRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -602,6 +699,41 @@ namespace Dimmer_Labels_Wizard_WPF
             while (SelectedCells.Count > 0)
             {
                 SelectedCells.RemoveAt(SelectedCells.Count - 1);
+            }
+        }
+
+        public void MergeSelections()
+        {
+            if (SelectedCells.Count > 1)
+            {
+                if (SelectedCells.All(item => item.CellVerticalPosition == CellVerticalPosition.Upper))
+                {
+                    // All Uppercells.
+                    DimmerDistroUnit primaryUnit = SelectedCells.First().DataReference;
+
+                    var consumedUnits = new List<DimmerDistroUnit>();
+
+                    for (int index = 1; index < SelectedCells.Count; index++)
+                    {
+                        consumedUnits.Add(SelectedCells[index].DataReference);
+                    }
+
+                    Mergers.Add(new Merge(CellVerticalPosition.Upper, primaryUnit, consumedUnits));
+                }
+            }
+        }
+
+        public void DeMergeSelections()
+        {
+
+            // Generate a collection of Merge objects to be removed.
+            var deMergingCells = SelectedCells.Where(item => item.IsMerged == true);
+            var primaryUnits = deMergingCells.Select(item => item.DataReference);
+            var merges = Mergers.Where(item => primaryUnits.Contains(item.PrimaryUnit)).ToList();
+
+            foreach (var element in merges)
+            {
+                Mergers.Remove(element);
             }
         }
         #endregion

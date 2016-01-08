@@ -30,9 +30,6 @@ namespace Dimmer_Labels_Wizard_WPF
             unit.Position = "Position";
             unit.InstrumentName = "Polaris";
             unit.MulticoreName = "LX2A";
-
-            labelCell.DataReference = unit;
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

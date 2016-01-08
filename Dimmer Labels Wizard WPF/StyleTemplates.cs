@@ -116,7 +116,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region Styling Values.
-        // StripWdith
+        // StripWidth
         public double StripWidth
         {
             get
@@ -241,16 +241,42 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        // Width.
-        public double Width
+        // SingleField Font
+        public Typeface SingleFieldFont
         {
             get
             {
-                return (double)GetSetterValue(LabelCell.WidthProperty);
+                return (Typeface)GetSetterValue(LabelCell.SingleFieldFontProperty);
             }
             set
             {
-                SetSetterValue(LabelCell.WidthProperty, value);
+                SetSetterValue(LabelCell.SingleFieldFontProperty, value);
+            }
+        }
+
+        // SingleFieldDesiredFontSize
+        public double SingleFieldDesiredFontSize
+        {
+            get
+            {
+                return (double)GetSetterValue(LabelCell.SingleFieldDesiredFontSizeProperty);
+            }
+            set
+            {
+                SetSetterValue(LabelCell.SingleFieldDesiredFontSizeProperty, value);
+            }
+        }
+
+        // SingleFieldDataField
+        public LabelField SingleFieldDataField
+        {
+            get
+            {
+                return (LabelField)GetSetterValue(LabelCell.SingleFieldDataFieldProperty);
+            }
+            set
+            {
+                SetSetterValue(LabelCell.SingleFieldDataFieldProperty, value);
             }
         }
 
@@ -325,6 +351,12 @@ namespace Dimmer_Labels_Wizard_WPF
         public CellRowTemplate()
         {
             TargetType = typeof(CellRow);
+        }
+
+        public CellRowTemplate(CellRowTemplate basedOn)
+        {
+            TargetType = typeof(CellRow);
+            BasedOn = basedOn;
         }
 
         // DataField.

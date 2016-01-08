@@ -15,6 +15,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public RelayCommand(Action<object> action)
         {
             _Action = action;
+            _CanExecute = item => true;
         }
 
         public RelayCommand(Action<object> action, Func<object, bool> canExecute)
@@ -34,5 +35,11 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             _Action(parameter);
         }
+
+        public void RaiseCanExecute()
+        {
+            CanExecuteChanged(this, new EventArgs());
+        }
+
     }
 }

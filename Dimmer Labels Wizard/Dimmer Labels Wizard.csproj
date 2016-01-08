@@ -219,6 +219,7 @@
       <DependentUpon>LabelSetupPart2.cs</DependentUpon>
     </Compile>
     <Compile Include="LabelStripSelection.cs" />
+    <Compile Include="Merge.cs" />
     <Compile Include="Output.cs" />
     <Compile Include="PrintRangeControl.xaml.cs">
       <DependentUpon>PrintRangeControl.xaml</DependentUpon>

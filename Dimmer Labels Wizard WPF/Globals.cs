@@ -33,6 +33,9 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             CellDataMode = CellDataMode.MixedField,
             RowCount = 0,
+            SingleFieldFont = new Typeface("Arial"),
+            SingleFieldDesiredFontSize = 12,
+            SingleFieldDataField = LabelField.NoAssignment,
             RowHeightMode = CellRowHeightMode.Static,
             LeftWeight = 1d,
             TopWeight = 1d,

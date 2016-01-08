@@ -71,10 +71,27 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Collection Type Dependency Properties.
             SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
+            SetValue(ConsumedReferencesPropertyKey, new List<DimmerDistroUnit>());
         }
         #endregion
 
         #region CLR Properties
+        public bool IsMerged
+        {
+            get
+            {
+                return ConsumedReferences.Count > 0;
+            }
+        }
+
+        public int ConsumedReferencesCount
+        {
+            get
+            {
+                return ConsumedReferences.Count;
+            }
+        }
+
         /// <summary>
         /// The Grid in which CellRow's and their Child elements are Displayed.
         /// </summary>
@@ -125,7 +142,42 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+        public double BaseWidth
+        {
+            get { return (double)GetValue(BaseWidthProperty); }
+            set { SetValue(BaseWidthProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for BaseWidth.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BaseWidthProperty =
+            DependencyProperty.Register("BaseWidth", typeof(double), typeof(LabelCell),
+                new FrameworkPropertyMetadata(70d, new PropertyChangedCallback(OnBaseWidthPropertyChanged),
+                    new CoerceValueCallback(CoerceBaseWidth)));
+
+        private static object CoerceBaseWidth(DependencyObject d, object value)
+        {
+            var baseWidth = (double)value;
+
+            if (baseWidth < 0)
+            {
+                return 0d;
+            }
+            
+            else
+            {
+                return baseWidth;
+            }
+               
+        }
+
+        private static void OnBaseWidthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            var newValue = (double)e.NewValue;
+            int widthMultiplier = instance.ConsumedReferencesCount + 1;
+
+            instance.Width = newValue * widthMultiplier;
+        }
 
         public DimmerDistroUnit DataReference
         {
@@ -180,6 +232,19 @@ namespace Dimmer_Labels_Wizard_WPF
             }
             
         }
+
+
+        public List<DimmerDistroUnit> ConsumedReferences
+        {
+            get { return (List<DimmerDistroUnit>)GetValue(ConsumedReferencesProperty); }
+            set { SetValue(ConsumedReferencesPropertyKey, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ConsumedReferences.  This enables animation, styling, binding, etc...
+        public static readonly DependencyPropertyKey ConsumedReferencesPropertyKey =
+            DependencyProperty.RegisterReadOnly("ConsumedReferences", typeof(List<DimmerDistroUnit>), typeof(LabelCell), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty ConsumedReferencesProperty = ConsumedReferencesPropertyKey.DependencyProperty;
 
         public List<CellRowTemplate> RowTemplates
         {
@@ -271,15 +336,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public bool IsMerged
-        {
-            get { return (bool)GetValue(IsMergedProperty); }
-            set { SetValue(IsMergedProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsMerged.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsMergedProperty =
-            DependencyProperty.Register("IsMerged", typeof(bool), typeof(LabelCell), new FrameworkPropertyMetadata(false));
 
 
         public double LeftWeight
@@ -1119,6 +1175,14 @@ namespace Dimmer_Labels_Wizard_WPF
                 if (DataReference != null)
                 {
                     DataReference.SetData(cellRow.Data, cellRow.DataField);
+
+                    if (IsMerged == true)
+                    {
+                        foreach (var element in ConsumedReferences)
+                        {
+                            element.SetData(cellRow.Data, cellRow.DataField);
+                        }
+                    }
                 }
 
                 // Assign Data Layout(s).
@@ -1639,93 +1703,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
-        #region Serialization Methods
-        public void RebuildLabelCell(LabelCellStorage storage)
-        {
-            ByteColor textColor = storage.TextColor;
-            ByteColor backgroundColor = storage.BackgroundColor;
 
-            _TextBrush = new SolidColorBrush(storage.TextColor.ToColor());
-            _Background = new SolidColorBrush(storage.BackgroundColor.ToColor());
-        }
 
-        public LabelCellStorage GenerateLabelCellStorage()
-        {
-            LabelCellStorage storage = new LabelCellStorage();
-
-            storage.TextColor = new ByteColor(_TextBrush.Color);
-            storage.BackgroundColor = new ByteColor(_Background.Color);
-
-            storage.PreviousReference = DataReference;
-
-            return storage;
-        }
-        #endregion
-
-        #region Methods for Inhertitated Classes
-        public static Typeface RebuildFont(string fontFamilyName, int openTypeFontWeight, string fontStyle)
-        {
-            FontFamily fontFamily = new FontFamily(fontFamilyName);
-            FontWeight fontWeight = FontWeight.FromOpenTypeWeight(openTypeFontWeight);
-
-            FontStyle style = new FontStyle();
-            switch (fontStyle)
-            {
-                case "Normal":
-                    style = FontStyles.Normal;
-                    break;
-                case "Italic":
-                    style = FontStyles.Italic;
-                    break;
-                case "Oblique":
-                    style = FontStyles.Oblique;
-                    break;
-                default:
-                    style = FontStyles.Normal;
-                    break;
-            }
-
-            return new Typeface(fontFamily, style, fontWeight, new FontStretch());
-        }
-
-        #endregion
-    }
-   
-    public class LabelCellStorage
-    {
-        public DimmerDistroUnit PreviousReference;
-
-        public ByteColor TextColor;
-        public ByteColor BackgroundColor;
-    }
-
-    
-    public struct ByteColor
-    {
-        public ByteColor(byte a, byte r, byte g, byte b)
-        {
-            A = a;
-            R = r;
-            G = g;
-            B = b;
-        }
-
-        public ByteColor(Color color)
-        {
-            A = color.A;
-            R = color.R;
-            G = color.G;
-            B = color.B;      
-        }
-
-        public byte A;
-        public byte R;
-        public byte G;
-        public byte B;
-
-        public Color ToColor()
-        {
-            return Color.FromArgb(A, R, G, B);
-        }
     }
 }
