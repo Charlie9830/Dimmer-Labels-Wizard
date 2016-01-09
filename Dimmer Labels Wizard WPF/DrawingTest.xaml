@@ -23,7 +23,6 @@
 
         <Style x:Key="testStyle" TargetType="local:LabelStrip">
             <Style.Setters>
-                <Setter Property="LineWeight" Value="1"/>
                 <Setter Property="StripMode" Value="Dual"/>
                 <Setter Property="UpperCellCount" Value="1"/>
                 <Setter Property="LowerCellCount" Value="1"/>

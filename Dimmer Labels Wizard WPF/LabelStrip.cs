@@ -276,12 +276,20 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as LabelStrip;
             var templates = e.NewValue as IEnumerable<LabelCellTemplate>;
+            int templatesCount = templates.Count();
             var upperCells = instance.UpperCells;
+            int upperCellsCount = instance.UpperCells.Count;
 
             // Push changed style to Upper Cell Elements.
-            for (int index = 0; index < templates.Count() && index < upperCells.Count; index++ )
+            for (int index = 0; index < templatesCount && index < upperCellsCount; index++ )
             {
                 upperCells[index].Style = templates.ElementAt(index);
+
+                if (upperCells[index].IsMerged == true)
+                {
+                    // Cell is Merged, Skip Index past it's consumed Cells.
+                    index += upperCells[index].ConsumedReferencesCount;
+                }
             }
         }
 
@@ -301,12 +309,20 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as LabelStrip;
             var templates = e.NewValue as IEnumerable<LabelCellTemplate>;
+            int templatesCount = templates.Count();
             var lowerCells = instance.LowerCells;
+            int lowerCellsCount = instance.LowerCells.Count;
 
             // Push changed style to Upper Cell Elements.
-            for (int index = 0; index < templates.Count() && index < lowerCells.Count; index++ )
+            for (int index = 0; index < templatesCount && index < lowerCellsCount; index++ )
             {
                 lowerCells[index].Style = templates.ElementAt(index);
+
+                if (lowerCells[index].IsMerged == true)
+                {
+                    // Cell is Merged, Skip Index past it's consumed Cells.
+                    index += lowerCells[index].ConsumedReferencesCount;
+                }
             }
         }
 
@@ -345,58 +361,6 @@ namespace Dimmer_Labels_Wizard_WPF
             AdjustCellHeights(instance);
 
             instance.CoerceValue(HeightProperty);
-        }
-
-        public double LineWeight
-        {
-            get { return (double)GetValue(LineWeightProperty); }
-            set { SetValue(LineWeightProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for LineWeight.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty LineWeightProperty =
-            DependencyProperty.Register("LineWeight", typeof(double),
-                typeof(LabelStrip), new FrameworkPropertyMetadata(1d, new PropertyChangedCallback(OnLineWeightPropertyChanged),
-                    new CoerceValueCallback(CoerceLineWeight)));
-
-        private static object CoerceLineWeight(DependencyObject d, object value)
-        {
-            double lineWeight = (double)value;
-
-            if (lineWeight < 0d)
-            {
-                return 0d;
-            }
-
-            else
-            {
-                return lineWeight;
-            }
-        }
-
-        private static void OnLineWeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as LabelStrip;
-            double lineWeight = (double)e.NewValue;
-            CellCollection upperCells = instance.UpperCells;
-            CellCollection lowerCells = instance.LowerCells;
-
-            foreach (var element in upperCells)
-            {
-                element.LeftWeight = lineWeight;
-                element.TopWeight = lineWeight;
-                element.RightWeight = lineWeight;
-                element.BottomWeight = lineWeight;
-            }
-
-            foreach (var element in lowerCells)
-            {
-                element.LeftWeight = lineWeight;
-                element.TopWeight = lineWeight;
-                element.RightWeight = lineWeight;
-                element.BottomWeight = lineWeight;
-            }
-            
         }
 
         public int UpperCellCount
@@ -737,6 +701,19 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Remove from StackPanel.
                     instance._UpperStackPanel.Children.Remove(cell);
 
+                    // Deselect if Selected.
+                    if (cell.IsSelected == true)
+                    {
+                        cell.IsSelected = false;
+                        ((IList<LabelCell>)instance.SelectedCells).Remove(cell);
+                    }
+
+                    // Reset Merge Flags if Merged.
+                    if (cell.IsMerged == true)
+                    {
+                        cell.ConsumedReferences.Clear();
+                    }
+
                     // Disconnect Event Handler.
                     cell.PropertyChanged -= instance.UpperCell_PropertyChanged;
                     cell.MouseDown -= instance.Cell_MouseDown;
@@ -808,8 +785,24 @@ namespace Dimmer_Labels_Wizard_WPF
                 foreach (var element in e.OldItems)
                 {
                     var cell = element as LabelCell;
+
+                    // Remove from StackPanel.
                     instance._LowerStackPanel.Children.Remove(cell);
 
+                    // Deselect if Selected.
+                    if (cell.IsSelected == true)
+                    {
+                        cell.IsSelected = false;
+                        ((IList<LabelCell>)instance.SelectedCells).Remove(cell);
+                    }
+
+                    // Reset Merge Flags if Merged.
+                    if (cell.IsMerged == true)
+                    {
+                        cell.ConsumedReferences.Clear();
+                    }
+
+                    // Disconnect Event Handlers.
                     cell.PropertyChanged -= instance.LowerCell_PropertyChanged;
                     cell.MouseDown -= instance.Cell_MouseDown;
                 }
@@ -1038,15 +1031,35 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             primaryCell.Width = newWidth;
-            
-            // Remove Consumed Cells via Removal of their Data Source Objects.
+
+            // Store consumed Data References.
+            primaryCell.ConsumedReferences = new List<DimmerDistroUnit>(mergeInstructions.ConsumedUnits);
+
+            // Push Primary Cell Data to consumed Units.
+            if (primaryCell.CellDataMode == CellDataMode.SingleField)
+            {
+                foreach (var element in primaryCell.ConsumedReferences)
+                {
+                    element.SetData(primaryCell.SingleFieldData, primaryCell.SingleFieldDataField);
+                }
+            }
+
+            else
+            {
+                foreach (var row in primaryCell.Rows)
+                {
+                    foreach (var unit in primaryCell.ConsumedReferences)
+                    {
+                        unit.SetData(row.Data, row.DataField);
+                    }
+                }
+            }
+
+            // Remove Consumed Cells from Collection.
             foreach (var element in consumedCells)
             {
                 cellCollection.Remove(element);
             }
-
-            // Store consumed Data References.
-            primaryCell.ConsumedReferences = new List<DimmerDistroUnit>(mergeInstructions.ConsumedUnits);
         }
 
         public void DeMerge(Merge mergeInstructions)
@@ -1066,21 +1079,28 @@ namespace Dimmer_Labels_Wizard_WPF
             List<LabelCell> cellsList = cellCollection.ToList();
 
             LabelCell primaryCell = cellsList.Find(item => item.DataReference == mergeInstructions.PrimaryUnit);
+
+            if (primaryCell == null)
+            {
+                // This LabelStrip does not hold a Cell matching that Data Reference currently. Operation can not
+                // continue.
+                return;
+            }
+
             int primaryCellIndex = cellsList.IndexOf(primaryCell);
 
             // Set Primary Cell back to it's Base Dimensions.
             primaryCell.Width = primaryCell.BaseWidth;
 
-            // Generate new Cells.
-            if (mergeInstructions.VerticalPosition == CellVerticalPosition.Upper)
+            // Re Insert Consumed Cells into Collection.
+            int consumedCellsCount = primaryCell.ConsumedReferencesCount;
+            for (int index = primaryCellIndex + 1, count = 1; count <= consumedCellsCount; index++, count++ )
             {
-                UpperCellCount += mergeInstructions.ConsumedUnits.Count();
+                // Cell initilization will be finshed by CollectionChangedEvent. Data Reference will be assigned by
+                // RefreshCellDataSources().
+                cellCollection.Insert(index, new LabelCell());
             }
-
-            else
-            {
-                LowerCellCount += mergeInstructions.ConsumedUnits.Count();
-            }
+            
 
             // Clear Primary Cells ConsumedReferences List.
             primaryCell.ConsumedReferences.Clear();
@@ -1093,13 +1113,32 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Private or Protected Methods
         /// <summary>
-        /// Refreshes Cell Collections with new Data Source.
+        /// Refreshes Cell Collections with new Data Source. Will adjust Collection sizes.
         /// </summary>
         /// <param name="newDataSource"></param>
         private void RefreshCellDataSources(IEnumerable<DimmerDistroUnit> newDataSource)
         {
-            UpperCellCount = newDataSource.Count();
-            LowerCellCount = newDataSource.Count();
+            int upperTotalConsumedUnits = 0;
+            int lowerTotalConsumedUnits = 0;
+
+            if (Mergers != null)
+            {
+                foreach (var element in Mergers)
+                {
+                    if (element.VerticalPosition == CellVerticalPosition.Upper)
+                    {
+                        upperTotalConsumedUnits += element.ConsumedUnits.Count;
+                    }
+
+                    else if (element.VerticalPosition == CellVerticalPosition.Lower)
+                    {
+                        lowerTotalConsumedUnits += element.ConsumedUnits.Count;
+                    }
+                }
+            }
+
+            UpperCellCount = newDataSource.Count() - upperTotalConsumedUnits;
+            LowerCellCount = newDataSource.Count() - lowerTotalConsumedUnits;
 
             // Assign UpperCells DataReferences
             IEnumerator<LabelCell> upperCellsEnum = UpperCells.GetEnumerator();
@@ -1146,7 +1185,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         if (dataSourceEnum.MoveNext())
                         {
-                            upperCellsEnum.Current.ConsumedReferences[index] = dataSourceEnum.Current;
+                            lowerCellsEnum.Current.ConsumedReferences[index] = dataSourceEnum.Current;
                         }
                     }
                 }

@@ -47,6 +47,9 @@
                 <StatusBarItem HorizontalAlignment="Left" Width="400">
                     <TextBlock Text="C://Windows/Users/ExampleUser/ExampleFilePath.lab"/>
                 </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Left" Width="400">
+                    <TextBlock Text="{Binding Path=DebugOutput}"/>
+                </StatusBarItem>
             </StatusBar>
         </Border>
         <Menu x:Name="MainMenu" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Top" Width="auto">
