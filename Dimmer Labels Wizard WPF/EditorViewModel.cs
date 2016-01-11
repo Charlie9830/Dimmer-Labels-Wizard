@@ -786,7 +786,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public void DeMergeSelections()
         {
-
             // Generate a collection of Merge objects to be removed.
             var deMergingCells = SelectedCells.Where(item => item.IsMerged == true);
             var primaryUnits = deMergingCells.Select(item => item.DataReference);
