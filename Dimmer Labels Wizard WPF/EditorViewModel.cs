@@ -122,6 +122,16 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region CLR Properties - Binding Targets
+        private ObservableCollection<DimmerDistroUnit> _SelectedUnits = new ObservableCollection<DimmerDistroUnit>();
+
+        public ObservableCollection<DimmerDistroUnit> SelectedUnits
+        {
+            get { return _SelectedUnits; }
+            set { _SelectedUnits = value; }
+        }
+
+
+
         private ObservableCollection<Merge> _Mergers = new ObservableCollection<Merge>();
 
         public ObservableCollection<Merge> Mergers
@@ -501,6 +511,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            var collection = sender as ObservableCollection<LabelCell>;
 
             if (e.NewItems != null)
             {
@@ -516,6 +527,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Connect Event handler for future Row Selection changes.
                     cell.SelectedRows.CollectionChanged += SelectedCells_SelectedRows_CollectionChanged;
+
+                    // Push DataReference to Selected Cells
+                    if (SelectedUnits.Contains(cell.DataReference) == false)
+                    {
+                        SelectedUnits.Add(cell.DataReference);
+                    }
+
                 }
             }
 
@@ -526,6 +544,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     var cell = element as LabelCell;
 
                     cell.SelectedRows.CollectionChanged -= SelectedCells_SelectedRows_CollectionChanged;
+
+                    // Remove Unit from Selected Units.
+                    SelectedUnits.Remove(cell.DataReference);
                 }
             }
 

@@ -205,13 +205,19 @@
         </Expander>
         <Expander Background="LightGray" x:Name="expanderRight" Header="Database" ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="3" VerticalAlignment="Stretch" Grid.Column="2">
             <Grid Background="LightGray" Width="250">
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                                
                 <!-- Left Hand Column -->
-                <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <Label Content="Dimmer Number" Height="25" Margin="5"/>
                     <Label Content="Channel Number" Height="25" Margin="5"/>
                     <Label Content="Position" Height="25" Margin="5"/>
@@ -225,18 +231,18 @@
                 </StackPanel>
 
                 <!-- Right Hand Column-->
-                <StackPanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <TextBox HorizontalAlignment="Stretch" Width="125" Height="20" Margin="7.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125" Height="20" Margin="7.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125" Height="20" Margin="7.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125" Height="20" Margin="7.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125" Height="20" Margin="7.5"/>
                     <Separator Width="auto" Margin="5"/>
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
-                    <TextBox HorizontalAlignment="Stretch" Width="125"  Margin="6.5"/>
-                </StackPanel>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Height="20" Margin="7.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Height="20" Margin="7.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Height="20" Margin="7.5"/>
+                    <TextBox HorizontalAlignment="Stretch" Width="125"  Height="20" Margin="7.5"/>
+                </StackPanel>                                           
             </Grid>
         </Expander>
 
