@@ -396,6 +396,11 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+        public override string ToString()
+        {
+            return "Dimmer Number: " + DimmerNumber.ToString();
+        }
+
         // Provides easier accsess when using Switch Statements to GetData Based on LabelField.
         public string GetData(LabelField labelField)
         {

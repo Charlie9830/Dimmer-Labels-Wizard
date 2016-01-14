@@ -19,6 +19,7 @@ namespace Dimmer_Labels_Wizard_WPF
             SelectedRows.CollectionChanged += SelectedRows_CollectionChanged;
             Units.CollectionChanged += Units_CollectionChanged;
             StripTemplates.CollectionChanged += StripTemplates_CollectionChanged;
+            SelectedUnits.CollectionChanged += SelectedUnits_CollectionChanged;
 
             // Global Event Subscriptions.
             Globals.Strips.CollectionChanged += Strips_CollectionChanged;
@@ -121,7 +122,280 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #endregion
 
-        #region CLR Properties - Binding Targets
+        #region CLR Properties - Binding Target.
+        private bool _DatabaseChannelNumberEnable = true;
+
+        public bool DatabaseChannelNumberEnable
+        {
+            get { return _DatabaseChannelNumberEnable; }
+            protected set
+            {
+                if (_DatabaseChannelNumberEnable != value)
+                {
+                    _DatabaseChannelNumberEnable = value;
+                    OnPropertyChanged(nameof(DatabaseChannelNumberEnable));
+                }
+            }
+        }
+
+        private bool _DatabaseInstrumentNameEnable = true;
+
+        public bool DatabaseInstrumentNameEnable
+        {
+            get { return _DatabaseInstrumentNameEnable; }
+            protected set
+            {
+                if (_DatabaseInstrumentNameEnable != value)
+                {
+                    _DatabaseInstrumentNameEnable = value;
+                    OnPropertyChanged(nameof(DatabaseInstrumentNameEnable));
+                }
+            }
+        }
+
+
+        private bool _DatabasePositionEnable = true;
+
+        public bool DatabasePositionEnable
+        {
+            get { return _DatabasePositionEnable; }
+            protected set
+            {
+                if (_DatabasePositionEnable != value)
+                {
+                    _DatabasePositionEnable = value;
+                    OnPropertyChanged(nameof(DatabasePositionEnable));
+                }
+            }
+        }
+
+        private bool _DatabaseMulticoreNameEnable = true;
+
+        public bool DatabaseMulticoreNameEnable
+        {
+            get { return _DatabaseMulticoreNameEnable; }
+            protected set
+            {
+                if (_DatabaseMulticoreNameEnable != value)
+                {
+                    _DatabaseMulticoreNameEnable = value;
+                    OnPropertyChanged(nameof(DatabaseMulticoreNameEnable));
+                }
+            }
+        }
+
+
+        private bool _DatabaseUserField1Enable = true;
+
+        public bool DatabaseUserField1Enable
+        {
+            get { return _DatabaseUserField1Enable; }
+            protected set
+            {
+                if (_DatabaseUserField1Enable != value)
+                {
+                    _DatabaseUserField1Enable = value;
+                    OnPropertyChanged(nameof(DatabaseUserField1Enable));
+                }
+            }
+        }
+
+        private bool _DatabaseUserField2Enable = true;
+
+        public bool DatabaseUserField2Enable
+        {
+            get { return _DatabaseUserField2Enable; }
+            protected set
+            {
+                if (_DatabaseUserField2Enable != value)
+                {
+                    _DatabaseUserField2Enable = value;
+                    OnPropertyChanged(nameof(DatabaseUserField2Enable));
+                }
+            }
+        }
+
+        private bool _DatabaseUserField3Enable = true;
+
+        public bool DatabaseUserField3Enable
+        {
+            get { return _DatabaseUserField3Enable; }
+            protected set
+            {
+                if (_DatabaseUserField3Enable != value)
+                {
+                    _DatabaseUserField3Enable = value;
+                    OnPropertyChanged(nameof(DatabaseUserField3Enable));
+                }
+            }
+        }
+
+
+        private bool _DatabaseUserField4Enable = true;
+
+        public bool DatabaseUserField4Enable
+        {
+            get { return _DatabaseUserField4Enable; }
+            protected set
+            {
+                if (_DatabaseUserField4Enable != value)
+                {
+                    _DatabaseUserField4Enable = value;
+                    OnPropertyChanged(nameof(DatabaseUserField4Enable));
+                }
+            }
+        }
+
+        public int DatabaseDimmerNumber
+        {
+            get
+            {
+                if (SelectedDatabaseUnit != null)
+                {
+                    return SelectedDatabaseUnit.DimmerNumber;
+                }
+
+                else
+                {
+                    return 0;
+                }
+            }
+
+            set
+            {
+                if (SelectedDatabaseUnit != null)
+                {
+                    SelectedDatabaseUnit.DimmerNumber = value;
+                    OnPropertyChanged(nameof(DatabaseDimmerNumber));
+                }
+            }
+        }
+
+        public string DatabaseChannelNumber
+        {
+            get
+            {
+                return GetDatabaseData(LabelField.ChannelNumber);
+            }
+            set
+            {
+                SetDatabaseData(LabelField.ChannelNumber, value);
+            }
+        }
+
+        public string DatabaseInstrumentName
+        {
+            get
+            {
+                return GetDatabaseData(LabelField.InstrumentName);
+            }
+            set
+            {
+                SetDatabaseData(LabelField.InstrumentName, value);
+            }
+        }
+
+        public string DatabasePosition
+        {
+            get
+            {
+                return GetDatabaseData(LabelField.Position);
+            }
+            set
+            {
+                SetDatabaseData(LabelField.Position, value);
+            }
+        }
+
+        public string DatabaseMulticoreName
+        {
+            get
+            {
+                return GetDatabaseData(LabelField.MulticoreName);
+            }
+            set
+            {
+                SetDatabaseData(LabelField.MulticoreName, value);
+            }
+        }
+
+        public string DatabaseUserField1
+        {
+            get
+            {
+                return GetDatabaseData(LabelField.UserField1);
+            }
+            set
+            {
+                SetDatabaseData(LabelField.UserField1, value);
+            }
+        }
+
+        public string DatabaseUserField2
+        {
+            get
+            {
+                return GetDatabaseData(LabelField.UserField2);
+            }
+            set
+            {
+                SetDatabaseData(LabelField.UserField2, value);
+            }
+        }
+
+        public string DatabaseUserField3
+        {
+            get
+            {
+                return GetDatabaseData(LabelField.UserField3);
+            }
+            set
+            {
+                SetDatabaseData(LabelField.UserField3, value);
+            }
+        }
+
+        public string DatabaseUserField4
+        {
+            get
+            {
+                return GetDatabaseData(LabelField.UserField4);
+            }
+            set
+            {
+                SetDatabaseData(LabelField.UserField4, value);
+            }
+        }
+
+        private DimmerDistroUnit _SelectedDatabaseUnit = new DimmerDistroUnit();
+
+        public DimmerDistroUnit SelectedDatabaseUnit
+        {
+            get { return _SelectedDatabaseUnit; }
+            set
+            {
+                if (_SelectedDatabaseUnit != value)
+                {
+                    _SelectedDatabaseUnit = value;
+                    OnPropertyChanged(nameof(SelectedDatabaseUnit));
+
+                    // Set Property Grid Enables.
+                    SetPropertyGridEnables(SelectedCells.FirstOrDefault(), value);
+
+                    // Notify Property Grid
+                    OnPropertyChanged(nameof(DatabaseDimmerNumber));
+                    OnPropertyChanged(nameof(DatabaseChannelNumber));
+                    OnPropertyChanged(nameof(DatabaseInstrumentName));
+                    OnPropertyChanged(nameof(DatabasePosition));
+                    OnPropertyChanged(nameof(DatabaseMulticoreName));
+                    OnPropertyChanged(nameof(DatabaseUserField1));
+                    OnPropertyChanged(nameof(DatabaseUserField2));
+                    OnPropertyChanged(nameof(DatabaseUserField3));
+                    OnPropertyChanged(nameof(DatabaseUserField4));
+                }
+            }
+        }
+
         private ObservableCollection<DimmerDistroUnit> _SelectedUnits = new ObservableCollection<DimmerDistroUnit>();
 
         public ObservableCollection<DimmerDistroUnit> SelectedUnits
@@ -509,6 +783,21 @@ namespace Dimmer_Labels_Wizard_WPF
 
         }
 
+        private void SelectedUnits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var collection = sender as ObservableCollection<DimmerDistroUnit>;
+
+            if (collection.Count > 0)
+            {
+                SelectedDatabaseUnit = collection.First();
+            }
+
+            else
+            {
+                SelectedDatabaseUnit = null;
+            }
+        }
+
         private void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<LabelCell>;
@@ -529,11 +818,25 @@ namespace Dimmer_Labels_Wizard_WPF
                     cell.SelectedRows.CollectionChanged += SelectedCells_SelectedRows_CollectionChanged;
 
                     // Push DataReference to Selected Cells
-                    if (SelectedUnits.Contains(cell.DataReference) == false)
+                    if (collection.Count == 1)
                     {
-                        SelectedUnits.Add(cell.DataReference);
-                    }
+                        // Database Panel can only handle One Selected Cell at a time.
+                        if (SelectedUnits.Contains(cell.DataReference) == false)
+                        {
+                            SelectedUnits.Add(cell.DataReference);
+                        }
 
+                        if (cell.IsMerged == true)
+                        {
+                            foreach (var unit in cell.ConsumedReferences)
+                            {
+                                if (SelectedUnits.Contains(unit) == false)
+                                {
+                                    SelectedUnits.Add(unit);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -547,6 +850,16 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Remove Unit from Selected Units.
                     SelectedUnits.Remove(cell.DataReference);
+
+                    // Remove Consumed References.
+                    if (cell.IsMerged)
+                    {
+                        foreach (var unit in cell.ConsumedReferences)
+                        {
+                            SelectedUnits.Remove(unit);
+                        }
+                    }
+
                 }
             }
 
@@ -831,6 +1144,96 @@ namespace Dimmer_Labels_Wizard_WPF
             else
             {
                 return false;
+            }
+        }
+
+        protected string GetDatabaseData(LabelField dataField)
+        {
+            if (SelectedDatabaseUnit == null)
+            {
+                return string.Empty;
+            }
+
+            return SelectedDatabaseUnit.GetData(dataField);
+        }
+
+        protected void SetDatabaseData(LabelField dataField, string value)
+        {
+            if (SelectedDatabaseUnit == null)
+            {
+                return;
+            }
+
+            SelectedDatabaseUnit.SetData(value, dataField);
+        }
+
+        protected void SetPropertyGridEnables(LabelCell selectedCell, DimmerDistroUnit selectedDatabaseUnit)
+        {
+            if (selectedCell == null || selectedCell.IsMerged == false)
+            {
+                // No Selected Cell or Selected Cell is Not Merged.
+
+                // Reset
+                DatabaseChannelNumberEnable = true;
+                DatabaseInstrumentNameEnable = true;
+                DatabasePositionEnable = true;
+                DatabaseMulticoreNameEnable = true;
+                DatabaseUserField1Enable = true;
+                DatabaseUserField2Enable = true;
+                DatabaseUserField3Enable = true;
+                DatabaseUserField4Enable = true;
+
+            }
+
+            else if (selectedCell.IsMerged == true &&
+                selectedCell.ConsumedReferences.Contains(selectedDatabaseUnit))
+            {
+                // Selected Cell is Merged and Selected Database Unit is consumed.
+
+                // Generate a list of Displayed Rows.
+                List<LabelField> displayedFields = new List<LabelField>();
+
+                if (selectedCell.CellDataMode == CellDataMode.SingleField)
+                {
+                    // Single Field.
+                    displayedFields.Add(selectedCell.SingleFieldDataField);
+                }
+
+                else
+                {
+                    // Mixed Field.
+                    foreach (var row in selectedCell.Rows)
+                    {
+                        if (displayedFields.Contains(row.DataField) == false)
+                        {
+                            displayedFields.Add(row.DataField);
+                        }
+                    }
+                }
+
+                // Set Enabled States.
+                DatabaseChannelNumberEnable = displayedFields.Contains(LabelField.ChannelNumber) ? false : true;
+                DatabaseInstrumentNameEnable = displayedFields.Contains(LabelField.InstrumentName) ? false : true;
+                DatabasePositionEnable = displayedFields.Contains(LabelField.Position) ? false : true;
+                DatabaseMulticoreNameEnable = displayedFields.Contains(LabelField.MulticoreName) ? false : true;
+                DatabaseUserField1Enable = displayedFields.Contains(LabelField.UserField1) ? false : true;
+                DatabaseUserField2Enable = displayedFields.Contains(LabelField.UserField2) ? false : true;
+                DatabaseUserField3Enable = displayedFields.Contains(LabelField.UserField3) ? false : true;
+                DatabaseUserField4Enable = displayedFields.Contains(LabelField.UserField4) ? false : true;
+            }
+
+            else
+            {
+                // Selected DatabaseUnit is primary Reference of selected Cell.
+
+                DatabaseChannelNumberEnable = true;
+                DatabaseInstrumentNameEnable = true;
+                DatabasePositionEnable = true;
+                DatabaseMulticoreNameEnable = true;
+                DatabaseUserField1Enable = true;
+                DatabaseUserField2Enable = true;
+                DatabaseUserField3Enable = true;
+                DatabaseUserField4Enable = true;
             }
         }
         #endregion

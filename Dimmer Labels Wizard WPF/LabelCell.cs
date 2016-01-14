@@ -92,6 +92,34 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public LabelField[] DisplayedDataFields
+        {
+            get
+            {
+                if (CellDataMode == CellDataMode.SingleField)
+                {
+                    // Single Field.
+                    return new LabelField[] { SingleFieldDataField };
+                }
+
+                else
+                {
+                    // Mixed Field.
+                    List<LabelField> dataFields = new List<LabelField>();
+
+                    foreach (var element in Rows)
+                    {
+                        if (dataFields.Contains(element.DataField) == false)
+                        {
+                            dataFields.Add(element.DataField);
+                        }
+                    }
+
+                    return dataFields.ToArray();
+                }
+            }
+        }
+
         /// <summary>
         /// The Grid in which CellRow's and their Child elements are Displayed.
         /// </summary>
@@ -212,6 +240,8 @@ namespace Dimmer_Labels_Wizard_WPF
                         element.Data = newValue.GetData(element.DataField);
                     }
                 }
+
+                
             }
 
             else
@@ -229,6 +259,8 @@ namespace Dimmer_Labels_Wizard_WPF
                         element.Data = "No Reference";
                     }
                 }
+
+                
             }
             
         }
