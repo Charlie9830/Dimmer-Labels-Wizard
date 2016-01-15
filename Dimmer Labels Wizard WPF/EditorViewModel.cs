@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -780,7 +781,62 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void Units_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.OldItems != null)
+            {
+                foreach (var element in e.OldItems)
+                {
+                    // Disconnect outgoing Event.
+                    var unit = element as DimmerDistroUnit;
+                    unit.PropertyChanged -= Unit_PropertyChanged;
+                }
+            }
 
+            if (e.NewItems != null)
+            {
+                foreach (var element in e.OldItems)
+                {
+                    // Connect incoming Event.
+                    var unit = element as DimmerDistroUnit;
+                    unit.PropertyChanged += Unit_PropertyChanged;
+                }
+            }
+        }
+
+        private void Unit_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string propertyName = e.PropertyName;
+            LabelField dataField;
+
+            // Find Matching Cells.
+            this.Cells
+
+            if (Enum.TryParse(propertyName, out dataField) == true)
+            {
+                // A matching LabelField (DataField) has been found.
+                string newData = DataReference.GetData(dataField);
+
+                if (DisplayedDataFields.Contains(dataField))
+                {
+                    // Data is currently displayed and requires updating.
+                    if (CellDataMode == CellDataMode.SingleField)
+                    {
+                        // Single Field.
+                        SingleFieldData = newData;
+                    }
+
+                    else
+                    {
+                        // Mixed Field, Collect all rows that display the intended DataField.
+                        var targetRows = Rows.Where(item => item.DataField == dataField);
+
+                        // Push Data.
+                        foreach (var element in targetRows)
+                        {
+                            element.Data = newData;
+                        }
+                    }
+                }
+            }
         }
 
         private void SelectedUnits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

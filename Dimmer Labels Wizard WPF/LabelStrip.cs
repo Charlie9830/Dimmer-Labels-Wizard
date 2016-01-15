@@ -654,6 +654,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var collection = sender as CellCollection;
             LabelStrip instance = collection.Instance;
+
             if (e.NewItems != null)
             {
                 foreach (var element in e.NewItems)

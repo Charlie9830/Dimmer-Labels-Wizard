@@ -225,6 +225,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var dataMode = instance.CellDataMode;
             var rows = instance.Rows;
             var newValue = e.NewValue as DimmerDistroUnit;
+            var oldValue = e.OldValue as DimmerDistroUnit;
 
             if (newValue != null)
             {
@@ -241,10 +242,11 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
                 }
 
-                
+                // Connect Property Changed Event handler to track future changes.
+                newValue.PropertyChanged += instance.DataReference_PropertyChanged;
             }
 
-            else
+            if (newValue == null)
             {
                 // DataReference has been set to null.
                 if (dataMode == CellDataMode.SingleField)
@@ -259,12 +261,14 @@ namespace Dimmer_Labels_Wizard_WPF
                         element.Data = "No Reference";
                     }
                 }
-
-                
             }
-            
-        }
 
+            if (oldValue != null)
+            {
+                // Disconnect Property Changed Event.
+                oldValue.PropertyChanged -= instance.DataReference_PropertyChanged;
+            }
+        }
 
         public List<DimmerDistroUnit> ConsumedReferences
         {
@@ -1060,6 +1064,12 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
+        private void DataReference_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+
+            throw new NotImplementedException();
+        }
+
         private static void SelectedRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<CellRow>;
