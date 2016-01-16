@@ -93,24 +93,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void LineweightPlusButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var element in labelStrip.UpperCells)
-            {
-                element.LeftWeight += 1;
-                element.TopWeight += 1;
-                element.RightWeight += 1;
-                element.BottomWeight += 1;
-            }
         }
 
         private void LineweightMinusButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var element in labelStrip.UpperCells)
-            {
-                element.LeftWeight -= 1;
-                element.TopWeight -= 1;
-                element.RightWeight -= 1;
-                element.BottomWeight -= 1;
-            }
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
@@ -123,15 +109,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            labelStrip.UpperCells.Add(new LabelCell());
+            
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (labelStrip.UpperCells.Count != 0)
-            {
-                labelStrip.UpperCells.RemoveAt(labelStrip.UpperCells.Count - 1);
-            }
+            
         }
 
         private void comboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)

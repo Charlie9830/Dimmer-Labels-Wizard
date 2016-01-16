@@ -10,12 +10,6 @@
         <Label x:Name="label" Content="Label Strip Prototype" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="300" Margin="10,41,0,0" VerticalAlignment="Top" Width="1172">
             <local:LabelStrip VerticalAlignment="Center" HorizontalAlignment="Center">
-                <local:LabelStrip.UpperCells>
-                    <local:LabelCell/>
-                    <local:LabelCell/>
-                    <local:LabelCell/>
-                    <local:LabelCell/>
-                </local:LabelStrip.UpperCells>
             </local:LabelStrip>
         </Border>
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="300" Margin="10,362,0,0" VerticalAlignment="Top" Width="1172">
