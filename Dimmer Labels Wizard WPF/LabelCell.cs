@@ -241,9 +241,6 @@ namespace Dimmer_Labels_Wizard_WPF
                         element.Data = newValue.GetData(element.DataField);
                     }
                 }
-
-                // Connect Property Changed Event handler to track future changes.
-                newValue.PropertyChanged += instance.DataReference_PropertyChanged;
             }
 
             if (newValue == null)
@@ -261,12 +258,6 @@ namespace Dimmer_Labels_Wizard_WPF
                         element.Data = "No Reference";
                     }
                 }
-            }
-
-            if (oldValue != null)
-            {
-                // Disconnect Property Changed Event.
-                oldValue.PropertyChanged -= instance.DataReference_PropertyChanged;
             }
         }
 
@@ -1064,12 +1055,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
-        private void DataReference_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-
-            throw new NotImplementedException();
-        }
-
         private static void SelectedRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<CellRow>;

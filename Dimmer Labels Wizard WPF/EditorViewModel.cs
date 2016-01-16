@@ -793,7 +793,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (e.NewItems != null)
             {
-                foreach (var element in e.OldItems)
+                foreach (var element in e.NewItems)
                 {
                     // Connect incoming Event.
                     var unit = element as DimmerDistroUnit;
@@ -804,39 +804,39 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void Unit_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            string propertyName = e.PropertyName;
-            LabelField dataField;
+            //string propertyName = e.PropertyName;
+            //LabelField dataField;
 
-            // Find Matching Cells.
-            this.Cells
+            //// Find Matching Cells.
+            //this.Cells
 
-            if (Enum.TryParse(propertyName, out dataField) == true)
-            {
-                // A matching LabelField (DataField) has been found.
-                string newData = DataReference.GetData(dataField);
+            //if (Enum.TryParse(propertyName, out dataField) == true)
+            //{
+            //    // A matching LabelField (DataField) has been found.
+            //    string newData = DataReference.GetData(dataField);
 
-                if (DisplayedDataFields.Contains(dataField))
-                {
-                    // Data is currently displayed and requires updating.
-                    if (CellDataMode == CellDataMode.SingleField)
-                    {
-                        // Single Field.
-                        SingleFieldData = newData;
-                    }
+            //    if (DisplayedDataFields.Contains(dataField))
+            //    {
+            //        // Data is currently displayed and requires updating.
+            //        if (CellDataMode == CellDataMode.SingleField)
+            //        {
+            //            // Single Field.
+            //            SingleFieldData = newData;
+            //        }
 
-                    else
-                    {
-                        // Mixed Field, Collect all rows that display the intended DataField.
-                        var targetRows = Rows.Where(item => item.DataField == dataField);
+            //        else
+            //        {
+            //            // Mixed Field, Collect all rows that display the intended DataField.
+            //            var targetRows = Rows.Where(item => item.DataField == dataField);
 
-                        // Push Data.
-                        foreach (var element in targetRows)
-                        {
-                            element.Data = newData;
-                        }
-                    }
-                }
-            }
+            //            // Push Data.
+            //            foreach (var element in targetRows)
+            //            {
+            //                element.Data = newData;
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private void SelectedUnits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
