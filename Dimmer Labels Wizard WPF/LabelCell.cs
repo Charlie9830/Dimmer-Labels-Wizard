@@ -241,9 +241,12 @@ namespace Dimmer_Labels_Wizard_WPF
                         element.Data = newValue.GetData(element.DataField);
                     }
                 }
+
+                // Connect Event Handler to track Future Changes.
+                newValue.PropertyChanged += instance.DataReference_PropertyChanged;
             }
 
-            if (newValue == null)
+            else
             {
                 // DataReference has been set to null.
                 if (dataMode == CellDataMode.SingleField)
@@ -258,6 +261,12 @@ namespace Dimmer_Labels_Wizard_WPF
                         element.Data = "No Reference";
                     }
                 }
+            }
+
+            if (oldValue != null)
+            {
+                // Disconnect outgoing Event.
+                oldValue.PropertyChanged -= instance.DataReference_PropertyChanged;
             }
         }
 
@@ -1055,6 +1064,42 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
+
+        protected void DataReference_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string propertyName = e.PropertyName;
+            LabelField dataField;
+
+            // Map Property Name to matching LabelField Value.
+            if (Enum.TryParse(propertyName, out dataField) == true)
+            {
+                // A matching LabelField (DataField) has been found. Collect new Data.
+                string newData = DataReference.GetData(dataField);
+
+                if (DisplayedDataFields.Contains(dataField))
+                {
+                    // Data is currently displayed and requires updating.
+                    if (CellDataMode == CellDataMode.SingleField)
+                    {
+                        // Single Field.
+                        SingleFieldData = newData;
+                    }
+
+                    else
+                    {
+                        // Mixed Field, Collect all rows that display the intended DataField.
+                        var targetRows = Rows.Where(item => item.DataField == dataField);
+
+                        // Push Data.
+                        foreach (var element in targetRows)
+                        {
+                            element.Data = newData;
+                        }
+                    }
+                }
+            }
+        }
+
         private static void SelectedRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<CellRow>;

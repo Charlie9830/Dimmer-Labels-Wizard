@@ -30,9 +30,9 @@ namespace Dimmer_Labels_Wizard_WPF
         /// </summary>
         public LabelStrip()
         {
-            // Collection type Dependency properties.
-            SetValue(UpperCellsPropertyKey, new CellCollection(this));
-            SetValue(LowerCellsPropertyKey, new CellCollection(this));
+            // Event Handlers.
+            UpperCells.CollectionChanged += UpperCells_CollectionChanged;
+            LowerCells.CollectionChanged += LowerCells_CollectionChanged;
 
             // Initialize
             _UpperStackPanel.Orientation = Orientation.Horizontal;
@@ -116,11 +116,56 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region CLR Properties.
+        protected ObservableCollection<LabelCell> _UpperCells = new ObservableCollection<LabelCell>();
+
+        public ObservableCollection<LabelCell> UpperCells
+        {
+            get { return _UpperCells; }
+        }
+
+        protected ObservableCollection<LabelCell> _LowerCells = new ObservableCollection<LabelCell>();
+
+        public ObservableCollection<LabelCell> LowerCells
+        {
+            get { return _LowerCells; }
+        }
+
         #endregion
 
         #region Dependency Properties
 
 
+
+        public IList<LabelCell> Cells
+        {
+            get { return (IList<LabelCell>)GetValue(CellsProperty); }
+            set { SetValue(CellsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Cells.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CellsProperty =
+            DependencyProperty.Register("Cells", typeof(IList<LabelCell>), typeof(LabelStrip),
+                new PropertyMetadata(new List<LabelCell>(), new PropertyChangedCallback(OnCellsPropertyChanged)));
+
+        private static void OnCellsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelStrip;
+            IList<LabelCell> newCollection = e.NewValue as IList<LabelCell>;
+
+            if (newCollection != null)
+            {
+                // Push Current items to New Collection.
+                foreach (var element in instance.UpperCells)
+                {
+                    newCollection.Add(element);
+                }
+
+                foreach (var element in instance.LowerCells)
+                {
+                    newCollection.Add(element);
+                }
+            }
+        }
 
         public IEnumerable<Merge> Mergers
         {
@@ -396,7 +441,7 @@ namespace Dimmer_Labels_Wizard_WPF
             int newCount = (int)e.NewValue;
             int oldCount = (int)e.OldValue;
             int difference = newCount - oldCount;
-            CellCollection upperCells = instance.UpperCells;
+            var upperCells = instance.UpperCells;
             int collectionCount = upperCells.Count;
 
             if (newCount == collectionCount)
@@ -464,7 +509,7 @@ namespace Dimmer_Labels_Wizard_WPF
             int newCount = (int)e.NewValue;
             int oldCount = (int)e.OldValue;
             int difference = newCount - oldCount;
-            CellCollection lowerCells = instance.LowerCells;
+            var lowerCells = instance.LowerCells;
             int collectionCount = lowerCells.Count;
 
             if (newCount == collectionCount)
@@ -497,71 +542,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-      
 
-
-        public CellCollection UpperCells
-        {
-            get { return (CellCollection)GetValue(UpperCellsProperty); }
-        }
-
-        // Using a DependencyProperty as the backing store for UpperCells.  This enables animation, styling, binding, etc...
-        public static readonly DependencyPropertyKey UpperCellsPropertyKey =
-            DependencyProperty.RegisterReadOnly("UpperCells", typeof(CellCollection),
-                typeof(LabelStrip), new FrameworkPropertyMetadata(new CellCollection(),
-                    new PropertyChangedCallback(OnUpperCellsPropertyChanged)));
-
-        public static readonly DependencyProperty UpperCellsProperty =
-            UpperCellsPropertyKey.DependencyProperty;
-
-        private static void OnUpperCellsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            // Disconnect Outgoing event.
-            if (e.OldValue != null)
-            {
-                var collection = e.OldValue as CellCollection;
-                collection.CollectionChanged -= UpperCells_CollectionChanged;
-            }
-
-            // Connect incoming event.
-            if (e.NewValue != null)
-            {
-                var collection = e.NewValue as CellCollection;
-                collection.CollectionChanged += UpperCells_CollectionChanged;
-            }
-        }
-
-        public CellCollection LowerCells
-        {
-            get { return (CellCollection)GetValue(LowerCellsProperty); }
-        }
-
-        // Using a DependencyProperty as the backing store for LowerCells.  This enables animation, styling, binding, etc...
-        public static readonly DependencyPropertyKey LowerCellsPropertyKey =
-            DependencyProperty.RegisterReadOnly("LowerCells", typeof(CellCollection),
-                typeof(LabelStrip), new PropertyMetadata(new CellCollection(),
-                    new PropertyChangedCallback(OnLowerCellsPropertyChanged)));
-
-        public static readonly DependencyProperty LowerCellsProperty =
-            LowerCellsPropertyKey.DependencyProperty;
-
-        private static void OnLowerCellsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            // Disconnect Outgoing event.
-            if (e.OldValue != null)
-            {
-                var collection = e.OldValue as CellCollection;
-                collection.CollectionChanged -= LowerCells_CollectionChanged;
-            }
-
-            // Connect incoming event.
-            if (e.NewValue != null)
-            {
-                var collection = e.NewValue as CellCollection;
-                collection.CollectionChanged += LowerCells_CollectionChanged;
-            }
-
-        }
 
         public LabelStripMode StripMode
         {
@@ -650,45 +631,47 @@ namespace Dimmer_Labels_Wizard_WPF
             RefreshCellDataSources(collection);
         }
 
-        private static void UpperCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void UpperCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            var collection = sender as CellCollection;
-            LabelStrip instance = collection.Instance;
+            var collection = sender as ObservableCollection<LabelCell>;
 
             if (e.NewItems != null)
             {
                 foreach (var element in e.NewItems)
                 {
                     var cell = element as LabelCell;
-                    if (instance._UpperStackPanel.Children.Contains(cell) == false)
+                    if (_UpperStackPanel.Children.Contains(cell) == false)
                     {
                         // Add to StackPanel
-                        instance._UpperStackPanel.Children.Insert(e.NewStartingIndex, cell);
+                        _UpperStackPanel.Children.Insert(e.NewStartingIndex, cell);
+
+                        // Add to Cells Collection.
+                        Cells.Add(cell);
 
                         // Set Vertical Position Flag.
                         cell.CellVerticalPosition = CellVerticalPosition.Upper;
 
                         // Set Height.
-                        if (instance.StripMode == LabelStripMode.Dual)
+                        if (StripMode == LabelStripMode.Dual)
                         {
-                            cell.Height = instance.StripHeight;
+                            cell.Height = StripHeight;
                         }
 
                         else
                         {
-                            cell.Height = instance.StripHeight * _SingleLabelStripUpperHeightRatio;
+                            cell.Height = StripHeight * _SingleLabelStripUpperHeightRatio;
                         }
 
 
                         // Set Template
-                        if (collection.IndexOf(cell) < instance.LowerCellTemplates.Count)
+                        if (collection.IndexOf(cell) < LowerCellTemplates.Count)
                         {
-                            cell.Style = instance.LowerCellTemplates[collection.IndexOf(cell)];
+                            cell.Style = LowerCellTemplates[collection.IndexOf(cell)];
                         }
 
                         // Connect Event Handler.
-                        cell.PropertyChanged += instance.UpperCell_PropertyChanged;
-                        cell.MouseDown += instance.Cell_MouseDown;
+                        cell.PropertyChanged += UpperCell_PropertyChanged;
+                        cell.MouseDown += Cell_MouseDown;
                     }
                 }
             }
@@ -700,13 +683,16 @@ namespace Dimmer_Labels_Wizard_WPF
                     var cell = element as LabelCell;
 
                     // Remove from StackPanel.
-                    instance._UpperStackPanel.Children.Remove(cell);
+                    _UpperStackPanel.Children.Remove(cell);
+
+                    // Remove from Cells Collection.
+                    Cells.Remove(cell);
 
                     // Deselect if Selected.
                     if (cell.IsSelected == true)
                     {
                         cell.IsSelected = false;
-                        ((IList<LabelCell>)instance.SelectedCells).Remove(cell);
+                        ((IList<LabelCell>)SelectedCells).Remove(cell);
                     }
 
                     // Reset Merge Flags if Merged.
@@ -716,15 +702,15 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
 
                     // Disconnect Event Handler.
-                    cell.PropertyChanged -= instance.UpperCell_PropertyChanged;
-                    cell.MouseDown -= instance.Cell_MouseDown;
+                    cell.PropertyChanged -= UpperCell_PropertyChanged;
+                    cell.MouseDown -= Cell_MouseDown;
                 }
             }
 
             // Set Cell Widths.
             foreach (var cell in collection)
             {
-                cell.BaseWidth = instance.StripWidth / instance.DataSource.Count();
+                cell.BaseWidth = StripWidth / DataSource.Count();
             }
 
             // Update Horizontal Position Indexes.
@@ -734,49 +720,52 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Coercion.
-            instance.CoerceValue(HeightProperty);
+            CoerceValue(HeightProperty);
 
             // Push change to Cell Count Property.
-            instance.UpperCellCount = collection.Count;
+            UpperCellCount = collection.Count;
         }
 
-        private static void LowerCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void LowerCells_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var collection = sender as CellCollection;
-            LabelStrip instance = collection.Instance;
+            var collection = sender as ObservableCollection<LabelCell>;
+
             if (e.NewItems != null)
             {
                 foreach (var element in e.NewItems)
                 {
                     var cell = element as LabelCell;
-                    if (instance._LowerStackPanel.Children.Contains(cell) == false)
+                    if (_LowerStackPanel.Children.Contains(cell) == false)
                     {
                         // Add to Stackpanel
-                        instance._LowerStackPanel.Children.Insert(e.NewStartingIndex, cell);
+                        _LowerStackPanel.Children.Insert(e.NewStartingIndex, cell);
+
+                        // Add to Cells Collection.
+                        Cells.Add(cell);
 
                         // Set Vertical Position Flag.
                         cell.CellVerticalPosition = CellVerticalPosition.Lower;
 
                         // Set Height
-                        if (instance.StripMode == LabelStripMode.Dual)
+                        if (StripMode == LabelStripMode.Dual)
                         {
-                            cell.Height = instance.StripHeight;
+                            cell.Height = StripHeight;
                         }
 
                         else
                         {
-                            cell.Height = instance.StripHeight * _SingleLabelStripLowerHeightRatio;
+                            cell.Height = StripHeight * _SingleLabelStripLowerHeightRatio;
                         }
 
                         // Set Template
-                        if (collection.IndexOf(cell) < instance.LowerCellTemplates.Count)
+                        if (collection.IndexOf(cell) < LowerCellTemplates.Count)
                         {
-                            cell.Style = instance.LowerCellTemplates[collection.IndexOf(cell)];
+                            cell.Style = LowerCellTemplates[collection.IndexOf(cell)];
                         }
                         
                         // Connect event Handlers.
-                        cell.PropertyChanged += instance.LowerCell_PropertyChanged;
-                        cell.MouseDown += instance.Cell_MouseDown;
+                        cell.PropertyChanged += LowerCell_PropertyChanged;
+                        cell.MouseDown += Cell_MouseDown;
                     }
                 }
             }
@@ -788,13 +777,16 @@ namespace Dimmer_Labels_Wizard_WPF
                     var cell = element as LabelCell;
 
                     // Remove from StackPanel.
-                    instance._LowerStackPanel.Children.Remove(cell);
+                    _LowerStackPanel.Children.Remove(cell);
+
+                    // Remove from Cells Collection.
+                    Cells.Remove(cell);
 
                     // Deselect if Selected.
                     if (cell.IsSelected == true)
                     {
                         cell.IsSelected = false;
-                        ((IList<LabelCell>)instance.SelectedCells).Remove(cell);
+                        ((IList<LabelCell>)SelectedCells).Remove(cell);
                     }
 
                     // Reset Merge Flags if Merged.
@@ -804,15 +796,15 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
 
                     // Disconnect Event Handlers.
-                    cell.PropertyChanged -= instance.LowerCell_PropertyChanged;
-                    cell.MouseDown -= instance.Cell_MouseDown;
+                    cell.PropertyChanged -= LowerCell_PropertyChanged;
+                    cell.MouseDown -= Cell_MouseDown;
                 }
             }
 
             // Set Cell Widths.
             foreach (var cell in collection)
             {
-                cell.BaseWidth = instance.StripWidth / instance.DataSource.Count();
+                cell.BaseWidth = StripWidth / DataSource.Count();
             }
 
             // Update Horizontal Position Indexes.
@@ -822,10 +814,10 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Coercion.
-            instance.CoerceValue(HeightProperty);
+            CoerceValue(HeightProperty);
 
             // Push change to Cell Count Property.
-            instance.LowerCellCount = collection.Count;
+            LowerCellCount = collection.Count;
         }
 
         protected void UpperCell_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1203,8 +1195,8 @@ namespace Dimmer_Labels_Wizard_WPF
         /// <param name="stripMode"></param>
         private static void AdjustCellHeights(LabelStrip instance)
         {
-            CellCollection upperCells = instance.UpperCells;
-            CellCollection lowerCells = instance.LowerCells;
+            var upperCells = instance.UpperCells;
+            var lowerCells = instance.LowerCells;
             double newStripHeight = instance.StripHeight;
             LabelStripMode stripMode = instance.StripMode;
 

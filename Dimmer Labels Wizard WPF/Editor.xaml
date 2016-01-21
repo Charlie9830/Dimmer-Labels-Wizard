@@ -41,7 +41,8 @@
         </Grid.ColumnDefinitions>
         <Border x:Name="LabelStripArea" BorderThickness="1" Grid.Row="3" Grid.Column="1" BorderBrush="Black">
             <local:LabelStrip x:Name="LabelStrip" Style="{Binding Path=DisplayedTemplate}" DataSource="{Binding Path=Units}"
-                              Mergers="{Binding Path=Mergers}" SelectedCells="{Binding Path=SelectedCells}">
+                              Mergers="{Binding Path=Mergers}" SelectedCells="{Binding Path=SelectedCells}"
+                              Cells="{Binding Path=Cells}">
             </local:LabelStrip>
         </Border>
         <Border x:Name="DebugArea" BorderThickness="2" BorderBrush="Black" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
@@ -193,6 +194,7 @@
             <ComboBox Width="135" Height="25"  Margin="{StaticResource StackPanelItemsOffset}"/>
             <TextBox Width="250" Height="25" Text="{Binding Path=SelectedData}" Margin="{StaticResource StackPanelItemsOffset}"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Button x:Name="button4" Content="Debug" Width="75"/>
         </StackPanel>
         <Expander Background="LightGray" x:Name="expanderLeft" Header="Templates" ExpandDirection="Right" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch">
             <Grid Background="LightGray" Width="250">
@@ -251,10 +253,10 @@
                         <TextBox IsEnabled="{Binding Path=DatabaseInstrumentNameEnable}" Text="{Binding Path=DatabaseInstrumentName}" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
                         <TextBox IsEnabled="{Binding Path=DatabasePositionEnable}" Text="{Binding Path=DatabasePosition}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
                         <TextBox IsEnabled="{Binding Path=DatabaseMulticoreNameEnable}" Text="{Binding Path=DatabaseMulticoreName}" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                        <TextBox IsEnabled="{Binding Path=DatabaseUserField1Enable}" Text="{Binding Path=DatabseuserField1}" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                        <TextBox IsEnabled="{Binding Path=DatabaseUserField4Enable}" Text="{Binding Path=DatabseuserField4}" Grid.Column="1" Grid.Row="8" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                        <TextBox IsEnabled="{Binding Path=DatabaseUserField2Enable}" Text="{Binding Path=DatabseuserField2}" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                        <TextBox IsEnabled="{Binding Path=DatabaseUserField3Enable}" Text="{Binding Path=DatabseuserField3}" Grid.Column="1" Grid.Row="7" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                        <TextBox IsEnabled="{Binding Path=DatabaseUserField1Enable}" Text="{Binding Path=DatabseUserField1}" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                        <TextBox IsEnabled="{Binding Path=DatabaseUserField4Enable}" Text="{Binding Path=DatabseUserField4}" Grid.Column="1" Grid.Row="8" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                        <TextBox IsEnabled="{Binding Path=DatabaseUserField2Enable}" Text="{Binding Path=DatabseUserField2}" Grid.Column="1" Grid.Row="6" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                        <TextBox IsEnabled="{Binding Path=DatabaseUserField3Enable}" Text="{Binding Path=DatabseUserField3}" Grid.Column="1" Grid.Row="7" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalAlignment="Center" Margin="5"/>
 
                     </Grid>
                 </Border>

@@ -124,6 +124,15 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region CLR Properties - Binding Target.
+        private List<LabelCell> _Cells = new List<LabelCell>();
+
+        public List<LabelCell> Cells
+        {
+            get { return _Cells; }
+            set { _Cells = value; }
+        }
+
+
         private bool _DatabaseChannelNumberEnable = true;
 
         public bool DatabaseChannelNumberEnable
@@ -384,15 +393,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     SetPropertyGridEnables(SelectedCells.FirstOrDefault(), value);
 
                     // Notify Property Grid
-                    OnPropertyChanged(nameof(DatabaseDimmerNumber));
-                    OnPropertyChanged(nameof(DatabaseChannelNumber));
-                    OnPropertyChanged(nameof(DatabaseInstrumentName));
-                    OnPropertyChanged(nameof(DatabasePosition));
-                    OnPropertyChanged(nameof(DatabaseMulticoreName));
-                    OnPropertyChanged(nameof(DatabaseUserField1));
-                    OnPropertyChanged(nameof(DatabaseUserField2));
-                    OnPropertyChanged(nameof(DatabaseUserField3));
-                    OnPropertyChanged(nameof(DatabaseUserField4));
+                    NotifyPropertyGridUI();
                 }
             }
         }
@@ -647,17 +648,22 @@ namespace Dimmer_Labels_Wizard_WPF
             set { _SelectedCells = value; }
         }
 
+        protected string _SelectedData;
+
         public string SelectedData
         {
             get
             {
-                return GetSelectedData();
+                return _SelectedData;
             }
 
             set
             {
-                SetSelectedData(value);
-                OnPropertyChanged(nameof(SelectedData));
+                if (_SelectedData != value)
+                {
+                    SetSelectedData(value);
+                    OnPropertyChanged(nameof(SelectedData));
+                }
             }
         }
         #endregion
@@ -804,39 +810,34 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void Unit_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //string propertyName = e.PropertyName;
-            //LabelField dataField;
+            // A DimmerDistroUnit DataReference has signalled a Modified property.
+            // check if any View Model Objects need to update.
 
-            //// Find Matching Cells.
-            //this.Cells
+            var unit = sender as DimmerDistroUnit;
+            string propertyName = e.PropertyName;
+            LabelField dataField;
 
-            //if (Enum.TryParse(propertyName, out dataField) == true)
-            //{
-            //    // A matching LabelField (DataField) has been found.
-            //    string newData = DataReference.GetData(dataField);
+            // Map PropertyName to LabelField.
+            if (Enum.TryParse(propertyName, out dataField) == false)
+            {
+                // Could not find Match.
+                return;
+            }
 
-            //    if (DisplayedDataFields.Contains(dataField))
-            //    {
-            //        // Data is currently displayed and requires updating.
-            //        if (CellDataMode == CellDataMode.SingleField)
-            //        {
-            //            // Single Field.
-            //            SingleFieldData = newData;
-            //        }
+            if (SelectedCells.Count > 0)
+            {
+                bool cellMatchFound = SelectedCells.Where(item => item.DataReference == unit).Any();
 
-            //        else
-            //        {
-            //            // Mixed Field, Collect all rows that display the intended DataField.
-            //            var targetRows = Rows.Where(item => item.DataField == dataField);
+                if (cellMatchFound)
+                {
+                    // Pre Set selected Data.
+                    _SelectedData = GetSelectedData(unit, dataField);
 
-            //            // Push Data.
-            //            foreach (var element in targetRows)
-            //            {
-            //                element.Data = newData;
-            //            }
-            //        }
-            //    }
-            //}
+                    // Notify UI.
+                    OnPropertyChanged(nameof(SelectedData));
+                    NotifyPropertyGridUI();
+                }
+            }
         }
 
         private void SelectedUnits_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -873,7 +874,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Connect Event handler for future Row Selection changes.
                     cell.SelectedRows.CollectionChanged += SelectedCells_SelectedRows_CollectionChanged;
 
-                    // Push DataReference to Selected Cells
+                    // Update DataBasePanel.
                     if (collection.Count == 1)
                     {
                         // Database Panel can only handle One Selected Cell at a time.
@@ -892,6 +893,7 @@ namespace Dimmer_Labels_Wizard_WPF
                                 }
                             }
                         }
+
                     }
                 }
             }
@@ -915,16 +917,13 @@ namespace Dimmer_Labels_Wizard_WPF
                             SelectedUnits.Remove(unit);
                         }
                     }
-
                 }
             }
 
-            // Debug Output.
-            DebugOutput = "VM Selected Cell Count = " + SelectedCells.Count.ToString();
-
-            // Property Notifications
-            OnPropertyChanged(nameof(SelectedData));
+            // UI Updates.
+            SelectedData = GetSelectedData();
             OnPropertyChanged(nameof(SelectedCells));
+            NotifyPropertyGridUI();
 
             // Command CanExecute Notifications.
             _MergeSelectedCellsCommand.CheckCanExecute();
@@ -934,7 +933,7 @@ namespace Dimmer_Labels_Wizard_WPF
         private void SelectedRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(SelectedRows));
-            OnPropertyChanged(nameof(SelectedData));
+            SelectedData = GetSelectedData();
         }
 
         /// <summary>
@@ -972,6 +971,19 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
+        private void NotifyPropertyGridUI()
+        {
+            OnPropertyChanged(nameof(DatabaseDimmerNumber));
+            OnPropertyChanged(nameof(DatabaseChannelNumber));
+            OnPropertyChanged(nameof(DatabaseInstrumentName));
+            OnPropertyChanged(nameof(DatabasePosition));
+            OnPropertyChanged(nameof(DatabaseMulticoreName));
+            OnPropertyChanged(nameof(DatabaseUserField1));
+            OnPropertyChanged(nameof(DatabaseUserField2));
+            OnPropertyChanged(nameof(DatabaseUserField3));
+            OnPropertyChanged(nameof(DatabaseUserField4));
+        }
+
         private void PresentStripData(Strip value)
         {
             // Clear Selections.
@@ -1053,9 +1065,13 @@ namespace Dimmer_Labels_Wizard_WPF
             return targetCell.SelectedRows.Where(item => item.IsSelected == true).ToList();
         }
 
+        /// <summary>
+        /// Returns a string representing the currently selected Data.
+        /// </summary>
+        /// <returns></returns>
         private string GetSelectedData()
         {
-            List<string> dataElements = new List<string>();
+            var dataElements = new List<string>();
 
             // Collect all Row.Data elements.
             foreach (var element in SelectedRows)
@@ -1096,8 +1112,73 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        /// <summary>
+        /// Returns a string representing the currently Selected Data modified by injected Source Unit and DataField.
+        /// </summary>
+        /// <param name="sourceUnit"></param>
+        /// <param name="injectionDataField"></param>
+        /// <returns></returns>
+        private string GetSelectedData(DimmerDistroUnit sourceUnit, LabelField injectionDataField)
+        {
+            var dataElements = new List<string>();
+
+            // Add injectionData.
+            dataElements.Add(sourceUnit.GetData(injectionDataField));
+
+            // Collect all Row.Data elements.
+            foreach (var element in SelectedRows)
+            {
+                if (dataElements.Contains(element.Data) == false &&
+                    (element.CellParent.DataReference != sourceUnit && element.DataField != injectionDataField))
+                {
+                    // If dataElement String has not already been added and it does 
+                    // not reference the sourceUnit and the injectionDataField. Add it to dataElements.
+                    dataElements.Add(element.Data);
+                }
+            }
+
+            // Collect all SingleFieldMode Cell.Data elements.
+            foreach (var element in SelectedCells)
+            {
+                if (element.CellDataMode == CellDataMode.SingleField &&
+                    (element.DataReference != sourceUnit && element.SingleFieldDataField != injectionDataField))
+                {
+                    // If dataElement String has not already been added and it does 
+                    // not reference the sourceUnit and the injectionDataField. Add it to dataElements.
+                    dataElements.Add(element.SingleFieldData);
+                }
+            }
+
+            if (dataElements.Count > 0)
+            {
+                string reference = dataElements.First();
+
+                if (dataElements.TrueForAll(item => item == reference) == true)
+                {
+                    return reference;
+                }
+
+                else
+                {
+                    return _NonEqualData;
+                }
+            }
+
+            else
+            {
+                return string.Empty;
+            }
+        }
+
         private void SetSelectedData(string data)
         {
+            if (data == _NonEqualData)
+            {
+                _SelectedData = data;
+                OnPropertyChanged(nameof(SelectedData));
+                return;
+            }
+
             // Set Row Data
             foreach (var element in SelectedRows)
             {
@@ -1112,6 +1193,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     element.SingleFieldData = data;
                 }
             }
+
+            // Set SelectedData Backing Field.
+            _SelectedData = data;
         }
 
         public void ClearSelections()
