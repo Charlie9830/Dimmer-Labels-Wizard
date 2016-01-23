@@ -77,6 +77,7 @@
     <Compile Include="IModifcationNotification.cs" />
     <Compile Include="Merge.cs" />
     <Compile Include="Modification Classes.cs" />
+    <Compile Include="ModificationNotificationEvent.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="SpecializedCollections.cs" />
     <Compile Include="CellRow.cs" />

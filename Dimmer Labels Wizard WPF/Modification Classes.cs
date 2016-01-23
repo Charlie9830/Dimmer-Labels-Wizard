@@ -10,20 +10,27 @@ namespace Dimmer_Labels_Wizard_WPF
     public abstract class ModificationBase
     {
         // Target.
-        public abstract object Target { get; set; }
+        public virtual object Target { get; set; }
 
         // Property.
-        public abstract object Property { get; set; }
+        public virtual object Property { get; set; }
 
         // Value.
-        public abstract object Value { get; set; }
+        public virtual object Value { get; set; }
     }
 
     public class DataModification : ModificationBase
     {
+        public DataModification(DimmerDistroUnit target, string property, string value)
+        {
+            _Target = target;
+            _Property = property;
+            _Value = value;
+        }
+
         // Target.
         protected DimmerDistroUnit _Target;
-        public override object Target
+        public new DimmerDistroUnit Target
         {
             get
             {
@@ -32,13 +39,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
             set
             {
-                _Target = (DimmerDistroUnit)value;
+                _Target = value;
             }
         }
 
         // Property.
         protected string _Property;
-        public override object Property
+        public new string Property
         {
             get
             {
@@ -47,13 +54,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
             set
             {
-                _Property = (string)value;
+                _Property = value;
             }
         }
 
         // Value.
         protected string _Value;
-        public override object Value
+        public new string Value
         {
             get
             {
@@ -62,7 +69,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             set
             {
-                _Value = (string)value;
+                _Value = value;
             }
         }
     }

@@ -17,6 +17,11 @@
         <Thickness x:Key="StackPanelItemsOffset" Left="5" Right="5"/>
     </Window.Resources>
 
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding Path=UndoCommand}" Gesture="CTRL+Z"/>
+        <KeyBinding Command="{Binding Path=RedoCommand}" Gesture="CTRL+Y"/>
+    </Window.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <!-- 0: Main Menu -->
@@ -193,7 +198,6 @@
             <ComboBox Width="135" Height="25"  Margin="{StaticResource StackPanelItemsOffset}"/>
             <TextBox Width="250" Height="25" Text="{Binding Path=SelectedData}" Margin="{StaticResource StackPanelItemsOffset}"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="{StaticResource StackPanelItemsOffset}"/>
-            <Button x:Name="button4" Content="Debug" Width="75"/>
         </StackPanel>
         <Expander Background="LightGray" x:Name="expanderLeft" Header="Templates" ExpandDirection="Right" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch">
             <Grid Background="LightGray" Width="250">

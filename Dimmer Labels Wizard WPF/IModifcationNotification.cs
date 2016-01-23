@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    interface IModifcationNotification
-    {
+    public delegate void NotifyModificationEventHandler(object sender, NotifyModificationEventArgs e);
 
+    public interface INotifyModification
+    {
+        event NotifyModificationEventHandler NotifyModification;
     }
 }

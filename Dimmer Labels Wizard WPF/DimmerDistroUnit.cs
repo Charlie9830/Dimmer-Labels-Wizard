@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Dimmer_Labels_Wizard_WPF
 {
     
-    public class DimmerDistroUnit : ViewModelBase, IComparable<DimmerDistroUnit>
+    public class DimmerDistroUnit : ViewModelBase, IComparable<DimmerDistroUnit>, INotifyModification
     {
         public DimmerDistroUnit()
         {
@@ -59,6 +59,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _ChannelNumber)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(ChannelNumber), _ChannelNumber);
+
+                    // Modify Value.
                     _ChannelNumber = value;
                     OnPropertyChanged("ChannelNumber");
                 }
@@ -75,6 +79,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _InstrumentName)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(InstrumentName), _InstrumentName);
+
+                    // Modify Value.
                     _InstrumentName = value;
                     OnPropertyChanged("InstrumentName");
                 }
@@ -91,6 +99,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _MulticoreName)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(MulticoreName), _MulticoreName);
+
+                    // Modify Value.
                     _MulticoreName = value;
                     OnPropertyChanged("MulticoreName");
                 }
@@ -107,6 +119,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _Position)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(Position), _Position);
+
+                    // Modify Value.
                     _Position = value;
                     OnPropertyChanged("Position");
                 }
@@ -123,6 +139,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _UserField1)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(UserField1), _UserField1);
+
+                    // Modify Value.
                     _UserField1 = value;
                     OnPropertyChanged("UserField1");
                 }
@@ -139,6 +159,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _UserField2)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(UserField2), _UserField2);
+
+                    // Modify Value.
                     _UserField2 = value;
                     OnPropertyChanged("UserField2");
                 }
@@ -155,6 +179,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _UserField3)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(UserField3), _UserField3);
+
+                    // Modify Value.
                     _UserField3 = value;
                     OnPropertyChanged("UserField3");
                 }
@@ -171,6 +199,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _UserField4)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(UserField4), _UserField4);
+
+                    // Modify Value.
                     _UserField4 = value;
                     OnPropertyChanged("UserField4");
                 }
@@ -187,131 +219,16 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _Custom)
                 {
+                    // Notify Modification.
+                    OnNotifyModification(this, nameof(Custom), _Custom);
+
+                    // Modify Value.
                     _Custom = value;
                     OnPropertyChanged("Custom");
                 }
             }
         }
-        // Sneak Setters.
-        public string SneakChannelNumber
-        {
-            get
-            {
-                return _ChannelNumber;
-            }
-            set
-            {
-                if (value != _ChannelNumber)
-                {
-                    _ChannelNumber = value;
-                }
-            }
-        }
-
-        public string SneakInstrumentName
-        {
-            get
-            {
-                return _InstrumentName;
-            }
-            set
-            {
-                if (value != _InstrumentName)
-                {
-                    _InstrumentName = value;
-                }
-            }
-        }
-
-        public string SneakMulticoreName
-        {
-            get
-            {
-                return _MulticoreName;
-            }
-            set
-            {
-                if (value != _MulticoreName)
-                {
-                    _MulticoreName = value;
-                }
-            }
-        }
-
-        public string SneakPosition
-        {
-            get
-            {
-                return _Position;
-            }
-            set
-            {
-                if (value != _Position)
-                {
-                    _Position = value;
-                }
-            }
-        }
-
-        public string SneakUserField1
-        {
-            get
-            {
-                return _UserField1;
-            }
-            set
-            {
-                if (value != _UserField1)
-                {
-                    _UserField1 = value;
-                }
-            }
-        }
-
-        public string SneakUserField2
-        {
-            get
-            {
-                return _UserField2;
-            }
-            set
-            {
-                if (value != _UserField2)
-                {
-                    _UserField2 = value;
-                }
-            }
-        }
-
-        public string SneakUserField3
-        {
-            get
-            {
-                return _UserField3;
-            }
-            set
-            {
-                if (value != _UserField3)
-                {
-                    _UserField3 = value;
-                }
-            }
-        }
-
-        public string SneakUserField4
-        {
-            get
-            {
-                return _UserField4;
-            }
-            set
-            {
-                if (value != _UserField4)
-                {
-                    _UserField4 = value;
-                }
-            }
-        }
+        
         #endregion
 
         // Imported Temporary Data
@@ -431,6 +348,42 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public string GetData(string propertyName)
+        {
+            switch (propertyName)
+            {
+                case nameof(ChannelNumber):
+                    return ChannelNumber;
+
+                case nameof(InstrumentName):
+                    return InstrumentName;
+
+                case nameof(MulticoreName):
+                    return MulticoreName;
+
+                case nameof(Position):
+                    return Position;
+
+                case nameof(UserField1):
+                    return UserField1;
+
+                case nameof(UserField2):
+                    return UserField2;
+
+                case nameof(UserField3):
+                    return UserField3;
+
+                case nameof(UserField4):
+                    return UserField4;
+
+                case nameof(Custom):
+                    return Custom;
+
+                default:
+                    return "DimmerDistroUnit.GetData(propertyName) Error.";
+            }
+        }
+
         public void SetData(string data, LabelField labelField)
         {
             switch (labelField)
@@ -465,6 +418,48 @@ namespace Dimmer_Labels_Wizard_WPF
                     Custom = data;
                     break;
                 default:
+                    break;
+            }
+        }
+
+        public void SetData(string data, string propertyName)
+        {
+            switch (propertyName)
+            {
+                case nameof(ChannelNumber):
+                    ChannelNumber = data;
+                    break;
+
+                case nameof(InstrumentName):
+                    InstrumentName = data;
+                    break;
+
+                case nameof(MulticoreName):
+                    MulticoreName = data;
+                    break;
+
+                case nameof(Position):
+                    Position = data;
+                    break;
+
+                case nameof(UserField1):
+                    UserField1 = data;
+                    break;
+
+                case nameof(UserField2):
+                    UserField2 = data;
+                    break;
+
+                case nameof(UserField3):
+                    UserField3 = data;
+                    break;
+
+                case nameof(UserField4):
+                     UserField4 = data;
+                    break;
+
+                case nameof(Custom):
+                    Custom = data;
                     break;
             }
         }
@@ -955,6 +950,17 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
             return false;
+        }
+
+        // Provides Modification (UndoRedo) Events.
+        public event NotifyModificationEventHandler NotifyModification;
+
+        protected void OnNotifyModification(object sender, string propertyName, string oldValue)
+        {
+            if (NotifyModification != null)
+            {
+                NotifyModification(this, new NotifyModificationEventArgs(this, propertyName, oldValue));
+            }
         }
 
         // Provides the comparator functionality to the list.Sort() Method. Sorts by Rack Unit Type, Then by Rack Number, then By Dimmer Number.

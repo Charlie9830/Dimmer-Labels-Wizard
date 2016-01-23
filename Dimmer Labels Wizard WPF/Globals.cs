@@ -17,6 +17,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // List to hold DimDistroUnit Objects
         public static List<DimmerDistroUnit> DimmerDistroUnits = new List<DimmerDistroUnit>();
+
         public static SortOrder DimmerDistroSortOrder { get; set; }
 
         // List to Hold StripData Objects.

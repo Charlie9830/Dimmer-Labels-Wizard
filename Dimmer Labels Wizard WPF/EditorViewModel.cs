@@ -28,6 +28,9 @@ namespace Dimmer_Labels_Wizard_WPF
             // Commands.
             _MergeSelectedCellsCommand = new RelayCommand(MergeSelectedCellsExecute, MergeSelectedCellsCanExecute);
             _SplitSelectedCellsCommand = new RelayCommand(SplitSelectedCellsExecute, SplitSelectedCellsCanExecute);
+            _UndoCommand = new RelayCommand(UndoCommandExecute, UndoCommandCanExecute);
+            _RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
+            
 
             #region Testing Code
             // Testing
@@ -58,6 +61,11 @@ namespace Dimmer_Labels_Wizard_WPF
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "90", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 22  });
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "91", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 23  });
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "92", Position = "LX3", InstrumentName = "VL1k", DimmerNumber = 24  });
+
+            Globals.DimmerDistroUnits.AddRange(strip1.Units);
+            Globals.DimmerDistroUnits.AddRange(strip2.Units);
+
+            UndoRedoManager = new UndoRedoManager();
 
             var rowTemplates = new List<CellRowTemplate>();
             rowTemplates.Add(new CellRowTemplate() { DataField = LabelField.ChannelNumber});
@@ -103,6 +111,8 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         #region Fields
+        protected UndoRedoManager UndoRedoManager;
+
         private static double unitConversionRatio = 96d / 25.4d;
 
         private const string _NonEqualData = "***";
@@ -715,6 +725,48 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Commands
+        // Undo.
+        private RelayCommand _UndoCommand;
+
+        public ICommand UndoCommand
+        {
+            get
+            {
+                return _UndoCommand;
+            }
+        }
+
+        protected void UndoCommandExecute(object parameter)
+        {
+            UndoRedoManager.Undo();
+        }
+
+        protected bool UndoCommandCanExecute(object parameter)
+        {
+            return UndoRedoManager.CanUndo;
+        }
+
+        // Redo
+        private RelayCommand _RedoCommand;
+
+        public ICommand RedoCommand
+        {
+            get
+            {
+                return _RedoCommand;
+            }
+        }
+
+        protected void RedoCommandExecute(object parameter)
+        {
+            UndoRedoManager.Redo();
+        }
+
+        protected bool RedoCommandCanExecute(object parameter)
+        {
+            return UndoRedoManager.CanRedo;
+        }
+
         // Merge Cells
         private RelayCommand _MergeSelectedCellsCommand;
 
