@@ -15,7 +15,6 @@
     <Window.Resources>
         <SolidColorBrush x:Key="ToolBarBackgroundKey" Color="LightGray"/>
         <Thickness x:Key="StackPanelItemsOffset" Left="5" Right="5"/>
-
     </Window.Resources>
 
     <Grid>
@@ -215,8 +214,9 @@
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
 
-                <ListBox x:Name="DatabaseListBox" Margin="5" Grid.Row="0" SelectedItem="{Binding Path=SelectedDatabaseUnit}" ItemsSource="{Binding Path=SelectedUnits}"/>
-                <Border Grid.Row="1" Margin="5" BorderBrush="Black" BorderThickness="1">
+                <ListBox x:Name="DatabaseListBox" Margin="5" Grid.Row="0" SelectedItem="{Binding Path=SelectedDatabaseUnit}"
+                         ItemsSource="{Binding Path=SelectedUnits}" Visibility="{Binding Path=DatabasePanelVisibility}"/>
+                <Border Grid.Row="1" Margin="5" BorderBrush="Black" BorderThickness="1" Visibility="{Binding Path=DatabasePanelVisibility}">
                     <Grid Background="White">
 
                         <Grid.ColumnDefinitions>
@@ -260,6 +260,11 @@
 
                     </Grid>
                 </Border>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                       Grid.RowSpan="2" Visibility="{Binding Path=DatabaseMultiSelectVisibility}" TextAlignment="Center"
+                           TextWrapping="Wrap">
+                    Make only one Cell selection at a time to activate Database Panel
+                </TextBlock>
             </Grid>
         </Expander>
 

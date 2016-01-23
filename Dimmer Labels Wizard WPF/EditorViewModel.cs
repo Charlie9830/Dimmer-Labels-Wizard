@@ -124,6 +124,39 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region CLR Properties - Binding Target.
+        private Visibility _DatabasePanelVisibility = Visibility.Visible;
+
+        public Visibility DatabasePanelVisibility
+        {
+            get { return _DatabasePanelVisibility; }
+            set
+            {
+                if (value != _DatabasePanelVisibility)
+                {
+                    _DatabasePanelVisibility = value;
+                    OnPropertyChanged(nameof(DatabasePanelVisibility));
+                    OnPropertyChanged(nameof(DatabaseMultiSelectVisibility));
+                }
+            }
+        }
+
+        public Visibility DatabaseMultiSelectVisibility
+        {
+            get
+            {
+                // Reverse value of whatever DatabasePanelVisibility is doing.
+                if (DatabasePanelVisibility == Visibility.Visible)
+                {
+                    return Visibility.Hidden;
+                }
+
+                else
+                {
+                    return Visibility.Visible;
+                }
+            }
+        }
+
         private List<LabelCell> _Cells = new List<LabelCell>();
 
         public List<LabelCell> Cells
@@ -875,25 +908,20 @@ namespace Dimmer_Labels_Wizard_WPF
                     cell.SelectedRows.CollectionChanged += SelectedCells_SelectedRows_CollectionChanged;
 
                     // Update DataBasePanel.
-                    if (collection.Count == 1)
+                    if (SelectedUnits.Contains(cell.DataReference) == false)
                     {
-                        // Database Panel can only handle One Selected Cell at a time.
-                        if (SelectedUnits.Contains(cell.DataReference) == false)
-                        {
-                            SelectedUnits.Add(cell.DataReference);
-                        }
+                        SelectedUnits.Add(cell.DataReference);
+                    }
 
-                        if (cell.IsMerged == true)
+                    if (cell.IsMerged == true)
+                    {
+                        foreach (var unit in cell.ConsumedReferences)
                         {
-                            foreach (var unit in cell.ConsumedReferences)
+                            if (SelectedUnits.Contains(unit) == false)
                             {
-                                if (SelectedUnits.Contains(unit) == false)
-                                {
-                                    SelectedUnits.Add(unit);
-                                }
+                                SelectedUnits.Add(unit);
                             }
                         }
-
                     }
                 }
             }
@@ -904,17 +932,26 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     var cell = element as LabelCell;
 
+                    // Disconnect Event Handler.
                     cell.SelectedRows.CollectionChanged -= SelectedCells_SelectedRows_CollectionChanged;
 
-                    // Remove Unit from Selected Units.
-                    SelectedUnits.Remove(cell.DataReference);
+                    // Update SelectedUnits.
+                    var totalMergedCells = SelectedCells.SelectMany(item => item.ConsumedReferences);
 
-                    // Remove Consumed References.
-                    if (cell.IsMerged)
+                    if (totalMergedCells.Contains(cell.DataReference) == false)
                     {
-                        foreach (var unit in cell.ConsumedReferences)
+                        // Cell has been actually deselected by User, as opposed to being consumed in a Merge operation.
+
+                        // Remove Unit from Selected Units.
+                        SelectedUnits.Remove(cell.DataReference);
+
+                        // Remove Consumed References.
+                        if (cell.IsMerged)
                         {
-                            SelectedUnits.Remove(unit);
+                            foreach (var unit in cell.ConsumedReferences)
+                            {
+                                SelectedUnits.Remove(unit);
+                            }
                         }
                     }
                 }
@@ -923,12 +960,14 @@ namespace Dimmer_Labels_Wizard_WPF
             // UI Updates.
             SelectedData = GetSelectedData();
             OnPropertyChanged(nameof(SelectedCells));
-            NotifyPropertyGridUI();
+            DatabasePanelVisibility = collection.Count > 1 ? Visibility.Hidden : Visibility.Visible;
 
             // Command CanExecute Notifications.
             _MergeSelectedCellsCommand.CheckCanExecute();
             _SplitSelectedCellsCommand.CheckCanExecute();
         }
+
+        
 
         private void SelectedRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -1269,6 +1308,9 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 Mergers.Remove(element);
             }
+
+            // Cleanse SelectedUnits Collection.
+            CleanseSelectedUnits();
         }
 
         protected bool AreCellsAdjacent(IEnumerable<LabelCell> cellCollection)
@@ -1305,6 +1347,44 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             SelectedDatabaseUnit.SetData(value, dataField);
+        }
+
+        /// <summary>
+        /// Removes any Leftover Units from DeMerge operations.
+        /// </summary>
+        private void CleanseSelectedUnits()
+        {
+            // Clean up SelectedUnits Collection.
+            // Remove any Units that have been left behind from a Split Cell operation.
+
+            // Collect all references.
+            var selectedReferences = new List<DimmerDistroUnit>();
+
+            foreach (var element in SelectedCells)
+            {
+                if (selectedReferences.Contains(element.DataReference) == false)
+                {
+                    selectedReferences.Add(element.DataReference);
+                }
+
+                if (element.IsMerged)
+                {
+                    foreach (var consumedReference in element.ConsumedReferences)
+                    {
+                        if (selectedReferences.Contains(consumedReference) == false)
+                        {
+                            selectedReferences.Add(consumedReference);
+                        }
+                    }
+                }
+            }
+
+            // Remove references that are not currently selected.
+            var removalReferences = SelectedUnits.Except(selectedReferences).ToList();
+            foreach (var element in removalReferences)
+            {
+                SelectedUnits.Remove(element);
+            }
         }
 
         protected void SetPropertyGridEnables(LabelCell selectedCell, DimmerDistroUnit selectedDatabaseUnit)

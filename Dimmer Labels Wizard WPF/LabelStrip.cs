@@ -898,7 +898,78 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void LowerCell_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            var cell = sender as LabelCell;
 
+            // IsSelected
+            if (e.PropertyName == nameof(cell.IsSelected))
+            {
+                if (_InMouseSelectionEvent == false)
+                {
+                    if (cell.IsSelected == true && SelectedCells.Contains(cell) == false)
+                    {
+                        ((IList<LabelCell>)SelectedCells).Add(cell);
+                        cell.IsSelected = true;
+                    }
+
+                    else
+                    {
+                        ((IList<LabelCell>)SelectedCells).Remove(cell);
+                        cell.IsSelected = false;
+                    }
+                }
+            }
+
+            //// LeftWeight.
+            //if (e.PropertyName == nameof(cell.LeftWeight))
+            //{
+            //    int cellIndex = UpperCells.IndexOf(cell);
+            //    double desiredWeight = cell.LeftWeight;
+
+            //    if (cellIndex == 0)
+            //    {
+            //        // Lefthand Boundary Cell.
+            //        cell.ActualLeftWeight = desiredWeight;
+            //    }
+
+            //    else
+            //    {
+            //        // Non boundary Cell.
+            //        cell.ActualLeftWeight = desiredWeight / 2;
+            //        UpperCells[cellIndex - 1].ActualRightWeight = desiredWeight / 2;
+            //    }
+            //}
+
+            //// TopWeight
+            //if (e.PropertyName == nameof(cell.TopWeight))
+            //{
+            //    cell.ActualTopWeight = cell.TopWeight;
+            //}
+
+            //// RightWeight
+            //if (e.PropertyName == nameof(cell.RightWeight))
+            //{
+            //    int cellIndex = UpperCells.IndexOf(cell);
+            //    double desiredWeight = cell.RightWeight;
+
+            //    if (cellIndex == UpperCells.Count - 1)
+            //    {
+            //        // Righthand Boundary cell.
+            //        cell.ActualRightWeight = desiredWeight;
+            //    }
+
+            //    else
+            //    {
+            //        // Non Boundary cell.
+            //        cell.ActualRightWeight = desiredWeight / 2;
+            //        UpperCells[cellIndex + 1].ActualLeftWeight = desiredWeight / 2;
+            //    }
+            //}
+
+            //// BottomWeight
+            //if (e.PropertyName == nameof(cell.BottomWeight))
+            //{
+            //    cell.ActualBottomWeight = cell.BottomWeight;
+            //}
         }
 
         private void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1094,13 +1165,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 cellCollection.Insert(index, new LabelCell());
             }
             
-
             // Clear Primary Cells ConsumedReferences List.
             primaryCell.ConsumedReferences.Clear();
 
             // Force Refresh of Cell Data References.
             RefreshCellDataSources(DataSource);
-
         }
         #endregion
 

@@ -74,7 +74,9 @@
       <DependentUpon>Editor.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorViewModel.cs" />
+    <Compile Include="IModifcationNotification.cs" />
     <Compile Include="Merge.cs" />
+    <Compile Include="Modification Classes.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="SpecializedCollections.cs" />
     <Compile Include="CellRow.cs" />
@@ -152,6 +154,7 @@
     <Compile Include="SerialConversion.cs" />
     <Compile Include="Strip.cs" />
     <Compile Include="StyleTemplates.cs" />
+    <Compile Include="UndoRedoManager.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
