@@ -8,13 +8,17 @@ namespace Dimmer_Labels_Wizard_WPF
 {
     public class UndoRedoManager
     {
-        public UndoRedoManager()
+        public UndoRedoManager(IEnumerable<DimmerDistroUnit> dimmerDistroUnitCollection,
+            INotifyModification editorViewModel)
         {
             // Connect to DataModel.
             foreach (var element in Globals.DimmerDistroUnits)
             {
-                element.NotifyModification += DimmerDistroUnit_Modification;
+                element.NotifyModification += Incoming_Modification;
             }
+
+            // Connect to EditorViewModel.
+            editorViewModel.NotifyModification += Incoming_Modification;
         }
 
         #region Fields.
@@ -109,15 +113,23 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers.
-        private void DimmerDistroUnit_Modification(object sender, NotifyModificationEventArgs e)
+        private void Incoming_Modification(object sender, NotifyModificationEventArgs e)
         {
             if (_IgnoreIncomingModifications)
             {
                 return;
             }
 
-            // Push Modification to Undo Stack.
-            _UndoStack.Push(new DataModification((DimmerDistroUnit)e.Target, (string)e.Property, (string)e.OldValue));
+            if (sender.GetType() == typeof(DimmerDistroUnit))
+            {
+                // Modification sent from DimmerDistro Unit. Push Modification to Undo Stack.
+                _UndoStack.Push(new DataModification((DimmerDistroUnit)e.Target, (string)e.Property, (string)e.OldValue));
+            }
+
+            if (sender.GetType() == typeof(EditorViewModel))
+            {
+                // Modification sent from Editor View Model. Push Modification to Undo Stack.
+            }
         }
         #endregion
     }

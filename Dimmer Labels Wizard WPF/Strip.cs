@@ -38,7 +38,13 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelStripTemplate AssignedTemplate
         {
             get { return _AssignedTemplate; }
-            set { _AssignedTemplate = value; }
+            set
+            {
+                if (value != _AssignedTemplate)
+                {
+                    _AssignedTemplate = value;
+                }
+            }
         }
 
         #endregion

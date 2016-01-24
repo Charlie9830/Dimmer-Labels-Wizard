@@ -185,8 +185,8 @@
 
         <StackPanel Background="Gray" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
             <TextBlock x:Name="textBlock" TextWrapping="Wrap" VerticalAlignment="Center" Width="150" Text="{Binding Path=TemplateStatusText}" Margin="5,10,5,9"/>
-            <Button x:Name="button1" IsEnabled="{Binding Path=TemplateChangesPending}"  Content="Apply" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}"/>
-            <Button x:Name="button1_Copy" IsEnabled="{Binding Path=TemplateChangesPending}" Content="Discard" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Button x:Name="button1" IsEnabled="{Binding Path=TemplateChangesPending}" Content="Apply" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}" Command="{Binding Path=ApplyTemplateChangesCommand}"/>
+            <Button x:Name="button1_Copy" IsEnabled="{Binding Path=TemplateChangesPending}" Content="Discard" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}" Command="{Binding Path=DiscardTemplateChangesCommand}"/>
             <Button x:Name="button1_Copy1" Content="Break" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}"/>
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="{StaticResource StackPanelItemsOffset}"/>
             <ComboBox Width="135" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
