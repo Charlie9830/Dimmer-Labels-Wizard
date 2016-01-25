@@ -358,7 +358,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var lowerCells = instance.LowerCells;
             int lowerCellsCount = instance.LowerCells.Count;
 
-            // Push changed style to Upper Cell Elements.
+            // Push changed style to Lower Cell Elements.
             for (int index = 0; index < templatesCount && index < lowerCellsCount; index++ )
             {
                 lowerCells[index].Style = templates.ElementAt(index);

@@ -348,6 +348,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Collection modification has been triggered elsewhere,
                 // and has already taken place. No further action is 
                 // required from RowCount.
+
                 return;
             }
 

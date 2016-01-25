@@ -125,11 +125,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Modification sent from DimmerDistro Unit. Push Modification to Undo Stack.
                 _UndoStack.Push(new DataModification((DimmerDistroUnit)e.Target, (string)e.Property, (string)e.OldValue));
             }
-
-            if (sender.GetType() == typeof(EditorViewModel))
-            {
-                // Modification sent from Editor View Model. Push Modification to Undo Stack.
-            }
         }
         #endregion
     }

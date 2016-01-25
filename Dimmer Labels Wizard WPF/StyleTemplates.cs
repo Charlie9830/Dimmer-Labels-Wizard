@@ -103,6 +103,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelStripTemplate()
         {
             TargetType = typeof(LabelStrip);
+            BasedOn = Globals.BaseLabelStripTemplate;
         }
 
         public LabelStripTemplate(LabelStripTemplate basedOn)
@@ -194,6 +195,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelCellTemplate()
         {
             TargetType = typeof(LabelCell);
+            BasedOn = Globals.BaseLabelCellTemplate;
         }
 
         public LabelCellTemplate(LabelCellTemplate basedOn)
@@ -351,6 +353,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public CellRowTemplate()
         {
             TargetType = typeof(CellRow);
+            BasedOn = Globals.BaseCellRowTemplate;
         }
 
         public CellRowTemplate(CellRowTemplate basedOn)

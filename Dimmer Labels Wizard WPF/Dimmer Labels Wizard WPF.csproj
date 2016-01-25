@@ -155,6 +155,10 @@
     <Compile Include="SerialConversion.cs" />
     <Compile Include="Strip.cs" />
     <Compile Include="StyleTemplates.cs" />
+    <Compile Include="TemplateEditor.xaml.cs">
+      <DependentUpon>TemplateEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateHelper.cs" />
     <Compile Include="UndoRedoManager.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
@@ -247,6 +251,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SanitizationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -206,7 +206,7 @@
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding Path=StripTemplates}" SelectedItem="{Binding Path=SelectedStripTemplate}"  VerticalAlignment="Stretch" Grid.Row="1" Margin="5,5"/>
-                <Button x:Name="button" Content="New" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="75"/>
+                <Button x:Name="button" Content="New" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="75" Command="{Binding Path=CreateNewTemplateCommand}"/>
                 <Button x:Name="button_Copy" Content="Edit" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75"/>
             </Grid>
         </Expander>

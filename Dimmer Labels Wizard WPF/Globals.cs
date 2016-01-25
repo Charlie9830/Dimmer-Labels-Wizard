@@ -12,6 +12,82 @@ namespace Dimmer_Labels_Wizard_WPF
 {
     public static class Globals
     {
+        static Globals()
+        {
+            // Construct the Default LabelStrip Template.
+
+            // Upper Strip is in Single Field Mode.
+            // Lower Strip Cell Row Templates.
+            var lowerTopRow = new CellRowTemplate()
+            {
+                DataField = LabelField.MulticoreName,
+                Font = new Typeface("Arial"),
+                DesiredFontSize = 12d,
+            };
+
+            var lowerMiddleRow = new CellRowTemplate()
+            {
+                DataField = LabelField.ChannelNumber,
+                Font = new Typeface("Arial"),
+                DesiredFontSize = 16d,
+            };
+
+            var lowerBottomRow = new CellRowTemplate()
+            {
+                DataField = LabelField.InstrumentName,
+                Font = new Typeface("Arial"),
+                DesiredFontSize = 12d,
+            };
+
+            // Upper Cell Template.
+            var upperCellTemplate = new LabelCellTemplate()
+            {
+                CellDataMode = CellDataMode.SingleField,
+                SingleFieldDataField = LabelField.Position,
+                SingleFieldDesiredFontSize = 16d,
+                SingleFieldFont = new Typeface("Arial"),
+            };
+
+            // Generate List of CellRowTemplates for construction of lowerCellTemplate.
+            var lowerCellRowTemplates = new List<CellRowTemplate>();
+            lowerCellRowTemplates.Add(lowerTopRow);
+            lowerCellRowTemplates.Add(lowerMiddleRow);
+            lowerCellRowTemplates.Add(lowerBottomRow);
+
+            var lowerCellTemplate = new LabelCellTemplate()
+            {
+                CellDataMode = CellDataMode.MixedField,
+                RowCount = 3,
+                RowHeightMode = CellRowHeightMode.Automatic,
+                CellRowTemplates = lowerCellRowTemplates,
+            };
+
+            // Construct Lists of UpperCell and LowerCell Templates before construction of LabelStrip Template.
+            var upperCellTemplates = new List<LabelCellTemplate>();
+            for (int count = 1; count <= 12; count++)
+            {
+                upperCellTemplates.Add(upperCellTemplate);
+            }
+
+            var lowerCellTemplates = new List<LabelCellTemplate>();
+            for (int count = 1; count <= 12; count++)
+            {
+                lowerCellTemplates.Add(lowerCellTemplate);
+            }
+
+            // Generate LabelStripTemplate
+            var labelStripTemplate = new LabelStripTemplate()
+            {
+                Name = "Default",
+                StripMode = LabelStripMode.Dual,
+                StripHeight = 70d,
+                UpperCellTemplates = upperCellTemplates,
+                LowerCellTemplates = lowerCellTemplates,
+            };
+
+            Templates.Add(labelStripTemplate);
+        }
+
         // Debug Mode
         public static bool DebugActive = false;
 
@@ -45,6 +121,9 @@ namespace Dimmer_Labels_Wizard_WPF
             CellRowTemplates = new List<CellRowTemplate>() as IEnumerable<CellRowTemplate>,
         };
 
+        // Not to be confused with the Default Strip Template. The Base LabelStripTemplates only exist to gaurantee
+        // that the Property Accsessors of instances of LabelStripTemplate, LabelCellTemplate and CellRowTemplate will also
+        // find a value. Otherwise they would return null, which is indistiguishable from a property value.
         public static LabelStripTemplate BaseLabelStripTemplate = new LabelStripTemplate()
         {
             StripHeight = 70d,
@@ -52,7 +131,7 @@ namespace Dimmer_Labels_Wizard_WPF
             StripMode = LabelStripMode.Dual,
             UpperCellTemplates = new List<LabelCellTemplate>() as IEnumerable<LabelCellTemplate>,
             LowerCellTemplates = new List<LabelCellTemplate>() as IEnumerable<LabelCellTemplate>,
-            Name = "Base LabelStrip Template"
+            Name = "Base Template"
         };
 
         public static ObservableCollection<LabelStripTemplate> Templates = 
