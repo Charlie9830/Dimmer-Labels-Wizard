@@ -230,19 +230,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        // Row Count.
-        public int RowCount
-        {
-            get
-            {
-                return (int)GetSetterValue(LabelCell.RowCountProperty);
-            }
-            set
-            {
-                SetSetterValue(LabelCell.RowCountProperty, value);
-            }
-        }
-
         // SingleField Font
         public Typeface SingleFieldFont
         {

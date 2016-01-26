@@ -57,7 +57,6 @@ namespace Dimmer_Labels_Wizard_WPF
             var lowerCellTemplate = new LabelCellTemplate()
             {
                 CellDataMode = CellDataMode.MixedField,
-                RowCount = 3,
                 RowHeightMode = CellRowHeightMode.Automatic,
                 CellRowTemplates = lowerCellRowTemplates,
             };
@@ -86,6 +85,7 @@ namespace Dimmer_Labels_Wizard_WPF
             };
 
             Templates.Add(labelStripTemplate);
+            DefaultTemplate = labelStripTemplate;
         }
 
         // Debug Mode
@@ -109,7 +109,6 @@ namespace Dimmer_Labels_Wizard_WPF
         public static LabelCellTemplate BaseLabelCellTemplate = new LabelCellTemplate()
         {
             CellDataMode = CellDataMode.MixedField,
-            RowCount = 0,
             SingleFieldFont = new Typeface("Arial"),
             SingleFieldDesiredFontSize = 12,
             SingleFieldDataField = LabelField.NoAssignment,
@@ -133,6 +132,9 @@ namespace Dimmer_Labels_Wizard_WPF
             LowerCellTemplates = new List<LabelCellTemplate>() as IEnumerable<LabelCellTemplate>,
             Name = "Base Template"
         };
+
+        // By Defualt, this is contained within the Templates Collection.
+        public static LabelStripTemplate DefaultTemplate;
 
         public static ObservableCollection<LabelStripTemplate> Templates = 
             new ObservableCollection<LabelStripTemplate>();

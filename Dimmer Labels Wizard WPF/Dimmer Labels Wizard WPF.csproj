@@ -158,6 +158,7 @@
     <Compile Include="TemplateEditor.xaml.cs">
       <DependentUpon>TemplateEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TemplateEditorViewModel.cs" />
     <Compile Include="TemplateHelper.cs" />
     <Compile Include="UndoRedoManager.cs" />
     <Compile Include="UnResolveableData.xaml.cs">

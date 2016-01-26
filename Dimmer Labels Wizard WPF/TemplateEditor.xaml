@@ -5,23 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="TemplateEditor" Height="800" Width="800">
+        Title="TemplateEditor" Height="750" Width="900">
 
+    <Window.DataContext>
+        <local:TemplateEditorViewModel/>
+    </Window.DataContext>
+    
     <Window.Resources>
         <SolidColorBrush x:Key="ExpanderBackground" Color="LightGray"/>
     </Window.Resources>
-    <Grid>
+    
+    <Grid Background="LightGray">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.25*"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="0.10*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Border BorderBrush="Gray" BorderThickness="1" Grid.Row="0">
-            <local:LabelStrip/>
+        <Border BorderBrush="Gray" Background="White" BorderThickness="1" Grid.Row="0" Margin="5">
+            <local:LabelStrip Margin="0,10,0,10"
+                DataSource="{Binding Path=ExampleUnits}" Style="{Binding Path=DisplayedTemplate}">
+
+                <local:LabelStrip.LayoutTransform>
+                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="1" ScaleY="1"/>
+                </local:LabelStrip.LayoutTransform>
+            </local:LabelStrip>
         </Border>
 
 
-        <Expander x:Name="expander" Background="{StaticResource ExpanderBackground}" Grid.Row="1" Header="Strip Template Settings" HorizontalAlignment="Stretch"  VerticalAlignment="Top">
+        <Expander x:Name="expander" IsExpanded="true" Background="{StaticResource ExpanderBackground}" Grid.Row="1" Header="Strip Template Settings" HorizontalAlignment="Stretch"  VerticalAlignment="Top">
             <Grid Background="White">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
@@ -39,26 +50,31 @@
 
                 <!-- Row 0 -->
                 <Label x:Name="label1" Content="Name" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"/>
+                <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
+                         Text="{Binding Path=TemplateName}"/>
 
                 <!-- Row 1-->
                 <Label Content="Based On" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"/>
-                <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"
+                          ItemsSource="{Binding Path=BasedOnTemplates}" SelectedItem="{Binding Path=BasedOnTemplateSelection}"/>
 
                 <!-- Row 2 -->
                 <Label x:Name="label2" Content="Strip Width (mm)" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"/>
+                <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"
+                         Text="{Binding Path=StripWidth}"/>
 
                 <!-- Row 3-->
                 <Label x:Name="label4" Content="Strip Height (mm)" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
-                <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1"/>
+                <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1"
+                         Text="{Binding Path=StripHeight}"/>
 
                 <!-- Row 4 -->
                 <Label x:Name="label5" Content="Strip Mode" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"/>
-                <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"/>
+                <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"
+                           ItemsSource="{Binding Path=StripModes}" SelectedItem="{Binding Path=SelectedStripMode}"/>
 
                 <!-- Row 5 -->
-                <Expander Header="Upper Cell Template Settings" Background="{StaticResource ExpanderBackground}" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                <Expander Header="Upper Cell Template Settings" IsExpanded="true" Background="{StaticResource ExpanderBackground}" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                     <Grid Background="White">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
@@ -81,7 +97,7 @@
 
                         <!-- Row 1 -->
                         <Label x:Name="label6" Content="Row Quantity" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-                        <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="0,4"/>
 
                         <!-- Row 2 -->
                         <Label Content="Row Height Mode" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0"/>
@@ -93,14 +109,14 @@
 
                         <!-- Row 4 -->
                         <Label Content="Single Field Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0"/>
-                        <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"/>
+                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="0,4"/>
 
                         <!-- Row 5 -->
                         <Label Content="Single Field Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0"/>
                         <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1"/>
 
                         <!-- Row 6 -->
-                        <Expander Header="Row Template Settings" Background="{StaticResource ExpanderBackground}" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                        <Expander Header="Row Template Settings" IsExpanded="true" Background="{StaticResource ExpanderBackground}" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                             <Grid Background="White">
 
                                 <Grid.RowDefinitions>
@@ -123,7 +139,7 @@
 
                                 <!-- Row 1 -->
                                 <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Height="26" Width="58"/>
-                                <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Height="18" Margin="0,4"/>
+                                <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Height="18" Margin="0,4"/>
 
                                 <!-- Row 2 -->
                                 <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Height="26" Width="66"/>
@@ -133,7 +149,7 @@
                     </Grid>
                 </Expander>
 
-                <Expander Header="Lower Cell Template Settings" Background="{StaticResource ExpanderBackground}"  Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                <Expander Header="Lower Cell Template Settings" Background="{StaticResource ExpanderBackground}"  Grid.Row="5" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top">
                     <Grid Background="White">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
@@ -156,7 +172,7 @@
 
                         <!-- Row 1 -->
                         <Label x:Name="label7" Content="Row Quantity" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
-                        <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
 
                         <!-- Row 2 -->
                         <Label Content="Row Height Mode" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0"/>
@@ -168,7 +184,7 @@
 
                         <!-- Row 4 -->
                         <Label Content="Single Field Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0"/>
-                        <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"/>
+                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"/>
 
                         <!-- Row 5 -->
                         <Label Content="Single Field Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="5" Grid.Column="0"/>
@@ -198,7 +214,7 @@
 
                                 <!-- Row 1 -->
                                 <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Height="26" Width="58"/>
-                                <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Height="18" Margin="0,4"/>
+                                <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Height="18" Margin="0,4"/>
 
                                 <!-- Row 2 -->
                                 <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Height="26" Width="66"/>

@@ -303,6 +303,19 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Handle already existing items.
                 instance.RefreshCellDataSources(newCollection as IEnumerable<DimmerDistroUnit>);
             }
+
+
+            if (newCollection == null && oldCollection == null)
+            {
+                // Check if a Non Observable Collection has been Bound.
+                IEnumerable<DimmerDistroUnit> newStandardCollection = e.NewValue as IEnumerable<DimmerDistroUnit>;
+
+                if (newStandardCollection != null)
+                {
+                    // Handle already existing Items.
+                    instance.RefreshCellDataSources(newStandardCollection);
+                }
+            }
         }
 
         public List<LabelCellTemplate> UpperCellTemplates

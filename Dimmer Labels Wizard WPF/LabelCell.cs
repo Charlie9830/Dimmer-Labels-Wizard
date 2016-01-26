@@ -166,6 +166,20 @@ namespace Dimmer_Labels_Wizard_WPF
             set { _HorizontalIndex = value; }
         }
 
+        private int _RowCount = 0;
+        public int RowCount
+        {
+            get { return _RowCount; }
+            set
+            {
+                if (_RowCount != value)
+                {
+                    int newCount = ValidateRowCount(value);
+                    AdjustRowCollectionCount(_RowCount, newCount);
+                    _RowCount = value;
+                }
+            }
+        }
 
         #endregion
 
@@ -300,6 +314,9 @@ namespace Dimmer_Labels_Wizard_WPF
             var templates = e.NewValue as List<CellRowTemplate>;
             ObservableCollection<CellRow> rows = instance.Rows;
 
+            // Set RowCount.
+            instance.RowCount = templates.Count;
+
             // Assign Templates to Rows.
             for (int index = 0; index < templates.Count && index < rows.Count; index++)
             {
@@ -307,73 +324,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public int RowCount
-        {
-            get { return (int)GetValue(RowCountProperty); }
-            set { SetValue(RowCountProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for RowCount.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RowCountProperty =
-            DependencyProperty.Register("RowCount", typeof(int), typeof(LabelCell),
-                new FrameworkPropertyMetadata(0, new PropertyChangedCallback(OnRowCountPropertyChanged),
-                    new CoerceValueCallback(CoerceRowCount)));
-
-        private static object CoerceRowCount(DependencyObject d, object value)
-        {
-            int count = (int)value;
-
-            if (count < 0)
-            {
-                return 0;
-            }
-
-            else
-            {
-                return count;
-            }
-        }
-
-        private static void OnRowCountPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as LabelCell;
-            int newCount = (int)e.NewValue;
-            int oldCount = (int)e.OldValue;
-            int difference = newCount - oldCount;
-            ObservableCollection<CellRow> rows = instance.Rows;
-            int collectionCount = rows.Count;
-
-            if (newCount == collectionCount)
-            {
-                // Collection modification has been triggered elsewhere,
-                // and has already taken place. No further action is 
-                // required from RowCount.
-
-                return;
-            }
-
-            if (difference < 0)
-            {
-                difference = Math.Abs(difference);
-
-                // Decrease collection Size.
-                for (int count = 1; count <= difference; count++)
-                {
-                    rows.RemoveAt(rows.Count - 1);
-                }
-            }
-
-            else if (difference > 0)
-            {
-                // Increase collection Size.
-                for (int count = 1; count <= difference; count++)
-                {
-                    rows.Add(new CellRow(instance));
-                }
-            }
-        }
-
-
+        
 
         public double LeftWeight
         {
@@ -1336,6 +1287,55 @@ namespace Dimmer_Labels_Wizard_WPF
         /// </summary>
         /// <param name="cellRow"></param>
         /// <param name="cellParent"></param>
+
+        protected int ValidateRowCount(int newValue)
+        {
+            if (newValue < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return newValue;
+            }
+        }
+
+        protected void AdjustRowCollectionCount(int oldCount, int newCount)
+        {
+            int difference = newCount - oldCount;
+            int collectionCount = Rows.Count;
+
+            if (newCount == collectionCount)
+            {
+                // Collection modification has been triggered elsewhere,
+                // and has already taken place. No further action is 
+                // required from RowCount.
+
+                return;
+            }
+
+            if (difference < 0)
+            {
+                difference = Math.Abs(difference);
+
+                // Decrease collection Size.
+                for (int count = 1; count <= difference; count++)
+                {
+                    Rows.RemoveAt(Rows.Count - 1);
+                }
+            }
+
+            else if (difference > 0)
+            {
+                // Increase collection Size.
+                for (int count = 1; count <= difference; count++)
+                {
+                    Rows.Add(new CellRow(this));
+                }
+            }
+        }
+
         protected void SetRowData(CellRow cellRow, LabelCell cellParent)
         {
             DimmerDistroUnit reference = cellParent.DataReference;

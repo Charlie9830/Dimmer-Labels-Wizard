@@ -76,7 +76,6 @@ namespace Dimmer_Labels_Wizard_WPF
             var cellTemplate = new LabelCellTemplate(Globals.BaseLabelCellTemplate)
             {
                 CellDataMode = CellDataMode.MixedField,
-                RowCount = 2,
                 CellRowTemplates = rowTemplates,
             };
 
