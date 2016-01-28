@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    
     <Grid>
         <Label x:Name="label" Content="Welcome" HorizontalAlignment="Left" Margin="207,32,0,0" VerticalAlignment="Top" FontSize="21.333" FontFamily="Segoe UI Semibold"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="140,75,0,0" VerticalAlignment="Top" Width="236">

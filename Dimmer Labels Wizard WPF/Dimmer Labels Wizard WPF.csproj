@@ -74,6 +74,9 @@
       <DependentUpon>Editor.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorViewModel.cs" />
+    <Compile Include="FontSelector.xaml.cs">
+      <DependentUpon>FontSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IModifcationNotification.cs" />
     <Compile Include="Merge.cs" />
     <Compile Include="Modification Classes.cs" />
@@ -166,6 +169,7 @@
     </Compile>
     <Compile Include="UnresolveableDataViewModel.cs" />
     <Compile Include="UserParameters.cs" />
+    <Compile Include="ValueConverters.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Page Include="BackgroundColorTable.xaml">
       <SubType>Designer</SubType>
@@ -192,6 +196,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FileImportDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FontSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

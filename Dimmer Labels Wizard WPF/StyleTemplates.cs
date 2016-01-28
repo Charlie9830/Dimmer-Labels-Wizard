@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -104,6 +105,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             TargetType = typeof(LabelStrip);
             BasedOn = Globals.BaseLabelStripTemplate;
+            
         }
 
         public LabelStripTemplate(LabelStripTemplate basedOn)
@@ -131,27 +133,29 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // Upper Cells Template
-        public IEnumerable<LabelCellTemplate> UpperCellTemplates
+        public LabelCellTemplate UpperCellTemplate
         {
             get
             {
-                return (IEnumerable<LabelCellTemplate>)GetSetterValue(LabelStrip.UpperCellTemplatesProperty);
+                return (LabelCellTemplate)GetSetterValue(LabelStrip.UpperCellTemplateProperty);
             }
             set
             {
-                SetSetterValue(LabelStrip.UpperCellTemplatesProperty, value);
+                SetSetterValue(LabelStrip.UpperCellTemplateProperty, value);
+                
+
             }
         }
 
-        public IEnumerable<LabelCellTemplate> LowerCellTemplates
+        public LabelCellTemplate LowerCellTemplate
         {
             get
             {
-                return (IEnumerable<LabelCellTemplate>)GetSetterValue(LabelStrip.LowerCellTemplatesProperty);
+                return (LabelCellTemplate)GetSetterValue(LabelStrip.LowerCellTemplateProperty);
             }
             set
             {
-                SetSetterValue(LabelStrip.LowerCellTemplatesProperty, value);
+                SetSetterValue(LabelStrip.LowerCellTemplateProperty, value);
             }
         }
 
@@ -195,7 +199,14 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelCellTemplate()
         {
             TargetType = typeof(LabelCell);
-            BasedOn = Globals.BaseLabelCellTemplate;
+
+            // Check if we are at Runtime or Designtime before setting the BasedOn Property.
+            // Designer will crash because it is not initalizing the Globals.BaseLabelCellTemplate
+            // early enough.
+            if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
+            {
+                BasedOn = Globals.BaseLabelCellTemplate;
+            }
         }
 
         public LabelCellTemplate(LabelCellTemplate basedOn)
@@ -340,7 +351,15 @@ namespace Dimmer_Labels_Wizard_WPF
         public CellRowTemplate()
         {
             TargetType = typeof(CellRow);
-            BasedOn = Globals.BaseCellRowTemplate;
+
+            // Check if we are at Runtime or Designtime before setting the BasedOn Property.
+            // Designer will crash because it is not initalizing the Globals.BaseCellRowTemplate
+            // early enough.
+            if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
+            {
+                BasedOn = Globals.BaseCellRowTemplate;
+            }
+            
         }
 
         public CellRowTemplate(CellRowTemplate basedOn)
@@ -348,6 +367,7 @@ namespace Dimmer_Labels_Wizard_WPF
             TargetType = typeof(CellRow);
             BasedOn = basedOn;
         }
+
 
         // DataField.
         public LabelField DataField
@@ -387,5 +407,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 SetSetterValue(CellRow.DesiredFontSizeProperty, value);
             }
         }
+
+        #region Overrides
+        public override string ToString()
+        {
+            return DataField.ToString();
+        }
+        #endregion
     }
 }

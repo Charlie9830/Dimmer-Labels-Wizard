@@ -1,6 +1,7 @@
 ﻿<Application
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="Dimmer_Labels_Wizard_WPF.App"
              StartupUri="MainWindow.xaml">
@@ -32,5 +33,41 @@
             </Style.Setters>
         </Style>
 
+        <!-- Font Chooser for ComboBoxes. Apply This Style, Then Bind ItemsSource to SystemFonts using
+             {Binding Source={StaticResource SystemFonts}} Notation, A direct SystemResource Binding won't work. -->
+        <Style x:Key="FontChooserComboBoxStyle" TargetType="ComboBox">
+            <Style.Setters>
+                <Setter Property="Height" Value="25"/>
+                    <Setter Property="ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" VerticalAlignment="Center" FontSize="16" FontFamily="{Binding}"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        
+        <!-- SystemFonts Collection View Source. Bind ItemsSource to This using
+             {Binding Source={StaticResource SystemFonts}} Notation, A direct SystemResource Binding won't work. -->
+        <CollectionViewSource  x:Key="SystemFontFamilies" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
+            <CollectionViewSource.SortDescriptions>
+                 <scm:SortDescription PropertyName="Source"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+
+        <!-- Standard Font Sizes -->
+        <!-- Bind ItemsSource Properties to this using Explicit Binding. eg {Binding Source={StaticResource StandardFontSizes}} -->
+        <CollectionViewSource Source="{Binding Source={x:Static local:Globals.StandardFontSizes}}" x:Key="StandardFontSizes"/>
+        
+        <!-- Boolean Flip Value Converter -->
+        <local:BooleanFlipValueConverter x:Key="BooleanFlipValueConverter"/>
     </Application.Resources>
 </Application>

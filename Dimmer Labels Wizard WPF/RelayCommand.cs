@@ -38,7 +38,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public void CheckCanExecute()
         {
-            CanExecuteChanged(this, new EventArgs());
+            if (CanExecuteChanged != null)
+            {
+                CanExecuteChanged(this, new EventArgs());
+            }
         }
 
     }

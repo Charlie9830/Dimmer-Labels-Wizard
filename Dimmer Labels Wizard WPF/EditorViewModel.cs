@@ -34,8 +34,6 @@ namespace Dimmer_Labels_Wizard_WPF
             _DiscardTemplateChangesCommand = new RelayCommand(DiscardTemplateChangesCommandExecute);
             _CreateNewTemplateCommand = new RelayCommand(CreateNewTemplateCommandExecute);
             
-            
-
             #region Testing Code
             // Testing
             Strip strip1 = new Strip();
@@ -69,32 +67,36 @@ namespace Dimmer_Labels_Wizard_WPF
             Globals.DimmerDistroUnits.AddRange(strip1.Units);
             Globals.DimmerDistroUnits.AddRange(strip2.Units);
 
-            var rowTemplates = new List<CellRowTemplate>();
-            rowTemplates.Add(new CellRowTemplate() { DataField = LabelField.ChannelNumber});
-            rowTemplates.Add(new CellRowTemplate() { DataField = LabelField.InstrumentName });
+            var rowTemplatesA = new List<CellRowTemplate>();
+            rowTemplatesA.Add(new CellRowTemplate() { DataField = LabelField.ChannelNumber});
+            rowTemplatesA.Add(new CellRowTemplate() { DataField = LabelField.InstrumentName });
 
-            var cellTemplate = new LabelCellTemplate(Globals.BaseLabelCellTemplate)
+            var rowTemplatesB = new List<CellRowTemplate>();
+            rowTemplatesB.Add(new CellRowTemplate() { DataField = LabelField.InstrumentName });
+            rowTemplatesB.Add(new CellRowTemplate() { DataField = LabelField.ChannelNumber });
+
+            var cellTemplateA = new LabelCellTemplate(Globals.BaseLabelCellTemplate)
             {
                 CellDataMode = CellDataMode.MixedField,
-                CellRowTemplates = rowTemplates,
+                CellRowTemplates = rowTemplatesA,
             };
 
-            var cellTemplates = new List<LabelCellTemplate>();
-            for (int count = 0; count < 12; count++)
+            var cellTemplateB = new LabelCellTemplate(Globals.BaseLabelCellTemplate)
             {
-                cellTemplates.Add(cellTemplate);
-            }
+                CellDataMode = CellDataMode.MixedField,
+                CellRowTemplates = rowTemplatesB
+            };
 
             var template1 = new LabelStripTemplate(Globals.BaseLabelStripTemplate);
-            template1.Name = "template1, Based on BaseLabelStripTemplate";
+            template1.Name = "Template A Standard";
             template1.StripMode = LabelStripMode.Dual;
-            template1.UpperCellTemplates = cellTemplates;
-            template1.LowerCellTemplates = cellTemplates;
+            template1.UpperCellTemplate = cellTemplateA;
+            template1.LowerCellTemplate = cellTemplateA;
 
             var template2 = new LabelStripTemplate(template1);
-            template2.Name = "template2, Based on template1";
-            template2.StripHeight = 70d;
-            template2.StripMode = LabelStripMode.Single;
+            template2.Name = "Template B Flipped";
+            template2.UpperCellTemplate = cellTemplateB;
+            template2.LowerCellTemplate = cellTemplateB;
 
             strip1.AssignedTemplate = template1;
             strip2.AssignedTemplate = template2;

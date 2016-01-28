@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var upperCellTemplate = new LabelCellTemplate()
             {
                 CellDataMode = CellDataMode.SingleField,
+                RowHeightMode = CellRowHeightMode.Static,
                 SingleFieldDataField = LabelField.Position,
                 SingleFieldDesiredFontSize = 16d,
                 SingleFieldFont = new Typeface("Arial"),
@@ -61,18 +63,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 CellRowTemplates = lowerCellRowTemplates,
             };
 
-            // Construct Lists of UpperCell and LowerCell Templates before construction of LabelStrip Template.
-            var upperCellTemplates = new List<LabelCellTemplate>();
-            for (int count = 1; count <= 12; count++)
-            {
-                upperCellTemplates.Add(upperCellTemplate);
-            }
-
-            var lowerCellTemplates = new List<LabelCellTemplate>();
-            for (int count = 1; count <= 12; count++)
-            {
-                lowerCellTemplates.Add(lowerCellTemplate);
-            }
 
             // Generate LabelStripTemplate
             var labelStripTemplate = new LabelStripTemplate()
@@ -80,8 +70,8 @@ namespace Dimmer_Labels_Wizard_WPF
                 Name = "Default",
                 StripMode = LabelStripMode.Dual,
                 StripHeight = 70d,
-                UpperCellTemplates = upperCellTemplates,
-                LowerCellTemplates = lowerCellTemplates,
+                UpperCellTemplate = upperCellTemplate,
+                LowerCellTemplate = lowerCellTemplate,
             };
 
             Templates.Add(labelStripTemplate);
@@ -90,6 +80,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Debug Mode
         public static bool DebugActive = false;
+
+        // Standard FontSizes.
+        public static double[] StandardFontSizes = new double[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
 
         // List to hold DimDistroUnit Objects
         public static List<DimmerDistroUnit> DimmerDistroUnits = new List<DimmerDistroUnit>();
@@ -128,8 +121,8 @@ namespace Dimmer_Labels_Wizard_WPF
             StripHeight = 70d,
             StripWidth = 70d * 12,
             StripMode = LabelStripMode.Dual,
-            UpperCellTemplates = new List<LabelCellTemplate>() as IEnumerable<LabelCellTemplate>,
-            LowerCellTemplates = new List<LabelCellTemplate>() as IEnumerable<LabelCellTemplate>,
+            UpperCellTemplate = BaseLabelCellTemplate,
+            LowerCellTemplate = BaseLabelCellTemplate,
             Name = "Base Template"
         };
 

@@ -318,69 +318,55 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public List<LabelCellTemplate> UpperCellTemplates
+        public LabelCellTemplate UpperCellTemplate
         {
-            get { return (List<LabelCellTemplate>)GetValue(UpperCellTemplatesProperty); }
-            set { SetValue(UpperCellTemplatesProperty, value); }
+            get { return (LabelCellTemplate)GetValue(UpperCellTemplateProperty); }
+            set { SetValue(UpperCellTemplateProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for UpperCellsTemplate.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty UpperCellTemplatesProperty =
-            DependencyProperty.Register("UpperCellTemplates", typeof(List<LabelCellTemplate>),
-                typeof(LabelStrip), new FrameworkPropertyMetadata(new List<LabelCellTemplate>(),
-                    new PropertyChangedCallback(OnUpperCellTemplatesPropertyChanged)));
+        public static readonly DependencyProperty UpperCellTemplateProperty =
+            DependencyProperty.Register("UpperCellTemplate", typeof(LabelCellTemplate),
+                typeof(LabelStrip), new FrameworkPropertyMetadata(new LabelCellTemplate(),
+                    new PropertyChangedCallback(OnUpperCellTemplatePropertyChanged)));
 
-        private static void OnUpperCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnUpperCellTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelStrip;
-            var templates = e.NewValue as IEnumerable<LabelCellTemplate>;
-            int templatesCount = templates.Count();
+            var template = e.NewValue as LabelCellTemplate;
             var upperCells = instance.UpperCells;
             int upperCellsCount = instance.UpperCells.Count;
 
-            // Push changed style to Upper Cell Elements.
-            for (int index = 0; index < templatesCount && index < upperCellsCount; index++ )
+            // Push change to Upper Cells.
+            for (int index = 0; index < upperCellsCount; index++)
             {
-                upperCells[index].Style = templates.ElementAt(index);
-
-                if (upperCells[index].IsMerged == true)
-                {
-                    // Cell is Merged, Skip Index past it's consumed Cells.
-                    index += upperCells[index].ConsumedReferencesCount;
-                }
+                upperCells[index].Style = template;
             }
         }
 
 
-        public List<LabelCellTemplate> LowerCellTemplates
+        public LabelCellTemplate LowerCellTemplate
         {
-            get { return (List<LabelCellTemplate>)GetValue(LowerCellTemplatesProperty); }
-            set { SetValue(LowerCellTemplatesProperty, value); }
+            get { return (LabelCellTemplate)GetValue(LowerCellTemplateProperty); }
+            set { SetValue(LowerCellTemplateProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for LowerCellsTemplate.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty LowerCellTemplatesProperty =
-            DependencyProperty.Register("LowerCellTemplates", typeof(List<LabelCellTemplate>), typeof(LabelStrip),
-                new FrameworkPropertyMetadata(new List<LabelCellTemplate>(), new PropertyChangedCallback(OnLowerCellTemplatesPropertyChanged)));
+        public static readonly DependencyProperty LowerCellTemplateProperty =
+            DependencyProperty.Register("LowerCellTemplate", typeof(LabelCellTemplate), typeof(LabelStrip),
+                new FrameworkPropertyMetadata(new LabelCellTemplate(), new PropertyChangedCallback(OnLowerCellTemplatePropertyChanged)));
 
-        private static void OnLowerCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnLowerCellTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelStrip;
-            var templates = e.NewValue as IEnumerable<LabelCellTemplate>;
-            int templatesCount = templates.Count();
+            var template = e.NewValue as LabelCellTemplate;
             var lowerCells = instance.LowerCells;
             int lowerCellsCount = instance.LowerCells.Count;
 
-            // Push changed style to Lower Cell Elements.
-            for (int index = 0; index < templatesCount && index < lowerCellsCount; index++ )
+            // Push change to Lower Cells.
+            for (int index = 0; index < lowerCellsCount; index++)
             {
-                lowerCells[index].Style = templates.ElementAt(index);
-
-                if (lowerCells[index].IsMerged == true)
-                {
-                    // Cell is Merged, Skip Index past it's consumed Cells.
-                    index += lowerCells[index].ConsumedReferencesCount;
-                }
+                lowerCells[index].Style = template;
             }
         }
 
@@ -677,10 +663,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
                         // Set Template
-                        if (collection.IndexOf(cell) < LowerCellTemplates.Count)
-                        {
-                            cell.Style = LowerCellTemplates[collection.IndexOf(cell)];
-                        }
+                        cell.Style = UpperCellTemplate;
 
                         // Connect Event Handler.
                         cell.PropertyChanged += UpperCell_PropertyChanged;
@@ -771,10 +754,7 @@ namespace Dimmer_Labels_Wizard_WPF
                         }
 
                         // Set Template
-                        if (collection.IndexOf(cell) < LowerCellTemplates.Count)
-                        {
-                            cell.Style = LowerCellTemplates[collection.IndexOf(cell)];
-                        }
+                        cell.Style = LowerCellTemplate;
                         
                         // Connect event Handlers.
                         cell.PropertyChanged += LowerCell_PropertyChanged;
