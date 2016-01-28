@@ -1219,12 +1219,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Set new Data.
                 if (DataReference != null)
                 {
-                    // Temporarily disable Data Model Updates. Set Data, then Re-Enable.
-                    cellRow.BeginDataFieldChange();
-
                     cellRow.Data = DataReference.GetData(cellRow.DataField);
-
-                    cellRow.EndDataFieldChange();
                 }
 
                 // Update Cascading State.

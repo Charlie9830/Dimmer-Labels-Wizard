@@ -76,11 +76,6 @@ namespace Dimmer_Labels_Wizard_WPF
         /// Tracks whether a Data Layout Pass is in progress or not.
         /// </summary>
         public bool IsInDataLayoutPass = false;
-
-        /// <summary>
-        /// Tracks whether a DataField property Change is in progress. Inhibits DataModel Updates when true.
-        /// </summary>
-        public bool IsInDataFieldChange = false;
         #endregion
 
         #region CLR Properties and Fields.
@@ -217,6 +212,7 @@ namespace Dimmer_Labels_Wizard_WPF
         private static object CoerceData(DependencyObject d, object value)
         {
             string data = (string)value;
+
             // Trim Leading and trailing Whitespace.
             return data.Trim();
         }
@@ -576,24 +572,6 @@ namespace Dimmer_Labels_Wizard_WPF
             // Forward Event.
             OnMouseLeave(e);
             
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Changes to the Data Model are Inhibited until EndDataFieldChange() is Called.
-        /// </summary>
-        public void BeginDataFieldChange()
-        {
-            IsInDataFieldChange = true;
-        }
-
-        /// <summary>
-        /// Re-Enables DataModel Updates, use in conjuction with BeginDataFieldChange().
-        /// </summary>
-        public void EndDataFieldChange()
-        {
-            IsInDataFieldChange = false;
         }
         #endregion
 
