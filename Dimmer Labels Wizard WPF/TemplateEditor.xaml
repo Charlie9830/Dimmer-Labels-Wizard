@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="TemplateEditor" Height="750" Width="950">
+        Title="TemplateEditor" Height="750" Width="1000">
 
     <Window.DataContext>
         <local:TemplateEditorViewModel/>
@@ -109,7 +109,7 @@
 
                         <!-- Row 4 -->
                         <Label Content="Single Field Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="0"/>
-                        <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Margin="0,4" IsEditable="true"
+                        <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" IsEditable="true" IsSynchronizedWithCurrentItem="False"
                                   ItemsSource="{Binding Source={StaticResource StandardFontSizes}}" SelectedItem="{Binding Path=UpperSingleFieldFontSize}"
                                   IsEnabled="{Binding Path=UpperSingleFieldModeEnabled}"/>
 
@@ -121,7 +121,7 @@
 
                         <!-- Row 6 -->
                         <Expander Header="Row Template Settings" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"
-                                  IsExpanded="{Binding Path=UpperSingleFieldModeEnabled, Converter={StaticResource BooleanFlipValueConverter}}"
+                                  IsExpanded="{Binding Path=UpperSingleFieldModeEnabled, Converter={StaticResource BooleanFlipValueConverter}, Mode=OneWay}"
                                   Background="{StaticResource ExpanderBackground}">
                             <Grid Background="White"
                                   IsEnabled="True">
@@ -133,10 +133,10 @@
                                 </Grid.RowDefinitions>
 
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="154*"/>
-                                    <ColumnDefinition Width="55*"/>
-                                    <ColumnDefinition Width="84*"/>
-                                    <ColumnDefinition Width="173*"/>
+                                    <ColumnDefinition Width="129*"/>
+                                    <ColumnDefinition Width="57*"/>
+                                    <ColumnDefinition Width="72*"/>
+                                    <ColumnDefinition Width="233*"/>
                                 </Grid.ColumnDefinitions>
 
                                 <ListBox x:Name="UpperRowTemplatesListBox" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="5"
@@ -144,24 +144,31 @@
 
                                 <!-- Row 0 -->
                                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                    <Button Content="+" VerticalAlignment="Bottom" Width="20" Height="20" Margin="5,0,0,3"/>
-                                    <Button Content="-" VerticalAlignment="Center" Width="20" Height="20" Margin="5,0,0,0"/>
+                                    <Button Content="+" VerticalAlignment="Center" Width="20" Height="20" Margin="5,0,0,0"
+                                            Command="{Binding Path=AddUpperRowTemplateCommand}"/>
+                                    <Button Content="-" VerticalAlignment="Center" Width="20" Height="20" Margin="5,0,0,0"
+                                            Command="{Binding Path=RemoveUpperRowTemplateCommand}"/>
                                 </StackPanel>
-                                <Label Content="Font" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2" Height="26" Width="34"/>
-                                <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="3" Height="22" Margin="0,2"/>
+                                <Label Content="Font" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="2"/>
+                                <local:FontSelector HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="3"
+                                                    SelectedFont="{Binding Path=SelectedUpperRowFont}"/>
+
 
                                 <!-- Row 1 -->
                                 <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                     <Button Content="^" VerticalAlignment="Center" Width="20" Height="20" Margin="5,0,0,0"
                                             Command="{Binding Path=MoveUpperRowTemplateUpCommand}" />
-                                    <Button Content="V" VerticalAlignment="Center" Width="20" Height="20" Margin="5,0,0,0"/>
+                                    <Button Content="V" VerticalAlignment="Center" Width="20" Height="20" Margin="5,0,0,0"
+                                            Command="{Binding Path=MoveUpperRowTemplateDownCommand}"/>
                                 </StackPanel>
-                                <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Height="26" Width="58"/>
-                                <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3" Height="18" Margin="0,4"/>
+                                <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2"/>
+                                <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3" IsEditable="True" IsSynchronizedWithCurrentItem="False"
+                                          ItemsSource="{Binding Source={StaticResource StandardFontSizes}}" SelectedItem="{Binding Path=SelectedUpperRowFontSize}" />
 
                                 <!-- Row 2 -->
-                                <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" Height="26" Width="66"/>
-                                <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Height="22" Margin="0,2"/>
+                                <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" />
+                                <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" 
+                                          ItemsSource="{Binding Path=LabelFields}" SelectedItem="{Binding Path=SelectedUpperRowDataField}"/>
                             </Grid>
                         </Expander>
                     </Grid>
@@ -222,7 +229,7 @@
                                     <ColumnDefinition Width="173*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ListBox  Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="5,2"/>
+                                <ListBox  Grid.Row="0" Grid.RowSpan="3" Height="75" Grid.Column="0" Margin="5"/>
 
                                 <!-- Row 0 -->
                                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">

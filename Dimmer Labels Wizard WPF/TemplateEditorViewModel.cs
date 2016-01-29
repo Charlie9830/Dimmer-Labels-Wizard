@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -19,6 +21,15 @@ namespace Dimmer_Labels_Wizard_WPF
             // Command Binding
             _MoveUpperRowTemplateUpCommand = new RelayCommand(MoveUpperRowTemplateUpCommandExecute,
                 MoveUpperRowTemplateUpCommandCanExecute);
+
+            _MoveUpperRowTemplateDownCommand = new RelayCommand(MoveUpperRowTemplateDownCommandExecute,
+                MoveUpperRowTemplateDownCommandCanExecute);
+
+            _AddUpperRowTemplateCommand = new RelayCommand(AddUpperRowTemplateCommandExecute);
+
+            _RemoveUpperRowTemplateCommand = new RelayCommand(RemoveUpperRowTemplateCommandExecute,
+                RemoveUpperRowTemplateCommandCanExecute);
+
 
             // Event Subscriptions
             UpperRowTemplates.CollectionChanged += UpperRowTemplates_CollectionChanged;
@@ -224,6 +235,22 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Set SingleField Enable State.
                     UpperSingleFieldModeEnabled = value == CellDataMode.SingleField ? true : false;
 
+                    // Set additional Control States.
+                    if (value == CellDataMode.SingleField)
+                    {
+                        if (UpperRowTemplates.Count > 0)
+                        {
+                            // Set SingleFieldDataField to first existing Row Template. Otherwise Channel.
+                            UpperSingleFieldDataField = UpperRowTemplates.First().DataField;
+                        }
+
+                        else
+                        {
+                            UpperRowTemplates.Clear();
+                            UpperSingleFieldDataField = LabelField.ChannelNumber;
+                        }
+                    }
+
                     // Notify.
                     OnPropertyChanged(nameof(SelectedUpperCellDataMode));
                 }
@@ -371,16 +398,120 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     _SelectedUpperRowTemplate = value;
 
+                    _SelectedUpperRowFont = value == null ? null : value.Font;
+                    _SelectedUpperRowFontSize = value == null ? 0 : value.DesiredFontSize;
+                    _SelectedUpperRowDataField = value == null ? LabelField.NoAssignment : value.DataField;
+
                     // Notify.
                     OnPropertyChanged(nameof(SelectedUpperRowTemplate));
+                    OnPropertyChanged(nameof(SelectedUpperRowFont));
+                    OnPropertyChanged(nameof(SelectedUpperRowFontSize));
+                    OnPropertyChanged(nameof(SelectedUpperRowDataField));
+
+                    // Check Executes.
                     _MoveUpperRowTemplateUpCommand.CheckCanExecute();
+                    _MoveUpperRowTemplateDownCommand.CheckCanExecute();
+                    _RemoveUpperRowTemplateCommand.CheckCanExecute();
+                }
+            }
+        }
+
+        private Typeface _SelectedUpperRowFont = null;
+
+        public Typeface SelectedUpperRowFont
+        {
+            get { return _SelectedUpperRowFont; }
+            set
+            {
+               if (_SelectedUpperRowFont != value)
+                {
+                    _SelectedUpperRowFont = value;
+
+                    if (SelectedUpperRowTemplate != null)
+                    {
+                        // Find the SelectedUpperRowTemplate in the UpperRowTemplates collection and modify it's value there,
+                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
+                        // The Reset the SelectedUpperRowTemplate as it's reference will be broken.
+                        int index = UpperRowTemplates.IndexOf(SelectedUpperRowTemplate);
+                        UpperRowTemplates[index] = new CellRowTemplate(SelectedUpperRowTemplate)
+                        {
+                            Font = value
+                        };
+
+                        // Preserve Selection.
+                        SelectedUpperRowTemplate = UpperRowTemplates[index];
+                    }
+                    
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedUpperRowFont));
                     
                 }
             }
         }
 
+        private double _SelectedUpperRowFontSize;
 
+        public double SelectedUpperRowFontSize
+        {
+            get { return _SelectedUpperRowFontSize; }
+            set
+            {
+                if (_SelectedUpperRowFontSize != value)
+                {
+                    _SelectedUpperRowFontSize = value;
 
+                    if (SelectedUpperRowTemplate != null)
+                    {
+                        // Find the SelectedUpperRowTemplate in the UpperRowTemplates collection and modify it's value there,
+                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
+                        // The Reset the SelectedUpperRowTemplate as it's reference will be broken.
+                        int index = UpperRowTemplates.IndexOf(SelectedUpperRowTemplate);
+                        UpperRowTemplates[index] = new CellRowTemplate(SelectedUpperRowTemplate)
+                        {
+                            DesiredFontSize = value
+                        };
+
+                        // Preserve Selection.
+                        SelectedUpperRowTemplate = UpperRowTemplates[index];
+                    }
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedUpperRowFontSize));
+                }
+            }
+        }
+
+        private LabelField _SelectedUpperRowDataField;
+
+        public LabelField SelectedUpperRowDataField
+        {
+            get { return _SelectedUpperRowDataField; }
+            set
+            {
+                if (_SelectedUpperRowDataField != value)
+                {
+                    _SelectedUpperRowDataField = value;
+
+                    if (SelectedUpperRowTemplate != null)
+                    {
+                        // Find the SelectedUpperRowTemplate in the UpperRowTemplates collection and modify it's value there,
+                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
+                        // The Reset the SelectedUpperRowTemplate as it's reference will be broken.
+                        int index = UpperRowTemplates.IndexOf(SelectedUpperRowTemplate);
+                        UpperRowTemplates[index] = new CellRowTemplate(SelectedUpperRowTemplate)
+                        {
+                            DataField = value
+                        };
+
+                        // Preserve Selection.
+                        SelectedUpperRowTemplate = UpperRowTemplates[index];
+                    }
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedUpperRowDataField));
+                }
+            }
+        }
         #endregion
 
         #region Commands
@@ -417,6 +548,11 @@ namespace Dimmer_Labels_Wizard_WPF
             var rowTemplate = SelectedUpperRowTemplate;
             var collection = UpperRowTemplates;
 
+            if (rowTemplate == null)
+            {
+                return false;
+            }
+
             if (collection.IndexOf(rowTemplate) == 0)
             {
                 return false;
@@ -426,6 +562,156 @@ namespace Dimmer_Labels_Wizard_WPF
                 return true;
             }
         }
+
+        private RelayCommand _MoveUpperRowTemplateDownCommand;
+
+        public ICommand MoveUpperRowTemplateDownCommand
+        {
+            get
+            {
+                return _MoveUpperRowTemplateDownCommand;
+            }
+        }
+
+        protected void MoveUpperRowTemplateDownCommandExecute(object parameter)
+        {
+            var rowTemplate = SelectedUpperRowTemplate;
+            var collection = UpperRowTemplates;
+
+            if (rowTemplate == null)
+            {
+                // Nothing Selected.
+                return;
+            }
+
+            // Execute Move.
+            int currentIndex = collection.IndexOf(rowTemplate);
+            if (currentIndex != collection.Count - 1)
+            {
+                collection.Move(currentIndex, currentIndex + 1);
+            }
+        }
+
+        protected bool MoveUpperRowTemplateDownCommandCanExecute(object parameter)
+        {
+            var rowTemplate = SelectedUpperRowTemplate;
+            var collection = UpperRowTemplates;
+
+            if (rowTemplate == null)
+            {
+                return false;
+            }
+
+            if (collection.IndexOf(rowTemplate) == collection.Count - 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private RelayCommand _AddUpperRowTemplateCommand;
+        
+        public ICommand AddUpperRowTemplateCommand
+        {
+            get
+            {
+                return _AddUpperRowTemplateCommand;
+            }
+        }
+
+        protected void AddUpperRowTemplateCommandExecute(object parameter)
+        {
+            // Create a new Row Template, Add it to Collection and Select it.
+            var rowTemplate = new CellRowTemplate();
+
+            UpperRowTemplates.Insert(0, rowTemplate);
+
+            SelectedUpperRowTemplate = rowTemplate;
+        }
+
+        private RelayCommand _RemoveUpperRowTemplateCommand;
+
+        public ICommand RemoveUpperRowTemplateCommand
+        {
+            get
+            {
+                return _RemoveUpperRowTemplateCommand;
+            }
+        }
+
+        protected void RemoveUpperRowTemplateCommandExecute(object parameter)
+        {
+            var collection = UpperRowTemplates;
+            var selectedItem = SelectedUpperRowTemplate;
+            int selectedItemIndex = collection.IndexOf(selectedItem);
+            int collectionCount = collection.Count;
+            int originalCollectionCount = collection.Count;
+
+            if (collectionCount != 0)
+            {
+                // Remove Item.
+                collection.Remove(selectedItem);
+
+                // Update Collection Count.
+                collectionCount = collection.Count;
+
+                if (collectionCount > 0)
+                {
+                    // Set new Row Template Selection.
+                    if (selectedItemIndex == 0)
+                    {
+                        // Top most Item was Removed.
+                        SelectedUpperRowTemplate = collection[0];
+                    }
+
+                    else if (selectedItemIndex == originalCollectionCount - 1)
+                    {
+                        // Bottom most Item was Removed.
+                        SelectedUpperRowTemplate = collection[collectionCount - 1];
+                    }
+
+                    else
+                    {
+                        // Middle Item was removed.
+                        if (selectedItemIndex < collectionCount)
+                        {
+                            SelectedUpperRowTemplate = collection[selectedItemIndex];
+                        }
+
+                        else
+                        {
+                            SelectedUpperRowTemplate = collection[selectedItemIndex - 1];
+                        }
+                    }
+
+                }
+            }
+
+            
+            
+        }
+
+        protected bool RemoveUpperRowTemplateCommandCanExecute(object parameter)
+        {
+            var collection = UpperRowTemplates;
+            var selectedItem = SelectedUpperRowTemplate;
+
+            if (selectedItem == null)
+            {
+                return false;
+            }
+
+            if (collection.Count == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         #endregion
 
         #region Methods
@@ -482,7 +768,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
-        private void UpperRowTemplates_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void UpperRowTemplates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<CellRowTemplate>;
 
@@ -494,6 +780,11 @@ namespace Dimmer_Labels_Wizard_WPF
                     CellRowTemplates = collection.ToList()
                 };
             }
+
+            // Notify.
+            _RemoveUpperRowTemplateCommand.CheckCanExecute();
+            _MoveUpperRowTemplateUpCommand.CheckCanExecute();
+            _MoveUpperRowTemplateDownCommand.CheckCanExecute();
         }
         #endregion
     }

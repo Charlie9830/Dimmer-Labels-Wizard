@@ -41,7 +41,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _SelectedFontFamily = value;
 
                     // Modify External Dependency Property Value.
-                    if (value != SelectedFont.FontFamily)
+                    if ( SelectedFont != null && value != SelectedFont.FontFamily && value != null)
                     {
                         SelectedFont = new Typeface(value, GetStyle(), GetWeight(), FontStretches.Normal);
                     }
@@ -64,7 +64,10 @@ namespace Dimmer_Labels_Wizard_WPF
                     _IsBold = value;
 
                     // Modifiy External Dependency Property Value.
-                    SelectedFont = new Typeface(SelectedFontFamily, GetStyle(), GetWeight(), FontStretches.Normal);
+                    if (SelectedFontFamily != null)
+                    {
+                        SelectedFont = new Typeface(SelectedFontFamily, GetStyle(), GetWeight(), FontStretches.Normal);
+                    }
 
                     // Notify
                     RaisePropertyChanged(nameof(IsBold));
@@ -84,7 +87,10 @@ namespace Dimmer_Labels_Wizard_WPF
                     _IsItalics = value;
 
                     // Modifiy External Dependency Property Value.
-                    SelectedFont = new Typeface(SelectedFontFamily, GetStyle(), GetWeight(), FontStretches.Normal);
+                    if (SelectedFontFamily != null)
+                    {
+                        SelectedFont = new Typeface(SelectedFontFamily, GetStyle(), GetWeight(), FontStretches.Normal);
+                    }
 
                     // Notify.
                     RaisePropertyChanged(nameof(IsItalics));
@@ -103,8 +109,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     _IsUnderlined = value;
 
-                    // Modifiy External Dependency Property Value.
-                    SelectedFont = new Typeface(SelectedFontFamily, GetStyle(), GetWeight(), FontStretches.Normal);
+                    if (SelectedFontFamily != null)
+                    {
+                        // Modifiy External Dependency Property Value.
+                        SelectedFont = new Typeface(SelectedFontFamily, GetStyle(), GetWeight(), FontStretches.Normal);
+                    }
 
                     // Notify.
                     RaisePropertyChanged(nameof(IsUnderlined));
@@ -136,6 +145,14 @@ namespace Dimmer_Labels_Wizard_WPF
                 instance.SelectedFontFamily = newFont.FontFamily;
                 instance.IsBold = newFont.Weight == FontWeights.Bold ? true : false;
                 instance.IsItalics = newFont.Style == FontStyles.Italic ? true : false;
+                instance.IsUnderlined = false;
+            }
+
+            else
+            {
+                instance.SelectedFontFamily = null;
+                instance.IsBold = false;
+                instance.IsItalics = false;
                 instance.IsUnderlined = false;
             }
         }

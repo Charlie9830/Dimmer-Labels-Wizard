@@ -1216,14 +1216,27 @@ namespace Dimmer_Labels_Wizard_WPF
             // DataField.
             if (propertyName == CellRow.DataFieldProperty.Name)
             {
+                // Store the current Cascading State.
+                bool wasCascading = cellRow.IsCascading;
+
+                // Update Cascading State.
+                SetCascadingRows(Rows.ToList());
+
                 // Set new Data.
                 if (DataReference != null)
                 {
                     cellRow.Data = DataReference.GetData(cellRow.DataField);
                 }
 
-                // Update Cascading State.
-                SetCascadingRows(Rows.ToList());
+                if (wasCascading && wasCascading == !cellRow.IsCascading)
+                {
+                    // Row has been toggled off Cascading mode by SetCascadingRows.
+                    // Update other row's DataLayouts.
+                    foreach (var element in Rows)
+                    {
+                        AssignDataLayouts(element);
+                    }
+                }
             }
 
             // Data Layout
@@ -1542,7 +1555,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     element.ActualFontSize = actualFontSize;
                     listIndex++;
                 }
-                
             }
         }
 
