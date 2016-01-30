@@ -18,7 +18,7 @@
         
         
         <ComboBox x:Name="comboBox" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="135"
-                  IsSynchronizedWithCurrentItem="False"
+                  IsSynchronizedWithCurrentItem="False" IsEditable="True" IsReadOnly="True"
                   SelectedItem="{Binding Path=SelectedFontFamily}" Style="{StaticResource FontChooserComboBoxStyle}"
                   ItemsSource="{Binding Source={StaticResource SystemFontFamilies}}"/>
         <ToggleButton Height="25" Width="25" Grid.Column="1" Content="B" IsChecked="{Binding Path=IsBold}" Margin="5,0,0,0"/>

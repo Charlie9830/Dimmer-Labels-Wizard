@@ -314,17 +314,10 @@ namespace Dimmer_Labels_Wizard_WPF
             var templates = e.NewValue as List<CellRowTemplate>;
             ObservableCollection<CellRow> rows = instance.Rows;
 
-            // Set RowCount.
-            instance.RowCount = templates.Count;
-
-            // Assign Templates to Rows.
-            for (int index = 0; index < templates.Count && index < rows.Count; index++)
-            {
-                rows[index].Style = templates[index];
-            }
+            // Assign Row Templates.
+            AssignRowTemplates(instance, templates, rows);
         }
 
-        
 
         public double LeftWeight
         {
@@ -741,6 +734,14 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (newValue == CellDataMode.MixedField)
             {
+                if (oldValue == CellDataMode.SingleField)
+                {
+                    // If coming from SingleField Mode. Regenerate Cellrows from Templates.
+                    var templates = instance.RowTemplates;
+
+                    AssignRowTemplates(instance, templates, rows);
+                }
+
                 foreach (var element in rows)
                 {
                     instance.SetRowData(element, instance);
@@ -751,11 +752,16 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 // Cell Data Mode has been Toggled to Single Field Mode. Re Initialize Cell in Single
                 // Field Mode.
-                rows.Clear();
+                if (instance.DataReference != null)
+                {
+                    instance.RowCount = 0;
+                    instance.SingleFieldData = instance.DataReference.GetData(instance.SingleFieldDataField);
+                }
 
-                instance.RowCount = 1;
-                rows.Last().DataField = instance.SingleFieldDataField;
-                rows.Last().Data = instance.SingleFieldData;     
+                else
+                {
+                    instance.RowCount = 0;
+                }
 
                 // Initialize to SingleField Mode.
                 instance.RowHeightMode = CellRowHeightMode.Static;
@@ -1294,6 +1300,19 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region Methods.
+        private static void AssignRowTemplates(LabelCell instance, List<CellRowTemplate> newTemplates,
+            ObservableCollection<CellRow> rows)
+        {
+            // Set RowCount.
+            instance.RowCount = newTemplates.Count;
+
+            // Assign Templates to Rows.
+            for (int index = 0; index < newTemplates.Count && index < rows.Count; index++)
+            {
+                rows[index].Style = newTemplates[index];
+            }
+        }
+
         /// <summary>
         /// Sets the Data Property of a single Child Row based of it's current assigned Data Field. Should only be
         /// used whilst Cell is in Mixed Field Mode.

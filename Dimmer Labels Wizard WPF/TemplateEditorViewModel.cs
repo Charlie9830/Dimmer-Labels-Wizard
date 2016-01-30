@@ -431,7 +431,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         // Find the SelectedUpperRowTemplate in the UpperRowTemplates collection and modify it's value there,
                         // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
-                        // The Reset the SelectedUpperRowTemplate as it's reference will be broken.
+                        // Then Reset the SelectedUpperRowTemplate as it's reference will be broken.
                         int index = UpperRowTemplates.IndexOf(SelectedUpperRowTemplate);
                         UpperRowTemplates[index] = new CellRowTemplate(SelectedUpperRowTemplate)
                         {
@@ -464,7 +464,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         // Find the SelectedUpperRowTemplate in the UpperRowTemplates collection and modify it's value there,
                         // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
-                        // The Reset the SelectedUpperRowTemplate as it's reference will be broken.
+                        // Then Reset the SelectedUpperRowTemplate as it's reference will be broken.
                         int index = UpperRowTemplates.IndexOf(SelectedUpperRowTemplate);
                         UpperRowTemplates[index] = new CellRowTemplate(SelectedUpperRowTemplate)
                         {
@@ -496,7 +496,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         // Find the SelectedUpperRowTemplate in the UpperRowTemplates collection and modify it's value there,
                         // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
-                        // The Reset the SelectedUpperRowTemplate as it's reference will be broken.
+                        // Then Reset the SelectedUpperRowTemplate as it's reference will be broken.
                         int index = UpperRowTemplates.IndexOf(SelectedUpperRowTemplate);
                         UpperRowTemplates[index] = new CellRowTemplate(SelectedUpperRowTemplate)
                         {
