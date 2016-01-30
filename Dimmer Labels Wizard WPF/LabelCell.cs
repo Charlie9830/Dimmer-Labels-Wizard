@@ -1070,6 +1070,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var collection = sender as ObservableCollection<CellRow>;
             int newIndex = e.NewStartingIndex;
+
             // Keep Grid.RowDefinitions explicitly linked to Rows Collection.
             if (e.NewItems != null)
             {
@@ -1095,7 +1096,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     var cellRow = element as CellRow;
                     Grid.RowDefinitions.Remove(cellRow);
-                    Grid.Children.Remove(cellRow.TextBlock);
+                    Grid.Children.Remove(cellRow.Border);
                     cellRow.PropertyChanged -= CellRow_PropertyChanged;
                     cellRow.MouseDown -= CellRow_MouseDown;
                     cellRow.MouseUp -= CellRow_MouseUp;

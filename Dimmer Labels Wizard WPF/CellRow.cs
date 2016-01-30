@@ -66,7 +66,7 @@ namespace Dimmer_Labels_Wizard_WPF
         /// <summary>
         /// Abstract rendering Target. Do not write directly to this Field. Internal use only.
         /// </summary>
-        public TextBlock TextBlock = new TextBlock();
+        protected TextBlock TextBlock = new TextBlock();
 
         /// <summary>
         /// Abstract Rendering Target. Do not write directly to this Field. Internal use only.
