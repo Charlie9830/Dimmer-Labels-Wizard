@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Text.RegularExpressions;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -176,7 +177,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     int newCount = ValidateRowCount(value);
                     AdjustRowCollectionCount(_RowCount, newCount);
-                    _RowCount = value;
+                    _RowCount = newCount;
                 }
             }
         }
@@ -750,21 +751,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (newValue == CellDataMode.SingleField)
             {
-                // Cell Data Mode has been Toggled to Single Field Mode. Re Initialize Cell in Single
-                // Field Mode.
-                if (instance.DataReference != null)
-                {
-                    instance.RowCount = 0;
-                    instance.SingleFieldData = instance.DataReference.GetData(instance.SingleFieldDataField);
-                }
-
-                else
-                {
-                    instance.RowCount = 0;
-                }
-
-                // Initialize to SingleField Mode.
-                instance.RowHeightMode = CellRowHeightMode.Static;
+                SetSingleFieldRows(instance, instance.SingleFieldData);
             }
            
         }
@@ -800,18 +787,24 @@ namespace Dimmer_Labels_Wizard_WPF
         // Using a DependencyProperty as the backing store for SingleFieldData.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SingleFieldDataProperty =
             DependencyProperty.Register("SingleFieldData", typeof(string), typeof(LabelCell),
-                new FrameworkPropertyMetadata(string.Empty, new PropertyChangedCallback(OnSingleFieldDataPropertyChanged)));
+                new FrameworkPropertyMetadata(string.Empty, new PropertyChangedCallback(OnSingleFieldDataPropertyChanged),
+                    new CoerceValueCallback(CoerceSingleFieldData)));
+
+        private static object CoerceSingleFieldData(DependencyObject d, object value)
+        {
+            var data = (string)value;
+
+            // Replaces multiple occurances of Whitespace with single Space. Trims Whitespace off of ends.
+            return Regex.Replace(data, @"\s+", " ").Trim();
+
+        }
 
         private static void OnSingleFieldDataPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelCell;
             string newData = (string)e.NewValue;
-            ObservableCollection<CellRow> rowCollection = instance.Rows;
-            LabelField dataField = instance.SingleFieldDataField;
 
-            CurateRowQty(instance, newData);
-            rowCollection.First().DataField = dataField;
-            rowCollection.First().Data = newData;
+            SetSingleFieldRows(instance, newData);
         }
 
         public LabelField SingleFieldDataField
@@ -884,8 +877,11 @@ namespace Dimmer_Labels_Wizard_WPF
             double newDesiredFontSize = (double)e.NewValue;
             ObservableCollection<CellRow> rowCollection = instance.Rows;
 
-            rowCollection.First().DesiredFontSize = newDesiredFontSize;
-            instance.SingleFieldActualFontSize = rowCollection.First().ActualFontSize;
+            if (rowCollection.Count > 0)
+            {
+                rowCollection.First().DesiredFontSize = newDesiredFontSize;
+                instance.SingleFieldActualFontSize = rowCollection.First().ActualFontSize;
+            }
         }
 
         public double SingleFieldActualFontSize
@@ -1005,6 +1001,7 @@ namespace Dimmer_Labels_Wizard_WPF
             drawingContext.DrawLine(topPen, topA, topB);
             drawingContext.DrawLine(rightPen, rightA, rightB);
             drawingContext.DrawLine(bottomPen, bottomA, bottomB);
+
 
             // Setup Grid.
             // Don't set Grid Width or Height too less than zero.
@@ -1400,30 +1397,39 @@ namespace Dimmer_Labels_Wizard_WPF
             char delimiter = ' ';
             int rowQty = rows.Count;
             int dataQty = data.Split(delimiter).Length;
-            int qtyDifference = rowQty - dataQty;
 
-            if (qtyDifference < 0)
+            instance.RowCount = dataQty;
+        }
+
+        /// <summary>
+        /// When used in SingleFieldMode. Will Setup Rows correctly a propagate Data to each Row.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="data"></param>
+        private static void SetSingleFieldRows(LabelCell instance, string data)
+        {
+            ObservableCollection<CellRow> rowCollection = instance.Rows;
+            LabelField dataField = instance.SingleFieldDataField;
+
+            if (instance.CellDataMode != CellDataMode.SingleField)
             {
-                // Row Deficit. Create new rows.
-                int count = Math.Abs(qtyDifference);
-
-                while (count > 0)
-                {
-                    rows.Add(new CellRow(cellParent));
-                    count--;
-                }
+                // Cell is not in SingleField Mode. Bail out.
+                return;
             }
 
-            if (qtyDifference > 0)
-            {
-                // Data Deficit. Remove excess Rows.
-                int count = Math.Abs(qtyDifference);
+            CurateRowQty(instance, data);
 
-                while (count > 0)
+            if (instance.RowCount > 0)
+            {
+                foreach (var element in rowCollection)
                 {
-                    rows.Remove(rows.Last());
-                    count--;
+                    // Set all rows to the same DataField so they can be to Cascading Mode.
+                    element.SetDataFieldCurrentValue(dataField);
                 }
+
+                // Set the Data property of the first Row. Cascading Row system will take
+                // care of the rest of the Rows Data.
+                rowCollection.First().Data = data;
             }
         }
 
@@ -1562,9 +1568,13 @@ namespace Dimmer_Labels_Wizard_WPF
                         containerWidth, containerHeight, ScaleDirection.Both, out ignore));
                 }
 
-                // Select smallest Font.
-                scaledFontSizes.Sort();
-                actualFontSize = scaledFontSizes.First();
+                
+                if (scaledFontSizes.Count > 0)
+                {
+                    // Select smallest Font If existing.
+                    scaledFontSizes.Sort();
+                    actualFontSize = scaledFontSizes.First();
+                }
 
                 // Assign Data Layouts to Cells.
                 int listIndex = 0;

@@ -98,7 +98,7 @@ namespace Dimmer_Labels_Wizard_WPF
             template2.UpperCellTemplate = cellTemplateB;
             template2.LowerCellTemplate = cellTemplateB;
 
-            strip1.AssignedTemplate = template1;
+            strip1.AssignedTemplate = Globals.DefaultTemplate;
             strip2.AssignedTemplate = template2;
 
             template1.AssignedToStrips.Add(strip1);
@@ -1078,6 +1078,13 @@ namespace Dimmer_Labels_Wizard_WPF
             // Command CanExecute Notifications.
             _MergeSelectedCellsCommand.CheckCanExecute();
             _SplitSelectedCellsCommand.CheckCanExecute();
+
+            //Console.WriteLine("======");
+            //foreach (var element in collection)
+            //{
+            //    Console.WriteLine("Rows Count {0}, GridRows Count {1}", element.Rows.Count, element.Grid.RowDefinitions.Count);
+            //}
+            //Console.WriteLine("======");
         }
 
         

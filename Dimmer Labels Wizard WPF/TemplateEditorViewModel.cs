@@ -16,7 +16,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Constructor
         public TemplateEditorViewModel()
         {
-            BasedOnTemplateSelection = Globals.Templates[1];
+            BasedOnTemplateSelection = Globals.DefaultTemplate;
 
             // Command Binding
             _MoveUpperRowTemplateUpCommand = new RelayCommand(MoveUpperRowTemplateUpCommandExecute,
@@ -747,7 +747,7 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 ChannelNumber = "Chan",
                 InstrumentName = "Instr",
-                Position = "Position",
+                Position = "Row0 Row1 Row2",
                 MulticoreName = "Multi",
                 UserField1 = "User Field 1",
                 UserField2 = "User Field 2",

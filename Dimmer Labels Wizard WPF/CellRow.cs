@@ -495,6 +495,17 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #endregion
 
+        #region Methods
+        /// <summary>
+        /// Internally calls SetCurrentValue() to set DataField to desired value without changing Value Source.
+        /// </summary>
+        /// <param name="dataField"></param>
+        public void SetDataFieldCurrentValue(LabelField dataField)
+        {
+            SetCurrentValue(DataFieldProperty, dataField);
+        }
+        #endregion
+
         #region Overrides.
         public override string ToString()
         {
