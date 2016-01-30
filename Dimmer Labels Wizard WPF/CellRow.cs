@@ -53,6 +53,7 @@ namespace Dimmer_Labels_Wizard_WPF
             Border.MouseDown += Border_MouseDown;
             Border.MouseUp += Border_MouseUp;
             Border.MouseLeave += Border_MouseLeave;
+
         }
         #endregion
 

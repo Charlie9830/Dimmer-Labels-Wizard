@@ -1229,7 +1229,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void AdjustRowCollectionCount(int oldCount, int newCount)
         {
-            int difference = newCount - Rows.Count; // Testing Replacement of oldCount with Rows.Count.
+            int difference = newCount - oldCount; // Testing Replacement of oldCount with Rows.Count.
             int collectionCount = Rows.Count;
 
             if (newCount == collectionCount)
@@ -1295,7 +1295,15 @@ namespace Dimmer_Labels_Wizard_WPF
             int rowQty = rows.Count;
             int dataQty = data.Split(delimiter).Length;
 
-            instance.RowCount = dataQty;
+            if (data != string.Empty)
+            {
+                instance.RowCount = dataQty;
+            }
+
+            else
+            {
+                instance.RowCount = 0;
+            }
         }
 
         /// <summary>
