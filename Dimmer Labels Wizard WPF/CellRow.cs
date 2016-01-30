@@ -79,20 +79,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region CLR Properties and Fields.
-
-        /// <summary>
-        /// Gets or Sets a collection of the Cells cascading alongside this Cell, also contains
-        /// this cell.
-        /// </summary>
-        private List<CellRow> _CascadingRows = new List<CellRow>();
-
-        public List<CellRow> CascadingRows
-        {
-            get { return _CascadingRows; }
-            set { _CascadingRows = value; }
-        }
-
-
         /// <summary>
         /// Unexpected results may occur when setting this property directly. To set this property, use
         /// the Parent Label Cell Row Height Mode property.
@@ -124,17 +110,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 CoerceValue(RowHeightProperty);
             }
         }
-
-        private bool _IsCascading;
-        /// <summary>
-        /// Gets or Sets a value indicating if this Row is Cascading Data.
-        /// </summary>
-        public bool IsCascading
-        {
-            get { return _IsCascading; }
-            set { _IsCascading = value; }
-        }
-
 
         /// <summary>
         /// The Width available for Text Placement in WPF Units.
@@ -204,9 +179,26 @@ namespace Dimmer_Labels_Wizard_WPF
         private static void OnDataPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as CellRow;
+            var newValue = (string)e.NewValue;
+            var dataField = instance.DataField;
+            var dataReference = instance.CellParent.DataReference;
+            var parentDataMode = instance.CellParent.CellDataMode;
+            var font = instance.Font;
+            var fontSize = instance.ActualFontSize;
 
-            // Signal Parent Cell to Update properties.
-            OnPropertyChanged(e.Property.Name, instance);
+            if (dataReference != null)
+            {
+                // Update Model.
+                dataReference.SetData(newValue, dataField);
+            }
+
+            if (parentDataMode == CellDataMode.MixedField)
+            {
+                // DataLayout won't be set by ParentCell. Have to set it here instead.
+                instance.DataLayout = new DataLayout(newValue, font, fontSize);
+            }
+
+            
         }
 
         private static object CoerceData(DependencyObject d, object value)
@@ -235,9 +227,13 @@ namespace Dimmer_Labels_Wizard_WPF
         private static void OnDataFieldPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as CellRow;
+            var newValue = (LabelField)e.NewValue;
+            var dataReference = instance.CellParent.DataReference;
 
-            // Signal change to Parent Cell.
-            OnPropertyChanged(DataFieldProperty.Name, instance);
+            if (dataReference != null)
+            {
+                instance.Data = dataReference.GetData(newValue);
+            }
         }
 
         /// <summary>
@@ -253,6 +249,19 @@ namespace Dimmer_Labels_Wizard_WPF
         public static readonly DependencyProperty DesiredFontSizeProperty =
             DependencyProperty.Register("DesiredFontSize", typeof(double), typeof(CellRow), new FrameworkPropertyMetadata(12d, 
                 new PropertyChangedCallback(OnDesiredFontSizePropertyChanged), new CoerceValueCallback(CoerceDesiredFontSize)));
+
+
+        private static object CoerceDesiredFontSize(DependencyObject d, object baseValue)
+        {
+            double desiredFontSize = (double)baseValue;
+
+            if (desiredFontSize <= 0d)
+            {
+                desiredFontSize = 1d;
+            }
+
+            return desiredFontSize;
+        }
 
         // Property Changed Callback Handler.
         private static void OnDesiredFontSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -272,24 +281,7 @@ namespace Dimmer_Labels_Wizard_WPF
             
         }
 
-        private static object CoerceDesiredFontSize(DependencyObject d, object baseValue)
-        {
-            var instance = d as CellRow;
-            string data = instance.Data;
-            Typeface font = instance.Font;
-            double desiredFontSize = (double)baseValue;
-            double width = instance.AvailableTextWidth;
-            double height = instance.AvailableTextHeight;
 
-            if (desiredFontSize <= 0d)
-            {
-                desiredFontSize = 1d;
-            }
-
-            double fontSize = desiredFontSize;
-
-            return fontSize;
-        }
 
         /// <summary>
         /// Gets the Actual FontSize used after Scaling passes.
@@ -496,6 +488,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
+        
         /// <summary>
         /// Internally calls SetCurrentValue() to set DataField to desired value without changing Value Source.
         /// </summary>

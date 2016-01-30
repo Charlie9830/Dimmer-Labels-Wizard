@@ -140,17 +140,6 @@ namespace Dimmer_Labels_Wizard_WPF
             get { return _Rows; }
         }
 
-        /// <summary>
-        /// Gets a value indictating if Cascading Rows have been detected. 
-        /// </summary>
-        protected bool HasCascadingRows
-        {
-            get
-            {
-                return CellHasCascadingRows(Rows.ToList());
-            }
-        }
-
         private CellVerticalPosition _CellVerticalPosition;
 
         public CellVerticalPosition CellVerticalPosition
@@ -852,11 +841,11 @@ namespace Dimmer_Labels_Wizard_WPF
             var instance = d as LabelCell;
             ObservableCollection<CellRow> rowCollection = instance.Rows;
             Typeface newFont = e.NewValue as Typeface;
+            double scaledFontSize;
 
-            foreach (var element in rowCollection)
-            {
-                element.Font = newFont;
-            }
+            AssignSingleFieldDataLayouts(instance, out scaledFontSize);
+
+            instance.SingleFieldActualFontSize = scaledFontSize;
         }
 
 
@@ -876,12 +865,11 @@ namespace Dimmer_Labels_Wizard_WPF
             var instance = d as LabelCell;
             double newDesiredFontSize = (double)e.NewValue;
             ObservableCollection<CellRow> rowCollection = instance.Rows;
+            double scaledFontSize;
 
-            if (rowCollection.Count > 0)
-            {
-                rowCollection.First().DesiredFontSize = newDesiredFontSize;
-                instance.SingleFieldActualFontSize = rowCollection.First().ActualFontSize;
-            }
+            AssignSingleFieldDataLayouts(instance, out scaledFontSize);
+
+            instance.SingleFieldActualFontSize = scaledFontSize;
         }
 
         public double SingleFieldActualFontSize
@@ -1078,7 +1066,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        private void Rows_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Rows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             var collection = sender as ObservableCollection<CellRow>;
             int newIndex = e.NewStartingIndex;
@@ -1133,32 +1121,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 rowIndexCounter++;
                 element.CoerceValue(CellRow.RowHeightProperty);
             }
-
-            // Update Cascading State.
-            SetCascadingRows(collection.ToList());
-
-            // Push Cascaded Data to new Rows.
-            if (collection.Any(item => item.IsCascading == true))
-            {
-                if (e.NewItems != null)
-                {
-                    foreach (var element in e.NewItems)
-                    {
-                        var cellRow = element as CellRow;
-
-                        if (cellRow.IsCascading == true)
-                        {
-                            cellRow.Data = cellRow.CascadingRows.First().Data;
-                        }
-                    }
-                }
-            }
-
-            // Refresh Data Layouts.
-            foreach (var element in collection)
-            {
-                AssignDataLayouts(element);
-            }
         }
 
         private void CellRow_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -1181,71 +1143,6 @@ namespace Dimmer_Labels_Wizard_WPF
                         SelectedRows.Remove(cellRow);
                     }
                 }
-            }
-
-            // Data
-            if (propertyName == CellRow.DataProperty.Name)
-            {
-                if (cellRow.IsCascading == true)
-                {
-                    // Push Data Change to other CascadingRows in group.
-                    foreach (var element in cellRow.CascadingRows)
-                    {
-                        if (element != cellRow)
-                        {
-                            element.Data = cellRow.Data;
-                        }
-                    }
-                }
-
-                // Update Model.
-                if (DataReference != null)
-                {
-                    DataReference.SetData(cellRow.Data, cellRow.DataField);
-
-                    if (IsMerged == true)
-                    {
-                        foreach (var element in ConsumedReferences)
-                        {
-                            element.SetData(cellRow.Data, cellRow.DataField);
-                        }
-                    }
-                }
-
-                // Assign Data Layout(s).
-                AssignDataLayouts(cellRow);
-            }
-
-            // DataField.
-            if (propertyName == CellRow.DataFieldProperty.Name)
-            {
-                // Store the current Cascading State.
-                bool wasCascading = cellRow.IsCascading;
-
-                // Update Cascading State.
-                SetCascadingRows(Rows.ToList());
-
-                // Set new Data.
-                if (DataReference != null)
-                {
-                    cellRow.Data = DataReference.GetData(cellRow.DataField);
-                }
-
-                if (wasCascading && wasCascading == !cellRow.IsCascading)
-                {
-                    // Row has been toggled off Cascading mode by SetCascadingRows.
-                    // Update other row's DataLayouts.
-                    foreach (var element in Rows)
-                    {
-                        AssignDataLayouts(element);
-                    }
-                }
-            }
-
-            // Data Layout
-            if (propertyName == CellRow.DataLayoutProperty.Name)
-            {
-                AssignDataLayouts(cellRow);
             }
         }
 
@@ -1332,7 +1229,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void AdjustRowCollectionCount(int oldCount, int newCount)
         {
-            int difference = newCount - oldCount;
+            int difference = newCount - Rows.Count; // Testing Replacement of oldCount with Rows.Count.
             int collectionCount = Rows.Count;
 
             if (newCount == collectionCount)
@@ -1417,242 +1314,92 @@ namespace Dimmer_Labels_Wizard_WPF
                 return;
             }
 
+            // Set RowQty to Correct Value.
             CurateRowQty(instance, data);
 
             if (instance.RowCount > 0)
             {
+                // Set Datafield and Data properties of Rows.
                 foreach (var element in rowCollection)
                 {
-                    // Set all rows to the same DataField so they can be to Cascading Mode.
                     element.SetDataFieldCurrentValue(dataField);
+                    element.Data = data;
                 }
 
-                // Set the Data property of the first Row. Cascading Row system will take
-                // care of the rest of the Rows Data.
-                rowCollection.First().Data = data;
+                double scaledFontSize;
+                AssignSingleFieldDataLayouts(instance, out scaledFontSize);
+
+                // Writeback Scaled font Size.
+                instance.SingleFieldActualFontSize = scaledFontSize;
             }
         }
 
-        /// <summary>
-        /// Sets and Unsets Cascading row flags and collections on objects residing in Rows collection.
-        /// </summary>
-        private void SetCascadingRows(List<CellRow> rowCollection)
+        private static void AssignSingleFieldDataLayouts(LabelCell instance, out double scaledFontSize)
         {
-            // Assign CellRow.IsCascading flags and CascadingRows Collections.
-            List<List<CellRow>> cascadingRows = GetCascadedRows(rowCollection);
-
-            if (cascadingRows.Count > 0)
-            {
-                // Assign.
-                foreach (var list in cascadingRows)
-                {
-                    foreach (var element in list)
-                    {
-                        element.IsCascading = true;
-                        element.CascadingRows = list;
-                    }
-                }
-
-                // Flatten cascadingRows.
-                IEnumerable<CellRow> flattenedRows = cascadingRows.SelectMany(x => x);
-                IEnumerable<CellRow> unAssignRows = rowCollection.Where(x => flattenedRows.Contains(x) == false);
-
-                if (unAssignRows != null)
-                {
-                    foreach (var element in unAssignRows)
-                    {
-                        element.IsCascading = false;
-                        element.CascadingRows.Clear();
-                    }
-                }
-            }
-
-            else
-            {
-                // No Cascading rows found. UnAssign any remaining Cascading Flagged rows.
-                foreach (var element in rowCollection)
-                {
-                    if (element.IsCascading == true)
-                    {
-                        element.IsCascading = false;
-                        element.CascadingRows.Clear();
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Assigns Data Layout(s) and acompany properties to the provided object.
-        /// </summary>
-        /// <param name="targetRow"></param>
-        private void AssignDataLayouts(CellRow targetRow)
-        {
-            string data = targetRow.Data;
-            double desiredFontSize = targetRow.DesiredFontSize;
+            char delimiter = ' ';
+            string data = instance.SingleFieldData;
+            Typeface font = instance.SingleFieldFont;
+            double desiredFontSize = instance.SingleFieldDesiredFontSize;
             double actualFontSize = desiredFontSize;
-            Typeface font = targetRow.Font;
-            double availableTextWidth = targetRow.AvailableTextWidth;
-            double availableTextHeight = targetRow.AvailableTextHeight;
+            List<DataLayout> dataLayouts = new List<DataLayout>();
+            ObservableCollection<CellRow> rowCollection = instance.Rows;
+            int rowCount = rowCollection.Count;
+            string[] dataElements = instance.SingleFieldData.Split(delimiter);
+            int dataElementsCount = dataElements.Count();
+            List<double> scaledFontSizes = new List<double>();
+            ScaleDirection ignore;
 
-            if (targetRow.IsCascading == false)
+            // Generate Data Layouts.
+            int startIndex = 0;
+            for (int index = 0; index < rowCount; index++)
             {
-                // Standard Row.
-                // Update DataLayout.
-                ScaleDirection ignore;
-                actualFontSize = ScaleDownFontSize(data, font, desiredFontSize,
-                    availableTextWidth, availableTextHeight, ScaleDirection.Both, out ignore);
+                if (index < dataElementsCount)
+                {
+                    // Populated Row.
+                    dataLayouts.Add(new DataLayout(startIndex, dataElements[index].Length,
+                        data, font, desiredFontSize));
 
-                DataLayout dataLayout = new DataLayout(0, data.Length, data, font, actualFontSize);
+                    // Advance the Starting Index.
+                    startIndex += dataElements[index].Length + 1;
+                }
 
-                targetRow.DataLayout = dataLayout;
-                targetRow.ActualFontSize = actualFontSize;
+                else
+                {
+                    // Blank Row.
+                    dataLayouts.Add(new DataLayout(0, 0, data, font, desiredFontSize));
+                }
             }
 
-            else
+            // Scale Font Sizes.
+            for (int index = 0; index < dataLayouts.Count && index < rowCount; index++)
             {
-                char delimiter = ' ';
-                List<string> dataElements = data.Split(delimiter).ToList();
-                List<CellRow> cascadingRows = targetRow.CascadingRows;
-                int cascadedRowCount = cascadingRows.Count;
-                List<DataLayout> dataLayouts = new List<DataLayout>();
-                ScaleDirection ignore;
-                List<double> scaledFontSizes = new List<double>();
+                string displayedData = dataLayouts[index].DisplayedText;
+                double containerWidth = rowCollection[index].AvailableTextWidth;
+                double containerHeight = rowCollection[index].AvailableTextHeight;
 
-                if (dataElements.Count > cascadedRowCount)
-                {
-                    // More Data Elements then Cascading Rows. Concatentate Data.
-                    while(dataElements.Count > cascadedRowCount)
-                    {
-                        if (dataElements.Count > 1)
-                        {
-                            dataElements[dataElements.Count - 2] += delimiter + dataElements.Last();
-                            dataElements.RemoveAt(dataElements.IndexOf(dataElements.Last()));
-                        }
-
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                }
-
-                // Generate Data Layouts.
-                int startIndex = 0;
-                for (int rowIndex = 0; rowIndex < cascadedRowCount; rowIndex++)
-                {
-                    if (rowIndex < dataElements.Count)
-                    {
-                        // Populated Row.
-                        dataLayouts.Add(new DataLayout(startIndex, dataElements[rowIndex].Length,
-                            data, font, desiredFontSize));
-
-                        startIndex += dataElements[rowIndex].Length + 1;
-                    }
-
-                    else
-                    {
-                        // Blank Row.
-                        dataLayouts.Add(new DataLayout(0, 0, data, font, desiredFontSize));
-                    }
-                }
-
-                // Scale Font Sizes.
-                for (int index = 0; index < dataLayouts.Count && index < cascadedRowCount; index++)
-                {
-                    string displayedData = dataLayouts[index].DisplayedText;
-                    double containerWidth = cascadingRows[index].AvailableTextWidth;
-                    double containerHeight = cascadingRows[index].AvailableTextHeight;
-
-                    scaledFontSizes.Add(ScaleDownFontSize(displayedData, font, desiredFontSize,
-                        containerWidth, containerHeight, ScaleDirection.Both, out ignore));
-                }
-
-                
-                if (scaledFontSizes.Count > 0)
-                {
-                    // Select smallest Font If existing.
-                    scaledFontSizes.Sort();
-                    actualFontSize = scaledFontSizes.First();
-                }
-
-                // Assign Data Layouts to Cells.
-                int listIndex = 0;
-                foreach (var element in cascadingRows)
-                {
-                    element.DataLayout = dataLayouts[listIndex];
-                    element.ActualFontSize = actualFontSize;
-                    listIndex++;
-                }
+                scaledFontSizes.Add(ScaleDownFontSize(displayedData, font, desiredFontSize,
+                    containerWidth, containerHeight, ScaleDirection.Both, out ignore));
             }
+
+            if (scaledFontSizes.Count > 0)
+            {
+                var query = scaledFontSizes.OrderBy(item => item);
+                actualFontSize = query.First();
+            }
+
+            // Assign DataLayouts to Rows.
+            int listIndex = 0;
+            foreach (var element in rowCollection)
+            {
+                element.DataLayout = dataLayouts[listIndex];
+                element.ActualFontSize = actualFontSize;
+                listIndex++;
+            }
+
+            // Set Out Parameter.
+            scaledFontSize = actualFontSize;
         }
-
-        /// <summary>
-        /// Detects whether any rows provided in the parameter are setup as Cascading rows.
-        /// </summary>
-        /// <param name="rows"></param>
-        /// <returns></returns>
-        protected bool CellHasCascadingRows(IList<CellRow> rows)
-        {
-            // Determine if any Consecutive rows have matching DataFields.
-            var groupedElements = rows.GroupBy(item => item.DataField);
-
-            foreach (var group in groupedElements)
-            {
-                if (group.Count() > 1)
-                {
-                    CellRow reference = group.First();
-
-                    foreach (var item in group)
-                    {
-                        if (item != reference && rows.IndexOf(item) - 1 == rows.IndexOf(reference))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;    
-        }
-
-        /// <summary>
-        /// Returns a List of Lists of CellRow's that are setup as Cascading Rows.
-        /// </summary>
-        /// <param name="rows"></param>
-        /// <returns></returns>
-        public List<List<CellRow>> GetCascadedRows(List<CellRow> rows)
-        {
-            List<List<CellRow>> returnList = new List<List<CellRow>>();
-            
-            // Group by DataField.
-            var groupedElements = rows.GroupBy(item => item.DataField);
-
-            foreach (var group in groupedElements)
-            {
-                if (group.Count() > 1)
-                {
-                    returnList.Add(new List<CellRow>());
-
-                    // Order by Index Number.
-                    group.OrderBy(item => item.Index);
-
-                    int referenceIndex = group.First().Index;
-                    int counter = 0;
-
-                    // Add Elements if they have consecutive Index Numbers.
-                    foreach (var item in group)
-                    {
-                        if (item.Index - counter == referenceIndex)
-                        {
-                            returnList.Last().Add(item);
-                            counter++;
-                        }
-                    }
-                }
-            }
-            return returnList;
-        }
+        
 
         /// <summary>
         /// Measures the size of provided text. Returns Size 0 if a null or Empty string was provided.

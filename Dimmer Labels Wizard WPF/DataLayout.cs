@@ -28,6 +28,21 @@ namespace Dimmer_Labels_Wizard_WPF
             _DisplayedText = rowData.Substring(FirstIndex, Length);
         }
 
+        /// <summary>
+        /// Initializes a DataLayout Struct representine the whole rowData String.
+        /// </summary>
+        /// <param name="rowData"></param>
+        /// <param name="font"></param>
+        /// <param name="fontSize"></param>
+        public DataLayout(string rowData, Typeface font, double fontSize)
+        {
+            FirstIndex = 0;
+            Length = rowData.Length;
+            _Font = font;
+            FontSize = fontSize;
+            _DisplayedText = rowData;
+        }
+
         #region Properties
         public string DisplayedText
         {

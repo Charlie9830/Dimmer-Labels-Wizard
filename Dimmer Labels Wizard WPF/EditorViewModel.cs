@@ -1078,13 +1078,6 @@ namespace Dimmer_Labels_Wizard_WPF
             // Command CanExecute Notifications.
             _MergeSelectedCellsCommand.CheckCanExecute();
             _SplitSelectedCellsCommand.CheckCanExecute();
-
-            //Console.WriteLine("======");
-            //foreach (var element in collection)
-            //{
-            //    Console.WriteLine("Rows Count {0}, GridRows Count {1}", element.Rows.Count, element.Grid.RowDefinitions.Count);
-            //}
-            //Console.WriteLine("======");
         }
 
         
