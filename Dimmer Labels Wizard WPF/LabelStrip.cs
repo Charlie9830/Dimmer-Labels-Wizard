@@ -1331,7 +1331,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else
             {
-                // Mixed Field Mode.
+                // Multi Field Mode.
                 List<CellRow> aRows = cellA.Rows.ToList();
                 List<CellRow> bRows = cellB.Rows.ToList();
 

@@ -32,7 +32,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
     public enum ScaleDirection { Horizontal, Vertical, Both};
 
-    public enum CellDataMode { SingleField, MixedField };
+    public enum CellDataMode { SingleField, MultiField };
 
     public enum CellRowHeightMode { Static, Automatic, Manual};
 

@@ -77,13 +77,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
             var cellTemplateA = new LabelCellTemplate(Globals.BaseLabelCellTemplate)
             {
-                CellDataMode = CellDataMode.MixedField,
+                CellDataMode = CellDataMode.MultiField,
                 CellRowTemplates = rowTemplatesA,
             };
 
             var cellTemplateB = new LabelCellTemplate(Globals.BaseLabelCellTemplate)
             {
-                CellDataMode = CellDataMode.MixedField,
+                CellDataMode = CellDataMode.MultiField,
                 CellRowTemplates = rowTemplatesB
             };
 
@@ -1558,7 +1558,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 else
                 {
-                    // Mixed Field.
+                    // Multi Field.
                     foreach (var row in selectedCell.Rows)
                     {
                         if (displayedFields.Contains(row.DataField) == false)

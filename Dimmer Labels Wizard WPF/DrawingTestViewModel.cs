@@ -49,7 +49,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
                 else
                 {
-                    LabelCell.CellDataMode = CellDataMode.MixedField;
+                    LabelCell.CellDataMode = CellDataMode.MultiField;
                 }
 
                 _SingleFieldModeActive = value;

@@ -56,6 +56,16 @@
             </Style.Setters>
         </Style>
         
+        <!-- Window Header Style -->
+        <Style x:Key="WindowHeaderStyle" TargetType="Label">
+            <Style.Setters>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                <Setter Property="FontSize" Value="20"/>
+            </Style.Setters>
+        </Style>
+        
         <!-- SystemFonts Collection View Source. Bind ItemsSource to This using
              {Binding Source={StaticResource SystemFonts}} Notation, A direct SystemResource Binding won't work. -->
         <CollectionViewSource  x:Key="SystemFontFamilies" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">

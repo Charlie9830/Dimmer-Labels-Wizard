@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              Width="auto" Height="auto">
 
-    <Grid x:Name="Grid" Background="White" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:FontSelector}}">
+    <Grid x:Name="Grid" Background="Transparent" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:FontSelector}}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>

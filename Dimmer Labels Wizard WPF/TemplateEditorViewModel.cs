@@ -39,6 +39,9 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Fields.
         // Constants
         protected const double UnitConversionRatio = 96d / 25.4d;
+
+        // Variables.
+        protected bool IsInUpperRowCollectionChangedEvent = false;
         #endregion
 
         #region Binding Properties.
@@ -87,6 +90,23 @@ namespace Dimmer_Labels_Wizard_WPF
                         Name = TemplateName,
                         UpperCellTemplate = value
                     };
+
+                    SelectedUpperCellDataMode = value.CellDataMode;
+                    SelectedUpperRowHeightMode = value.RowHeightMode;
+                    UpperSingleFieldFont = value.SingleFieldFont;
+                    UpperSingleFieldFontSize = value.SingleFieldDesiredFontSize;
+                    UpperSingleFieldDataField = value.SingleFieldDataField;
+
+                    if (IsInUpperRowCollectionChangedEvent == false)
+                    {
+                        // Can cause ReEntrancy Collection Changed Exception in some cases.
+                        UpperRowTemplates.Clear();
+                        foreach (var element in value.CellRowTemplates)
+                        {
+                            UpperRowTemplates.Add(element);
+                        }
+                    }
+
                 }
             }
         }
@@ -212,7 +232,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return new CellDataMode[] { CellDataMode.MixedField, CellDataMode.SingleField };
+                return new CellDataMode[] { CellDataMode.MultiField, CellDataMode.SingleField };
 
             }
         }
@@ -624,11 +644,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void AddUpperRowTemplateCommandExecute(object parameter)
         {
-            // Create a new Row Template, Add it to Collection and Select it.
-            var rowTemplate = new CellRowTemplate();
-
-            UpperRowTemplates.Insert(0, rowTemplate);
-
+            // Create a new Template, Add it to the collection and Select it.
+            CellRowTemplate rowTemplate = new CellRowTemplate();
+            UpperRowTemplates.Add(rowTemplate);
             SelectedUpperRowTemplate = rowTemplate;
         }
 
@@ -765,11 +783,30 @@ namespace Dimmer_Labels_Wizard_WPF
 
             return examples;
         }
+
+        protected void BeginRowTemplateCollectionChanged(CellVerticalPosition verticalPosition)
+        {
+            if (verticalPosition == CellVerticalPosition.Upper)
+            {
+                IsInUpperRowCollectionChangedEvent = true;
+            }
+        }
+
+        protected void EndRowTemplateCollectionChanged(CellVerticalPosition verticalPosition)
+        {
+            if (verticalPosition == CellVerticalPosition.Upper)
+            {
+                IsInUpperRowCollectionChangedEvent = false;
+            }
+        }
         #endregion
 
         #region Event Handlers
         private void UpperRowTemplates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            // Flag Collection event has begun.
+            BeginRowTemplateCollectionChanged(CellVerticalPosition.Upper);
+
             var collection = sender as ObservableCollection<CellRowTemplate>;
 
             // Push state of collection to DisplayedUpperCellTemplate.
@@ -785,6 +822,9 @@ namespace Dimmer_Labels_Wizard_WPF
             _RemoveUpperRowTemplateCommand.CheckCanExecute();
             _MoveUpperRowTemplateUpCommand.CheckCanExecute();
             _MoveUpperRowTemplateDownCommand.CheckCanExecute();
+
+            // Reset collection Event Flags.
+            EndRowTemplateCollectionChanged(CellVerticalPosition.Upper);
         }
         #endregion
     }

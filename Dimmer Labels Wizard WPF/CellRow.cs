@@ -193,7 +193,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 dataReference.SetData(newValue, dataField);
             }
 
-            if (parentDataMode == CellDataMode.MixedField)
+            if (parentDataMode == CellDataMode.MultiField)
             {
                 // DataLayout won't be set by ParentCell. Have to set it here instead.
                 instance.DataLayout = new DataLayout(newValue, font, fontSize);

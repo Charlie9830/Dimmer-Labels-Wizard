@@ -58,7 +58,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             var lowerCellTemplate = new LabelCellTemplate()
             {
-                CellDataMode = CellDataMode.MixedField,
+                CellDataMode = CellDataMode.MultiField,
                 RowHeightMode = CellRowHeightMode.Automatic,
                 CellRowTemplates = lowerCellRowTemplates,
             };
@@ -101,7 +101,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public static LabelCellTemplate BaseLabelCellTemplate = new LabelCellTemplate()
         {
-            CellDataMode = CellDataMode.MixedField,
+            CellDataMode = CellDataMode.MultiField,
             SingleFieldFont = new Typeface("Arial"),
             SingleFieldDesiredFontSize = 12,
             SingleFieldDataField = LabelField.NoAssignment,

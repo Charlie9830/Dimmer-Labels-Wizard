@@ -105,7 +105,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 else
                 {
-                    // Mixed Field.
+                    // Multi Field.
                     List<LabelField> dataFields = new List<LabelField>();
 
                     foreach (var element in Rows)
@@ -712,7 +712,7 @@ namespace Dimmer_Labels_Wizard_WPF
         // Using a DependencyProperty as the backing store for CellDataMode.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CellDataModeProperty =
             DependencyProperty.Register("CellDataMode", typeof(CellDataMode),
-                typeof(LabelCell), new FrameworkPropertyMetadata(CellDataMode.MixedField,
+                typeof(LabelCell), new FrameworkPropertyMetadata(CellDataMode.MultiField,
                     new PropertyChangedCallback(OnCellDataModePropertyChanged)));
 
         private static void OnCellDataModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -722,7 +722,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var newValue = (CellDataMode)e.NewValue;
             ObservableCollection<CellRow> rows = instance.Rows;
 
-            if (newValue == CellDataMode.MixedField)
+            if (newValue == CellDataMode.MultiField)
             {
                 if (oldValue == CellDataMode.SingleField)
                 {
@@ -1030,7 +1030,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     else
                     {
-                        // Mixed Field, Collect all rows that display the intended DataField.
+                        // Multi Field, Collect all rows that display the intended DataField.
                         var targetRows = Rows.Where(item => item.DataField == dataField);
 
                         // Push Data.
@@ -1210,7 +1210,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         /// <summary>
         /// Sets the Data Property of a single Child Row based of it's current assigned Data Field. Should only be
-        /// used whilst Cell is in Mixed Field Mode.
+        /// used whilst Cell is in Multi Field Mode.
         /// </summary>
         /// <param name="cellRow"></param>
         /// <param name="cellParent"></param>
@@ -1271,7 +1271,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (reference != null)
             {
-                if (cellDataMode == CellDataMode.MixedField)
+                if (cellDataMode == CellDataMode.MultiField)
                 {
                     cellRow.Data = reference.GetData(cellRow.DataField);
                 }
