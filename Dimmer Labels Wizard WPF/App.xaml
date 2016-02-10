@@ -7,6 +7,16 @@
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" x:Class="Dimmer_Labels_Wizard_WPF.App"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Application Colour Palette -->
+        <SolidColorBrush x:Key="SubHeaderBackground" Color="#FF333337"/>
+        <SolidColorBrush x:Key="SubHeaderText" Color="White"/>
+        <SolidColorBrush x:Key="ControlGridBackground" Color="#FD1E1E1E"/>
+        <SolidColorBrush x:Key="ControlLabelTextColor" Color="White"/>
+        <SolidColorBrush x:Key="WindowBackground" Color="#FF2D2D30"/>
+        
+        <!-- Boolean to Visibilty Converter, True == Visible, False == Collapsed -->
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        
         <!-- Help Button -->
         <Image x:Key="HelpIcon24" Source="/Resources/help-circled-24-000000.png" Stretch="Uniform"/>
         <Style x:Key="HelpButton" TargetType="{x:Type Button}">
@@ -63,6 +73,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
                 <Setter Property="FontSize" Value="20"/>
+                <Setter Property="Foreground" Value="White"/>
             </Style.Setters>
         </Style>
         
@@ -80,5 +91,53 @@
         
         <!-- Boolean Flip Value Converter -->
         <local:BooleanFlipValueConverter x:Key="BooleanFlipValueConverter"/>
+
+        <!-- Row Splitter Style -->
+        <Style x:Key="RowSplitterStyle" TargetType="GridSplitter">
+            <Style.Setters>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="Background" Value="#FF007ACC"/>
+                <Setter Property="Height" Value="3"/>
+            </Style.Setters>
+        </Style>
+        
+       
+        
+        <!-- HeaderedControlStyle Style -->
+        <Style x:Key="HeaderedControlStyle" TargetType="HeaderedContentControl" BasedOn="{StaticResource {x:Type HeaderedContentControl}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="HeaderedContentControl">
+                        <StackPanel>
+                            <Grid>
+                                <Rectangle Fill="{StaticResource SubHeaderBackground}"/>
+                                <ContentPresenter ContentSource="Header"/>
+                            </Grid>
+                            <Grid>
+                                <ContentPresenter ContentSource="Content"/>
+                            </Grid>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Foreground="{StaticResource SubHeaderText}" Text="{Binding}" Margin="5,5,0,5"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ControlGridStyle" TargetType="Grid" BasedOn="{StaticResource {x:Type Grid}}">
+            <Setter Property="Background" Value="{StaticResource ControlGridBackground}"/>
+
+        </Style>
+
+        <Style x:Key="ControlLabelStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
+            <Setter Property="Foreground" Value="{StaticResource ControlLabelTextColor}"/>
+        </Style>
+
     </Application.Resources>
 </Application>

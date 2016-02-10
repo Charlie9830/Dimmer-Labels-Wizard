@@ -30,6 +30,9 @@ namespace Dimmer_Labels_Wizard_WPF
             _RemoveUpperRowTemplateCommand = new RelayCommand(RemoveUpperRowTemplateCommandExecute,
                 RemoveUpperRowTemplateCommandCanExecute);
 
+            _ShowUpperCellManualRowDialogCommand = new RelayCommand(ShowUpperCellManualRowDialogCommandExecute,
+                ShowUpperCellManualRowDialogComandCanExecute);
+
 
             // Event Subscriptions
             UpperRowTemplates.CollectionChanged += UpperRowTemplates_CollectionChanged;
@@ -107,6 +110,8 @@ namespace Dimmer_Labels_Wizard_WPF
                         }
                     }
 
+                    // Notify.
+                    OnPropertyChanged(nameof(DisplayedUpperCellTemplate));
                 }
             }
         }
@@ -252,9 +257,6 @@ namespace Dimmer_Labels_Wizard_WPF
                         CellDataMode = value
                     };
 
-                    // Set SingleField Enable State.
-                    UpperSingleFieldModeEnabled = value == CellDataMode.SingleField ? true : false;
-
                     // Set additional Control States.
                     if (value == CellDataMode.SingleField)
                     {
@@ -273,6 +275,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedUpperCellDataMode));
+                    OnPropertyChanged(nameof(UpperSingleFieldModeEnable));
+                    OnPropertyChanged(nameof(UpperMultiFieldModeEnable));
                 }
             }
         }
@@ -380,24 +384,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected bool _UpperSingleFieldModeEnabled = true;
-        public bool UpperSingleFieldModeEnabled
-        {
-            get
-            {
-                return _UpperSingleFieldModeEnabled;
-            }
-            set
-            {
-                if (_UpperSingleFieldModeEnabled != value)
-                {
-                    _UpperSingleFieldModeEnabled = value;
-
-                    // Notify.
-                    OnPropertyChanged(nameof(UpperSingleFieldModeEnabled));
-                }
-            }
-        }
+       
 
         private ObservableCollection<CellRowTemplate> _UpperRowTemplates = new ObservableCollection<CellRowTemplate>();
 
@@ -532,9 +519,45 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
         }
+
         #endregion
 
+        public bool UpperSingleFieldModeEnable
+        {
+            get
+            {
+                return SelectedUpperCellDataMode == CellDataMode.SingleField;
+            }
+        }
+
+        public bool UpperMultiFieldModeEnable
+        {
+            get
+            {
+                return SelectedUpperCellDataMode == CellDataMode.MultiField;
+            }
+        }
+
         #region Commands
+        private RelayCommand _ShowUpperCellManualRowDialogCommand;
+        public ICommand ShowUpperCellManualRowDialogCommand
+        {
+            get
+            {
+                return _ShowUpperCellManualRowDialogCommand;
+            }
+        }
+
+        protected void ShowUpperCellManualRowDialogCommandExecute(object parameter)
+        {
+            
+        }
+
+        protected bool ShowUpperCellManualRowDialogComandCanExecute(object parameter)
+        {
+            return true;
+        }
+
         private RelayCommand _MoveUpperRowTemplateUpCommand;
         public ICommand MoveUpperRowTemplateUpCommand
         {
@@ -737,9 +760,6 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             // Set Values.
             TemplateName = string.Empty;
-
-            UpperSingleFieldModeEnabled = BasedOnTemplateSelection.UpperCellTemplate.CellDataMode ==
-                CellDataMode.SingleField ? true : false;
 
             if (UpperRowTemplates.Count != BasedOnTemplateSelection.UpperCellTemplate.CellRowTemplates.Count())
             {

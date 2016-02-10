@@ -104,7 +104,9 @@ namespace Dimmer_Labels_Wizard_WPF
                         CoerceValue(RowHeightProperty);
                         break;
                     case CellRowHeightMode.Manual:
-                        Height = new GridLength(currentHeight.Value, GridUnitType.Star);
+                        // Clear Row Height Property so that it's value can fall back to Tempalted Value.
+                        ClearValue(RowHeightProperty);
+                        Height = new GridLength(RowHeight, GridUnitType.Star);
                         break;
                 }
 
@@ -269,13 +271,15 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as CellRow;
             var fontSize = (double)e.NewValue;
+            var data = instance.Data;
+            var font = instance.Font;
+            var availableWidth = instance.AvailableTextWidth;
+            var availableHeight = instance.AvailableTextHeight;
             DataLayout layout = instance.DataLayout;
+            ScaleDirection ignore;
 
-            if (fontSize != layout.FontSize)
-            {
-                // Signal to Parent that Data Layout needs to be refreshed.
-                OnPropertyChanged(DataLayoutProperty.Name, instance);
-            }
+            instance.ActualFontSize = LabelCell.ScaleDownFontSize(data, font, fontSize, availableWidth, availableHeight,
+                ScaleDirection.Both, out ignore);
 
             // Coerce RowHeight.
             instance.CoerceValue(RowHeightProperty);
@@ -390,7 +394,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as CellRow;
 
-            // rowQty must atleast be 0. This method belongs to a Row Object, therefore, abstractly, atleast one
+            // rowQty must atleast be 0. This method belongs to a Row Object therefore atleast one
             // must exist in the collection. It may just not have been added yet.
             int rowQty = instance.CellParent.RowCount == 0 ? 1 : instance.CellParent.RowCount;
             double cellHeight = instance.CellParent.Height;
@@ -489,7 +493,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
-        
         /// <summary>
         /// Internally calls SetCurrentValue() to set DataField to desired value without changing Value Source.
         /// </summary>

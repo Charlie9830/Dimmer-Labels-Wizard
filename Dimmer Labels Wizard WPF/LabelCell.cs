@@ -167,6 +167,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     int newCount = ValidateRowCount(value);
                     AdjustRowCollectionCount(_RowCount, newCount);
                     _RowCount = newCount;
+
+                    ManageRowSplitters(this);
                 }
             }
         }
@@ -694,9 +696,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     foreach (var element in rows)
                     {
                         element.HeightMode = newValue;
-                        // Throw Exception. Need some way of Translating Users Selection of Row Percentages
-                        // to the actual Rows Here. Perhaps a List of Values generated during setup Dialog.
-                        throw new NotImplementedException("Implement this Feature Charlie!");
                     }
                     break;
             }
@@ -957,6 +956,135 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
+
+        public IEnumerable<double> RowHeightProportions
+        {
+            get { return (IEnumerable<double>)GetValue(RowHeightProportionsProperty); }
+            set { SetValue(RowHeightProportionsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for RowHeightProportions.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RowHeightProportionsProperty =
+            DependencyProperty.Register("RowHeightProportions", typeof(IEnumerable<double>), typeof(LabelCell),
+                new FrameworkPropertyMetadata(null));
+
+
+        public bool ShowRowSplitters
+        {
+            get { return (bool)GetValue(ShowRowSplittersProperty); }
+            set { SetValue(ShowRowSplittersProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShowGridSplitters.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowRowSplittersProperty =
+            DependencyProperty.Register("ShowRowSplitters", typeof(bool), typeof(LabelCell),
+                new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnShowRowSplittersPropertyChanged)));
+
+        private static void OnShowRowSplittersPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+
+            ManageRowSplitters(instance);
+        }
+
+        private static void RemoveRowSplitters(LabelCell instance)
+        {
+            // Remove all GridSplitters from Grid.Children.
+            foreach (var element in GetExistingSplitters(instance).ToList())
+            {
+                instance.Grid.Children.Remove(element);
+            }
+        }
+
+        private static void ManageRowSplitters(LabelCell instance)
+        {
+            if (instance.ShowRowSplitters == false)
+            {
+                // Remove any existing Splitters then Bail.
+                RemoveRowSplitters(instance);
+                return;
+            }
+
+            int rowCount = instance.Rows.Count;
+            int requiredSplitterCount = rowCount - 1;
+
+            if (requiredSplitterCount <= 0)
+            {
+                // Zero or 1 row. Cannot apply Splitters. Remove any Existing then
+                // Bail out.
+                RemoveRowSplitters(instance);
+                return;
+            }
+
+            List<GridSplitter> existingSplitters = GetExistingSplitters(instance).ToList();
+            int existingSplitterCount = existingSplitters.Count;
+            int difference = existingSplitterCount - requiredSplitterCount;
+
+            // Adjust existing SplitterCount.
+            if (difference > 0)
+            {
+                // Decrease existing Splitter Count.
+                for (int count = 1; count <= difference; count++)
+                {
+                    instance.Grid.Children.Remove(existingSplitters.Last());
+                    existingSplitters.Remove(existingSplitters.Last());
+                }
+            }
+
+            if (difference < 0)
+            {
+                // Increase existing Splitter Count.
+                difference = Math.Abs(difference);
+
+                for (int count = 1; count <= difference; count++)
+                {
+                    var splitter = CreateRowSplitter();
+
+                    instance.Grid.Children.Add(splitter);
+                    existingSplitters.Add(splitter);
+                }
+            }
+
+
+            for (int index = 0; index < requiredSplitterCount; index++)
+            {
+                // Set GridRow then add to Grid.
+                Grid.SetRow(existingSplitters[index], index);
+
+                if (instance.Grid.Children.Contains(existingSplitters[index]) == false)
+                {
+                    instance.Grid.Children.Add(existingSplitters[index]);
+                }
+            }
+
+        }
+
+        protected static GridSplitter CreateRowSplitter()
+        {
+            return new GridSplitter()
+            {
+                VerticalAlignment = VerticalAlignment.Bottom,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Style = (Style)Application.Current.FindResource("RowSplitterStyle")
+            };
+        }
+
+        protected static IEnumerable<GridSplitter> GetExistingSplitters(LabelCell instance)
+        {
+            var gridSplitters = new List<GridSplitter>();
+
+            // LINQ unavailable. Collect a List of references to GridSplitters in the Grid.
+            foreach (var element in instance.Grid.Children)
+            {
+                if (element.GetType() == typeof(GridSplitter))
+                {
+                    gridSplitters.Add(element as GridSplitter);
+                }
+            }
+
+            return gridSplitters;
+        }
+
         #endregion
 
         #region Overrides
@@ -1121,6 +1249,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 element.Index = rowIndexCounter;
                 rowIndexCounter++;
                 element.CoerceValue(CellRow.RowHeightProperty);
+            }
+
+            if (ShowRowSplitters)
+            {
+                // Push collection state back to RowHeightProportions if Row Splitters are Visibile.
+                RowHeightProportions = collection as IEnumerable<double>;
             }
         }
 

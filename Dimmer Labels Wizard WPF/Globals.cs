@@ -94,6 +94,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public static CellRowTemplate BaseCellRowTemplate = new CellRowTemplate()
         {
+            ManualRowHeight = 1d,
             Font = new Typeface("Arial"),
             DesiredFontSize = 12d,
             DataField = LabelField.NoAssignment,

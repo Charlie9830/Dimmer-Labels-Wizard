@@ -22,7 +22,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Dimmer_Labels_Wizard_WPF.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap bold24 {
+        public static System.Drawing.Bitmap bold24 {
             get {
                 object obj = ResourceManager.GetObject("bold24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap checkMark24 {
+        public static System.Drawing.Bitmap checkMark24 {
             get {
                 object obj = ResourceManager.GetObject("checkMark24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +83,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap crosshair24 {
+        public static System.Drawing.Bitmap crosshair24 {
             get {
                 object obj = ResourceManager.GetObject("crosshair24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +93,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap crossMark24 {
+        public static System.Drawing.Bitmap crossMark24 {
             get {
                 object obj = ResourceManager.GetObject("crossMark24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -103,7 +103,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap earth24 {
+        public static System.Drawing.Bitmap earth24 {
             get {
                 object obj = ResourceManager.GetObject("earth24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -113,7 +113,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap HelpIcon24 {
+        public static System.Drawing.Bitmap HelpIcon24 {
             get {
                 object obj = ResourceManager.GetObject("HelpIcon24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -123,7 +123,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap italic24 {
+        public static System.Drawing.Bitmap italic24 {
             get {
                 object obj = ResourceManager.GetObject("italic24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -133,7 +133,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap magnifyMinus24 {
+        public static System.Drawing.Bitmap magnifyMinus24 {
             get {
                 object obj = ResourceManager.GetObject("magnifyMinus24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -143,7 +143,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap magnifyPlus24 {
+        public static System.Drawing.Bitmap magnifyPlus24 {
             get {
                 object obj = ResourceManager.GetObject("magnifyPlus24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -153,7 +153,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap MinusSign12 {
+        public static System.Drawing.Bitmap MinusSign12 {
             get {
                 object obj = ResourceManager.GetObject("MinusSign12", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -163,7 +163,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PaintBrush64 {
+        public static System.Drawing.Bitmap PaintBrush64 {
             get {
                 object obj = ResourceManager.GetObject("PaintBrush64", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -173,7 +173,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PlusSign12 {
+        public static System.Drawing.Bitmap PlusSign12 {
             get {
                 object obj = ResourceManager.GetObject("PlusSign12", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -183,7 +183,7 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap underline24 {
+        public static System.Drawing.Bitmap underline24 {
             get {
                 object obj = ResourceManager.GetObject("underline24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -193,7 +193,17 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap zoomToFit24 {
+        public static System.Drawing.Bitmap UpDownArrow {
+            get {
+                object obj = ResourceManager.GetObject("UpDownArrow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap zoomToFit24 {
             get {
                 object obj = ResourceManager.GetObject("zoomToFit24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

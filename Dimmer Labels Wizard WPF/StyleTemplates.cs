@@ -368,6 +368,18 @@ namespace Dimmer_Labels_Wizard_WPF
             BasedOn = basedOn;
         }
 
+        // ManualRowHeight.
+        public double ManualRowHeight
+        {
+            get
+            {
+                return (double)GetSetterValue(CellRow.RowHeightProperty);
+            }
+            set
+            {
+                SetSetterValue(CellRow.RowHeightProperty, value);
+            }
+        }
 
         // DataField.
         public LabelField DataField
