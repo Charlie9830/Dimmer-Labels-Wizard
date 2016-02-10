@@ -20,6 +20,14 @@ namespace Dimmer_Labels_Wizard_WPF
     public class CellRow : RowDefinition, INotifyPropertyChanged
     {
         #region Constructors.
+        static CellRow()
+        {
+            // Override HeightProperty's Metadata.
+            var heightMetadata = new FrameworkPropertyMetadata(new PropertyChangedCallback(OnHeightPropertyChanged));
+            HeightProperty.OverrideMetadata(typeof(CellRow), heightMetadata);
+            
+        }
+
         /// <summary>
         /// Available Text Width/Height Parameters must be supplied in WPF Units.
         /// </summary>
@@ -104,7 +112,7 @@ namespace Dimmer_Labels_Wizard_WPF
                         CoerceValue(RowHeightProperty);
                         break;
                     case CellRowHeightMode.Manual:
-                        // Clear Row Height Property so that it's value can fall back to Tempalted Value.
+                        // Clear Row Height Property so that it's value can fall back to Templated Value.
                         ClearValue(RowHeightProperty);
                         Height = new GridLength(RowHeight, GridUnitType.Star);
                         break;
@@ -134,6 +142,18 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 return (CellParent.Height - CellParent.TopWeight - CellParent.BottomWeight) / CellParent.Rows.Count;
             }
+        }
+        #endregion
+
+        #region Dependency Property Overrides.
+        private static void OnHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as CellRow;
+
+            // Signal change of Height to Cell Parent.
+            OnPropertyChanged(HeightProperty.Name, instance);
+            
+            
         }
         #endregion
 

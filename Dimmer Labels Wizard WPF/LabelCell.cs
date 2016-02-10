@@ -957,16 +957,17 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
 
-        public IEnumerable<double> RowHeightProportions
+        public List<double> RowHeightProportions
         {
-            get { return (IEnumerable<double>)GetValue(RowHeightProportionsProperty); }
+            get { return (List<double>)GetValue(RowHeightProportionsProperty); }
             set { SetValue(RowHeightProportionsProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for RowHeightProportions.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RowHeightProportionsProperty =
-            DependencyProperty.Register("RowHeightProportions", typeof(IEnumerable<double>), typeof(LabelCell),
+            DependencyProperty.Register("RowHeightProportions", typeof(List<double>), typeof(LabelCell),
                 new FrameworkPropertyMetadata(null));
+
 
 
         public bool ShowRowSplitters
@@ -1065,6 +1066,8 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
+                ResizeDirection = GridResizeDirection.Rows,
+                ResizeBehavior = GridResizeBehavior.CurrentAndNext,
                 Style = (Style)Application.Current.FindResource("RowSplitterStyle")
             };
         }
@@ -1253,12 +1256,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (ShowRowSplitters)
             {
-                // Push collection state back to RowHeightProportions if Row Splitters are Visibile.
-                RowHeightProportions = collection as IEnumerable<double>;
+                // Push collection state back to RowHeightProportions if Row Splitters are Visible.
+                RowHeightProportions = (from row in collection
+                                       select row.Height.Value).ToList();
             }
         }
 
-        private void CellRow_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void CellRow_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var cellRow = sender as CellRow;
             string propertyName = e.PropertyName;
@@ -1277,6 +1281,24 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         SelectedRows.Remove(cellRow);
                     }
+                }
+            }
+
+            // Height.
+            if (propertyName == CellRow.HeightProperty.Name)
+            {
+                if (ShowRowSplitters && RowHeightProportions != null &&
+                    RowHeightProportions.Count() > 0)
+                {
+                    // Collect rowIndex and Current state of RowProportions Collection.
+                    int rowIndex = cellRow.Index;
+                    var currentRowProportions = RowHeightProportions.ToList();
+
+                    // Modify RowProportions Collection.
+                    currentRowProportions[rowIndex] = cellRow.Height.Value;
+
+                    // Write back to Dependency Property.
+                    RowHeightProportions = currentRowProportions;
                 }
             }
         }
@@ -1319,8 +1341,6 @@ namespace Dimmer_Labels_Wizard_WPF
         private void CellRow_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             _InMouseSelectionEvent = true;
-
-
             _InMouseSelectionEvent = false;
         }
 

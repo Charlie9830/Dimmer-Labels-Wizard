@@ -16,7 +16,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Constructor
         public TemplateEditorViewModel()
         {
-            BasedOnTemplateSelection = Globals.DefaultTemplate;
+            BasedOnTemplateSelection = Globals.Templates[1];
 
             // Command Binding
             _MoveUpperRowTemplateUpCommand = new RelayCommand(MoveUpperRowTemplateUpCommandExecute,
@@ -99,6 +99,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     UpperSingleFieldFont = value.SingleFieldFont;
                     UpperSingleFieldFontSize = value.SingleFieldDesiredFontSize;
                     UpperSingleFieldDataField = value.SingleFieldDataField;
+
+                    UpperRowHeightProportions = (from rowTemplate in value.CellRowTemplates
+                                                select rowTemplate.ManualRowHeight).ToList();
 
                     if (IsInUpperRowCollectionChangedEvent == false)
                     {
@@ -520,6 +523,61 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+
+        protected bool _UpperRowHeightEditorOpen = false;
+
+        public bool UpperRowHeightEditorOpen
+        {
+            get { return _UpperRowHeightEditorOpen; }
+            set
+            {
+                if (_UpperRowHeightEditorOpen != value)
+                {
+                    _UpperRowHeightEditorOpen = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(UpperRowHeightEditorOpen));
+                }
+            }
+        }
+
+
+        protected List<double> _UpperRowHeightProportions = new List<double>();
+
+        public List<double> UpperRowHeightProportions
+        {
+            get { return _UpperRowHeightProportions; }
+            set
+            {
+                if (value != null && _UpperRowHeightProportions.SequenceEqual(value) == false)
+                {
+                    _UpperRowHeightProportions = value;
+
+                    var newCellTemplates = new List<CellRowTemplate>();
+
+                    // Iterate through both the Proportions Collection and the existing CellRowTemplates collection.
+                    var rowTemplateEnumerator = DisplayedUpperCellTemplate.CellRowTemplates.GetEnumerator();
+                    var proportionsEnumerator = value.GetEnumerator();
+
+                    while (rowTemplateEnumerator.MoveNext() && proportionsEnumerator.MoveNext())
+                    {
+                        newCellTemplates.Add(new CellRowTemplate(rowTemplateEnumerator.Current)
+                        { ManualRowHeight = proportionsEnumerator.Current });
+                    }
+
+                    // Write back to DisplayedUpperCellTemplate.
+                    DisplayedUpperCellTemplate = new LabelCellTemplate(DisplayedUpperCellTemplate)
+                    {
+                        CellRowTemplates = newCellTemplates
+                    };
+
+                    // Notify.
+                    OnPropertyChanged(nameof(UpperRowHeightProportions));
+
+                }
+            }
+        }
+
         #endregion
 
         public bool UpperSingleFieldModeEnable
@@ -550,7 +608,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void ShowUpperCellManualRowDialogCommandExecute(object parameter)
         {
-            
+            UpperRowHeightEditorOpen = !UpperRowHeightEditorOpen;
         }
 
         protected bool ShowUpperCellManualRowDialogComandCanExecute(object parameter)

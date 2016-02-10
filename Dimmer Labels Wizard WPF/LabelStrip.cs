@@ -133,9 +133,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
-
-
-
         public IList<LabelCell> Cells
         {
             get { return (IList<LabelCell>)GetValue(CellsProperty); }

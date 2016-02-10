@@ -131,9 +131,13 @@
                                     <Label Content="Height Mode" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Height="26" Style="{DynamicResource ControlLabelStyle}"/>
                                     <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="3"
                                       ItemsSource="{Binding Path=RowHeightModes}" SelectedItem="{Binding Path=SelectedUpperRowHeightMode}" Height="22" Margin="0,2"/>
-                                    <Button Content="..." Grid.Column="3" HorizontalAlignment="Left" Margin="140,3,0,3" Grid.Row="0" VerticalAlignment="Center" Width="25" Height="20"
+                                    <Button Name="RowHeightEditorButton" Content="..." Grid.Column="3" HorizontalAlignment="Left" Margin="140,0,0,0" Grid.Row="0" VerticalAlignment="Center" Width="25" Height="20"
                                     Command="{Binding Path=ShowUpperCellManualRowDialogCommand}"/>
-                                    
+                                    <Popup Grid.Column="3" Grid.Row="0"  HorizontalAlignment="Left" VerticalAlignment="Center"
+                                           Margin="{Binding ElementName=RowHeightEditorButton, Path=Margin}" IsOpen="{Binding Path=UpperRowHeightEditorOpen}">
+                                        <local:RowHeightEditor CellTemplate="{Binding Path=DisplayedUpperCellTemplate}" RowProportions="{Binding Path=UpperRowHeightProportions, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}"/>
+                                    </Popup>
+
 
 
                                     <!-- Row 1 -->
