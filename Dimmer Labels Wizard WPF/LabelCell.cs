@@ -307,7 +307,8 @@ namespace Dimmer_Labels_Wizard_WPF
             ObservableCollection<CellRow> rows = instance.Rows;
 
             // Assign Row Templates.
-            AssignRowTemplates(instance, templates, rows);
+            AssignMultiFieldRowTemplates(instance, templates, rows);
+            
         }
 
 
@@ -725,10 +726,13 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (oldValue == CellDataMode.SingleField)
                 {
-                    // If coming from SingleField Mode. Regenerate Cellrows from Templates.
+                    // If coming from SingleField Mode. Reset RowHeightMode Value and
+                    // Regenerate Cellrows from Templates.
+                    instance.ClearValue(RowHeightModeProperty);
+
                     var templates = instance.RowTemplates;
 
-                    AssignRowTemplates(instance, templates, rows);
+                    AssignMultiFieldRowTemplates(instance, templates, rows);
                 }
 
                 foreach (var element in rows)
@@ -739,6 +743,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (newValue == CellDataMode.SingleField)
             {
+                // SingleField mode Requires RowHeightMode to be set to Static.
+                instance.RowHeightMode = CellRowHeightMode.Static;
+
                 SetSingleFieldRows(instance, instance.SingleFieldData);
             }
            
@@ -819,7 +826,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else
             {
-                instance.SingleFieldData = "No Reference";
+                instance.SingleFieldData = string.Empty;
             }
         }
 
@@ -1308,7 +1315,7 @@ namespace Dimmer_Labels_Wizard_WPF
             if (propertyName == CellRow.HeightProperty.Name)
             {
                 if (ShowRowSplitters && RowHeightProportions != null &&
-                    RowHeightProportions.Count() > 0)
+                    RowHeightProportions.Count() > 0 && RowHeightMode == CellRowHeightMode.Manual)
                 {
                     // Collect rowIndex and Current state of RowProportions Collection.
                     int rowIndex = cellRow.Index;
@@ -1372,9 +1379,15 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region Methods.
-        private static void AssignRowTemplates(LabelCell instance, List<CellRowTemplate> newTemplates,
+        private static void AssignMultiFieldRowTemplates(LabelCell instance, List<CellRowTemplate> newTemplates,
             ObservableCollection<CellRow> rows)
         {
+            if (instance.CellDataMode == CellDataMode.SingleField)
+            {
+                // This method intereferes with SingleField Mode. Bail out.
+                return;
+            }
+
             // Set RowCount.
             instance.RowCount = newTemplates.Count;
 

@@ -67,55 +67,53 @@ namespace Dimmer_Labels_Wizard_WPF
                 if (_DisplayedTemplate != value)
                 {
                     _DisplayedTemplate = value;
-                    DisplayedUpperCellTemplate = value.UpperCellTemplate;
 
                     // Notify.
                     OnPropertyChanged(nameof(DisplayedTemplate));
-                }
-            }
-        }
+                    OnPropertyChanged(nameof(DisplayedUpperCellTemplate));
+                    OnPropertyChanged(nameof(StripWidth));
+                    OnPropertyChanged(nameof(StripHeight));
+                    OnPropertyChanged(nameof(SelectedStripMode));
+                    OnPropertyChanged(nameof(SelectedUpperCellDataMode));
+                    OnPropertyChanged(nameof(SelectedUpperRowHeightMode));
+                    OnPropertyChanged(nameof(SelectedUpperRowFont));
+                    OnPropertyChanged(nameof(SelectedUpperRowFontSize));
+                    OnPropertyChanged(nameof(SelectedUpperRowDataField));
+                    OnPropertyChanged(nameof(UpperSingleFieldFont));
+                    OnPropertyChanged(nameof(UpperSingleFieldFontSize));
+                    OnPropertyChanged(nameof(UpperSingleFieldDataField));
 
-        private LabelCellTemplate _DisplayedUpperCellTemplate;
-        public LabelCellTemplate DisplayedUpperCellTemplate
-        {
-            get
-            {
-                return _DisplayedUpperCellTemplate;
-            }
-            set
-            {
-                if (_DisplayedUpperCellTemplate != value)
-                {
-                    _DisplayedUpperCellTemplate = value;
+                    // Enables
+                    OnPropertyChanged(nameof(UpperMultiFieldModeEnable));
+                    OnPropertyChanged(nameof(UpperSingleFieldModeEnable));
 
-                    DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
-                    {
-                        Name = TemplateName,
-                        UpperCellTemplate = value
-                    };
-
-                    SelectedUpperCellDataMode = value.CellDataMode;
-                    SelectedUpperRowHeightMode = value.RowHeightMode;
-                    UpperSingleFieldFont = value.SingleFieldFont;
-                    UpperSingleFieldFontSize = value.SingleFieldDesiredFontSize;
-                    UpperSingleFieldDataField = value.SingleFieldDataField;
-
-                    UpperRowHeightProportions = (from rowTemplate in value.CellRowTemplates
-                                                select rowTemplate.ManualRowHeight).ToList();
-
+                    // UpperRowTemplates Collection.
                     if (IsInUpperRowCollectionChangedEvent == false)
                     {
-                        // Can cause ReEntrancy Collection Changed Exception in some cases.
                         UpperRowTemplates.Clear();
-                        foreach (var element in value.CellRowTemplates)
+                        foreach (var element in value.UpperCellTemplate.CellRowTemplates)
                         {
                             UpperRowTemplates.Add(element);
                         }
                     }
-
-                    // Notify.
-                    OnPropertyChanged(nameof(DisplayedUpperCellTemplate));
                 }
+            }
+
+        }
+
+        public LabelCellTemplate DisplayedUpperCellTemplate
+        {
+            get
+            {
+                return DisplayedTemplate.UpperCellTemplate;
+            }
+            
+            set
+            {
+                DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
+                {
+                    UpperCellTemplate = value
+                };
             }
         }
 
@@ -158,10 +156,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 if (_BasedOnTemplateSelection != value)
                 {
                     _BasedOnTemplateSelection = value;
-                    DisplayedTemplate = new LabelStripTemplate(_BasedOnTemplateSelection);
-
-                    // Notify other Controls.
-                    OnBasedOnTemplateSelectionChanged();
+                    DisplayedTemplate = new LabelStripTemplate(value);
 
                     // Notify.
                     OnPropertyChanged(nameof(BasedOnTemplateSelection));
@@ -249,7 +244,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return DisplayedUpperCellTemplate.CellDataMode;
+                return DisplayedTemplate.UpperCellTemplate.CellDataMode;
             }
             set
             {
@@ -259,27 +254,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         CellDataMode = value
                     };
-
-                    // Set additional Control States.
-                    if (value == CellDataMode.SingleField)
-                    {
-                        if (UpperRowTemplates.Count > 0)
-                        {
-                            // Set SingleFieldDataField to first existing Row Template. Otherwise Channel.
-                            UpperSingleFieldDataField = UpperRowTemplates.First().DataField;
-                        }
-
-                        else
-                        {
-                            UpperRowTemplates.Clear();
-                            UpperSingleFieldDataField = LabelField.ChannelNumber;
-                        }
-                    }
-
-                    // Notify.
-                    OnPropertyChanged(nameof(SelectedUpperCellDataMode));
-                    OnPropertyChanged(nameof(UpperSingleFieldModeEnable));
-                    OnPropertyChanged(nameof(UpperMultiFieldModeEnable));
                 }
             }
         }
@@ -307,9 +281,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         RowHeightMode = value
                     };
-
-                    // Notify.
-                    OnPropertyChanged(nameof(SelectedUpperRowHeightMode));
                 }
             }
         }
@@ -329,8 +300,6 @@ namespace Dimmer_Labels_Wizard_WPF
                         SingleFieldFont = value
                     };
 
-                    // Notify.
-                    OnPropertyChanged(nameof(UpperSingleFieldFont));
                 }
             }
         }
@@ -380,9 +349,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         SingleFieldDataField = value
                     };
-
-                    // Notify.
-                    OnPropertyChanged(nameof(UpperSingleFieldDataField));
                 }
             }
         }
@@ -570,9 +536,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         CellRowTemplates = newCellTemplates
                     };
-
-                    // Notify.
-                    OnPropertyChanged(nameof(UpperRowHeightProportions));
 
                 }
             }
@@ -788,9 +751,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 }
             }
-
-            
-            
         }
 
         protected bool RemoveUpperRowTemplateCommandCanExecute(object parameter)
@@ -814,28 +774,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
-        private void OnBasedOnTemplateSelectionChanged()
-        {
-            // Set Values.
-            TemplateName = string.Empty;
-
-            if (UpperRowTemplates.Count != BasedOnTemplateSelection.UpperCellTemplate.CellRowTemplates.Count())
-            {
-                // Clear.
-                UpperRowTemplates.Clear();
-
-                // Add new Cell Templates.
-                foreach (var element in BasedOnTemplateSelection.UpperCellTemplate.CellRowTemplates)
-                {
-                    UpperRowTemplates.Add(element);
-                }
-            }
-
-            // Raise Property Changed Notifications.
-            OnPropertyChanged(nameof(StripWidth));
-            OnPropertyChanged(nameof(StripHeight));
-            OnPropertyChanged(nameof(SelectedStripMode));
-        }
 
         private List<DimmerDistroUnit> GenerateExampleUnits()
         {
