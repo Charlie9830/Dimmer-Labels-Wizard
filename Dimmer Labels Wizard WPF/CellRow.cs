@@ -25,7 +25,6 @@ namespace Dimmer_Labels_Wizard_WPF
             // Override HeightProperty's Metadata.
             var heightMetadata = new FrameworkPropertyMetadata(new PropertyChangedCallback(OnHeightPropertyChanged));
             HeightProperty.OverrideMetadata(typeof(CellRow), heightMetadata);
-            
         }
 
         /// <summary>

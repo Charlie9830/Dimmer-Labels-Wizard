@@ -24,14 +24,12 @@
         </Grid.RowDefinitions>
         <Label Content="Template Manager"
                Style="{StaticResource WindowHeaderStyle}"/>
-        <Border BorderBrush="Gray" Background="White" BorderThickness="1" Grid.Row="1" Margin="5">
-            <local:LabelStrip Margin="0,10,0,10"
-                DataSource="{Binding Path=ExampleUnits}" Style="{Binding Path=DisplayedTemplate}">
-
-                <local:LabelStrip.LayoutTransform>
-                    <ScaleTransform CenterX="0" CenterY="0" ScaleX="1" ScaleY="1"/>
-                </local:LabelStrip.LayoutTransform>
-            </local:LabelStrip>
+        <Border BorderBrush="Gray" Background="White" BorderThickness="1" Grid.Row="1" Margin="5" Height="220" Width="992">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <local:LabelStrip Margin="0,10,0,10"
+                    DataSource="{Binding Path=ExampleUnits}" Style="{Binding Path=DisplayedTemplate}">
+                </local:LabelStrip>
+            </ScrollViewer>
         </Border>
 
         <Border Grid.Row="2" Margin="5">
@@ -133,9 +131,10 @@
                                       ItemsSource="{Binding Path=RowHeightModes}" SelectedItem="{Binding Path=SelectedUpperRowHeightMode}" Height="22" Margin="0,2"/>
                                     <Button Name="RowHeightEditorButton" Content="..." Grid.Column="3" HorizontalAlignment="Left" Margin="140,0,0,0" Grid.Row="0" VerticalAlignment="Center" Width="25" Height="20"
                                     Command="{Binding Path=ShowUpperCellManualRowDialogCommand}"/>
-                                    <Popup Grid.Column="3" Grid.Row="0"  HorizontalAlignment="Left" VerticalAlignment="Center"
-                                           Margin="{Binding ElementName=RowHeightEditorButton, Path=Margin}" IsOpen="{Binding Path=UpperRowHeightEditorOpen}">
-                                        <local:RowHeightEditor CellTemplate="{Binding Path=DisplayedUpperCellTemplate}" RowProportions="{Binding Path=UpperRowHeightProportions, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}"/>
+                                    <Popup x:Name="UpperPopUp" HorizontalAlignment="Left" VerticalAlignment="Center" Placement="Mouse"
+                                            IsOpen="{Binding Path=UpperRowHeightEditorOpen}">
+                                        <local:RowHeightEditor CellTemplate="{Binding Path=DisplayedUpperCellTemplate}" IsOpen="{Binding ElementName=UpperPopUp, Path=IsOpen, Mode=TwoWay}"
+                                                               RowProportions="{Binding Path=UpperRowHeightProportions, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}"/>
                                     </Popup>
 
 

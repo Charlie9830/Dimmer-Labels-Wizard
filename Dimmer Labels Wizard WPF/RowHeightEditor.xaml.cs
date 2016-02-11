@@ -27,6 +27,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Command Bindings.
             _OkCommand = new RelayCommand(OkCommandExecute);
+            _CancelCommand = new RelayCommand(CancelCommandExecute);
         }
 
         #region CLR Property Binding Sources
@@ -71,6 +72,24 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
         }
+
+
+        protected bool _KeepDialogOpen = false;
+
+        public bool KeepDialogOpen
+        {
+            get { return _KeepDialogOpen; }
+            set
+            {
+                if (_KeepDialogOpen != value)
+                {
+                    _KeepDialogOpen = value;
+
+                    // Notify.
+                    RaisePropertyChanged(nameof(KeepDialogOpen));
+                }
+            }
+        }
         #endregion
 
         #region Dependency Properties
@@ -111,6 +130,20 @@ namespace Dimmer_Labels_Wizard_WPF
                 typeof(RowHeightEditor), new FrameworkPropertyMetadata(null));
 
 
+
+
+        public bool IsOpen
+        {
+            get { return (bool)GetValue(IsOpenProperty); }
+            set { SetValue(IsOpenProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsOpen.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsOpenProperty =
+            DependencyProperty.Register("IsOpen", typeof(bool), typeof(RowHeightEditor), new FrameworkPropertyMetadata(false));
+
+
+
         #endregion
 
         #region Commands
@@ -129,8 +162,29 @@ namespace Dimmer_Labels_Wizard_WPF
             if (bindingExpression != null)
             {
                 bindingExpression.UpdateSource();
+
+                if (!KeepDialogOpen)
+                {
+                    IsOpen = false;
+                }
             }
         }
+
+        protected ICommand _CancelCommand;
+        public ICommand CancelCommand
+        {
+            get
+            {
+                return _CancelCommand;
+            }
+        }
+
+        protected void CancelCommandExecute(object parameter)
+        {
+            KeepDialogOpen = false;
+            IsOpen = false;
+        }
+
         #endregion
 
         #region Interfaces

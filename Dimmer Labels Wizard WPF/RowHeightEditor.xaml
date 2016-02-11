@@ -5,34 +5,41 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
              mc:Ignorable="d" 
-             Height="250" Width="300">
+             Width="330">
 
-    <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:RowHeightEditor}}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="0.25*"/>
-        </Grid.RowDefinitions>
+    <HeaderedContentControl Style="{StaticResource HeaderedControlStyle}" Header="Manual Row Spacing">
+        <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:RowHeightEditor}}"
+              Background="{StaticResource ControlGridBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="0.25*"/>
+            </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
 
-        <local:LabelCell ShowRowSplitters="True"  Grid.Column="0" Grid.Row="0"
-                         Style="{Binding Path=InternalCellTemplate}" RowHeightProportions="{Binding Path=InternalRowProportions, Mode=OneWayToSource}" RenderTransformOrigin="0.5,0.5">
-            <local:LabelCell.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleX="2" ScaleY="2"/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </local:LabelCell.RenderTransform>
-        </local:LabelCell>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  Grid.Column="1" Grid.Row="0" Background="White" TextWrapping="Wrap">
-            Click and Drag on the Row Splitters to change the Height of each Row.
-        </TextBlock>
-        <Button x:Name="button" Content="Ok" Grid.Column="1"  Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5" Width="75"
-                Command="{Binding Path=OkCommand}"/>
-    </Grid>
+            <Border Width="140" Height="140" Grid.Column="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <local:LabelCell ShowRowSplitters="True"  Grid.Column="0"
+                                 Style="{Binding Path=InternalCellTemplate}" RowHeightProportions="{Binding Path=InternalRowProportions, Mode=OneWayToSource}" RenderTransformOrigin="0.5,0.5">
+                    <local:LabelCell.RenderTransform>
+                        <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+                    </local:LabelCell.RenderTransform>
+                </local:LabelCell>
+            </Border>
+
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Margin="5"
+                       Background="Transparent" Foreground="{StaticResource ControlLabelTextColor}" >
+                Drag the Row Splitters to set the Height of each Row. Press Ok to set the Heights.
+            </TextBlock>
+            <Button x:Name="button" Content="Ok"  Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,5,85,5" Width="75"
+                    Command="{Binding Path=OkCommand}" Grid.ColumnSpan="2"/>
+            <Button x:Name="button_Copy" Content="Cancel" Grid.Column="1"  Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5" Width="75"
+            	Command="{Binding CancelCommand}"/>
+            <CheckBox x:Name="checkBox" Content="Keep Dialog Open." Grid.Column="1" HorizontalAlignment="Left" Margin="5,0,0,35" Grid.Row="1" VerticalAlignment="Bottom"
+                      Foreground="{StaticResource ControlLabelTextColor}" IsChecked="{Binding Path=KeepDialogOpen}"/>
+
+        </Grid>
+    </HeaderedContentControl>
 </UserControl>

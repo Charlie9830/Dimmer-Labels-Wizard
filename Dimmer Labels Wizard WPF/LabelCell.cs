@@ -984,8 +984,22 @@ namespace Dimmer_Labels_Wizard_WPF
         private static void OnShowRowSplittersPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelCell;
+            var dataReference = instance.DataReference;
+            var rows = instance.Rows;
 
+            // Manage number of Row Splitters.
             ManageRowSplitters(instance);
+
+            if (dataReference != null)
+            {
+                throw new NotSupportedException("Switching RowSplitters on could write back junk data to Cells Data Reference. Ensure Data Reference is null before switching on RowSplitters");
+            }
+            
+            foreach (var element in rows)
+            {
+                element.Data = element.Height.Value.ToString();
+            }
+
         }
 
         private static void RemoveRowSplitters(LabelCell instance)
@@ -1259,6 +1273,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Push collection state back to RowHeightProportions if Row Splitters are Visible.
                 RowHeightProportions = (from row in collection
                                        select row.Height.Value).ToList();
+
+                // Push Height data to Row Data.
+                foreach (var element in collection)
+                {
+                    element.Data = element.Height.Value.ToString();
+                }
             }
         }
 
@@ -1299,6 +1319,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Write back to Dependency Property.
                     RowHeightProportions = currentRowProportions;
+
+                    // Write new Height value back to Row's Data.
+                    cellRow.Data = cellRow.Height.Value.ToString();
                 }
             }
         }
