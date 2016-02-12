@@ -16,9 +16,9 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Constructor
         public TemplateEditorViewModel()
         {
-            BasedOnTemplateSelection = Globals.Templates[1];
-
             // Command Binding
+            _CreateNewTemplateCommand = new RelayCommand(CreateNewTemplateCommandExecute);
+            
             _MoveUpperRowTemplateUpCommand = new RelayCommand(MoveUpperRowTemplateUpCommandExecute,
                 MoveUpperRowTemplateUpCommandCanExecute);
 
@@ -33,9 +33,11 @@ namespace Dimmer_Labels_Wizard_WPF
             _ShowUpperCellManualRowDialogCommand = new RelayCommand(ShowUpperCellManualRowDialogCommandExecute,
                 ShowUpperCellManualRowDialogComandCanExecute);
 
-
             // Event Subscriptions
             UpperRowTemplates.CollectionChanged += UpperRowTemplates_CollectionChanged;
+
+            // Initialization.
+            SelectedExistingTemplate = Globals.DefaultTemplate;
         }
         #endregion
 
@@ -48,6 +50,24 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Binding Properties.
+
+        protected LabelStripTemplate _SelectedExistingTemplate;
+
+        public LabelStripTemplate SelectedExistingTemplate
+        {
+            get { return _SelectedExistingTemplate; }
+            set
+            {
+                if (_SelectedExistingTemplate != value)
+                {
+                    _SelectedExistingTemplate = value;
+                    DisplayedTemplate = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedExistingTemplate));
+                }
+            }
+        }
 
         public List<DimmerDistroUnit> ExampleUnits
         {
@@ -70,6 +90,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Notify.
                     OnPropertyChanged(nameof(DisplayedTemplate));
+                    OnPropertyChanged(nameof(TemplateName));
                     OnPropertyChanged(nameof(DisplayedUpperCellTemplate));
                     OnPropertyChanged(nameof(StripWidth));
                     OnPropertyChanged(nameof(StripHeight));
@@ -86,6 +107,10 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Enables
                     OnPropertyChanged(nameof(UpperMultiFieldModeEnable));
                     OnPropertyChanged(nameof(UpperSingleFieldModeEnable));
+
+                    // Executes.
+                    _ShowUpperCellManualRowDialogCommand.CheckCanExecute();
+
 
                     // UpperRowTemplates Collection.
                     if (IsInUpperRowCollectionChangedEvent == false)
@@ -134,33 +159,11 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public IEnumerable<LabelStripTemplate> BasedOnTemplates
+        public IEnumerable<LabelStripTemplate> ExistingTemplates
         {
             get
             {
                 return Globals.Templates;
-            }
-        }
-
-        protected LabelStripTemplate _BasedOnTemplateSelection;
-
-        public LabelStripTemplate BasedOnTemplateSelection
-        {
-            get
-            {
-                return _BasedOnTemplateSelection;
-            }
-
-            set
-            {
-                if (_BasedOnTemplateSelection != value)
-                {
-                    _BasedOnTemplateSelection = value;
-                    DisplayedTemplate = new LabelStripTemplate(value);
-
-                    // Notify.
-                    OnPropertyChanged(nameof(BasedOnTemplateSelection));
-                }
             }
         }
 
@@ -576,7 +579,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected bool ShowUpperCellManualRowDialogComandCanExecute(object parameter)
         {
-            return true;
+            return SelectedUpperRowHeightMode == CellRowHeightMode.Manual;
         }
 
         private RelayCommand _MoveUpperRowTemplateUpCommand;
@@ -769,6 +772,27 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             return true;
+        }
+
+        protected RelayCommand _CreateNewTemplateCommand;
+
+        public ICommand CreateNewTemplateCommand
+        {
+            get
+            {
+                return _CreateNewTemplateCommand;
+            }
+        }
+
+        protected void CreateNewTemplateCommandExecute(object parameter)
+        {
+            var dialog = new NewTemplate();
+            bool? dialogResult = dialog.ShowDialog();
+
+            if (dialogResult == true)
+            {
+                SelectedExistingTemplate = Globals.Templates.Last();
+            }
         }
 
         #endregion

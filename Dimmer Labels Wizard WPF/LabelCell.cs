@@ -45,12 +45,10 @@ namespace Dimmer_Labels_Wizard_WPF
             options |= FrameworkPropertyMetadataOptions.AffectsParentMeasure;
 
             FrameworkPropertyMetadata heightPropertyMetadata =
-                new FrameworkPropertyMetadata(70d, options, null,
-                new CoerceValueCallback(CoerceHeight));
+                new FrameworkPropertyMetadata(70d, options, new PropertyChangedCallback(OnHeightPropertyChanged));
 
             FrameworkPropertyMetadata widthPropertyMetadata =
-                new FrameworkPropertyMetadata(70d, options, null,
-                new CoerceValueCallback(CoerceWidth));
+                new FrameworkPropertyMetadata(70d, options, new PropertyChangedCallback(OnWidthPropertyChanged));
 
             HeightProperty.OverrideMetadata(typeof(LabelCell), heightPropertyMetadata);
             WidthProperty.OverrideMetadata(typeof(LabelCell), widthPropertyMetadata);
@@ -750,27 +748,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
            
         }
-        #endregion
-
-        #region PropertyMetadata Overides.
-        private static object CoerceWidth(DependencyObject d, object value)
-        {
-            var instance = d as LabelCell;
-            var width = (double)value;
-
-            return width;
-        }
-
-        /// <summary>
-        /// Coerces derived Height Property based on value of LabelMode and LabelStripVerticalPosition.
-        /// </summary>
-        /// <param name="d"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static object CoerceHeight(DependencyObject d, object value)
-        {
-            return value;
-        }
 
 
         public string SingleFieldData
@@ -850,6 +827,12 @@ namespace Dimmer_Labels_Wizard_WPF
             double scaledFontSize;
 
             AssignSingleFieldDataLayouts(instance, out scaledFontSize);
+
+            // Set Row Fonts.
+            foreach (var element in rowCollection)
+            {
+                element.SetFontCurrentValue(newFont);
+            }
 
             instance.SingleFieldActualFontSize = scaledFontSize;
         }
@@ -1109,6 +1092,34 @@ namespace Dimmer_Labels_Wizard_WPF
             return gridSplitters;
         }
 
+        #endregion
+
+        #region Dependency Property Overrides
+        private static void OnWidthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            var newWidth = (double)e.NewValue;
+            var rowCollection = instance.Rows;
+
+            // Coerce FontScaling of Each Row.
+            foreach (var element in rowCollection)
+            {
+                element.CoerceFontScaling();
+            }
+        }
+
+        private static void OnHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            var newHeight = (double)e.NewValue;
+            var rowCollection = instance.Rows;
+            
+            // Coerce Row Heights of Each Row.
+            foreach (var element in rowCollection)
+            {
+                element.CoerceValue(CellRow.RowHeightProperty);
+            }
+        }
         #endregion
 
         #region Overrides
@@ -1506,6 +1517,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             ObservableCollection<CellRow> rowCollection = instance.Rows;
             LabelField dataField = instance.SingleFieldDataField;
+            Typeface font = instance.SingleFieldFont;
 
             if (instance.CellDataMode != CellDataMode.SingleField)
             {
@@ -1518,10 +1530,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (instance.RowCount > 0)
             {
-                // Set Datafield and Data properties of Rows.
+                // Setup and Populate Rows.
                 foreach (var element in rowCollection)
                 {
                     element.SetDataFieldCurrentValue(dataField);
+                    element.SetFontCurrentValue(font);
                     element.Data = data;
                 }
 

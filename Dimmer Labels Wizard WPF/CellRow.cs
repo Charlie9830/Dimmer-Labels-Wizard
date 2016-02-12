@@ -151,9 +151,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Signal change of Height to Cell Parent.
             OnPropertyChanged(HeightProperty.Name, instance);
-            
-            
         }
+
+        private static void OnWidthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+ 
+        }
+
         #endregion
 
         #region Dependency Properties
@@ -177,8 +181,11 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as CellRow;
             var layout = (DataLayout)e.NewValue;
+            var data = instance.Data;
 
             instance.TextBlock.Text = instance.Data.Substring(layout.FirstIndex, layout.Length);
+
+            instance.CoerceFontScaling();
         }
 
         /// <summary>
@@ -290,19 +297,8 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as CellRow;
             var fontSize = (double)e.NewValue;
-            var data = instance.Data;
-            var font = instance.Font;
-            var availableWidth = instance.AvailableTextWidth;
-            var availableHeight = instance.AvailableTextHeight;
-            DataLayout layout = instance.DataLayout;
-            ScaleDirection ignore;
 
-            instance.ActualFontSize = LabelCell.ScaleDownFontSize(data, font, fontSize, availableWidth, availableHeight,
-                ScaleDirection.Both, out ignore);
-
-            // Coerce RowHeight.
-            instance.CoerceValue(RowHeightProperty);
-            
+            instance.CoerceFontScaling();            
         }
 
 
@@ -348,6 +344,9 @@ namespace Dimmer_Labels_Wizard_WPF
             double value = (double)e.NewValue;
 
             instance.TextBlock.FontSize = value;
+
+            // Coerce RowHeight.
+            instance.CoerceValue(RowHeightProperty);
         }
 
         /// <summary>
@@ -370,12 +369,14 @@ namespace Dimmer_Labels_Wizard_WPF
             var instance = d as CellRow;
             var typeface = (Typeface)e.NewValue;
 
+            // Set TextBlock State.
             instance.TextBlock.FontFamily = typeface.FontFamily;
             instance.TextBlock.FontStretch = typeface.Stretch;
             instance.TextBlock.FontStyle = typeface.Style;
             instance.TextBlock.FontWeight = typeface.Weight;
 
-            instance.CoerceValue(DesiredFontSizeProperty);
+            // Assert Rescaling of Font Size.
+            instance.CoerceFontScaling();
         }
 
         /// <summary>
@@ -394,20 +395,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 new FrameworkPropertyMetadata(RowHeightDefaultValue,
                     new PropertyChangedCallback(OnRowHeightPropertyChanged),
                     new CoerceValueCallback(CoerceRowHeight)));
-
-        private static void OnRowHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as CellRow;
-            var value = (double)e.NewValue;
-            var heightMode = instance.HeightMode;
-            GridLength currentHeight = instance.Height;
-
-            // Copy Values from currentHeight into newHeight and Assign to Height Property.
-            GridLength newHeight = new GridLength(value, currentHeight.GridUnitType);
-            instance.Height = newHeight;
-
-            instance.CoerceValue(DesiredFontSizeProperty);
-        }
 
         private static object CoerceRowHeight(DependencyObject d, object value)
         {
@@ -439,6 +426,22 @@ namespace Dimmer_Labels_Wizard_WPF
                 return value;
             }
         }
+
+        private static void OnRowHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as CellRow;
+            var value = (double)e.NewValue;
+            var heightMode = instance.HeightMode;
+            GridLength currentHeight = instance.Height;
+
+            // Copy Values from currentHeight into newHeight and Assign to Height Property.
+            GridLength newHeight = new GridLength(value, currentHeight.GridUnitType);
+            instance.Height = newHeight;
+
+            instance.CoerceFontScaling();
+        }
+
+       
 
         /// <summary>
         /// Gets or Sets the LabelCell Parent to this Row. This is a Dependency Property.
@@ -513,12 +516,38 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Methods
         /// <summary>
+        /// Forces a Recheck of the current Font Size. Modifies ActualFontSize Property.
+        /// </summary>
+        /// <param name="instance"></param>
+        public void CoerceFontScaling()
+        {
+            var desiredFontSize = DesiredFontSize;
+            var data = DataLayout.DisplayedText;
+            var font = Font;
+            var availableWidth = AvailableTextWidth;
+            var availableHeight = AvailableTextHeight;
+            DataLayout layout = DataLayout;
+            ScaleDirection ignore;
+
+            ActualFontSize = LabelCell.ScaleDownFontSize(data, font, desiredFontSize, availableWidth, availableHeight,
+                ScaleDirection.Both, out ignore);
+        }
+        /// <summary>
         /// Internally calls SetCurrentValue() to set DataField to desired value without changing Value Source.
         /// </summary>
         /// <param name="dataField"></param>
         public void SetDataFieldCurrentValue(LabelField dataField)
         {
             SetCurrentValue(DataFieldProperty, dataField);
+        }
+
+        /// <summary>
+        /// Internally calls SetCurrentValue() to set Font to desired Value without changing Value Source.
+        /// </summary>
+        /// <param name="font"></param>
+        public void SetFontCurrentValue(Typeface font)
+        {
+            SetCurrentValue(FontProperty, font);
         }
         #endregion
 

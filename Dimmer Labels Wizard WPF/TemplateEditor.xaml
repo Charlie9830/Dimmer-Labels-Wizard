@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="TemplateEditor" Height="750" Width="1010" WindowStyle="ToolWindow">
+        Title="TemplateEditor" Height="800" Width="1220" WindowStyle="ToolWindow">
 
     <Window.DataContext>
         <local:TemplateEditorViewModel/>
@@ -14,197 +14,219 @@
     <Window.Resources>
 
     </Window.Resources>
-
     <Grid Background="{StaticResource WindowBackground}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Label Content="Template Manager"
+
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Template Manager"
                Style="{StaticResource WindowHeaderStyle}"/>
-        <Border BorderBrush="Gray" Background="White" BorderThickness="1" Grid.Row="1" Margin="5" Height="220" Width="992">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                <local:LabelStrip Margin="0,10,0,10"
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <ListBox Grid.Row="0" Height="600" Width="180" Margin="10,5,10,0" VerticalAlignment="Top"
+                     ItemsSource="{Binding Path=ExistingTemplates}" SelectedItem="{Binding Path=SelectedExistingTemplate}"/>
+            <StackPanel Grid.Row="1" Margin="10,5,10,0" VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal">
+                <Button Content="+" Height="20" Width="20" Margin="0,0,5,0"
+                        Command="{Binding Path=CreateNewTemplateCommand}"/>
+                <Button Content="-" Height="20" Width="20"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1"  Background="{StaticResource WindowBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Border BorderBrush="Gray" Background="White" BorderThickness="1" Grid.Row="1" Margin="5" Height="220" Width="992">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <local:LabelStrip Margin="0,10,0,10"
                     DataSource="{Binding Path=ExampleUnits}" Style="{Binding Path=DisplayedTemplate}">
-                </local:LabelStrip>
-            </ScrollViewer>
-        </Border>
+                    </local:LabelStrip>
+                </ScrollViewer>
+            </Border>
 
-        <Border Grid.Row="2" Margin="5">
-            <HeaderedContentControl x:Name="expander" Header="Strip Template Settings" HorizontalAlignment="Stretch"  VerticalAlignment="Top"
+            <Border Grid.Row="2" Margin="5">
+                <HeaderedContentControl x:Name="expander" Header="Strip Template Settings" HorizontalAlignment="Stretch"  VerticalAlignment="Top"
                        Style="{StaticResource HeaderedControlStyle}">
-                <Grid Background="{StaticResource ControlGridBackground}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
+                    <Grid Background="{StaticResource ControlGridBackground}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Row 0 -->
-                    <Label x:Name="label1" Content="Name" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+                        <!-- Row 0 -->
+                        <Label x:Name="label1" Content="Name" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
+                        <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
                              Text="{Binding Path=TemplateName}"/>
 
-                    <!-- Row 1-->
-                    <Label Content="Based On" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"
-                           Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"
-                              ItemsSource="{Binding Path=BasedOnTemplates}" SelectedItem="{Binding Path=BasedOnTemplateSelection}"/>
-
-                    <!-- Row 2 -->
-                    <Label x:Name="label2" Content="Strip Width (mm)" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
-                    <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"
+                        <!-- Row 1 -->
+                        <Label x:Name="label2" Content="Strip Width (mm)" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
+                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"
                              Text="{Binding Path=StripWidth}"/>
 
-                    <!-- Row 3-->
-                    <Label x:Name="label4" Content="Strip Height (mm)" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
-                    <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1"
+                        <!-- Row 2-->
+                        <Label x:Name="label4" Content="Strip Height (mm)" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
+                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"
                              Text="{Binding Path=StripHeight}"/>
 
-                    <!-- Row 4 -->
-                    <Label x:Name="label5" Content="Strip Mode" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
-                    <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1"
+                        <!-- Row 3 -->
+                        <Label x:Name="label5" Content="Strip Mode" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
+                        <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1"
                                ItemsSource="{Binding Path=StripModes}" SelectedItem="{Binding Path=SelectedStripMode}"/>
 
-                    <!-- Row 5 -->
-                    <HeaderedContentControl  Header="Upper Cell Template Settings" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                        <!-- Row 4 -->
+                        <HeaderedContentControl  Header="Upper Cell Template Settings" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                               Style="{StaticResource HeaderedControlStyle}">
-                        <Grid Background="{StaticResource ControlGridBackground}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
+                            <Grid Background="{StaticResource ControlGridBackground}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
 
-                            <!-- Row 0 -->
-                            <Label Content="Data Display Mode" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"
+                                <!-- Row 0 -->
+                                <Label Content="Data Display Mode" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"
                                    Style="{StaticResource ControlLabelStyle}"/>
-                            <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
+                                <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
                                       ItemsSource="{Binding Path=CellDataModes}" SelectedItem="{Binding Path=SelectedUpperCellDataMode}"/>
 
-                            <!-- Row 1 -->
-                            <HeaderedContentControl Header="Multi Field Settings" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                <!-- Row 1 -->
+                                <HeaderedContentControl Header="Multi Field Settings" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                                       Style="{StaticResource HeaderedControlStyle}"
                                       Visibility="{Binding Path=UpperMultiFieldModeEnable, Converter={StaticResource BoolToVis}}">
-                                <Grid
+                                    <Grid
                                     Background="{StaticResource ControlGridBackground}">
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
 
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="120*"/>
-                                        <ColumnDefinition Width="auto"/>
-                                        <ColumnDefinition Width="81*"/>
-                                        <ColumnDefinition Width="233*"/>
-                                    </Grid.ColumnDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="120*"/>
+                                            <ColumnDefinition Width="auto"/>
+                                            <ColumnDefinition Width="81*"/>
+                                            <ColumnDefinition Width="233*"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <ListBox Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Margin="5" 
+                                        <ListBox Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Margin="5" 
                                              ScrollViewer.VerticalScrollBarVisibility="Visible" Height="95"
                                               ItemsSource="{Binding Path=UpperRowTemplates}" SelectedItem="{Binding Path=SelectedUpperRowTemplate}"/>
 
-                                    <!-- Row 0 -->
-                                    <Button Content="+" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="0" Margin="0,0,10,0"
+                                        <!-- Row 0 -->
+                                        <Button Content="+" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="0" Margin="0,0,10,0"
                                                 Command="{Binding Path=AddUpperRowTemplateCommand}"/>
-                                    <Label Content="Height Mode" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Height="26" Style="{DynamicResource ControlLabelStyle}"/>
-                                    <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="3"
+                                        <Label Content="Height Mode" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Height="26" Style="{DynamicResource ControlLabelStyle}"/>
+                                        <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="3"
                                       ItemsSource="{Binding Path=RowHeightModes}" SelectedItem="{Binding Path=SelectedUpperRowHeightMode}" Height="22" Margin="0,2"/>
-                                    <Button Name="RowHeightEditorButton" Content="..." Grid.Column="3" HorizontalAlignment="Left" Margin="140,0,0,0" Grid.Row="0" VerticalAlignment="Center" Width="25" Height="20"
+                                        <Button Name="RowHeightEditorButton" Content="..." Grid.Column="3" HorizontalAlignment="Left" Margin="140,0,0,0" Grid.Row="0" VerticalAlignment="Center" Width="25" Height="20"
                                     Command="{Binding Path=ShowUpperCellManualRowDialogCommand}"/>
-                                    <Popup x:Name="UpperPopUp" HorizontalAlignment="Left" VerticalAlignment="Center" Placement="Mouse"
+                                        <Popup x:Name="UpperPopUp" HorizontalAlignment="Left" VerticalAlignment="Center" Placement="Mouse"
                                             IsOpen="{Binding Path=UpperRowHeightEditorOpen}">
-                                        <local:RowHeightEditor CellTemplate="{Binding Path=DisplayedUpperCellTemplate}" IsOpen="{Binding ElementName=UpperPopUp, Path=IsOpen, Mode=TwoWay}"
+                                            <local:RowHeightEditor CellTemplate="{Binding Path=DisplayedUpperCellTemplate}" IsOpen="{Binding ElementName=UpperPopUp, Path=IsOpen, Mode=TwoWay}"
                                                                RowProportions="{Binding Path=UpperRowHeightProportions, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}"/>
-                                    </Popup>
+                                        </Popup>
 
 
 
-                                    <!-- Row 1 -->
-                                    <Button Content="-" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="1" Margin="0,0,10,0"
+                                        <!-- Row 1 -->
+                                        <Button Content="-" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="1" Margin="0,0,10,0"
                                                 Command="{Binding Path=RemoveUpperRowTemplateCommand}"/>
-                                    <Label Content="Font" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Height="26" Width="34" Style="{DynamicResource ControlLabelStyle}"/>
-                                    <local:FontSelector HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3"
+                                        <Label Content="Font" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Height="26" Width="34" Style="{DynamicResource ControlLabelStyle}"/>
+                                        <local:FontSelector HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3"
                                                         SelectedFont="{Binding Path=SelectedUpperRowFont}" Height="26" Width="225"/>
 
-                                    <!-- Row 2 -->
-                                    <Button Content="^" VerticalAlignment="Bottom" Width="20" Height="20" Grid.Column="1" Grid.Row="2" Margin="0,0,10,3"
+                                        <!-- Row 2 -->
+                                        <Button Content="^" VerticalAlignment="Bottom" Width="20" Height="20" Grid.Column="1" Grid.Row="2" Margin="0,0,10,3"
                                                 Command="{Binding Path=MoveUpperRowTemplateUpCommand}" />
-                                    <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" Height="26" Width="58" Style="{DynamicResource ControlLabelStyle}"/>
-                                    <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" IsEditable="True" IsSynchronizedWithCurrentItem="False"
+                                        <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" Height="26" Width="58" Style="{DynamicResource ControlLabelStyle}"/>
+                                        <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" IsEditable="True" IsSynchronizedWithCurrentItem="False"
                                               ItemsSource="{Binding Source={StaticResource StandardFontSizes}}" SelectedItem="{Binding Path=SelectedUpperRowFontSize}" Height="22" Margin="0,2" />
 
-                                    <!-- Row 3 -->
-                                    <Button Content="V" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="3" Margin="0,0,10,0"
+                                        <!-- Row 3 -->
+                                        <Button Content="V" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="3" Margin="0,0,10,0"
                                                 Command="{Binding Path=MoveUpperRowTemplateDownCommand}"/>
-                                    <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" Height="26" Width="66" Style="{DynamicResource ControlLabelStyle}"/>
-                                    <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" 
+                                        <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" Height="26" Width="66" Style="{DynamicResource ControlLabelStyle}"/>
+                                        <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" 
                                               ItemsSource="{Binding Path=LabelFields}" SelectedItem="{Binding Path=SelectedUpperRowDataField}" Height="22" Margin="0,2"/>
-                                </Grid>
-                            </HeaderedContentControl>
+                                    </Grid>
+                                </HeaderedContentControl>
 
-                            <!-- Row 2 -->
-                            <HeaderedContentControl Header="Single Field Settings" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                <!-- Row 2 -->
+                                <HeaderedContentControl Header="Single Field Settings" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                                       Style="{StaticResource HeaderedControlStyle}"
                                       Visibility="{Binding Path=UpperSingleFieldModeEnable, Converter={StaticResource BoolToVis}}">
-                                <Grid Background="{StaticResource ControlGridBackground}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="1*"/>
-                                        <ColumnDefinition Width="1*"/>
-                                    </Grid.ColumnDefinitions>
+                                    <Grid Background="{StaticResource ControlGridBackground}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                        </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="1*"/>
-                                    </Grid.RowDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                        </Grid.RowDefinitions>
 
-                                    <!-- Row 0 -->
-                                    <Label Content="Font" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="0"
+                                        <!-- Row 0 -->
+                                        <Label Content="Font" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="0"
                                    Foreground="{StaticResource ControlLabelTextColor}"/>
-                                    <local:FontSelector Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Tag="Left"
+                                        <local:FontSelector Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Tag="Left"
                                                 SelectedFont="{Binding Path=UpperSingleFieldFont}"/>
 
-                                    <!-- Row 1 -->
-                                    <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"
+                                        <!-- Row 1 -->
+                                        <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"
                                    Foreground="{StaticResource ControlLabelTextColor}"/>
-                                    <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" IsEditable="true" IsSynchronizedWithCurrentItem="False"
+                                        <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" IsEditable="true" IsSynchronizedWithCurrentItem="False"
                                       ItemsSource="{Binding Source={StaticResource StandardFontSizes}}" SelectedItem="{Binding Path=UpperSingleFieldFontSize}"/>
 
-                                    <!-- Row 2 -->
-                                    <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0"
+                                        <!-- Row 2 -->
+                                        <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0"
                                    Foreground="{StaticResource ControlLabelTextColor}"/>
-                                    <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"
+                                        <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"
                                       SelectedItem="{Binding Path=UpperSingleFieldDataField}" ItemsSource="{Binding Path=LabelFields}"/>
 
-                                </Grid>
-                            </HeaderedContentControl>
-                        </Grid>
-                    </HeaderedContentControl>
-                </Grid>
-            </HeaderedContentControl>
-        </Border>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Right" Grid.Row="3" VerticalAlignment="Bottom" Margin="5" Width="75"/>
-        <Button x:Name="button2" Content="Button" HorizontalAlignment="Right" Grid.Row="3" VerticalAlignment="Bottom" Margin="0,0,85,5" Width="75"/>
+                                    </Grid>
+                                </HeaderedContentControl>
+                            </Grid>
+                        </HeaderedContentControl>
+                    </Grid>
+                </HeaderedContentControl>
+            </Border>
+            <Button x:Name="button" Content="Button" HorizontalAlignment="Right" Grid.Row="3" VerticalAlignment="Bottom" Margin="5" Width="75"/>
+            <Button x:Name="button2" Content="Button" HorizontalAlignment="Right" Grid.Row="3" VerticalAlignment="Bottom" Margin="0,0,85,5" Width="75"/>
 
+        </Grid>
     </Grid>
+
 </Window>
