@@ -1104,7 +1104,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Coerce FontScaling of Each Row.
             foreach (var element in rowCollection)
             {
-                element.CoerceFontScaling();
+                element.CoerceValue(CellRow.ActualFontSizeProperty);
             }
         }
 

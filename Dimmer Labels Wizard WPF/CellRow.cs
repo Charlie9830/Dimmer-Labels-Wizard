@@ -185,7 +185,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             instance.TextBlock.Text = instance.Data.Substring(layout.FirstIndex, layout.Length);
 
-            instance.CoerceFontScaling();
+            instance.CoerceValue(ActualFontSizeProperty);
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var instance = d as CellRow;
             var fontSize = (double)e.NewValue;
 
-            instance.CoerceFontScaling();            
+            instance.ActualFontSize = fontSize;         
         }
 
 
@@ -320,22 +320,31 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static object CoerceActualFontSize(DependencyObject d, object value)
         {
-            double fontSize = (double)value;
-            if (fontSize <= 0.0d)
+            var instance = d as CellRow;
+            double newValue = (double)value;
+            var data = instance.DataLayout.DisplayedText;
+            var font = instance.Font;
+            var availableWidth = instance.AvailableTextWidth;
+            var availableHeight = instance.AvailableTextHeight;
+            ScaleDirection ignore;
+
+            // Scale Font Size to Fit Row.
+            newValue = LabelCell.ScaleDownFontSize(data, font, newValue, availableWidth, availableHeight,
+                ScaleDirection.Both, out ignore);
+
+            // Coerce Value into acceptable Boundries.
+            if (newValue <= 0.0d)
             {
-                return 0.1d;
+                newValue =  0.1d;
             }
 
-            else if (fontSize >= double.PositiveInfinity)
+            else if (newValue >= double.PositiveInfinity)
             {
-                return 300d;
+                newValue = 300d;
             }
 
-            else
-            {
-                return value;
-            }
 
+            return newValue;
         }
 
         private static void OnActualFontSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -375,8 +384,7 @@ namespace Dimmer_Labels_Wizard_WPF
             instance.TextBlock.FontStyle = typeface.Style;
             instance.TextBlock.FontWeight = typeface.Weight;
 
-            // Assert Rescaling of Font Size.
-            instance.CoerceFontScaling();
+            instance.CoerceValue(ActualFontSizeProperty);
         }
 
         /// <summary>
@@ -438,7 +446,7 @@ namespace Dimmer_Labels_Wizard_WPF
             GridLength newHeight = new GridLength(value, currentHeight.GridUnitType);
             instance.Height = newHeight;
 
-            instance.CoerceFontScaling();
+            instance.CoerceValue(ActualFontSizeProperty);
         }
 
        
@@ -515,23 +523,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
-        /// <summary>
-        /// Forces a Recheck of the current Font Size. Modifies ActualFontSize Property.
-        /// </summary>
-        /// <param name="instance"></param>
-        public void CoerceFontScaling()
-        {
-            var desiredFontSize = DesiredFontSize;
-            var data = DataLayout.DisplayedText;
-            var font = Font;
-            var availableWidth = AvailableTextWidth;
-            var availableHeight = AvailableTextHeight;
-            DataLayout layout = DataLayout;
-            ScaleDirection ignore;
 
-            ActualFontSize = LabelCell.ScaleDownFontSize(data, font, desiredFontSize, availableWidth, availableHeight,
-                ScaleDirection.Both, out ignore);
-        }
         /// <summary>
         /// Internally calls SetCurrentValue() to set DataField to desired value without changing Value Source.
         /// </summary>

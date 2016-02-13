@@ -22,19 +22,36 @@ namespace Dimmer_Labels_Wizard_WPF
             _MoveUpperRowTemplateUpCommand = new RelayCommand(MoveUpperRowTemplateUpCommandExecute,
                 MoveUpperRowTemplateUpCommandCanExecute);
 
+            _MoveLowerRowTemplateUpCommand = new RelayCommand(MoveLowerRowTemplateUpCommandExecute,
+                MoveLowerRowTemplateUpCommandCanExecute);
+
             _MoveUpperRowTemplateDownCommand = new RelayCommand(MoveUpperRowTemplateDownCommandExecute,
                 MoveUpperRowTemplateDownCommandCanExecute);
 
+            _MoveLowerRowTemplateDownCommand = new RelayCommand(MoveLowerRowTemplateDownCommandExecute,
+                MoveLowerRowTemplateDownCommandCanExecute);
+
             _AddUpperRowTemplateCommand = new RelayCommand(AddUpperRowTemplateCommandExecute);
+
+            _AddLowerRowTemplateCommand = new RelayCommand(AddLowerRowTemplateCommandExecute);
 
             _RemoveUpperRowTemplateCommand = new RelayCommand(RemoveUpperRowTemplateCommandExecute,
                 RemoveUpperRowTemplateCommandCanExecute);
 
+            _RemoveLowerRowTemplateCommand = new RelayCommand(RemoveLowerRowTemplateCommandExecute,
+                RemoveLowerRowTemplateCommandCanExecute);
+
             _ShowUpperCellManualRowDialogCommand = new RelayCommand(ShowUpperCellManualRowDialogCommandExecute,
                 ShowUpperCellManualRowDialogComandCanExecute);
 
+            _ShowLowerCellManualRowDialogCommand = new RelayCommand(ShowLowerCellManualRowDialogCommandExecute,
+                ShowLowerCellManualRowDialogComandCanExecute);
+
+            _OkCommand = new RelayCommand(OkCommandExecute);
+
             // Event Subscriptions
             UpperRowTemplates.CollectionChanged += UpperRowTemplates_CollectionChanged;
+            LowerRowTemplates.CollectionChanged += LowerRowTemplates_CollectionChanged;
 
             // Initialization.
             SelectedExistingTemplate = Globals.DefaultTemplate;
@@ -47,10 +64,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Variables.
         protected bool IsInUpperRowCollectionChangedEvent = false;
+        protected bool IsInLowerRowCollectionChangedEvent = false;
         #endregion
 
         #region Binding Properties.
-
         protected LabelStripTemplate _SelectedExistingTemplate;
 
         public LabelStripTemplate SelectedExistingTemplate
@@ -60,8 +77,19 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (_SelectedExistingTemplate != value)
                 {
+                    // Store Current state.
+                    var previousSelectedExistingTemplate = _SelectedExistingTemplate;
+                    var previousDisplayedTemplate = DisplayedTemplate;
+
+                    // Execute Switch.
                     _SelectedExistingTemplate = value;
                     DisplayedTemplate = value;
+
+                    //// Modify Existing Template.
+                    //if (previousDisplayedTemplate != null && previousSelectedExistingTemplate != null)
+                    //{
+                    //    TemplateHelper.ModifyExistingTemplate(ExistingTemplates[templateIndex], previousDisplayedTemplate);
+                    //}
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedExistingTemplate));
@@ -96,20 +124,31 @@ namespace Dimmer_Labels_Wizard_WPF
                     OnPropertyChanged(nameof(StripHeight));
                     OnPropertyChanged(nameof(SelectedStripMode));
                     OnPropertyChanged(nameof(SelectedUpperCellDataMode));
+                    OnPropertyChanged(nameof(SelectedLowerCellDataMode));
                     OnPropertyChanged(nameof(SelectedUpperRowHeightMode));
+                    OnPropertyChanged(nameof(SelectedLowerRowHeightMode));
                     OnPropertyChanged(nameof(SelectedUpperRowFont));
+                    OnPropertyChanged(nameof(SelectedLowerRowFont));
                     OnPropertyChanged(nameof(SelectedUpperRowFontSize));
+                    OnPropertyChanged(nameof(SelectedLowerRowFontSize));
                     OnPropertyChanged(nameof(SelectedUpperRowDataField));
+                    OnPropertyChanged(nameof(SelectedLowerRowDataField));
                     OnPropertyChanged(nameof(UpperSingleFieldFont));
+                    OnPropertyChanged(nameof(LowerSingleFieldFont));
                     OnPropertyChanged(nameof(UpperSingleFieldFontSize));
+                    OnPropertyChanged(nameof(LowerSingleFieldFontSize));
                     OnPropertyChanged(nameof(UpperSingleFieldDataField));
+                    OnPropertyChanged(nameof(LowerSingleFieldDataField));
 
                     // Enables
                     OnPropertyChanged(nameof(UpperMultiFieldModeEnable));
+                    OnPropertyChanged(nameof(LowerMultiFieldModeEnable));
                     OnPropertyChanged(nameof(UpperSingleFieldModeEnable));
+                    OnPropertyChanged(nameof(LowerSingleFieldModeEnable));
 
                     // Executes.
                     _ShowUpperCellManualRowDialogCommand.CheckCanExecute();
+                    _ShowLowerCellManualRowDialogCommand.CheckCanExecute();
 
 
                     // UpperRowTemplates Collection.
@@ -119,6 +158,16 @@ namespace Dimmer_Labels_Wizard_WPF
                         foreach (var element in value.UpperCellTemplate.CellRowTemplates)
                         {
                             UpperRowTemplates.Add(element);
+                        }
+                    }
+
+                    // LowerRowTemplates Collection.
+                    if (IsInLowerRowCollectionChangedEvent == false)
+                    {
+                        LowerRowTemplates.Clear();
+                        foreach (var element in value.LowerCellTemplate.CellRowTemplates)
+                        {
+                            LowerRowTemplates.Add(element);
                         }
                     }
                 }
@@ -142,6 +191,21 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public LabelCellTemplate DisplayedLowerCellTemplate
+        {
+            get
+            {
+                return DisplayedTemplate.LowerCellTemplate;
+            }
+            set
+            {
+                DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
+                {
+                    LowerCellTemplate = value
+                };
+            }
+        }
+
         public string TemplateName
         {
             get
@@ -159,7 +223,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public IEnumerable<LabelStripTemplate> ExistingTemplates
+        public ObservableCollection<LabelStripTemplate> ExistingTemplates
         {
             get
             {
@@ -171,12 +235,12 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return DisplayedTemplate.StripWidth / UnitConversionRatio;
+                return Math.Round(DisplayedTemplate.StripWidth / UnitConversionRatio, 2);
             }
 
             set
             {
-                if (DisplayedTemplate.StripWidth / UnitConversionRatio != value)
+                if (Math.Round(DisplayedTemplate.StripWidth / UnitConversionRatio, 2) != value)
                 {
                     DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
                     {
@@ -191,11 +255,11 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return DisplayedTemplate.StripHeight / UnitConversionRatio;
+                return Math.Round(DisplayedTemplate.StripHeight / UnitConversionRatio, 2);
             }
             set
             {
-                if (DisplayedTemplate.StripHeight / UnitConversionRatio != value)
+                if (Math.Round(DisplayedTemplate.StripHeight / UnitConversionRatio, 2) != value)
                 {
                     DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
                     {
@@ -261,6 +325,24 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public CellDataMode SelectedLowerCellDataMode
+        {
+            get
+            {
+                return DisplayedTemplate.LowerCellTemplate.CellDataMode;
+            }
+            set
+            {
+                if (DisplayedLowerCellTemplate.CellDataMode != value)
+                {
+                    DisplayedLowerCellTemplate = new LabelCellTemplate(DisplayedLowerCellTemplate)
+                    {
+                        CellDataMode = value
+                    };
+                }
+            }
+        }
+
         public IEnumerable<CellRowHeightMode> RowHeightModes
         {
             get
@@ -288,6 +370,25 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public CellRowHeightMode SelectedLowerRowHeightMode
+        {
+            get
+            {
+                return DisplayedLowerCellTemplate.RowHeightMode;
+            }
+            set
+            {
+                if (DisplayedLowerCellTemplate.RowHeightMode != value)
+                {
+                    DisplayedLowerCellTemplate = new LabelCellTemplate(DisplayedLowerCellTemplate)
+                    {
+                        RowHeightMode = value
+                    };
+                }
+            }
+        }
+            
+
         public Typeface UpperSingleFieldFont
         {
             get
@@ -303,6 +404,24 @@ namespace Dimmer_Labels_Wizard_WPF
                         SingleFieldFont = value
                     };
 
+                }
+            }
+        }
+
+        public Typeface LowerSingleFieldFont
+        {
+            get
+            {
+                return DisplayedLowerCellTemplate.SingleFieldFont;
+            }
+            set
+            {
+                if (DisplayedLowerCellTemplate.SingleFieldFont != value)
+                {
+                    DisplayedLowerCellTemplate = new LabelCellTemplate(DisplayedLowerCellTemplate)
+                    {
+                        SingleFieldFont = value
+                    };
                 }
             }
         }
@@ -325,6 +444,27 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Notify.
                     OnPropertyChanged(nameof(UpperSingleFieldFontSize));
                 }
+            }
+        }
+
+        public double LowerSingleFieldFontSize
+        {
+            get
+            {
+                return DisplayedLowerCellTemplate.SingleFieldDesiredFontSize;
+            }
+            set
+            {
+                if (DisplayedLowerCellTemplate.SingleFieldDesiredFontSize != value)
+                {
+                    DisplayedLowerCellTemplate = new LabelCellTemplate(DisplayedLowerCellTemplate)
+                    {
+                        SingleFieldDesiredFontSize = value
+                    };
+                }
+
+                // Notify.
+                OnPropertyChanged(nameof(LowerSingleFieldFontSize));
             }
         }
 
@@ -356,7 +496,23 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-       
+       public LabelField LowerSingleFieldDataField
+        {
+            get
+            {
+                return DisplayedLowerCellTemplate.SingleFieldDataField;
+            }
+            set
+            {
+                if (DisplayedLowerCellTemplate.SingleFieldDataField != value)
+                {
+                    DisplayedLowerCellTemplate = new LabelCellTemplate(DisplayedLowerCellTemplate)
+                    {
+                        SingleFieldDataField = value
+                    };
+                }
+            }
+        }
 
         private ObservableCollection<CellRowTemplate> _UpperRowTemplates = new ObservableCollection<CellRowTemplate>();
 
@@ -364,6 +520,14 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get { return _UpperRowTemplates; }
             set { _UpperRowTemplates = value; }
+        }
+
+        private ObservableCollection<CellRowTemplate> _LowerRowTemplates = new ObservableCollection<CellRowTemplate>();
+
+        public ObservableCollection<CellRowTemplate> LowerRowTemplates
+        {
+            get { return _LowerRowTemplates; }
+            set { _LowerRowTemplates = value; }
         }
 
         private CellRowTemplate _SelectedUpperRowTemplate;
@@ -391,6 +555,35 @@ namespace Dimmer_Labels_Wizard_WPF
                     _MoveUpperRowTemplateUpCommand.CheckCanExecute();
                     _MoveUpperRowTemplateDownCommand.CheckCanExecute();
                     _RemoveUpperRowTemplateCommand.CheckCanExecute();
+                }
+            }
+        }
+
+        private CellRowTemplate _SelectedLowerRowTemplate;
+
+        public CellRowTemplate SelectedLowerRowTemplate
+        {
+            get { return _SelectedLowerRowTemplate; }
+            set
+            {
+                if (_SelectedLowerRowTemplate != value)
+                {
+                    _SelectedLowerRowTemplate = value;
+
+                    _SelectedLowerRowFont = value == null ? null : value.Font;
+                    _SelectedLowerRowFontSize = value == null ? 0 : value.DesiredFontSize;
+                    _SelectedLowerRowDataField = value == null ? LabelField.NoAssignment : value.DataField;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedLowerRowTemplate));
+                    OnPropertyChanged(nameof(SelectedLowerRowFont));
+                    OnPropertyChanged(nameof(SelectedLowerRowFontSize));
+                    OnPropertyChanged(nameof(SelectedLowerRowDataField));
+
+                    // Check Executes.
+                    _MoveLowerRowTemplateUpCommand.CheckCanExecute();
+                    _MoveLowerRowTemplateDownCommand.CheckCanExecute();
+                    _RemoveLowerRowTemplateCommand.CheckCanExecute();
                 }
             }
         }
@@ -428,6 +621,39 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        private Typeface _SelectedLowerRowFont = null;
+
+        public Typeface SelectedLowerRowFont
+        {
+            get { return _SelectedLowerRowFont; }
+            set
+            {
+                if (_SelectedLowerRowFont != value)
+                {
+                    _SelectedLowerRowFont = value;
+
+                    if (SelectedLowerRowTemplate != null)
+                    {
+                        // Find the SelectedLowerRowTemplate in the LowerRowTemplates collection and modify it's value there,
+                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
+                        // Then Reset the SelectedLowerRowTemplate as it's reference will be broken.
+                        int index = LowerRowTemplates.IndexOf(SelectedLowerRowTemplate);
+                        LowerRowTemplates[index] = new CellRowTemplate(SelectedLowerRowTemplate)
+                        {
+                            Font = value
+                        };
+
+                        // Preserve Selection.
+                        SelectedLowerRowTemplate = LowerRowTemplates[index];
+                    }
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedLowerRowFont));
+
+                }
+            }
+        }
+
         private double _SelectedUpperRowFontSize;
 
         public double SelectedUpperRowFontSize
@@ -456,6 +682,38 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedUpperRowFontSize));
+                }
+            }
+        }
+
+        private double _SelectedLowerRowFontSize;
+
+        public double SelectedLowerRowFontSize
+        {
+            get { return _SelectedLowerRowFontSize; }
+            set
+            {
+                if (_SelectedLowerRowFontSize != value)
+                {
+                    _SelectedLowerRowFontSize = value;
+
+                    if (SelectedLowerRowTemplate != null)
+                    {
+                        // Find the SelectedLowerRowTemplate in the LowerRowTemplates collection and modify it's value there,
+                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
+                        // Then Reset the SelectedLowerRowTemplate as it's reference will be broken.
+                        int index = LowerRowTemplates.IndexOf(SelectedLowerRowTemplate);
+                        LowerRowTemplates[index] = new CellRowTemplate(SelectedLowerRowTemplate)
+                        {
+                            DesiredFontSize = value
+                        };
+
+                        // Preserve Selection.
+                        SelectedLowerRowTemplate = LowerRowTemplates[index];
+                    }
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedLowerRowFontSize));
                 }
             }
         }
@@ -492,6 +750,37 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        private LabelField _SelectedLowerRowDataField;
+
+        public LabelField SelectedLowerRowDataField
+        {
+            get { return _SelectedLowerRowDataField; }
+            set
+            {
+                if (_SelectedLowerRowDataField != value)
+                {
+                    _SelectedLowerRowDataField = value;
+
+                    if (SelectedLowerRowTemplate != null)
+                    {
+                        // Find the SelectedLowerRowTemplate in the LowerRowTemplates collection and modify it's value there,
+                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
+                        // Then Reset the SelectedLowerRowTemplate as it's reference will be broken.
+                        int index = LowerRowTemplates.IndexOf(SelectedLowerRowTemplate);
+                        LowerRowTemplates[index] = new CellRowTemplate(SelectedLowerRowTemplate)
+                        {
+                            DataField = value
+                        };
+
+                        // Preserve Selection.
+                        SelectedLowerRowTemplate = LowerRowTemplates[index];
+                    }
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedLowerRowDataField));
+                }
+            }
+        }
 
         protected bool _UpperRowHeightEditorOpen = false;
 
@@ -510,6 +799,22 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        protected bool _LowerRowHeightEditorOpen = false;
+
+        public bool LowerRowHeightEditorOpen
+        {
+            get { return _LowerRowHeightEditorOpen; }
+            set
+            {
+                if (_LowerRowHeightEditorOpen != value)
+                {
+                    _LowerRowHeightEditorOpen = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LowerRowHeightEditorOpen));
+                }
+            }
+        }
 
         protected List<double> _UpperRowHeightProportions = new List<double>();
 
@@ -544,13 +849,53 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        #endregion
+        protected List<double> _LowerRowHeightProportions = new List<double>();
+
+        public List<double> LowerRowHeightProportions
+        {
+            get { return _LowerRowHeightProportions; }
+            set
+            {
+                if (value != null && _LowerRowHeightProportions.SequenceEqual(value) == false)
+                {
+                    _LowerRowHeightProportions = value;
+
+                    var newCellTemplates = new List<CellRowTemplate>();
+
+                    // Iterate through both the Proportions Collection and the existing CellRowTemplates collection.
+                    var rowTemplateEnumerator = DisplayedLowerCellTemplate.CellRowTemplates.GetEnumerator();
+                    var proportionsEnumerator = value.GetEnumerator();
+
+                    while (rowTemplateEnumerator.MoveNext() && proportionsEnumerator.MoveNext())
+                    {
+                        newCellTemplates.Add(new CellRowTemplate(rowTemplateEnumerator.Current)
+                        { ManualRowHeight = proportionsEnumerator.Current });
+                    }
+
+                    // Write back to DisplayedLowerCellTemplate.
+                    DisplayedLowerCellTemplate = new LabelCellTemplate(DisplayedLowerCellTemplate)
+                    {
+                        CellRowTemplates = newCellTemplates
+                    };
+
+                }
+            }
+        }
+
 
         public bool UpperSingleFieldModeEnable
         {
             get
             {
                 return SelectedUpperCellDataMode == CellDataMode.SingleField;
+            }
+        }
+
+        public bool LowerSingleFieldModeEnable
+        {
+            get
+            {
+                return SelectedLowerCellDataMode == CellDataMode.SingleField;
             }
         }
 
@@ -561,6 +906,16 @@ namespace Dimmer_Labels_Wizard_WPF
                 return SelectedUpperCellDataMode == CellDataMode.MultiField;
             }
         }
+
+        public bool LowerMultiFieldModeEnable
+        {
+            get
+            {
+                return SelectedLowerCellDataMode == CellDataMode.MultiField;
+            }
+        }
+
+        #endregion
 
         #region Commands
         private RelayCommand _ShowUpperCellManualRowDialogCommand;
@@ -581,6 +936,26 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             return SelectedUpperRowHeightMode == CellRowHeightMode.Manual;
         }
+
+        private RelayCommand _ShowLowerCellManualRowDialogCommand;
+        public ICommand ShowLowerCellManualRowDialogCommand
+        {
+            get
+            {
+                return _ShowLowerCellManualRowDialogCommand;
+            }
+        }
+
+        protected void ShowLowerCellManualRowDialogCommandExecute(object parameter)
+        {
+            LowerRowHeightEditorOpen = !LowerRowHeightEditorOpen;
+        }
+
+        protected bool ShowLowerCellManualRowDialogComandCanExecute(object parameter)
+        {
+            return SelectedLowerRowHeightMode == CellRowHeightMode.Manual;
+        }
+
 
         private RelayCommand _MoveUpperRowTemplateUpCommand;
         public ICommand MoveUpperRowTemplateUpCommand
@@ -630,8 +1005,55 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        private RelayCommand _MoveUpperRowTemplateDownCommand;
+        private RelayCommand _MoveLowerRowTemplateUpCommand;
+        public ICommand MoveLowerRowTemplateUpCommand
+        {
+            get
+            {
+                return _MoveLowerRowTemplateUpCommand;
+            }
+        }
 
+        protected void MoveLowerRowTemplateUpCommandExecute(object parameter)
+        {
+            var rowTemplate = SelectedLowerRowTemplate;
+            var collection = LowerRowTemplates;
+
+            if (rowTemplate == null)
+            {
+                // Nothing Selected.
+                return;
+            }
+
+            // Execute Move.
+            int currentIndex = collection.IndexOf(rowTemplate);
+            if (currentIndex != 0)
+            {
+                collection.Move(currentIndex, currentIndex - 1);
+            }
+        }
+
+        protected bool MoveLowerRowTemplateUpCommandCanExecute(object parameter)
+        {
+            var rowTemplate = SelectedLowerRowTemplate;
+            var collection = LowerRowTemplates;
+
+            if (rowTemplate == null)
+            {
+                return false;
+            }
+
+            if (collection.IndexOf(rowTemplate) == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private RelayCommand _MoveUpperRowTemplateDownCommand;
         public ICommand MoveUpperRowTemplateDownCommand
         {
             get
@@ -679,8 +1101,55 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        private RelayCommand _MoveLowerRowTemplateDownCommand;
+        public ICommand MoveLowerRowTemplateDownCommand
+        {
+            get
+            {
+                return _MoveLowerRowTemplateDownCommand;
+            }
+        }
+
+        protected void MoveLowerRowTemplateDownCommandExecute(object parameter)
+        {
+            var rowTemplate = SelectedLowerRowTemplate;
+            var collection = LowerRowTemplates;
+
+            if (rowTemplate == null)
+            {
+                // Nothing Selected.
+                return;
+            }
+
+            // Execute Move.
+            int currentIndex = collection.IndexOf(rowTemplate);
+            if (currentIndex != collection.Count - 1)
+            {
+                collection.Move(currentIndex, currentIndex + 1);
+            }
+        }
+
+        protected bool MoveLowerRowTemplateDownCommandCanExecute(object parameter)
+        {
+            var rowTemplate = SelectedLowerRowTemplate;
+            var collection = LowerRowTemplates;
+
+            if (rowTemplate == null)
+            {
+                return false;
+            }
+
+            if (collection.IndexOf(rowTemplate) == collection.Count - 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         private RelayCommand _AddUpperRowTemplateCommand;
-        
         public ICommand AddUpperRowTemplateCommand
         {
             get
@@ -697,8 +1166,24 @@ namespace Dimmer_Labels_Wizard_WPF
             SelectedUpperRowTemplate = rowTemplate;
         }
 
-        private RelayCommand _RemoveUpperRowTemplateCommand;
+        private RelayCommand _AddLowerRowTemplateCommand;
+        public ICommand AddLowerRowTemplateCommand
+        {
+            get
+            {
+                return _AddLowerRowTemplateCommand;
+            }
+        }
 
+        protected void AddLowerRowTemplateCommandExecute(object parameter)
+        {
+            // Create a new Template, Add it to the collection and Select it.
+            CellRowTemplate rowTemplate = new CellRowTemplate();
+            LowerRowTemplates.Add(rowTemplate);
+            SelectedLowerRowTemplate = rowTemplate;
+        }
+
+        private RelayCommand _RemoveUpperRowTemplateCommand;
         public ICommand RemoveUpperRowTemplateCommand
         {
             get
@@ -774,6 +1259,82 @@ namespace Dimmer_Labels_Wizard_WPF
             return true;
         }
 
+        private RelayCommand _RemoveLowerRowTemplateCommand;
+        public ICommand RemoveLowerRowTemplateCommand
+        {
+            get
+            {
+                return _RemoveLowerRowTemplateCommand;
+            }
+        }
+
+        protected void RemoveLowerRowTemplateCommandExecute(object parameter)
+        {
+            var collection = LowerRowTemplates;
+            var selectedItem = SelectedLowerRowTemplate;
+            int selectedItemIndex = collection.IndexOf(selectedItem);
+            int collectionCount = collection.Count;
+            int originalCollectionCount = collection.Count;
+
+            if (collectionCount != 0)
+            {
+                // Remove Item.
+                collection.Remove(selectedItem);
+
+                // Update Collection Count.
+                collectionCount = collection.Count;
+
+                if (collectionCount > 0)
+                {
+                    // Set new Row Template Selection.
+                    if (selectedItemIndex == 0)
+                    {
+                        // Top most Item was Removed.
+                        SelectedLowerRowTemplate = collection[0];
+                    }
+
+                    else if (selectedItemIndex == originalCollectionCount - 1)
+                    {
+                        // Bottom most Item was Removed.
+                        SelectedLowerRowTemplate = collection[collectionCount - 1];
+                    }
+
+                    else
+                    {
+                        // Middle Item was removed.
+                        if (selectedItemIndex < collectionCount)
+                        {
+                            SelectedLowerRowTemplate = collection[selectedItemIndex];
+                        }
+
+                        else
+                        {
+                            SelectedLowerRowTemplate = collection[selectedItemIndex - 1];
+                        }
+                    }
+
+                }
+            }
+        }
+
+        protected bool RemoveLowerRowTemplateCommandCanExecute(object parameter)
+        {
+            var collection = LowerRowTemplates;
+            var selectedItem = SelectedLowerRowTemplate;
+
+            if (selectedItem == null)
+            {
+                return false;
+            }
+
+            if (collection.Count == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         protected RelayCommand _CreateNewTemplateCommand;
 
         public ICommand CreateNewTemplateCommand
@@ -795,6 +1356,24 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        protected RelayCommand _OkCommand;
+
+        public ICommand OkCommand
+        {
+            get
+            {
+                return _OkCommand;
+            }
+        }
+
+        protected void OkCommandExecute(object parameter)
+        {
+            var window = parameter as TemplateEditor;
+
+            TemplateHelper.ModifyExistingTemplate(SelectedExistingTemplate, DisplayedTemplate);
+
+            //window.Close();
+        }
         #endregion
 
         #region Methods
@@ -830,6 +1409,11 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 IsInUpperRowCollectionChangedEvent = true;
             }
+
+            if (verticalPosition == CellVerticalPosition.Lower)
+            {
+                IsInLowerRowCollectionChangedEvent = true;
+            }
         }
 
         protected void EndRowTemplateCollectionChanged(CellVerticalPosition verticalPosition)
@@ -837,6 +1421,11 @@ namespace Dimmer_Labels_Wizard_WPF
             if (verticalPosition == CellVerticalPosition.Upper)
             {
                 IsInUpperRowCollectionChangedEvent = false;
+            }
+
+            if (verticalPosition == CellVerticalPosition.Lower)
+            {
+                IsInLowerRowCollectionChangedEvent = false;
             }
         }
         #endregion
@@ -865,6 +1454,31 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Reset collection Event Flags.
             EndRowTemplateCollectionChanged(CellVerticalPosition.Upper);
+        }
+
+        private void LowerRowTemplates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // Flag Collection event has begun.
+            BeginRowTemplateCollectionChanged(CellVerticalPosition.Lower);
+
+            var collection = sender as ObservableCollection<CellRowTemplate>;
+
+            // Push state of collection to DisplayedLowerCellTemplate.
+            if (DisplayedLowerCellTemplate.CellRowTemplates.SequenceEqual(collection) == false)
+            {
+                DisplayedLowerCellTemplate = new LabelCellTemplate(DisplayedLowerCellTemplate)
+                {
+                    CellRowTemplates = collection.ToList()
+                };
+            }
+
+            // Notify.
+            _RemoveLowerRowTemplateCommand.CheckCanExecute();
+            _MoveLowerRowTemplateUpCommand.CheckCanExecute();
+            _MoveLowerRowTemplateDownCommand.CheckCanExecute();
+
+            // Reset collection Event Flags.
+            EndRowTemplateCollectionChanged(CellVerticalPosition.Lower);
         }
         #endregion
     }

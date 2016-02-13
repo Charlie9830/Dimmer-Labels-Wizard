@@ -13,7 +13,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Copy Name.
             newTemplate.Name = currentTemplate.Name;
 
-            // Push Template to Assigned Strips, Collect a List of Strips assigned to the currentTemplate. Force immediate
+            // Collect a List of Strips assigned to the currentTemplate. Force immediate
             // execution.
             var assignedStrips = Globals.Strips.Where(item => item.AssignedTemplate == currentTemplate).ToList();
 
