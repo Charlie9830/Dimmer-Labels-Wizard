@@ -225,6 +225,13 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+        #region Overrides.
+        public override string ToString()
+        {
+            return Name;
+        }
+        #endregion
+
         #region Interfaces
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)

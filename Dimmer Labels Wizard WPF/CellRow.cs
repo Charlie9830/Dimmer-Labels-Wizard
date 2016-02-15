@@ -174,7 +174,20 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static object CoerceDataLayout(DependencyObject d, object value)
         {
-            return value;
+            var instance = d as CellRow;
+            var dataLayout = (DataLayout)value;
+            var data = instance.Data;
+
+            if (dataLayout.FirstIndex + dataLayout.Length > data.Length)
+            {
+                return new DataLayout();
+            }
+
+            else
+            {
+                return dataLayout;
+            }
+
         }
 
         private static void OnDataLayoutPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

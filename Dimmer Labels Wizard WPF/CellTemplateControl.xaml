@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="Dimmer_Labels_Wizard_WPF.CellTemplateControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="600">
+    
+    <HeaderedContentControl  Header="{Binding Path=Header}" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                              Style="{StaticResource HeaderedControlStyle}" 
+                             DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:CellTemplateControl}}">
+        <Grid Background="{StaticResource ControlGridBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Row 0 -->
+            <Label Content="Data Display Mode" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0"
+                                   Style="{StaticResource ControlLabelStyle}"/>
+            <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
+                                      ItemsSource="{Binding Path=CellDataModes}" SelectedItem="{Binding Path=SelectedCellDataMode}"/>
+
+            <!-- Row 1 -->
+            <HeaderedContentControl Header="Multi Field Settings" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                      Style="{StaticResource HeaderedControlStyle}"
+                                      Visibility="{Binding Path=MultiFieldModeEnable, Converter={StaticResource BoolToVis}}">
+                <Grid
+                                    Background="{StaticResource ControlGridBackground}">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="81*"/>
+                        <ColumnDefinition Width="233*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ListBox Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Margin="5" 
+                                             ScrollViewer.VerticalScrollBarVisibility="Visible" Height="95"
+                                              ItemsSource="{Binding Path=RowTemplates}" SelectedItem="{Binding Path=SelectedRowTemplate}"/>
+
+                    <!-- Row 0 -->
+                    <Button Content="+" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="0" Margin="0,0,10,0"
+                                                Command="{Binding Path=AddRowTemplateCommand}"/>
+                    <Label Content="Height Mode" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Height="26" Style="{DynamicResource ControlLabelStyle}"/>
+                    <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="3"
+                                      ItemsSource="{Binding Path=RowHeightModes}" SelectedItem="{Binding Path=SelectedRowHeightMode}" Height="22" Margin="0,2"/>
+                    <Button Name="RowHeightEditorButton" Content="..." Grid.Column="3" HorizontalAlignment="Left" Margin="140,0,0,0" Grid.Row="0" VerticalAlignment="Center" Width="25" Height="20"
+                                    Command="{Binding Path=ShowCellManualRowDialogCommand}"/>
+                    <Popup x:Name="PopUp" HorizontalAlignment="Left" VerticalAlignment="Center" Placement="Mouse"
+                                            IsOpen="{Binding Path=RowHeightEditorOpen}">
+                        <local:RowHeightEditor CellTemplate="{Binding Path=CellTemplate}" IsOpen="{Binding ElementName=PopUp, Path=IsOpen, Mode=TwoWay}"
+                                                               RowProportions="{Binding Path=RowHeightProportions, Mode=OneWayToSource, UpdateSourceTrigger=Explicit}"/>
+                    </Popup>
+
+
+
+                    <!-- Row 1 -->
+                    <Button Content="-" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="1" Margin="0,0,10,0"
+                                                Command="{Binding Path=RemoveRowTemplateCommand}"/>
+                    <Label Content="Font" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" Height="26" Width="34" Style="{DynamicResource ControlLabelStyle}"/>
+                    <local:FontSelector HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3"
+                                                        SelectedFont="{Binding Path=SelectedRowFont}" Height="26" Width="225"/>
+
+                    <!-- Row 2 -->
+                    <Button Content="^" VerticalAlignment="Bottom" Width="20" Height="20" Grid.Column="1" Grid.Row="2" Margin="0,0,10,3"
+                                                Command="{Binding Path=MoveRowTemplateUpCommand}" />
+                    <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" Height="26" Width="58" Style="{DynamicResource ControlLabelStyle}"/>
+                    <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" IsEditable="True" IsSynchronizedWithCurrentItem="False"
+                                              ItemsSource="{Binding Source={StaticResource StandardFontSizes}}" Text="{Binding Path=SelectedRowFontSize}" Height="22"/>
+
+                    <!-- Row 3 -->
+                    <Button Content="V" VerticalAlignment="Center" Width="20" Height="20" Grid.Column="1" Grid.Row="3" Margin="0,0,10,0"
+                                                Command="{Binding Path=MoveRowTemplateDownCommand}"/>
+                    <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" Height="26" Width="66" Style="{DynamicResource ControlLabelStyle}"/>
+                    <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" 
+                                              ItemsSource="{Binding Path=LabelFields}" SelectedItem="{Binding Path=SelectedRowDataField}" Height="22" Margin="0,2"/>
+                </Grid>
+            </HeaderedContentControl>
+
+            <!-- Row 2 -->
+            <HeaderedContentControl Header="Single Field Settings" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                                      Style="{StaticResource HeaderedControlStyle}"
+                                      Visibility="{Binding Path=SingleFieldModeEnable, Converter={StaticResource BoolToVis}}">
+                <Grid Background="{StaticResource ControlGridBackground}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Row 0 -->
+                    <Label Content="Font" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="0"
+                                   Foreground="{StaticResource ControlLabelTextColor}"/>
+                    <local:FontSelector Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Tag="Left"
+                                                SelectedFont="{Binding Path=SingleFieldFont}"/>
+
+                    <!-- Row 1 -->
+                    <Label Content="Font Size" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0"
+                                   Foreground="{StaticResource ControlLabelTextColor}"/>
+                    <ComboBox Width="40" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" IsEditable="true" IsSynchronizedWithCurrentItem="False"
+                                      ItemsSource="{Binding Source={StaticResource StandardFontSizes}}" Text="{Binding Path=SingleFieldFontSize}"/>
+
+                    <!-- Row 2 -->
+                    <Label Content="Label Field" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="0"
+                                   Foreground="{StaticResource ControlLabelTextColor}"/>
+                    <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"
+                                      SelectedItem="{Binding Path=SingleFieldDataField}" ItemsSource="{Binding Path=LabelFields}"/>
+
+                </Grid>
+            </HeaderedContentControl>
+        </Grid>
+    </HeaderedContentControl>
+</UserControl>

@@ -15,6 +15,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 return;
             }
 
+            if (currentTemplate == newTemplate)
+            {
+                return;
+            }
+
             int currentTemplateIndex = Globals.Templates.IndexOf(currentTemplate);
 
             if (currentTemplateIndex == -1)
@@ -22,6 +27,8 @@ namespace Dimmer_Labels_Wizard_WPF
                 // currentTemplate was not found in Globals.Templates collection.
                 return;
             }
+
+            
 
             // Copy Name.
             newTemplate.Name = currentTemplate.Name;
