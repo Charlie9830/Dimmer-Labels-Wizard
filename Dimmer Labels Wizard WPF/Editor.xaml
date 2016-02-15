@@ -15,6 +15,15 @@
     <Window.Resources>
         <SolidColorBrush x:Key="ToolBarBackgroundKey" Color="LightGray"/>
         <Thickness x:Key="StackPanelItemsOffset" Left="5" Right="5"/>
+        <DataTemplate x:Key="TemplatesListBoxItemTemplate" DataType="{x:Type local:LabelStripTemplate}">
+            <Grid HorizontalAlignment="Stretch">
+                <Label VerticalAlignment="Center" HorizontalAlignment="Left"
+                       Content="{Binding Name}"/>
+                <Button Content="Update" VerticalAlignment="Center" HorizontalAlignment="Right"
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=local:Editor}, Path=DataContext.ApplyTemplateChangesCommand}"
+                        Visibility="{Binding EditorUpdatesPending, Converter={StaticResource BoolToVis}}"/>
+            </Grid>
+        </DataTemplate>
     </Window.Resources>
 
     <Window.InputBindings>
@@ -22,7 +31,8 @@
         <KeyBinding Command="{Binding Path=RedoCommand}" Gesture="CTRL+Y"/>
     </Window.InputBindings>
 
-    <Grid>
+
+        <Grid>
         <Grid.RowDefinitions>
             <!-- 0: Main Menu -->
             <RowDefinition Height="20"/>
@@ -183,12 +193,7 @@
             </ToolBar>
         </ToolBarTray>
 
-        <StackPanel Background="Gray" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
-            <TextBlock x:Name="textBlock" TextWrapping="Wrap" VerticalAlignment="Center" Width="150" Text="{Binding Path=TemplateStatusText}" Margin="5,10,5,9"/>
-            <Button x:Name="button1" IsEnabled="{Binding Path=TemplateChangesPending}" Content="Apply" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}" Command="{Binding Path=ApplyTemplateChangesCommand}"/>
-            <Button x:Name="button1_Copy" IsEnabled="{Binding Path=TemplateChangesPending}" Content="Discard" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}" Command="{Binding Path=DiscardTemplateChangesCommand}"/>
-            <Button x:Name="button1_Copy1" Content="Break" Width="75" Height="22" Margin="{StaticResource StackPanelItemsOffset}"/>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="{StaticResource StackPanelItemsOffset}"/>
+        <StackPanel Background="Gray" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Width="1492">
             <ComboBox Width="135" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
             <TextBox Width="70" Height="25" Margin="5"/>
             <Label Content="B" HorizontalContentAlignment="Center" Width="20" Height="25" Margin="{StaticResource StackPanelItemsOffset}"/>
@@ -206,9 +211,12 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
-                <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding Path=StripTemplates}" SelectedItem="{Binding Path=SelectedStripTemplate}"  VerticalAlignment="Stretch" Grid.Row="1" Margin="5,5"/>
-                <Button x:Name="button" Content="New" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="75" Command="{Binding Path=CreateNewTemplateCommand}"/>
-                <Button x:Name="button_Copy" Content="Edit" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75"/>
+                <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding Path=StripTemplates}" SelectedItem="{Binding Path=SelectedStripTemplate}"  VerticalAlignment="Stretch" Grid.Row="1" Margin="5,5"
+                         ItemTemplate="{StaticResource TemplatesListBoxItemTemplate}" HorizontalContentAlignment="Stretch"/>
+                <Button x:Name="button" Content="New" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="75" 
+                        Command="{Binding Path=CreateNewTemplateCommand}"/>
+                <Button x:Name="button_Copy" Content="Edit" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75"
+                        Command="{Binding Path=EditTemplateCommand}"/>
             </Grid>
         </Expander>
         <Expander Background="LightGray" x:Name="expanderRight" Header="Database" ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="3" VerticalAlignment="Stretch" Grid.Column="2">

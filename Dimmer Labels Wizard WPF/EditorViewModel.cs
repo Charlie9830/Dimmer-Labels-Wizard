@@ -31,8 +31,8 @@ namespace Dimmer_Labels_Wizard_WPF
             _UndoCommand = new RelayCommand(UndoCommandExecute, UndoCommandCanExecute);
             _RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
             _ApplyTemplateChangesCommand = new RelayCommand(ApplyTemplateChangesCommandExecute);
-            _DiscardTemplateChangesCommand = new RelayCommand(DiscardTemplateChangesCommandExecute);
             _CreateNewTemplateCommand = new RelayCommand(CreateNewTemplateCommandExecute);
+            _EditTemplateCommand = new RelayCommand(EditTemplateCommandExecute, EditTemplateCommandCanExecute);
             
             #region Testing Code
             // Testing
@@ -134,8 +134,6 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             LabelStripMode.Single, LabelStripMode.Dual
         };
-
-        private List<string> _TemplateChangesRegister = new List<string>();
 
         #endregion
 
@@ -520,34 +518,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string TemplateStatusText
-        {
-            get
-            {
-                if (_TemplateChangesPending)
-                { return "Template Changes Pending"; }
-
-                else
-                { return "Template up to date."; }
-            }
-        }
-
-        private bool _TemplateChangesPending = false;
-
-        public bool TemplateChangesPending
-        {
-            get { return _TemplateChangesPending; }
-            set
-            {
-                if (value != _TemplateChangesPending)
-                {
-                    _TemplateChangesPending = value;
-                    OnPropertyChanged(nameof(TemplateChangesPending));
-                    OnPropertyChanged(nameof(TemplateStatusText));
-                }
-            }
-        }
-
         private LabelStripMode _SelectedLabelStripMode;
 
         public LabelStripMode SelectedLabelStripMode
@@ -613,6 +583,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedStripTemplate));
+
+                    // Executes.
+                    _EditTemplateCommand.CheckCanExecute();
                 }
             }
         }
@@ -737,6 +710,37 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Commands
+        protected RelayCommand _EditTemplateCommand;
+
+        public ICommand EditTemplateCommand
+        {
+            get
+            {
+                return _EditTemplateCommand;
+            }
+        }
+
+        protected void EditTemplateCommandExecute(object parameter)
+        {
+            var templateEditor = new TemplateEditor();
+            var viewModel = templateEditor.DataContext as TemplateEditorViewModel;
+
+            viewModel.SelectedExistingTemplate = SelectedStripTemplate;
+
+            templateEditor.ShowDialog();
+
+            // Assert Displayed Template.
+            if (SelectedStrip != null)
+            {
+                DisplayedTemplate = SelectedStrip.AssignedTemplate;
+            }
+        }
+
+        protected bool EditTemplateCommandCanExecute(object parameter)
+        {
+            return !(SelectedStripTemplate == null);
+        }
+
         private RelayCommand _CreateNewTemplateCommand;
 
         public ICommand CreateNewTemplateCommand
@@ -749,8 +753,34 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void CreateNewTemplateCommandExecute(object parameter)
         {
-            var test = new TemplateEditor();
-            test.Show();
+            // Show the NewTemplate Dialog first. If user chooses to continue with New Template creation. Show
+            // the Template Editor with the new Template pre selected.
+            var newTemplateDialog = new NewTemplate();
+            var newTemplateViewModel = newTemplateDialog.DataContext as NewTemplateViewModel;
+
+            if (SelectedStripTemplate != null)
+            {
+                // If a selection exists, set the Based On Property to that selection.
+                newTemplateViewModel.BasedOnTemplateSelection = SelectedStripTemplate;
+            }
+
+            if (newTemplateDialog.ShowDialog() == true)
+            {
+                // User wants to continue with Template Creation.
+                var templateEditor = new TemplateEditor();
+                var templateEditorViewModel = templateEditor.DataContext as TemplateEditorViewModel;
+
+                // Pre Select the new Template.
+                templateEditorViewModel.SelectedExistingTemplate = Globals.Templates.Last();
+
+                templateEditor.ShowDialog();
+
+                if (SelectedStrip != null)
+                {
+                    // Re Assert Displayed Template Incase user also edited the currently Displayed Template.
+                    DisplayedTemplate = SelectedStrip.AssignedTemplate;
+                }
+            }
         }
 
         private RelayCommand _ApplyTemplateChangesCommand;
@@ -766,26 +796,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void ApplyTemplateChangesCommandExecute(object parameter)
         {
             ApplyTemplateChanges();
-
-            
         }
-
-
-        private RelayCommand _DiscardTemplateChangesCommand;
-
-        public ICommand DiscardTemplateChangesCommand
-        {
-            get
-            {
-                return _DiscardTemplateChangesCommand;
-            }
-        }
-
-        protected void DiscardTemplateChangesCommandExecute(object parameter)
-        {
-            DiscardTemplateChanges();
-        }
-
 
         // Undo.
         private RelayCommand _UndoCommand;
@@ -1126,24 +1137,19 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Methods
         protected void ApplyTemplateChanges()
         {
-            if (TemplateChangesPending)
+            if (SelectedStripTemplate != null && SelectedStripTemplate.EditorUpdatesPending)
             {
                 // Modify existing Template.
                 TemplateHelper.ModifyExistingTemplate(SelectedStrip.AssignedTemplate, DisplayedTemplate);
 
                 LoadTemplate(SelectedStrip);
-                TemplateChangesPending = false;
+                SelectedStripTemplate.EditorUpdatesPending = false;
             }
         }
 
         protected void DiscardTemplateChanges()
         {
-            if (TemplateChangesPending)
-            {
-                DisplayedTemplate = SelectedStrip.AssignedTemplate;
-
-                TemplateChangesPending = false;
-            }
+            DisplayedTemplate = SelectedStrip.AssignedTemplate;
         }
 
         private void NotifyPropertyGridUI()
@@ -1209,24 +1215,17 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void RegisterTemplateChange(string propertyName)
         {
-            if (_TemplateChangesRegister.Contains(propertyName) == false)
+            if (SelectedStripTemplate != null)
             {
-                _TemplateChangesRegister.Add(propertyName);
-            }
-
-            if (TemplateChangesPending == false)
-            {
-                TemplateChangesPending = true;
+                SelectedStripTemplate.EditorUpdatesPending = true;
             }
         }
 
         private void ClearTemplateChangeRegister()
         {
-            _TemplateChangesRegister.Clear();
-
-            if (TemplateChangesPending == true)
+            foreach (var element in StripTemplates)
             {
-                TemplateChangesPending = false;
+                element.EditorUpdatesPending = false;
             }
         }
 

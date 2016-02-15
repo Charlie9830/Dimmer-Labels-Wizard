@@ -6,11 +6,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="NewTemplate" Height="208.343" Width="312.894" WindowStyle="ToolWindow">
+        Title="Create new Template" Height="208" Width="312" WindowStyle="ToolWindow" Topmost="True" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
 
     <Window.DataContext>
         <local:NewTemplateViewModel/>
     </Window.DataContext>
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding Path=CreateCommand}" CommandParameter="{Binding ElementName=Window}" Gesture="Enter"/>
+    </Window.InputBindings>
 
     <Grid Background="{StaticResource WindowBackground}">
         <Grid.RowDefinitions>
@@ -25,7 +29,7 @@
             <Label x:Name="label" Content="Name" HorizontalAlignment="Left" Margin="6,7,0,0" VerticalAlignment="Top"
                    Style="{StaticResource ControlLabelStyle}"/>
             <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="72,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140"
-                     Text="{Binding Path=TemplateName}"/>
+                     Text="{Binding Path=TemplateName, UpdateSourceTrigger=PropertyChanged}"/>
             <Label x:Name="label1" Content="Based On" HorizontalAlignment="Left" Margin="6,38,0,0" VerticalAlignment="Top"
                    Style="{StaticResource ControlLabelStyle}"/>
             <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="72,38,0,0" VerticalAlignment="Top" Width="140"

@@ -68,6 +68,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var labelStripTemplate = new LabelStripTemplate()
             {
                 Name = "Default",
+                IsBuiltIn = true,
                 StripMode = LabelStripMode.Dual,
                 StripHeight = 70d,
                 UpperCellTemplate = upperCellTemplate,

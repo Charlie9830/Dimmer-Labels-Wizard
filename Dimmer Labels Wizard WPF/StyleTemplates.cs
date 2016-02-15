@@ -99,7 +99,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
-    public class LabelStripTemplate : LabelStripTemplateBase
+    public class LabelStripTemplate : LabelStripTemplateBase, INotifyPropertyChanged
     {
         public LabelStripTemplate()
         {
@@ -114,10 +114,49 @@ namespace Dimmer_Labels_Wizard_WPF
             BasedOn = basedOn;
         }
 
-        public string Name = "No Name";
+        #region Fields
         public List<Strip> AssignedToStrips = new List<Strip>();
+        public bool IsBuiltIn = false;
+        #endregion
+
+        #region Binding Sources.
+
+        protected string _Name = "No Name";
+
+        public string Name
+        {
+            get { return _Name; }
+            set
+            {
+                if (_Name != value)
+                {
+                    _Name = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
 
 
+        protected bool _EditorUpdatesPending = false;
+
+        public bool EditorUpdatesPending
+        {
+            get { return _EditorUpdatesPending; }
+            set
+            {
+                if (_EditorUpdatesPending != value)
+                {
+                    _EditorUpdatesPending = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(EditorUpdatesPending));
+                }
+            }
+        }
+
+        #endregion
         #region Styling Values.
         // StripWidth
         public double StripWidth
@@ -186,11 +225,16 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
-        #region Overrides.
-        public override string ToString()
+        #region Interfaces
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
         {
-            return Name;
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
+
         #endregion
     }
 

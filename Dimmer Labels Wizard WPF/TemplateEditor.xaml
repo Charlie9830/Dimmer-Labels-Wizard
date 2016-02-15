@@ -6,16 +6,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="TemplateEditor" Height="800" Width="1220" WindowStyle="ToolWindow">
+        Title="Template Manager" d:DesignHeight="785" d:DesignWidth="1245"  WindowStyle="ToolWindow" ShowInTaskbar="False" 
+        ResizeMode="NoResize" Topmost="True" WindowStartupLocation="CenterScreen" SizeToContent="WidthAndHeight">
 
     <Window.DataContext>
         <local:TemplateEditorViewModel/>
     </Window.DataContext>
 
-    <Window.Resources>
-
-    </Window.Resources>
-    <Grid Background="{StaticResource WindowBackground}">
+    <Grid Background="{StaticResource WindowBackground}" Height="auto" Width="auto">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
@@ -31,15 +29,16 @@
 
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
                 <RowDefinition Height="1*"/>
+                <RowDefinition Height="0.10*"/>
             </Grid.RowDefinitions>
-            <ListBox Grid.Row="0" Height="600" Width="180" Margin="10,5,10,0" VerticalAlignment="Top"
+            <ListBox Grid.Row="0"  Width="180" Margin="10,5,10,0" VerticalAlignment="Stretch"
                      ItemsSource="{Binding Path=ExistingTemplates}" SelectedItem="{Binding Path=SelectedExistingTemplate}"/>
             <StackPanel Grid.Row="1" Margin="10,5,10,0" VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal">
                 <Button Content="+" Height="20" Width="20" Margin="0,0,5,0"
                         Command="{Binding Path=CreateNewTemplateCommand}"/>
-                <Button Content="-" Height="20" Width="20"/>
+                <Button Content="-" Height="20" Width="20"
+                        Command="{Binding Path=RemoveExistingTemplateCommand}"/>
             </StackPanel>
         </Grid>
 
@@ -74,28 +73,29 @@
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="10"/> <!-- Here --> 
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- Row 0 -->
                         <Label x:Name="label1" Content="Name" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
                            Style="{StaticResource ControlLabelStyle}"/>
-                        <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"
+                        <TextBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
                              Text="{Binding Path=TemplateName}"/>
 
                         <!-- Row 1 -->
                         <Label x:Name="label2" Content="Strip Width (mm)" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
-                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"
+                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                              Text="{Binding Path=StripWidth}"/>
 
                         <!-- Row 2-->
                         <Label x:Name="label4" Content="Strip Height (mm)" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
-                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1"
+                        <TextBox Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
                              Text="{Binding Path=StripHeight}"/>
 
                         <!-- Row 3 -->
                         <Label x:Name="label5" Content="Strip Mode" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Style="{DynamicResource ControlLabelStyle}"/>
-                        <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1"
+                        <ComboBox Width="135" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
                                ItemsSource="{Binding Path=StripModes}" SelectedItem="{Binding Path=SelectedStripMode}"/>
 
                         <!-- Row 4 -->
@@ -221,7 +221,7 @@
                                 </HeaderedContentControl>
                             </Grid>
                         </HeaderedContentControl>
-                        <HeaderedContentControl  Header="Lower Cell Template Settings" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                        <HeaderedContentControl  Header="Lower Cell Template Settings" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top"
                               Style="{StaticResource HeaderedControlStyle}">
                             <Grid Background="{StaticResource ControlGridBackground}">
                                 <Grid.RowDefinitions>

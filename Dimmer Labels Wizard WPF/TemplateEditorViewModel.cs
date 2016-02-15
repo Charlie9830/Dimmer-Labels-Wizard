@@ -18,7 +18,10 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             // Command Binding
             _CreateNewTemplateCommand = new RelayCommand(CreateNewTemplateCommandExecute);
-            
+
+            _RemoveExistingTemplateCommand = new RelayCommand(RemoveExistingTemplateCommandExecute,
+                RemoveExistingTemplateTemplateCommandCanExecute);
+
             _MoveUpperRowTemplateUpCommand = new RelayCommand(MoveUpperRowTemplateUpCommandExecute,
                 MoveUpperRowTemplateUpCommandCanExecute);
 
@@ -75,24 +78,20 @@ namespace Dimmer_Labels_Wizard_WPF
             get { return _SelectedExistingTemplate; }
             set
             {
-                if (_SelectedExistingTemplate != value)
+                if (_SelectedExistingTemplate != value && value != null)
                 {
-                    // Store Current state.
-                    var previousSelectedExistingTemplate = _SelectedExistingTemplate;
-                    var previousDisplayedTemplate = DisplayedTemplate;
+                    // Modify Existing Template.
+                    TemplateHelper.ModifyExistingTemplate(_SelectedExistingTemplate, DisplayedTemplate);
 
                     // Execute Switch.
                     _SelectedExistingTemplate = value;
                     DisplayedTemplate = value;
 
-                    //// Modify Existing Template.
-                    //if (previousDisplayedTemplate != null && previousSelectedExistingTemplate != null)
-                    //{
-                    //    TemplateHelper.ModifyExistingTemplate(ExistingTemplates[templateIndex], previousDisplayedTemplate);
-                    //}
-
                     // Notify.
                     OnPropertyChanged(nameof(SelectedExistingTemplate));
+
+                    // Command Executes.
+                    _RemoveExistingTemplateCommand.CheckCanExecute();
                 }
             }
         }
@@ -1356,6 +1355,32 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        protected RelayCommand _RemoveExistingTemplateCommand;
+
+        public ICommand RemoveExistingTemplateCommand
+        {
+            get
+            {
+                return _RemoveExistingTemplateCommand;
+            }
+        }
+
+        protected void RemoveExistingTemplateCommandExecute(object parameter)
+        {
+            TemplateHelper.RemoveExistingTemplate(SelectedExistingTemplate);
+            SelectedExistingTemplate = Globals.DefaultTemplate;
+        }
+
+        protected bool RemoveExistingTemplateTemplateCommandCanExecute(object parameter)
+        {
+            if (SelectedExistingTemplate == null)
+            {
+                return false;
+            }
+
+            return !SelectedExistingTemplate.IsBuiltIn;
+        }
+
         protected RelayCommand _OkCommand;
 
         public ICommand OkCommand
@@ -1372,7 +1397,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             TemplateHelper.ModifyExistingTemplate(SelectedExistingTemplate, DisplayedTemplate);
 
-            //window.Close();
+            window.Close();
         }
         #endregion
 
