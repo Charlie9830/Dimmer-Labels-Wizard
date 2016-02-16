@@ -170,6 +170,10 @@
     <Compile Include="TemplateEditorViewModel.cs" />
     <Compile Include="TemplateHelper.cs" />
     <Compile Include="UndoRedoManager.cs" />
+    <Compile Include="UniqueCellTemplateEditor.xaml.cs">
+      <DependentUpon>UniqueCellTemplateEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UniqueCellTemplateEditorViewModel.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
@@ -278,6 +282,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TemplateEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UniqueCellTemplateEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -266,6 +266,14 @@ namespace Dimmer_Labels_Wizard_WPF
             BasedOn = basedOn;
         }
 
+        #region Fields
+
+        public bool IsUniqueTemplate = false;
+        public int UniqueCellIndex = -1;
+
+        #endregion
+
+
         // Cell Row Templates
         public IEnumerable<CellRowTemplate> CellRowTemplates
         {

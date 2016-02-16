@@ -330,17 +330,59 @@ namespace Dimmer_Labels_Wizard_WPF
         private static void OnUpperCellTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelStrip;
-            var template = e.NewValue as LabelCellTemplate;
+            var newTemplate = e.NewValue as LabelCellTemplate;
+            var uniqueTemplates = instance.UniqueUpperCellTemplates;
             var upperCells = instance.UpperCells;
             int upperCellsCount = instance.UpperCells.Count;
 
-            // Push change to Upper Cells.
-            for (int index = 0; index < upperCellsCount; index++)
-            {
-                upperCells[index].Style = template;
-            }
+            RefreshCellTemplates(newTemplate, uniqueTemplates, upperCells);
         }
 
+
+
+        public IEnumerable<LabelCellTemplate> UniqueUpperCellTemplates
+        {
+            get { return (IEnumerable<LabelCellTemplate>)GetValue(UniqueUpperCellTemplatesProperty); }
+            set { SetValue(UniqueUpperCellTemplatesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UniqueUpperCellTemplates.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UniqueUpperCellTemplatesProperty =
+            DependencyProperty.Register("UniqueUpperCellTemplates", typeof(IEnumerable<LabelCellTemplate>),
+                typeof(LabelStrip), new FrameworkPropertyMetadata(null,
+                    new PropertyChangedCallback(OnUniqueUpperCellTemplatesPropertyChanged)));
+
+        private static void OnUniqueUpperCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelStrip;
+            var standardTemplate = instance.UpperCellTemplate;
+            var uniqueTemplates = e.NewValue as IEnumerable<LabelCellTemplate>;
+            var cellCollection = instance.UpperCells;
+
+            INotifyCollectionChanged newValue = e.NewValue as INotifyCollectionChanged;
+            INotifyCollectionChanged oldValue = e.OldValue as INotifyCollectionChanged;
+
+            if (oldValue != null)
+            {
+                // Disconnect Event Handler.
+                oldValue.CollectionChanged -= instance.UniqueUpperCellTemplatesCollectionChanged;
+            }
+
+            if (newValue != null)
+            {
+                // Connect Event Handler.
+                newValue.CollectionChanged += instance.UniqueUpperCellTemplatesCollectionChanged;
+            }
+
+            // Handle Existing Collection Elements.
+            RefreshCellTemplates(standardTemplate, uniqueTemplates, cellCollection);
+            
+        }
+
+        private void UniqueUpperCellTemplatesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RefreshCellTemplates(UpperCellTemplate, UniqueUpperCellTemplates, UpperCells);
+        }
 
         public LabelCellTemplate LowerCellTemplate
         {
@@ -356,17 +398,59 @@ namespace Dimmer_Labels_Wizard_WPF
         private static void OnLowerCellTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelStrip;
-            var template = e.NewValue as LabelCellTemplate;
+            var newTemplate = e.NewValue as LabelCellTemplate;
+            var uniqueTemplates = instance.UniqueLowerCellTemplates;
             var lowerCells = instance.LowerCells;
-            int lowerCellsCount = instance.LowerCells.Count;
+            
 
-            // Push change to Lower Cells.
-            for (int index = 0; index < lowerCellsCount; index++)
-            {
-                lowerCells[index].Style = template;
-            }
+            RefreshCellTemplates(newTemplate, uniqueTemplates, lowerCells);
         }
 
+
+
+
+        public IEnumerable<LabelCellTemplate> UniqueLowerCellTemplates
+        {
+            get { return (IEnumerable<LabelCellTemplate>)GetValue(UniqueLowerCellTemplatesProperty); }
+            set { SetValue(UniqueLowerCellTemplatesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UniqueLowerCellTemplates.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UniqueLowerCellTemplatesProperty =
+            DependencyProperty.Register("UniqueLowerCellTemplates", typeof(IEnumerable<LabelCellTemplate>),
+                typeof(LabelStrip), new FrameworkPropertyMetadata(null,
+                    new PropertyChangedCallback(OnUniqueLowerCellTemplatesPropertyChanged)));
+
+        private static void OnUniqueLowerCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelStrip;
+            var standardTemplate = instance.LowerCellTemplate;
+            var uniqueTemplates = e.NewValue as IEnumerable<LabelCellTemplate>;
+            var cellCollection = instance.LowerCells;
+
+            INotifyCollectionChanged newValue = e.NewValue as INotifyCollectionChanged;
+            INotifyCollectionChanged oldValue = e.OldValue as INotifyCollectionChanged;
+
+            if (oldValue != null)
+            {
+                // Disconnect Event Handler.
+                oldValue.CollectionChanged -= instance.UniqueLowerCellTemplatesCollectionChanged;
+            }
+
+            if (newValue != null)
+            {
+                // Connect Event Handler.
+                newValue.CollectionChanged += instance.UniqueLowerCellTemplatesCollectionChanged;
+            }
+
+            // Handle Existing Collection Elements.
+            RefreshCellTemplates(standardTemplate, uniqueTemplates, cellCollection);
+        }
+
+        private void UniqueLowerCellTemplatesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RefreshCellTemplates(LowerCellTemplate, UniqueLowerCellTemplates, LowerCells);
+        }
 
         public double StripHeight
         {
@@ -1164,6 +1248,47 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Private or Protected Methods
+        private static void RefreshCellTemplates(LabelCellTemplate newTemplate, IEnumerable<LabelCellTemplate> uniqueTemplates,
+            ObservableCollection<LabelCell> cellCollection)
+        {
+            int collectionCount = cellCollection.Count;
+
+            // Push change to Cells.
+            if (uniqueTemplates == null)
+            {
+                // No Unique Templates. Push Standard template.
+                for (int index = 0; index < collectionCount; index++)
+                {
+                    cellCollection[index].Style = newTemplate;
+                }
+            }
+
+            else
+            {
+                var uniqueTemplatesList = uniqueTemplates.ToList();
+
+                // Unique Templates.
+                int uniqueTemplateCount = uniqueTemplatesList.Count;
+
+                for (int index = 0; index < collectionCount; index++)
+                {
+                    LabelCellTemplate uniqueTemplate = uniqueTemplatesList.Find(item => item.IsUniqueTemplate == true &&
+                    item.UniqueCellIndex == index);
+                    
+                    if (uniqueTemplate != null)
+                    {
+                        // Assign Unique Template.
+                        cellCollection[index].Style = uniqueTemplate;
+                    }
+
+                    else
+                    {
+                        // Assign Standard Template.
+                        cellCollection[index].Style = newTemplate;
+                    }
+                }
+            }
+        }
         /// <summary>
         /// Refreshes Cell Collections with new Data Source. Will adjust Collection sizes.
         /// </summary>

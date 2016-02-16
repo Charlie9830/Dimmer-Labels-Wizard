@@ -12,8 +12,13 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public Strip()
         {
-            Units.CollectionChanged += Units_CollectionChanged;
         }
+
+        #region Fields.
+        // Unique Cell Templates.
+        public ObservableCollection<LabelCellTemplate> UpperUniqueCellTemplates = new ObservableCollection<LabelCellTemplate>();
+        public ObservableCollection<LabelCellTemplate> LowerUniqueCellTemplates = new ObservableCollection<LabelCellTemplate>();
+        #endregion
 
         #region Properties.
         private ObservableCollection<DimmerDistroUnit> _Units = 
@@ -47,15 +52,10 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        #endregion
 
-        #region Event Handlers
-        private void Units_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            
-        }
 
         #endregion
+
 
         #region Overrides.
         public override string ToString()

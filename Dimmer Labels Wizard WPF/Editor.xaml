@@ -55,9 +55,19 @@
         </Grid.ColumnDefinitions>
         <Border x:Name="LabelStripArea" BorderThickness="1" Grid.Row="3" Grid.Column="1" BorderBrush="Black">
             <local:LabelStrip x:Name="LabelStrip" Style="{Binding Path=DisplayedTemplate}" DataSource="{Binding Path=Units}"
+                              UniqueUpperCellTemplates="{Binding Path=UniqueUpperCellTemplates}" 
+                              UniqueLowerCellTemplates="{Binding Path=UniqueLowerCellTemplates}"
                               Mergers="{Binding Path=Mergers}" SelectedCells="{Binding Path=SelectedCells}"
                               Cells="{Binding Path=Cells}">
             </local:LabelStrip>
+            
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Apply Unique Template" Command="{Binding Path=MakeUniqueTemplateCommand}"/>
+                    <MenuItem Header="Remove Unique Template" Command="{Binding Path=RemoveUniqueTemplateCommand}" />
+                    <MenuItem Header="Remove All Unique Templates" Command="{Binding Path=RemoveAllUniqueTemplatesCommand}"/>
+                </ContextMenu>
+            </Border.ContextMenu>
         </Border>
         <Border x:Name="DebugArea" BorderThickness="2" BorderBrush="Black" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3">
             <StatusBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
