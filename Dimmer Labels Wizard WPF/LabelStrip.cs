@@ -181,6 +181,13 @@ namespace Dimmer_Labels_Wizard_WPF
             INotifyCollectionChanged newCollection = e.NewValue as INotifyCollectionChanged;
             INotifyCollectionChanged oldCollection = e.OldValue as INotifyCollectionChanged;
 
+            if (oldCollection != null && newCollection != null)
+            {
+                // Toggling Mergers Collection causes issues with Mergers "Crossing Over" to other
+                // Strips. 
+                throw new NotSupportedException("Toggling of Mergers Collection is not allowed.");
+            }
+
             if (oldCollection != null)
             {
                 oldCollection.CollectionChanged -= instance.Mergers_CollectionChanged;
@@ -192,6 +199,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 // Handle Existing Elements
                 var collection = e.NewValue as IEnumerable<Merge>;
+                    
                 foreach (var element in collection)
                 {
                     instance.Merge(element);
@@ -1160,6 +1168,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
             LabelCell primaryCell = cellsList.Find(item => item.DataReference == mergeInstructions.PrimaryUnit);
             var consumedCells = cellsList.Where(item => mergeInstructions.ConsumedUnits.Contains(item.DataReference));
+
+            if (primaryCell == null)
+            {
+                // This LabelStrip does not hold a Cell matching that Data Reference currently. Operation can not
+                // continue.
+                return;
+            }
 
             // Expand primaryCell's Dimensions
             double newWidth = primaryCell.Width;

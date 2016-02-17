@@ -21,6 +21,7 @@ namespace Dimmer_Labels_Wizard_WPF
             Units.CollectionChanged += Units_CollectionChanged;
             StripTemplates.CollectionChanged += StripTemplates_CollectionChanged;
             SelectedUnits.CollectionChanged += SelectedUnits_CollectionChanged;
+            Mergers.CollectionChanged += Mergers_CollectionChanged;
 
             // Global Event Subscriptions.
             Globals.Strips.CollectionChanged += Strips_CollectionChanged;
@@ -138,6 +139,7 @@ namespace Dimmer_Labels_Wizard_WPF
             LabelStripMode.Single, LabelStripMode.Dual
         };
 
+        protected bool InPresentStripDataOperation = false;
         #endregion
 
         #region CLR Properties - Binding Target.
@@ -457,13 +459,13 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-
-        private ObservableCollection<Merge> _Mergers = new ObservableCollection<Merge>();
-
+        protected ObservableCollection<Merge> _Merges = new ObservableCollection<Merge>();
         public ObservableCollection<Merge> Mergers
         {
-            get { return _Mergers; }
-            set { _Mergers = value; }
+            get
+            {
+                return _Merges;
+            }
         }
 
 
@@ -645,9 +647,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     _SelectedStrip = value;
                     PresentStripData(value);
                     OnPropertyChanged(nameof(SelectedStrip));
-
-                    // Executes.
-                    _RemoveAllUniqueTemplatesCommand.CheckCanExecute();
                 }
                 
             }
@@ -702,8 +701,6 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected IEnumerable<LabelCellTemplate> _UniqueUpperCellTemplates;
-
         public IEnumerable<LabelCellTemplate> UniqueUpperCellTemplates
         {
             get
@@ -720,8 +717,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-
-        protected IEnumerable<LabelCellTemplate> _UniqueLowerCellTemplates;
 
         public IEnumerable<LabelCellTemplate> UniqueLowerCellTemplates
         {
@@ -1144,6 +1139,33 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Event Handlers
+        private void Mergers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (InPresentStripDataOperation == false && SelectedStrip != null)
+            {
+                if (e.NewItems != null)
+                {
+                    foreach (var element in e.NewItems)
+                    {
+                        var merge = element as Merge;
+                        
+                        if (SelectedStrip.Mergers.Contains(merge) == false)
+                        {
+                            SelectedStrip.Mergers.Add(merge);
+                        }
+                    }
+                }
+
+                if (e.OldItems != null)
+                {
+                    foreach (var element in e.OldItems)
+                    {
+                        SelectedStrip.Mergers.Remove(element as Merge);
+                    }
+                }
+            }
+        }
+
         private void StripTemplates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             
@@ -1389,8 +1411,20 @@ namespace Dimmer_Labels_Wizard_WPF
             OnPropertyChanged(nameof(DatabaseUserField4));
         }
 
+        protected void BeginPresentStripDataOperation()
+        {
+            InPresentStripDataOperation = true;
+        }
+
+        protected void EndPresentStripDataOperation()
+        {
+            InPresentStripDataOperation = false;
+        }
+
         private void PresentStripData(Strip value)
         {
+            BeginPresentStripDataOperation();
+
             // Clear Selections.
             ClearSelections();
 
@@ -1400,7 +1434,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 Units.RemoveAt(Units.Count - 1);
             }
 
-            // Clear Mergers Collection.
+            // Clear Mergers.
             while (Mergers.Count > 0)
             {
                 Mergers.RemoveAt(Mergers.Count - 1);
@@ -1412,12 +1446,22 @@ namespace Dimmer_Labels_Wizard_WPF
                 Units.Add(element);
             }
 
+            foreach (var element in _SelectedStrip.Mergers)
+            {
+                Mergers.Add(element);
+            }
+
             // Retrieve and Load Template.
             LoadTemplate(value);
 
-            // Notify Listeners.
+            // Notify.
             OnPropertyChanged(nameof(Units));
-            OnPropertyChanged(nameof(SelectedCells));
+            OnPropertyChanged(nameof(SelectedCells));;
+
+            // Executes.
+            _RemoveAllUniqueTemplatesCommand.CheckCanExecute();
+
+            EndPresentStripDataOperation();
         }
 
         private void LoadTemplate(Strip strip)

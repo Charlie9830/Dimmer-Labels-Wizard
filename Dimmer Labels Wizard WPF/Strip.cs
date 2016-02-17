@@ -12,12 +12,21 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public Strip()
         {
+            Mergers.CollectionChanged += Mergers_CollectionChanged;
+        }
+
+        private void Mergers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var collection = sender as ObservableCollection<Merge>;
         }
 
         #region Fields.
         // Unique Cell Templates.
         public ObservableCollection<LabelCellTemplate> UpperUniqueCellTemplates = new ObservableCollection<LabelCellTemplate>();
         public ObservableCollection<LabelCellTemplate> LowerUniqueCellTemplates = new ObservableCollection<LabelCellTemplate>();
+
+        // Mergers.
+        public ObservableCollection<Merge> Mergers = new ObservableCollection<Merge>();
         #endregion
 
         #region Properties.
