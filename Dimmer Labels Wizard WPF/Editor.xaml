@@ -99,9 +99,11 @@
             </MenuItem>
             <MenuItem Header="_View"/>
             <MenuItem Header="_Manage">
-                <MenuItem Header="_Templates"/>
-                <MenuItem Header="_Database"/>
-                <MenuItem Header="_Labels"/>
+                <MenuItem Header="_Template Settings" Command="{Binding Path=OpenTemplateSettings}" CommandParameter="0"/>
+                <MenuItem Header="_Template Label Assignments" Command="{Binding Path=OpenTemplateSettings}" CommandParameter="1"/>
+                <Separator/>
+                <MenuItem Header="_Label Manager"/>
+                <MenuItem Header="_Database Manager"/>
             </MenuItem>
             <MenuItem Header="_Help"/>
         </Menu>

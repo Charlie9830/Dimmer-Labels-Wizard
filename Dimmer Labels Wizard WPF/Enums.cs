@@ -37,6 +37,8 @@ namespace Dimmer_Labels_Wizard_WPF
     public enum CellRowHeightMode { Static, Automatic, Manual};
 
     public enum MoveDirection { Up, Down};
+
+    public enum TemplateEditorActiveTab { Settings, Assignments};
 }
 
 

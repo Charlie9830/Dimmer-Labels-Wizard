@@ -8,17 +8,13 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public class Strip
+    public class Strip : ViewModelBase
     {
         public Strip()
         {
-            Mergers.CollectionChanged += Mergers_CollectionChanged;
+            
         }
 
-        private void Mergers_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            var collection = sender as ObservableCollection<Merge>;
-        }
 
         #region Fields.
         // Unique Cell Templates.
@@ -61,7 +57,44 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        #endregion
 
+        #region Binding Sources.
+
+        protected bool _IsPoolSelected;
+
+        public bool IsPoolSelected
+        {
+            get { return _IsPoolSelected; }
+            set
+            {
+                if (_IsPoolSelected != value)
+                {
+                    _IsPoolSelected = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(IsPoolSelected));
+                }
+            }
+        }
+
+
+        protected bool _IsAssignedSelected;
+
+        public bool IsAssignedSelected
+        {
+            get { return _IsAssignedSelected; }
+            set
+            {
+                if (_IsAssignedSelected != value)
+                {
+                    _IsAssignedSelected = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(IsAssignedSelected));
+                }
+            }
+        }
 
         #endregion
 

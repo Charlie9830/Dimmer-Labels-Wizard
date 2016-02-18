@@ -68,5 +68,19 @@ namespace Dimmer_Labels_Wizard_WPF
             // Remove template from Collection.
             Globals.Templates.Remove(template);
         }
+
+        public static bool ValidateTemplateName(string templateName)
+        {
+            var templateNames = from template in Globals.Templates
+                                select template.Name;
+
+            return !templateNames.Contains(templateName);
+        }
+
+        public static void RenameTemplate(LabelStripTemplate template, string name)
+        {
+            template.Name = name;
+        }
+
     }
 }

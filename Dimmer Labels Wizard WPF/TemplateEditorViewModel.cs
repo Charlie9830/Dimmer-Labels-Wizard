@@ -22,11 +22,19 @@ namespace Dimmer_Labels_Wizard_WPF
             _RemoveExistingTemplateCommand = new RelayCommand(RemoveExistingTemplateCommandExecute,
                 RemoveExistingTemplateTemplateCommandCanExecute);
 
+            _AssignRightCommand = new RelayCommand(AssignRightCommandExecute);
+
+            _AssignLeftCommand = new RelayCommand(AssignLeftCommandExecute);
+
             _OkCommand = new RelayCommand(OkCommandExecute);
+
+            _RenameTemplateCommand = new RelayCommand(RenameTemplateCommandExecute, RenameTemplateCommandCanExecute);
 
             // Initialization.
             SelectedExistingTemplate = Globals.DefaultTemplate;
         }
+
+
         #endregion
 
         #region Fields.
@@ -57,9 +65,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedExistingTemplate));
+                    OnPropertyChanged(nameof(AssignedStrips));
 
                     // Command Executes.
                     _RemoveExistingTemplateCommand.CheckCanExecute();
+                    _RenameTemplateCommand.CheckCanExecute();
                 }
             }
         }
@@ -108,6 +118,7 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
                 {
+                    Name = DisplayedTemplate.Name,
                     UpperCellTemplate = value
                 };
             }
@@ -123,6 +134,7 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
                 {
+                    Name = DisplayedTemplate.Name,
                     LowerCellTemplate = value
                 };
             }
@@ -220,10 +232,138 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public IEnumerable<Strip> AssignedStrips
+        {
+            get
+            {
+                return GetAssignedStrips();
+            }
+        }
+
+        public IEnumerable<Strip> AllStrips
+        {
+            get
+            {
+                return Globals.Strips;
+            }
+        }
+
+        public List<Strip> SelectedAllStrips
+        {
+            get
+            {
+                return (from strip in AllStrips
+                       where strip.IsPoolSelected == true
+                       select strip).ToList();
+            }
+        }
+
+        public List<Strip> SelectedAssignedStrips
+        {
+            get
+            {
+                return (from strip in AssignedStrips
+                       where strip.IsAssignedSelected == true
+                       select strip).ToList();
+            }
+        }
+
+
+        protected int _SelectedTabIndex = 0;
+
+        public int SelectedTabIndex
+        {
+            get { return _SelectedTabIndex; }
+            set
+            {
+                if (_SelectedTabIndex != value)
+                {
+                    _SelectedTabIndex = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedTabIndex));
+                }
+            }
+        }
+
         #endregion
 
         #region Commands
-        
+
+        protected RelayCommand _RenameTemplateCommand;
+        public ICommand RenameTemplateCommand
+        {
+            get
+            {
+                return _RenameTemplateCommand;
+            }
+        }
+
+        protected void RenameTemplateCommandExecute(object parameter)
+        {
+            var dialog = new RenameTemplate();
+            var viewModel = dialog.DataContext as RenameTemplateViewModel;
+
+            if (SelectedExistingTemplate != null)
+            {
+                viewModel.Name = SelectedExistingTemplate.Name;
+
+                if (dialog.ShowDialog() == true)
+                {
+                    TemplateHelper.RenameTemplate(SelectedExistingTemplate, viewModel.Name);
+
+                    // Notify.
+                    OnPropertyChanged(nameof(TemplateName));
+                }
+            }
+        }
+
+        protected bool RenameTemplateCommandCanExecute(object parameter)
+        {
+            return SelectedExistingTemplate != null;
+        }
+
+        protected RelayCommand _AssignRightCommand;
+        public ICommand AssignRightCommand
+        {
+            get
+            {
+                return _AssignRightCommand;
+            }
+        }
+
+        protected void AssignRightCommandExecute(object parameter)
+        {
+            // DeAssign.. Assign Selected Strips to Default Template.
+            foreach (var element in SelectedAssignedStrips)
+            {
+                element.AssignedTemplate = Globals.DefaultTemplate;
+            }
+
+            OnPropertyChanged(nameof(AssignedStrips));
+        }
+
+        protected RelayCommand _AssignLeftCommand;
+        public ICommand AssignLeftCommand
+        {
+            get
+            {
+                return _AssignLeftCommand;
+            }
+        }
+
+        protected void AssignLeftCommandExecute(object parameter)
+        {
+            if (SelectedExistingTemplate != null)
+            {
+                foreach (var element in SelectedAllStrips)
+                {
+                    element.AssignedTemplate = SelectedExistingTemplate;
+                }
+
+                OnPropertyChanged(nameof(AssignedStrips));
+            }
+        }
 
         protected RelayCommand _CreateNewTemplateCommand;
 
@@ -294,6 +434,21 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Methods
 
+        private IEnumerable<Strip> GetAssignedStrips()
+        {
+            if (SelectedExistingTemplate == null)
+            {
+                return null;
+            }
+
+            // Query for a Collection of strips with the Selected Template assigned to them.
+            var query = from strip in Globals.Strips
+                        where strip.AssignedTemplate == SelectedExistingTemplate
+                        select strip;
+
+            return query;
+        }
+
         private List<DimmerDistroUnit> GenerateExampleUnits()
         {
             var exampleUnit = new DimmerDistroUnit()
@@ -319,7 +474,7 @@ namespace Dimmer_Labels_Wizard_WPF
             return examples;
         }
 
-       
+
         #endregion
     }
 }

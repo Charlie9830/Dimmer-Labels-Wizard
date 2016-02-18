@@ -37,7 +37,8 @@ namespace Dimmer_Labels_Wizard_WPF
             _MakeUniqueTemplateCommand = new RelayCommand(MakeUniqueTemplateCommandExecute, MakeUniqueTemplateCommandCanExecute);
             _RemoveUniqueTemplateCommand = new RelayCommand(RemoveUniqueTemplateCommandExecute, RemoveUniqueTemplateCommandCanExecute);
             _RemoveAllUniqueTemplatesCommand = new RelayCommand(RemoveAllUniqueTemplatesCommandExecute, RemoveAllUniqueTemplatesCommandCanExecute);
-            
+            _OpenTemplateSettings = new RelayCommand(OpenTemplateSettingsExecute);
+
             #region Testing Code
             // Testing
             Strip strip1 = new Strip();
@@ -63,10 +64,10 @@ namespace Dimmer_Labels_Wizard_WPF
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "86", Position = "LX3", MulticoreName = "LX3B", InstrumentName = "VL1k", DimmerNumber = 18  });
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "87", Position = "LX3", MulticoreName = "LX3B", InstrumentName = "VL1k", DimmerNumber = 19  });
             strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "88", Position = "LX3", MulticoreName = "LX3B", InstrumentName = "VL1k", DimmerNumber = 20  });
-            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "89", Position = "LX3", MulticoreName = "LX3C", InstrumentName = "VL1k", DimmerNumber = 21  });
-            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "90", Position = "LX3", MulticoreName = "LX3C", InstrumentName = "VL1k", DimmerNumber = 22  });
-            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "91", Position = "LX3", MulticoreName = "LX3C", InstrumentName = "VL1k", DimmerNumber = 23  });
-            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "92", Position = "LX3", MulticoreName = "LX3C", InstrumentName = "VL1k", DimmerNumber = 24  });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "89", Position = "LX3", MulticoreName = "LX3C", InstrumentName = "VL1k", DimmerNumber = 21 });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "90", Position = "LX3", MulticoreName = "LX3C", InstrumentName = "VL1k", DimmerNumber = 22 });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "91", Position = "LX3", MulticoreName = "LX3C", InstrumentName = "VL1k", DimmerNumber = 23 });
+            strip2.Units.Add(new DimmerDistroUnit() { ChannelNumber = "92", Position = "LX3", MulticoreName = "LX3C", InstrumentName = "VL1k", DimmerNumber = 24 });
 
             Globals.DimmerDistroUnits.AddRange(strip1.Units);
             Globals.DimmerDistroUnits.AddRange(strip2.Units);
@@ -994,9 +995,44 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 if (SelectedStrip != null)
                 {
-                    // Re Assert Displayed Template Incase user also edited the currently Displayed Template.
+                    // Re Assert Displayed Template in case user also edited the currently Displayed Template.
                     DisplayedTemplate = SelectedStrip.AssignedTemplate;
                 }
+            }
+        }
+
+        protected RelayCommand _OpenTemplateSettings;
+        public ICommand OpenTemplateSettings
+        {
+            get
+            {
+                return _OpenTemplateSettings;
+            }
+        }
+
+        protected void OpenTemplateSettingsExecute(object parameter)
+        {
+            if (parameter.GetType() != typeof(string))
+            {
+                return;
+            }
+
+            int tabIndex = 0;
+
+            // Try Parse. Otherwise tabIndex Remains 0.
+            int.TryParse((string)parameter, out tabIndex);
+            
+            var templateEditor = new TemplateEditor();
+            var viewModel = templateEditor.DataContext as TemplateEditorViewModel;
+
+            viewModel.SelectedTabIndex = tabIndex;
+
+            templateEditor.ShowDialog();
+
+            if (SelectedStrip != null)
+            {
+                // Re Assert Displayed Template in case user also edited the Currently displayed Template.
+                DisplayedTemplate = SelectedStrip.AssignedTemplate;
             }
         }
 
