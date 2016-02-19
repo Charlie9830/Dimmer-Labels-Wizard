@@ -1,0 +1,144 @@
+﻿<Window x:Class="Dimmer_Labels_Wizard_WPF.LabelManager"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+        mc:Ignorable="d"
+        Title="LabelManager" Height="500" Width="700">
+
+    <Window.DataContext>
+        <local:LabelManagerViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Setter Property="IsSelected" Value="{Binding Path=IsSelected}"/>
+            <Setter Property="Content" Value="{Binding Path=Name}"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Background="{StaticResource WindowBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.40*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Label Content="Label Manager" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+               Style="{StaticResource WindowHeaderStyle}"/>
+        
+        <ListBox Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10,0,10,0"
+                 ItemsSource="{Binding Path=ExistingStrips}" ItemContainerStyle="{StaticResource ListBoxItemStyle}"/>
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,10">
+            <Button Content="+" Width="20" Height="20"
+                    Command="{Binding Path=AddNewStripCommand}"/>
+            <Button Content="-" Width="20" Height="20"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,10,0">
+            <HeaderedContentControl Header="Settings"
+                                Style="{StaticResource HeaderedControlStyle}">
+                <Grid Background="{StaticResource ControlGridBackground}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Row 0 -->
+                    <Label Content="Rack Type" Grid.Row="0" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <ComboBox Width="135" Height="20" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"
+                              ItemsSource="{Binding Path=RackTypes}" SelectedItem="{Binding Path=SelectedSingleRackType}"/>
+                    
+                    <!-- Row 1 -->
+                    <Label Content="Universe (if any)" Grid.Row="1" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}" Visibility="{Binding Path=ShowUniverse, Converter={StaticResource BoolToVis}}"/>
+                    <TextBox Width="50" Height="20" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"
+                             Text="{Binding Path=SelectedSingleFirstDimmer, Converter={StaticResource HideZeroValueConverter}}"
+                             Visibility="{Binding Path=ShowUniverse, Converter={StaticResource BoolToVis}}"/>
+                    
+                    <!-- Row 2 -->
+                    <Label Content="First Dimmer" Grid.Row="2" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <TextBox Width="50" Height="20" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"
+                             Text="{Binding Path=SelectedSingleFirstDimmer, Converter={StaticResource HideZeroValueConverter}}"/>
+
+                    <!-- Row 3 -->
+                    <Label Content="Last Dimmer" Grid.Row="3" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <TextBox Width="50" Height="20" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"
+                             Text="{Binding Path=SelectedSingleLastDimmer, Converter={StaticResource HideZeroValueConverter}}"/>
+
+                    <!-- Row 4 -->
+                    <Label Content="Template" Grid.Row="4" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <ComboBox Width="135" Height="20" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"
+                              ItemsSource="{Binding Path=ExistingTemplates}" SelectedItem="{Binding Path=SelectedSingleTemplate}"/>
+                </Grid>
+            </HeaderedContentControl>
+
+            <HeaderedContentControl Header="Auto Generate"
+                                Style="{StaticResource HeaderedControlStyle}">
+                <Grid Background="{StaticResource ControlGridBackground}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Row 0 -->
+                    <Label Content="Rack Type" Grid.Row="0" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <ComboBox Width="135" Height="20" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left"/>
+
+                    <!-- Row 1 -->
+                    <Label Content="First Dimmer in Range" Grid.Row="1" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <TextBox Width="50" Height="20" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
+
+                    <!-- Row 2 -->
+                    <Label Content="Last Dimmer in Range" Grid.Row="2" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <TextBox Width="50" Height="20" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
+
+                    <!-- Row 3 -->
+                    <Label Content="Number of Units per Rack" Grid.Row="3" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <TextBox Width="50" Height="20" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"/>
+                    
+                    <!-- Row 4 -->
+                    <Label Content="Template" Grid.Row="4" Grid.Column="0" 
+                       Style="{StaticResource ControlLabelStyle}"/>
+                    <ComboBox Width="135" Height="20" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
+                    
+                    <!-- Row 5 -->
+                    <Button Content="Generate" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"/>
+                </Grid>
+            </HeaderedContentControl>
+        </StackPanel>
+
+    </Grid>
+</Window>

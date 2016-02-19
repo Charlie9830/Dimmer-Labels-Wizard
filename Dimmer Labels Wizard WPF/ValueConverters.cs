@@ -31,4 +31,42 @@ namespace Dimmer_Labels_Wizard_WPF
             return !(bool)value;
         }
     }
+
+    class HideZeroValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value.GetType() != typeof(int))
+            {
+                throw new NotSupportedException("This Value Converter only supports Converting to a from an integer.");
+            }
+
+            int number = (int)value;
+
+            if (number == 0)
+            {
+                return string.Empty;
+            }
+
+            else
+            {
+                return number;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string str = (string)value;
+
+            if (string.IsNullOrEmpty(str))
+            {
+                return 0;
+            }
+
+            else
+            {
+                return str;
+            }
+        }
+    }
 }

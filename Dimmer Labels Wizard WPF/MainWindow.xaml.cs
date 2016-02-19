@@ -114,8 +114,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
-            Help helpWindow = new Help();
-            helpWindow.Show();
+            var window = new LabelManager();
+
+            window.Show();
         }
     }
 }

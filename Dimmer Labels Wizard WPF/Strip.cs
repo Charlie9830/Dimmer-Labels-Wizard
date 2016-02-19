@@ -23,6 +23,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Mergers.
         public ObservableCollection<Merge> Mergers = new ObservableCollection<Merge>();
+
+        // RackType.
         #endregion
 
         #region Properties.
@@ -52,14 +54,89 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (value != _AssignedTemplate)
                 {
+                    OnPropertyChanged(nameof(Name));
                     _AssignedTemplate = value;
                 }
             }
         }
 
-        #endregion
 
-        #region Binding Sources.
+        protected int _Universe = 0;
+
+        public int Universe
+        {
+            get { return _Universe; }
+            set
+            {
+                if (_Universe != value)
+                {
+                    _Universe = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(Universe));
+                }
+            }
+        }
+
+        protected int _FirstDimmer = 0;
+
+        public int FirstDimmer
+        {
+            get { return _FirstDimmer; }
+            set
+            {
+                if (_FirstDimmer != value)
+                {
+                    _FirstDimmer = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        protected int _LastDimmer = 0;
+
+        public int LastDimmer
+        {
+            get { return _LastDimmer; }
+            set
+            {
+                if (_LastDimmer != value)
+                {
+                    _LastDimmer = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+
+        protected RackType _RackType = RackType.Dimmer;
+
+        public RackType RackType
+        {
+            get { return _RackType; }
+            set
+            {
+                if (_RackType != value)
+                {
+                    _RackType = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return RackType.ToString() + " : " + FirstDimmer + " To " + LastDimmer;
+            }
+        }
 
         protected bool _IsPoolSelected;
 
@@ -96,23 +173,24 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        #endregion
 
+        protected bool _IsSelected;
 
-        #region Overrides.
-        public override string ToString()
+        public bool IsSelected
         {
-            string returnValue = "No Units Assigned";
-
-            if (Units.Count > 0)
+            get { return _IsSelected; }
+            set
             {
-                returnValue = Units.First().RackUnitType.ToString() + " : ";
-                returnValue += "Dimmer Number " + Units.First().DimmerNumber + ">" + Units.Last().DimmerNumber;
+                if (_IsSelected != value)
+                {
+                    _IsSelected = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(IsSelected));
+                }
             }
-
-            return returnValue;
         }
-        #endregion
 
+        #endregion
     }
 }

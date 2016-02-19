@@ -91,6 +91,9 @@
         
         <!-- Boolean Flip Value Converter -->
         <local:BooleanFlipValueConverter x:Key="BooleanFlipValueConverter"/>
+        
+        <!-- Zero Hider Value Converter -->
+        <local:HideZeroValueConverter x:Key="HideZeroValueConverter"/>
 
         <!-- Row Splitter Style -->
         <Style x:Key="RowSplitterStyle" TargetType="GridSplitter">

@@ -81,6 +81,10 @@
       <DependentUpon>FontSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="IModifcationNotification.cs" />
+    <Compile Include="LabelManager.xaml.cs">
+      <DependentUpon>LabelManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LabelManagerViewModel.cs" />
     <Compile Include="Merge.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -242,6 +246,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LabelGenerationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LabelManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
