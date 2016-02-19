@@ -15,6 +15,9 @@
     <Window.Resources>
         <SolidColorBrush x:Key="ToolBarBackgroundKey" Color="LightGray"/>
         <Thickness x:Key="StackPanelItemsOffset" Left="5" Right="5"/>
+        <Style x:Key="ListBoxItemStripsStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+            <Setter Property="Content" Value="{Binding Path=Name}"/>
+        </Style>
         <DataTemplate x:Key="TemplatesListBoxItemTemplate" DataType="{x:Type local:LabelStripTemplate}">
             <Grid HorizontalAlignment="Stretch">
                 <Label VerticalAlignment="Center" HorizontalAlignment="Left"
@@ -110,7 +113,9 @@
         <ToolBarTray HorizontalAlignment="Stretch" Height="120" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Stretch" Background="{StaticResource ToolBarBackgroundKey}">
             <ToolBar Width="400" Height="120"  Header="Label" Background="{StaticResource ToolBarBackgroundKey}">
                 <DockPanel>
-                    <ListBox DockPanel.Dock="Left" Height="110" Width="210" ItemsSource="{Binding Path=Strips}" SelectedItem="{Binding Path=SelectedStrip}"/>
+                    <ListBox DockPanel.Dock="Left" Height="110" Width="210"
+                             ItemsSource="{Binding Path=Strips}" SelectedItem="{Binding Path=SelectedStrip}"
+                             ItemContainerStyle="{StaticResource ListBoxItemStripsStyle}"/>
                     <Grid DockPanel.Dock="Right">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>

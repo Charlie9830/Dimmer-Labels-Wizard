@@ -12,9 +12,7 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public Strip()
         {
-            
         }
-
 
         #region Fields.
         // Unique Cell Templates.
@@ -28,24 +26,15 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Properties.
-        private ObservableCollection<DimmerDistroUnit> _Units = 
-            new ObservableCollection<DimmerDistroUnit>();
-
-        public ObservableCollection<DimmerDistroUnit> Units
-        {
-            get { return _Units; }
-            set { _Units = value; }
-        }
-
-        public int UnitCount
+        public IEnumerable<DimmerDistroUnit> Units
         {
             get
             {
-                return Units.Count;
+                return GetUnits();
             }
         }
 
-        private LabelStripTemplate _AssignedTemplate;
+        private LabelStripTemplate _AssignedTemplate = Globals.DefaultTemplate;
 
         public LabelStripTemplate AssignedTemplate
         {
@@ -134,7 +123,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return RackType.ToString() + " : " + FirstDimmer + " To " + LastDimmer;
+                return GetName();
             }
         }
 
@@ -189,6 +178,49 @@ namespace Dimmer_Labels_Wizard_WPF
                     OnPropertyChanged(nameof(IsSelected));
                 }
             }
+        }
+        #endregion
+
+        #region Methods.
+        private IEnumerable<DimmerDistroUnit> GetUnits()
+        {
+            if (FirstDimmer == 0 && LastDimmer == 0)
+            {
+                // Return an Empty collection.
+                return new List<DimmerDistroUnit>() as IEnumerable<DimmerDistroUnit>;
+            }
+            
+            if (RackType == RackType.Dimmer)
+            {
+                // Dimmer.
+                var query = from unit in Globals.Dimmers
+                            where unit.UniverseNumber == Universe
+                            select unit;
+
+                return query.Skip(FirstDimmer - 1).Take((LastDimmer + 1) - FirstDimmer);
+            }
+
+            else
+            {
+                // Distro.
+                return Globals.Distros.Skip(FirstDimmer - 1).Take((LastDimmer + 1) - FirstDimmer);
+            }
+        }
+
+        private string GetName()
+        {
+            if (RackType == RackType.Distro || RackType == RackType.Dimmer && Universe == 0)
+            {
+                // Distro or Dimmer with No Universe Data.
+                return RackType.ToString() + " : " + FirstDimmer + " to " + LastDimmer;
+            }
+
+            else
+            {
+                // Dimmer with Universe Info.
+                return RackType.ToString() + " : " + Universe + '/' + FirstDimmer + " to " + Universe + '/' + LastDimmer;
+            }
+            
         }
 
         #endregion

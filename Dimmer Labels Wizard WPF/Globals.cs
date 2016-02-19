@@ -88,6 +88,35 @@ namespace Dimmer_Labels_Wizard_WPF
         // List to hold DimDistroUnit Objects
         public static List<DimmerDistroUnit> DimmerDistroUnits = new List<DimmerDistroUnit>();
 
+        /// <summary>
+        /// Queries DimmerDistroUnits for Dimmers.
+        /// </summary>
+        public static IEnumerable<DimmerDistroUnit> Dimmers
+        {
+            get
+            {
+                return from unit in DimmerDistroUnits
+                       where unit.RackUnitType == RackType.Dimmer
+                       orderby unit.UniverseNumber
+                       orderby unit.DimmerNumber
+                       select unit;
+            }
+        }
+
+        /// <summary>
+        /// Queries DimmerDistroUnits for Distros.
+        /// </summary>
+        public static IEnumerable<DimmerDistroUnit> Distros
+        {
+            get
+            {
+                return from unit in DimmerDistroUnits
+                       where unit.RackUnitType == RackType.Distro
+                       orderby unit.DimmerNumber
+                       select unit;
+            }
+        }
+
         public static SortOrder DimmerDistroSortOrder { get; set; }
 
         // List to Hold StripData Objects.
