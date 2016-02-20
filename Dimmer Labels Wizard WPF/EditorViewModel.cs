@@ -38,6 +38,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _RemoveUniqueTemplateCommand = new RelayCommand(RemoveUniqueTemplateCommandExecute, RemoveUniqueTemplateCommandCanExecute);
             _RemoveAllUniqueTemplatesCommand = new RelayCommand(RemoveAllUniqueTemplatesCommandExecute, RemoveAllUniqueTemplatesCommandCanExecute);
             _OpenTemplateSettings = new RelayCommand(OpenTemplateSettingsExecute);
+            _ShowLabelManagerCommand = new RelayCommand(ShowLabelManagerCommandExecute);
 
             #region Testing Code
             // Testing
@@ -91,7 +92,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             Globals.Strips.Add(new Strip() { Universe = 0, FirstDimmer = 1, LastDimmer = 12, RackType = RackType.Dimmer });
             Globals.Strips.Add(new Strip() { Universe = 0, FirstDimmer = 13, LastDimmer = 24, RackType = RackType.Dimmer });
-            Globals.Strips.Add(new Strip() { FirstDimmer = 0, LastDimmer = 0, RackType = RackType.Distro });
+            Globals.Strips.Add(new Strip() { FirstDimmer = 2, LastDimmer = 14, RackType = RackType.Distro });
             #endregion
 
             // Initialize UndoRedoManager.
@@ -728,6 +729,32 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Commands
+
+        protected RelayCommand _ShowLabelManagerCommand;
+        public ICommand ShowLabelManagerCommand
+        {
+            get
+            {
+                return _ShowLabelManagerCommand;
+            }
+        }
+
+        protected void ShowLabelManagerCommandExecute(object parameter)
+        {
+            var dialog = new LabelManager();
+            var viewModel = dialog.DataContext as LabelManagerViewModel;
+
+            if (SelectedStrip != null)
+            {
+                // Pre Select a Strip for LabelManager.
+                SelectedStrip.IsSelected = true;
+            }
+
+            dialog.ShowDialog();
+
+            PresentStripData(_SelectedStrip);
+        }
+
         protected RelayCommand _MakeUniqueTemplateCommand;
         public ICommand MakeUniqueTemplateCommand
         {
@@ -1454,18 +1481,21 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Load new StripData.
-            foreach (var element in _SelectedStrip.Units)
+            if (_SelectedStrip != null)
             {
-                Units.Add(element);
-            }
+                foreach (var element in _SelectedStrip.Units)
+                {
+                    Units.Add(element);
+                }
 
-            foreach (var element in _SelectedStrip.Mergers)
-            {
-                Mergers.Add(element);
-            }
+                foreach (var element in _SelectedStrip.Mergers)
+                {
+                    Mergers.Add(element);
+                }
 
-            // Retrieve and Load Template.
-            LoadTemplate(value);
+                // Retrieve and Load Template.
+                LoadTemplate(value);
+            }
 
             // Notify.
             OnPropertyChanged(nameof(Units));
@@ -1479,6 +1509,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void LoadTemplate(Strip strip)
         {
+            if (strip == null)
+            {
+                return;
+            }
+
             DisplayedTemplate = strip.AssignedTemplate;
 
             // Appearance Controls

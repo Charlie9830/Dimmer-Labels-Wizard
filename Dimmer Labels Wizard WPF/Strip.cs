@@ -62,7 +62,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     _Universe = value;
 
                     // Notify.
-                    OnPropertyChanged(nameof(Universe));
+                    OnPropertyChanged(nameof(Name));
                 }
             }
         }
