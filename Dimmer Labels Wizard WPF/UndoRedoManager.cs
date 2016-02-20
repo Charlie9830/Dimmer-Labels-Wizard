@@ -8,17 +8,13 @@ namespace Dimmer_Labels_Wizard_WPF
 {
     public class UndoRedoManager
     {
-        public UndoRedoManager(IEnumerable<DimmerDistroUnit> dimmerDistroUnitCollection,
-            INotifyModification editorViewModel)
+        public UndoRedoManager()
         {
             // Connect to DataModel.
             foreach (var element in Globals.DimmerDistroUnits)
             {
                 element.NotifyModification += Incoming_Modification;
             }
-
-            // Connect to EditorViewModel.
-            editorViewModel.NotifyModification += Incoming_Modification;
         }
 
         #region Fields.
