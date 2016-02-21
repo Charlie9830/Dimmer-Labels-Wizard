@@ -42,7 +42,7 @@ namespace Dimmer_Labels_Wizard_WPF
             CellParent = parentLabelCell;
 
             // Setup Border.
-            Border.Background = Brushes.White;
+            Border.Background = DeSelectedBrush;
 
             // Setup TextBlock.
             TextBlock.VerticalAlignment = VerticalAlignment.Center;
@@ -84,6 +84,12 @@ namespace Dimmer_Labels_Wizard_WPF
         /// Tracks whether a Data Layout Pass is in progress or not.
         /// </summary>
         public bool IsInDataLayoutPass = false;
+        #endregion
+
+        #region Protected Fields.
+        protected static SolidColorBrush DeSelectedBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+
+        protected static SolidColorBrush SelectedBrush = new SolidColorBrush(Color.FromArgb(100, 0, 0, 0));
         #endregion
 
         #region CLR Properties and Fields.
@@ -161,6 +167,27 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+
+
+        public Color TextColor
+        {
+            get { return (Color)GetValue(TextColorProperty); }
+            set { SetValue(TextColorProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TextColor.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TextColorProperty =
+            DependencyProperty.Register("TextColor", typeof(Color), typeof(CellRow), new FrameworkPropertyMetadata(Colors.Black, new PropertyChangedCallback(OnTextColorPropertyChanged)));
+
+        private static void OnTextColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as CellRow;
+            var newValue = (Color)e.NewValue;
+
+            // Pass value onto TextBlock.
+            instance.TextBlock.Foreground = new SolidColorBrush(newValue);
+        }
+
         public DataLayout DataLayout
         {
             get { return (DataLayout)GetValue(DataLayoutProperty); }
@@ -519,14 +546,13 @@ namespace Dimmer_Labels_Wizard_WPF
             // Render Cell Selection State.
             if (selected)
             {
-                // Selected.
-                instance.Border.Background = Brushes.LightBlue;
+                instance.Border.Background = SelectedBrush;
             }
 
             else
             {
                 // Deselected.
-                instance.Border.Background = Brushes.White;
+                instance.Border.Background = DeSelectedBrush;
             }
 
             // Notify Parent Cell.

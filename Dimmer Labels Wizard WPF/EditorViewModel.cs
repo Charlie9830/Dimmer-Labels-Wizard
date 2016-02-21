@@ -39,6 +39,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _RemoveAllUniqueTemplatesCommand = new RelayCommand(RemoveAllUniqueTemplatesCommandExecute, RemoveAllUniqueTemplatesCommandCanExecute);
             _OpenTemplateSettings = new RelayCommand(OpenTemplateSettingsExecute);
             _ShowLabelManagerCommand = new RelayCommand(ShowLabelManagerCommandExecute);
+            _ShowLabelColorManagerCommand = new RelayCommand(ShowLabelColorManagerCommandExecute);
 
             #region Testing Code
             // Testing
@@ -93,10 +94,15 @@ namespace Dimmer_Labels_Wizard_WPF
             Globals.Strips.Add(new Strip() { Universe = 0, FirstDimmer = 1, LastDimmer = 12, RackType = RackType.Dimmer });
             Globals.Strips.Add(new Strip() { Universe = 0, FirstDimmer = 13, LastDimmer = 24, RackType = RackType.Dimmer });
             Globals.Strips.Add(new Strip() { FirstDimmer = 2, LastDimmer = 14, RackType = RackType.Distro });
+
+            Globals.LabelColors.Add(1, Colors.Purple);
+            Globals.LabelColors.Add(2, Colors.Black);
+            Globals.LabelColors.Add(3, Colors.Red);
+            Globals.LabelColors.Add(4, Colors.Blue);
             #endregion
 
             // Initialize UndoRedoManager.
-            UndoRedoManager = new UndoRedoManager(Globals.DimmerDistroUnits, this);
+            UndoRedoManager = new UndoRedoManager();
         }
 
         #region Fields
@@ -729,6 +735,22 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Commands
+
+
+        protected RelayCommand _ShowLabelColorManagerCommand;
+        public ICommand ShowLabelColorManagerCommand
+        {
+            get
+            {
+                return _ShowLabelColorManagerCommand;
+            }
+        }
+
+        protected void ShowLabelColorManagerCommandExecute(object parameter)
+        {
+            var dialog = new LabelColorManager();
+            dialog.ShowDialog();
+        }
 
         protected RelayCommand _ShowLabelManagerCommand;
         public ICommand ShowLabelManagerCommand

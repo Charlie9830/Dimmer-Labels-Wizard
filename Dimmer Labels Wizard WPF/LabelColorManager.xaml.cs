@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for LabelsTest.xaml
+    /// Interaction logic for LabelColorManager.xaml
     /// </summary>
-    public partial class LabelsTest : Window
+    public partial class LabelColorManager : Window
     {
-        public LabelsTest()
+        public LabelColorManager()
         {
             InitializeComponent();
         }

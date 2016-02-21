@@ -44,6 +44,7 @@ namespace Dimmer_Labels_Wizard_WPF
             options |= FrameworkPropertyMetadataOptions.AffectsParentArrange;
             options |= FrameworkPropertyMetadataOptions.AffectsParentMeasure;
 
+            // Height and Width Overrides.
             FrameworkPropertyMetadata heightPropertyMetadata =
                 new FrameworkPropertyMetadata(70d, options, new PropertyChangedCallback(OnHeightPropertyChanged));
 
@@ -52,6 +53,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
             HeightProperty.OverrideMetadata(typeof(LabelCell), heightPropertyMetadata);
             WidthProperty.OverrideMetadata(typeof(LabelCell), widthPropertyMetadata);
+
+            // Background Override.
+            FrameworkPropertyMetadata backgroundPropertyMetadata =
+                new FrameworkPropertyMetadata(new SolidColorBrush(Colors.White), new PropertyChangedCallback(OnBackgroundPropertyChanged));
+
+            BackgroundProperty.OverrideMetadata(typeof(LabelCell), backgroundPropertyMetadata);
         }
 
         /// <summary>
@@ -246,6 +253,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
                 }
 
+                // Get Background Color.
+                instance.Background = new SolidColorBrush(newValue.LabelColor);
+
                 // Connect Event Handler to track Future Changes.
                 newValue.PropertyChanged += instance.DataReference_PropertyChanged;
             }
@@ -265,6 +275,9 @@ namespace Dimmer_Labels_Wizard_WPF
                         element.Data = "No Reference";
                     }
                 }
+
+                // Set Background to default.
+                instance.Background = new SolidColorBrush(Colors.White);
             }
 
             if (oldValue != null)
@@ -1120,6 +1133,18 @@ namespace Dimmer_Labels_Wizard_WPF
                 element.CoerceValue(CellRow.RowHeightProperty);
             }
         }
+
+        private static void OnBackgroundPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            var newValue = e.NewValue as SolidColorBrush;
+
+            // Pass Value on to Grid Background.
+            instance._Grid.Background = newValue;
+
+            // Set Row Text Color.
+            instance.SetTextColor(AdjustTextColorLuma(newValue.Color));
+        }
         #endregion
 
         #region Overrides
@@ -1390,6 +1415,36 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region Methods.
+        /// <summary>
+        /// Sets the TextColor of Child Rows.
+        /// </summary>
+        /// <param name="color"></param>
+        private void SetTextColor(Color color)
+        {
+            foreach (var element in Rows)
+            {
+                element.TextColor = color;
+            }
+        }
+
+        /// <summary>
+        /// Returns a color that Color that is readable when placed in front of backgroundColor.
+        /// </summary>
+        /// <param name="backgroundColor"></param>
+        /// <returns></returns>
+        private static Color AdjustTextColorLuma(Color backgroundColor)
+        {
+            if ((0.299 * backgroundColor.R) + (0.587 * backgroundColor.G) + (0.114 * backgroundColor.B) > 128)
+            {
+                return Colors.Black;
+            }
+
+            else
+            {
+                return Colors.White;
+            }
+        }
+
         private static void AssignMultiFieldRowTemplates(LabelCell instance, List<CellRowTemplate> newTemplates,
             ObservableCollection<CellRow> rows)
         {

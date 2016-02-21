@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
-        xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="Editor" Height="700" Width="1500">
 
@@ -130,7 +129,9 @@
                 <MenuItem Header="_Template Label Assignments..." Command="{Binding Path=OpenTemplateSettings}" CommandParameter="1"/>
                 <Separator/>
                 <MenuItem Header="_Labels..." Command="{Binding Path=ShowLabelManagerCommand}"/>
+                <MenuItem Header="_Label Colours" Command="{Binding Path=ShowLabelColorManagerCommand}"/>
                 <MenuItem Header="_Database..."/>
+
             </MenuItem>
             <MenuItem Header="_Help"/>
         </Menu>

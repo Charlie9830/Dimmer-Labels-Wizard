@@ -157,29 +157,15 @@ namespace Dimmer_Labels_Wizard_WPF
             Name = "Base Template"
         };
 
-        // By Defualt, this is contained within the Templates Collection.
+        // By Default, this is contained within the Templates Collection.
         public static LabelStripTemplate DefaultTemplate;
 
+        // Template Storage.
         public static ObservableCollection<LabelStripTemplate> Templates = 
             new ObservableCollection<LabelStripTemplate>();
 
-        // Color Dictionary
-        public static Dictionary<DimmerDistroUnit, SolidColorBrush> LabelColors = 
-            new Dictionary<DimmerDistroUnit, SolidColorBrush>();
-
-        public static SolidColorBrush GetLabelColor(DimmerDistroUnit unit)
-        {
-            SolidColorBrush outValue;
-            if (Globals.LabelColors.TryGetValue(unit, out outValue) == true)
-            {
-                return outValue;
-            }
-
-            else
-            {
-                return new SolidColorBrush(Colors.Transparent);
-            }
-        }
+        // Color Storage. (DimmerNummber, Color).
+        public static Dictionary<int, Color> LabelColors = new Dictionary<int, Color>();
 
         // List to Hold Imported Elements with Dimmer Data that does not Match Formatting Styles.
         public static List<DimmerDistroUnit> UnresolvableUnits = new List<DimmerDistroUnit>();

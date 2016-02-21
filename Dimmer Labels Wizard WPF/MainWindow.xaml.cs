@@ -42,57 +42,6 @@ namespace Dimmer_Labels_Wizard_WPF
             window.ShowDialog();
 
             Application.Current.Shutdown();
-
-            #region Hardcoded UserParameters
-            UserParameters.CreateDimmerObjects = true;
-
-            UserParameters.CreateDistroObjects = true;
-            UserParameters.DistroImportFormat = ImportFormatting.Format1;
-            UserParameters.DistroNumberPrefix = "N";
-            UserParameters.DimmerImportFormat = ImportFormatting.Format3;
-
-            UserParameters.DimmerRanges.Add(new DimmerRange(1, 1, 12));
-            UserParameters.DistroRanges.Add(new DistroRange(1, 12));
-
-            UserParameters.GenerateDistroRange();
-
-            UserParameters.DMXAddressImportFormat = ImportFormatting.NoUniverseData;
-
-            UserParameters.ChannelNumberColumnIndex = 1;
-            UserParameters.DimmerNumberColumnIndex = 0;
-            UserParameters.InstrumentTypeColumnIndex = 4;
-            UserParameters.MulticoreNameColumnIndex = 2;
-            UserParameters.PositionColumnIndex = 3;
-
-            UserParameters.DimmerLabelWidthInMM = 16;
-            UserParameters.DimmerLabelHeightInMM = 18;
-
-            UserParameters.DistroLabelWidthInMM = 16;
-            UserParameters.DistroLabelHeightInMM = 18;
-
-            UserParameters.HeaderField = LabelField.MulticoreName;
-            UserParameters.FooterMiddleField = LabelField.ChannelNumber;
-            UserParameters.FooterBottomField = LabelField.InstrumentName;
-
-            UserParameters.SingleLabel = true;
-            #endregion
-            FileImport.ImportFile();
-
-            if (Globals.UnresolvableUnits.Count > 0)
-            {
-                ApplicationWindows.UnResolveableDataWindow = new UnResolveableData();
-                Hide();
-                ApplicationWindows.UnResolveableDataWindow.Show();
-            }
-
-            else
-            {
-                DataHandling.SanitizeDimDistroUnits();
-
-                Hide();
-                ApplicationWindows.LabelSetupWindow = new LabelSetup();
-                ApplicationWindows.LabelSetupWindow.Show();
-            }
         }
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -228,7 +229,14 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
         }
-        
+
+        public Color LabelColor
+        {
+            get
+            {
+                return GetLabelColor();
+            }
+        }
         #endregion
 
         // Imported Temporary Data
@@ -316,6 +324,22 @@ namespace Dimmer_Labels_Wizard_WPF
         public override string ToString()
         {
             return "Dimmer Number: " + DimmerNumber.ToString();
+        }
+
+        private Color GetLabelColor()
+        {
+            Color color;
+
+            if (Globals.LabelColors.TryGetValue(DimmerNumber, out color))
+            {
+                return color;
+            }
+
+            else
+            {
+                return Colors.White;
+            }
+
         }
 
         // Provides easier accsess when using Switch Statements to GetData Based on LabelField.

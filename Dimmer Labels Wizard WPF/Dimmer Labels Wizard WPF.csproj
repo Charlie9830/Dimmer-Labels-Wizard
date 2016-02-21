@@ -65,10 +65,6 @@
     </ApplicationDefinition>
     <Compile Include="Adorners.cs" />
     <Compile Include="ApplicationWindows.cs" />
-    <Compile Include="BackgroundColorTable.xaml.cs">
-      <DependentUpon>BackgroundColorTable.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BackgroundColorTableViewModel.cs" />
     <Compile Include="CellTemplateControl.xaml.cs">
       <DependentUpon>CellTemplateControl.xaml</DependentUpon>
     </Compile>
@@ -81,6 +77,10 @@
       <DependentUpon>FontSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="IModifcationNotification.cs" />
+    <Compile Include="LabelColorManager.xaml.cs">
+      <DependentUpon>LabelColorManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LabelColorManagerViewModel.cs" />
     <Compile Include="LabelManager.xaml.cs">
       <DependentUpon>LabelManager.xaml</DependentUpon>
     </Compile>
@@ -144,26 +144,8 @@
     <Compile Include="DimmerRangeSelectorHost.xaml.cs">
       <DependentUpon>DimmerRangeSelectorHost.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LabelGenerationDialog.xaml.cs">
-      <DependentUpon>LabelGenerationDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LabelSetup.xaml.cs">
-      <DependentUpon>LabelSetup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="LabelSetupViewModel.cs" />
-    <Compile Include="LabelsTest.xaml.cs">
-      <DependentUpon>LabelsTest.xaml</DependentUpon>
-    </Compile>
     <Compile Include="LabelStrip.cs" />
     <Compile Include="PopUpControlAdorner.cs" />
-    <Compile Include="PrintRangeControl.xaml.cs">
-      <DependentUpon>PrintRangeControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PrintRangeControlViewModel.cs" />
-    <Compile Include="PrintWindow.xaml.cs">
-      <DependentUpon>PrintWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PrintWindowViewModel.cs" />
     <Compile Include="Racks.cs" />
     <Compile Include="RenderingTesting.cs" />
     <Compile Include="SanitizationDialog.xaml.cs">
@@ -182,6 +164,7 @@
       <DependentUpon>UniqueCellTemplateEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="UniqueCellTemplateEditorViewModel.cs" />
+    <Compile Include="UnitGroup.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
@@ -189,10 +172,6 @@
     <Compile Include="UserParameters.cs" />
     <Compile Include="ValueConverters.cs" />
     <Compile Include="ViewModelBase.cs" />
-    <Page Include="BackgroundColorTable.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CellTemplateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -245,19 +224,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LabelGenerationDialog.xaml">
+    <Page Include="LabelColorManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LabelManager.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="LabelSetup.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="LabelsTest.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -276,14 +247,6 @@
     <Page Include="NewTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PrintRangeControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="PrintWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="RenameTemplate.xaml">
       <SubType>Designer</SubType>
