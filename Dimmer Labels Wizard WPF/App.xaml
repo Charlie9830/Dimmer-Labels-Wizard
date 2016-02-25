@@ -17,6 +17,9 @@
         <!-- Boolean to Visibilty Converter, True == Visible, False == Collapsed -->
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         
+        <!-- Color to Brush Converter -->
+        <local:ColorToBrushConverter x:Key="ColorToBrush"/>
+        
         <!-- Help Button -->
         <Image x:Key="HelpIcon24" Source="/Resources/help-circled-24-000000.png" Stretch="Uniform"/>
         <Style x:Key="HelpButton" TargetType="{x:Type Button}">

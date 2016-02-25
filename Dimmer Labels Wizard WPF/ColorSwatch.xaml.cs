@@ -10,17 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Xceed.Wpf.Toolkit;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for LabelColorManager.xaml
+    /// Interaction logic for ColorSwatch.xaml
     /// </summary>
-    public partial class LabelColorManager : Window
+    public partial class ColorSwatch : UserControl
     {
-        public LabelColorManager()
+        public ColorSwatch()
         {
             InitializeComponent();
         }

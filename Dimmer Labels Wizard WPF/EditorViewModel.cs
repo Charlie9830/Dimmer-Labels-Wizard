@@ -44,61 +44,58 @@ namespace Dimmer_Labels_Wizard_WPF
             #region Testing Code
             // Testing
             // 00
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "1", Position = "LX1", DimmerNumber = 1, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "2", Position = "LX1", DimmerNumber = 2, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "3", Position = "LX1", DimmerNumber = 3, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "4", Position = "LX1", DimmerNumber = 4, RackUnitType = RackType.Dimmer });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "1", Position = "Par Bar", DimmerNumber = 1, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "2", Position = "Par Bar", DimmerNumber = 2, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "3", Position = "Par Bar", DimmerNumber = 3, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "4", Position = "Par Bar", DimmerNumber = 4, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
                                                                                                                          
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "5", Position = "LX1", DimmerNumber = 5, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "6", Position = "LX1", DimmerNumber = 6, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "7", Position = "LX1", DimmerNumber = 7, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "8", Position = "LX1", DimmerNumber = 8, RackUnitType = RackType.Dimmer });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "5", Position = "Par Bar", DimmerNumber = 5, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "6", Position = "Par Bar", DimmerNumber = 6, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "7", Position = "Par Bar", DimmerNumber = 7, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "8", Position = "Par Bar", DimmerNumber = 8, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
                                                                                                                         
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "9", Position = "LX1", DimmerNumber = 9, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "10", Position = "LX1", DimmerNumber = 10, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "11", Position = "LX1", DimmerNumber = 11, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "12", Position = "LX1", DimmerNumber = 12, RackUnitType = RackType.Dimmer });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "9", Position = "Par Bar", DimmerNumber = 9, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "10", Position = "Par Bar", DimmerNumber = 10, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "11", Position = "Par Bar", DimmerNumber = 11, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "12", Position = "Par Bar", DimmerNumber = 12, RackUnitType = RackType.Dimmer, InstrumentName = "Par64" });
 
             // 13
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "13", Position = "LX2", DimmerNumber = 13, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "14", Position = "LX2", DimmerNumber = 14, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "15", Position = "LX2", DimmerNumber = 15, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "16", Position = "LX2", DimmerNumber = 16, RackUnitType = RackType.Dimmer });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "101", Position = "LX5", DimmerNumber = 13, RackUnitType = RackType.Dimmer, InstrumentName = "Alpha" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "111", Position = "LX5", DimmerNumber = 14, RackUnitType = RackType.Dimmer, InstrumentName = "Sharpy" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "102", Position = "LX5", DimmerNumber = 16, RackUnitType = RackType.Dimmer, InstrumentName = "Alpha" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "112", Position = "LX5", DimmerNumber = 15, RackUnitType = RackType.Dimmer, InstrumentName = "Sharpy" });
                                                                                                      
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "17", Position = "LX2", DimmerNumber = 17, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "18", Position = "LX2", DimmerNumber = 18, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "19", Position = "LX2", DimmerNumber = 19, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "20", Position = "LX2", DimmerNumber = 20, RackUnitType = RackType.Dimmer });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "103", Position = "LX5", DimmerNumber = 17, RackUnitType = RackType.Dimmer, InstrumentName = "Alpha" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "113", Position = "LX5", DimmerNumber = 18, RackUnitType = RackType.Dimmer, InstrumentName = "Sharpy" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "104", Position = "LX5", DimmerNumber = 19, RackUnitType = RackType.Dimmer, InstrumentName = "Alpha" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "114", Position = "LX5", DimmerNumber = 20, RackUnitType = RackType.Dimmer, InstrumentName = "Sharpy" });
                                                                                                  
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "21", Position = "LX2", DimmerNumber = 21, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "22", Position = "LX2", DimmerNumber = 22, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "23", Position = "LX2", DimmerNumber = 23, RackUnitType = RackType.Dimmer });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "24", Position = "LX2", DimmerNumber = 24, RackUnitType = RackType.Dimmer });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "105", Position = "LX5", DimmerNumber = 21, RackUnitType = RackType.Dimmer, InstrumentName = "Alpha" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "115", Position = "LX5", DimmerNumber = 22, RackUnitType = RackType.Dimmer, InstrumentName = "Sharpy" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "106", Position = "LX5", DimmerNumber = 23, RackUnitType = RackType.Dimmer, InstrumentName = "Alpha" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "116", Position = "LX5", DimmerNumber = 24, RackUnitType = RackType.Dimmer, InstrumentName = "Sharpy" });
 
             // 25
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "101", Position = "LX2", DimmerNumber = 1, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "102", Position = "LX2", DimmerNumber = 2, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "103", Position = "LX2", DimmerNumber = 3, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "104", Position = "LX2", DimmerNumber = 4, RackUnitType = RackType.Distro });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "901", Position = "OP Flys", DimmerNumber = 1, RackUnitType = RackType.Distro, InstrumentName = "Hazer" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "902", Position = "OP Flys", DimmerNumber = 2, RackUnitType = RackType.Distro, InstrumentName = "Hazer" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "903", Position = "PS Flys", DimmerNumber = 3, RackUnitType = RackType.Distro, InstrumentName = "Hazer" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "904", Position = "PS Flys", DimmerNumber = 4, RackUnitType = RackType.Distro, InstrumentName = "Hazer" });
                                                                                                                                                     
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "105", Position = "LX2", DimmerNumber = 5, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "106", Position = "LX2", DimmerNumber = 6, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "107", Position = "LX2", DimmerNumber = 7, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "108", Position = "LX2", DimmerNumber = 8, RackUnitType = RackType.Distro });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "911", Position = "Floor", DimmerNumber = 5, RackUnitType = RackType.Distro, InstrumentName = "Fogger" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "912", Position = "Floor", DimmerNumber = 6, RackUnitType = RackType.Distro, InstrumentName = "Fogger" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "913", Position = "Floor", DimmerNumber = 7, RackUnitType = RackType.Distro, InstrumentName = "Fogger" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "914", Position = "Floor", DimmerNumber = 8, RackUnitType = RackType.Distro, InstrumentName = "Fogger" });
                                                                                                                                                    
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "109", Position = "LX2", DimmerNumber = 9, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "110", Position = "LX2", DimmerNumber = 10, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "111", Position = "LX2", DimmerNumber = 11, RackUnitType = RackType.Distro });
-            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "112", Position = "LX2", DimmerNumber = 12, RackUnitType = RackType.Distro });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "501", Position = "Set", DimmerNumber = 9, RackUnitType = RackType.Distro, InstrumentName = "Strobe" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "502", Position = "Set", DimmerNumber = 10, RackUnitType = RackType.Distro, InstrumentName = "Strobe" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "503", Position = "Set", DimmerNumber = 11, RackUnitType = RackType.Distro, InstrumentName = "Strobe" });
+            Globals.DimmerDistroUnits.Add(new DimmerDistroUnit() { ChannelNumber = "504", Position = "Set", DimmerNumber = 12, RackUnitType = RackType.Distro, InstrumentName = "Strobe" });
 
             Globals.Strips.Add(new Strip() { Universe = 0, FirstDimmer = 1, LastDimmer = 12, RackType = RackType.Dimmer });
             Globals.Strips.Add(new Strip() { Universe = 0, FirstDimmer = 13, LastDimmer = 24, RackType = RackType.Dimmer });
-            Globals.Strips.Add(new Strip() { FirstDimmer = 2, LastDimmer = 14, RackType = RackType.Distro });
+            Globals.Strips.Add(new Strip() { FirstDimmer = 1, LastDimmer = 12, RackType = RackType.Distro });
 
-            Globals.LabelColors.Add(1, Colors.Purple);
-            Globals.LabelColors.Add(2, Colors.Black);
-            Globals.LabelColors.Add(3, Colors.Red);
-            Globals.LabelColors.Add(4, Colors.Blue);
+
             #endregion
 
             // Initialize UndoRedoManager.

@@ -236,7 +236,14 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 return GetLabelColor();
             }
+
+            set
+            {
+                SetLabelColor(value);
+            }
         }
+        
+
         #endregion
 
         // Imported Temporary Data
@@ -330,7 +337,10 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             Color color;
 
-            if (Globals.LabelColors.TryGetValue(DimmerNumber, out color))
+            // Select Search Space.
+            var dictionary = RackUnitType == RackType.Dimmer ? Globals.DimmerLabelColors : Globals.DistroLabelColors;
+
+            if (dictionary.TryGetValue(DimmerNumber, out color))
             {
                 return color;
             }
@@ -340,6 +350,29 @@ namespace Dimmer_Labels_Wizard_WPF
                 return Colors.White;
             }
 
+        }
+
+        private void SetLabelColor(Color desiredColor)
+        {
+            Color color;
+
+            // Select Search Space.
+            var dictionary = RackUnitType == RackType.Dimmer ? Globals.DimmerLabelColors : Globals.DistroLabelColors;
+
+            if (dictionary.TryGetValue(DimmerNumber, out color))
+            {
+                // Dictionary Entry exists, Modify Value if required.
+                if (color != desiredColor)
+                {
+                    dictionary[DimmerNumber] = desiredColor;
+                }
+            }
+
+            else
+            {
+                // Make a new Entry.
+                dictionary.Add(DimmerNumber, desiredColor);
+            }
         }
 
         // Provides easier accsess when using Switch Statements to GetData Based on LabelField.

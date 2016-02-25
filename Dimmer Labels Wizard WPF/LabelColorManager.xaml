@@ -1,31 +1,38 @@
-﻿<Window x:Class="Dimmer_Labels_Wizard_WPF.LabelColorManager"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+        xmlns:Themes="clr-namespace:Xceed.Wpf.Toolkit.Themes;assembly=Xceed.Wpf.Toolkit" x:Class="Dimmer_Labels_Wizard_WPF.LabelColorManager"
         mc:Ignorable="d"
-        Title="LabelColorManager" Height="500" Width="700">
+        Title="LabelColorManager" Height="500" Width="605">
+
+    <Window.Resources>
+        <DataTemplate x:Key="DataGridColorTemplate" DataType="DataGridTemplateColumn">
+            <Rectangle Fill="{Binding UnitGroupColor, Converter={StaticResource ColorToBrush}}"/>
+        </DataTemplate>
+    </Window.Resources>
+
 
     <Window.DataContext>
         <local:LabelColorManagerViewModel/>
     </Window.DataContext>
 
 
-    
     <Grid Background="{StaticResource WindowBackground}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.15*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        
+
         <Label Content="Label Color Manager" Grid.Row="0"
-               Style="{StaticResource WindowHeaderStyle}"/>
+			Style="{StaticResource WindowHeaderStyle}"/>
 
         <HeaderedContentControl Header="Color Assignment" Grid.Row="1" Margin="10"
-                                Style="{StaticResource HeaderedControlStyle}">
+			Style="{StaticResource HeaderedControlStyle}">
             <Grid Background="{StaticResource ControlGridBackground}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
@@ -33,39 +40,39 @@
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
                     <Label Content="Assign by" Grid.Row="0" Grid.Column="0"
-                       Style="{StaticResource ControlLabelStyle}"/>
+						Style="{StaticResource ControlLabelStyle}"/>
                     <ComboBox Height="20" Width="135" Margin="10,0,0,0"
-                              ItemsSource="{Binding Path=LabelFields}" SelectedItem="{Binding Path=SelectedLabelField}"/>
+						ItemsSource="{Binding Path=LabelFields}" SelectedItem="{Binding Path=SelectedLabelField}"/>
                 </StackPanel>
 
-                <DataGrid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="280"  Margin="10"
-                          IsSynchronizedWithCurrentItem="False"
-                          AutoGenerateColumns="false" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                          ItemsSource="{Binding Path=Units}">
-                    
+                <DataGrid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="300" Width="300"  Margin="10"
+					IsSynchronizedWithCurrentItem="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended"
+					AutoGenerateColumns="false" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+					ItemsSource="{Binding Path=UnitGroups}" SelectedItem="{Binding Path=SelectedUnitGroup}">
+
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Item" Width="200"
-                                            Binding="{Binding DimmerNumber}"/>
-                        <DataGridTextColumn Header="Colour"/>
+							Binding="{Binding Name}" />
+                        <DataGridTemplateColumn Header="Colour" Width="100"
+                                                CellTemplate="{StaticResource DataGridColorTemplate}" />
                     </DataGrid.Columns>
                 </DataGrid>
-                
-                <Border Grid.Row="1" Grid.Column="1" Width="200" Height="200" Background="White"/>
-                
+
+                <local:ColorPicker x:Name="colorPicker" Grid.Row="1" Grid.Column="1" Margin="10"
+                                   VerticalAlignment="Top" HorizontalAlignment="Left"
+                                   SelectedColor="{Binding Path=SelectedUnitGroupColor, Mode=TwoWay}"/>
             </Grid>
-            
-            
         </HeaderedContentControl>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
-            <Button Content="Ok" Width="75" Height="20" Margin="10"/>
+            <Button Content="Ok" Width="75" Height="20" Margin="0,5,10,10"/>
         </StackPanel>
-        
+
     </Grid>
 </Window>

@@ -43,37 +43,42 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     _Units = value;
 
+                    // Set Color.
+                    _UnitGroupColor = GetColor();
+
+
                     // Notify.
                     OnPropertyChanged(nameof(Units));
+                    OnPropertyChanged(nameof(UnitGroupColor));
                 }
             }
         }
 
+        protected Color _UnitGroupColor = Colors.White;
 
-        protected Color _Color;
-
-        public Color Color
-        {
-            get { return _Color; }
-            set
-            {
-                if (_Color != value)
-                {
-                    _Color = value;
-
-                    // Notify.
-                    OnPropertyChanged(nameof(Color));
-                }
-            }
-        }
-
-        public Brush DisplayedBrush
+        public Color UnitGroupColor
         {
             get
             {
-                return GetDisplayedBrush();
+                return _UnitGroupColor;
+            }
+
+            set
+            {
+                if (value != _UnitGroupColor)
+                {
+                    _UnitGroupColor = value;
+
+                    // Update Model.
+                    SetColor(value);
+
+                    // Notify.
+                    OnPropertyChanged(nameof(UnitGroupColor));
+                }
+                
             }
         }
+
         #endregion
 
         #region Methods
@@ -92,18 +97,26 @@ namespace Dimmer_Labels_Wizard_WPF
             return colorRange;
         }
 
-        protected Brush GetDisplayedBrush()
+        protected Color GetColor()
         {
             var colorRange = GetColorRange();
 
             if (colorRange.Count() > 0)
             {
-                return new SolidColorBrush(colorRange.First());
+                return colorRange.First();
             }
 
             else
             {
-                return new SolidColorBrush(Colors.White);
+                return Colors.White;
+            }
+        }
+
+        protected void SetColor(Color desiredColor)
+        {
+            foreach (var element in Units)
+            {
+                element.LabelColor = desiredColor;
             }
         }
 

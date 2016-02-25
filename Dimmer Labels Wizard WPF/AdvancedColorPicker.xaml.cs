@@ -11,16 +11,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Xceed.Wpf.Toolkit;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for LabelColorManager.xaml
+    /// Interaction logic for AdvancedColorPicker.xaml
     /// </summary>
-    public partial class LabelColorManager : Window
+    public partial class AdvancedColorPicker : Window
     {
-        public LabelColorManager()
+        public AdvancedColorPicker()
         {
             InitializeComponent();
         }

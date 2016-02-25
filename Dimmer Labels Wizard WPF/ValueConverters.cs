@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -67,6 +68,21 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 return str;
             }
+        }
+    }
+
+    class ColorToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new SolidColorBrush((Color)value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SolidColorBrush brush = value as SolidColorBrush;
+
+            return brush.Color;
         }
     }
 }
