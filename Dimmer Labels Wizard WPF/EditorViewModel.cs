@@ -40,6 +40,10 @@ namespace Dimmer_Labels_Wizard_WPF
             _OpenTemplateSettings = new RelayCommand(OpenTemplateSettingsExecute);
             _ShowLabelManagerCommand = new RelayCommand(ShowLabelManagerCommandExecute);
             _ShowLabelColorManagerCommand = new RelayCommand(ShowLabelColorManagerCommandExecute);
+            _ResetZoomCommand = new RelayCommand(ResetZoomCommandExecute);
+            _ZoomInCommand = new RelayCommand(ZoomInCommandExecute);
+            _ZoomOutCommand = new RelayCommand(ZoomOutCommandExecute);
+            _SetZoomPercentageCommand = new RelayCommand(SetZoomPercentageCommandExecute);
 
             #region Testing Code
             // Testing
@@ -125,6 +129,24 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region CLR Properties - Binding Target.
+
+        protected double _LabelScale = 1d;
+
+        public double LabelScale
+        {
+            get { return _LabelScale; }
+            set
+            {
+                if (_LabelScale != value)
+                {
+                    _LabelScale = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LabelScale));
+                }
+            }
+        }
+
         private Visibility _DatabasePanelVisibility = Visibility.Visible;
 
         public Visibility DatabasePanelVisibility
@@ -733,6 +755,68 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Commands
 
+        protected RelayCommand _SetZoomPercentageCommand;
+        public ICommand SetZoomPercentageCommand
+        {
+            get
+            {
+                return _SetZoomPercentageCommand;
+            }
+        }
+
+        protected void SetZoomPercentageCommandExecute(object parameter)
+        {
+            int percentage;
+
+            if (int.TryParse((string)parameter, out percentage))
+            {
+                LabelScale = (double)percentage / 100d;
+            }
+        }
+
+        protected RelayCommand _ResetZoomCommand;
+        public ICommand ResetZoomCommand
+        {
+            get
+            {
+                return _ResetZoomCommand;
+            }
+        }
+
+        protected void ResetZoomCommandExecute(object parameter)
+        {
+            LabelScale = 1d;
+        }
+
+
+        protected RelayCommand _ZoomInCommand;
+        public ICommand ZoomInCommand
+        {
+            get
+            {
+                return _ZoomInCommand;
+            }
+        }
+
+        protected void ZoomInCommandExecute(object parameter)
+        {
+            LabelScale += 0.1d;
+        }
+
+
+        protected RelayCommand _ZoomOutCommand;
+        public ICommand ZoomOutCommand
+        {
+            get
+            {
+                return _ZoomOutCommand;
+            }
+        }
+
+        protected void ZoomOutCommandExecute(object parameter)
+        {
+            LabelScale -= 0.1d;
+        }
 
         protected RelayCommand _ShowLabelColorManagerCommand;
         public ICommand ShowLabelColorManagerCommand
@@ -747,6 +831,8 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var dialog = new LabelColorManager();
             dialog.ShowDialog();
+
+            PresentStripData(SelectedStrip);
         }
 
         protected RelayCommand _ShowLabelManagerCommand;

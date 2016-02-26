@@ -7,12 +7,16 @@
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         xmlns:Themes="clr-namespace:Xceed.Wpf.Toolkit.Themes;assembly=Xceed.Wpf.Toolkit" x:Class="Dimmer_Labels_Wizard_WPF.LabelColorManager"
         mc:Ignorable="d"
+        x:Name="Window"
         Title="LabelColorManager" Height="500" Width="605">
 
     <Window.Resources>
         <DataTemplate x:Key="DataGridColorTemplate" DataType="DataGridTemplateColumn">
-            <Rectangle Fill="{Binding UnitGroupColor, Converter={StaticResource ColorToBrush}}"/>
+            <Rectangle Fill="{Binding DisplayedBrush}"/>
         </DataTemplate>
+        <Style x:Key="DataGridRow" TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+            <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+        </Style>
     </Window.Resources>
 
 
@@ -54,12 +58,12 @@
                 <DataGrid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="300" Width="300"  Margin="10"
 					IsSynchronizedWithCurrentItem="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended"
 					AutoGenerateColumns="false" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-					ItemsSource="{Binding Path=UnitGroups}" SelectedItem="{Binding Path=SelectedUnitGroup}">
+					ItemsSource="{Binding Path=UnitGroups}" RowStyle="{StaticResource DataGridRow}">
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Item" Width="200"
+                        <DataGridTextColumn Header="Item" Width="200" IsReadOnly="True"
 							Binding="{Binding Name}" />
-                        <DataGridTemplateColumn Header="Colour" Width="100"
+                        <DataGridTemplateColumn Header="Colour" Width="100" IsReadOnly="True"
                                                 CellTemplate="{StaticResource DataGridColorTemplate}" />
                     </DataGrid.Columns>
                 </DataGrid>
@@ -71,7 +75,8 @@
         </HeaderedContentControl>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
-            <Button Content="Ok" Width="75" Height="20" Margin="0,5,10,10"/>
+            <Button Content="Ok" Width="75" Height="20" Margin="0,5,10,10"
+                    Command="{Binding Path=OkCommand}" CommandParameter="{Binding ElementName=Window}"/>
         </StackPanel>
 
     </Grid>

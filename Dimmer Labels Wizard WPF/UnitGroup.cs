@@ -50,6 +50,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Notify.
                     OnPropertyChanged(nameof(Units));
                     OnPropertyChanged(nameof(UnitGroupColor));
+                    OnPropertyChanged(nameof(DisplayedBrush));
                 }
             }
         }
@@ -73,9 +74,38 @@ namespace Dimmer_Labels_Wizard_WPF
                     SetColor(value);
 
                     // Notify.
+                    OnPropertyChanged(nameof(DisplayedBrush));
                     OnPropertyChanged(nameof(UnitGroupColor));
                 }
                 
+            }
+        }
+
+
+        public Brush DisplayedBrush
+        {
+            get
+            {
+                return GetDisplayedBrush();
+            }
+        }
+
+
+
+        protected bool _IsSelected = false;
+
+        public bool IsSelected
+        {
+            get { return _IsSelected; }
+            set
+            {
+                if (_IsSelected != value)
+                {
+                    _IsSelected = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(IsSelected));
+                }
             }
         }
 
@@ -120,6 +150,74 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        protected Brush GetDisplayedBrush()
+        {
+            var colorRange = GetColorRange().ToList();
+
+            if (colorRange.Count() > 0)
+            {
+                // Test for Color Range Equality.
+                if (colorRange.TrueForAll(item => item == colorRange.First()))
+                {
+                    // Colors are all Equal, return Single Color.
+                    return new SolidColorBrush(colorRange.First());
+                }
+
+                else
+                {
+                    // Colors arent Equal, return Gradient.
+                    // Get Gradient Stop Range.
+                    var gradientOffsets = ComputeGradientOffsets(colorRange.Count);
+                    var gradientOffsetsEnumerator = gradientOffsets.GetEnumerator();
+
+                    var gradientStops = new List<GradientStop>();
+
+                    // Assign 1 Color per 2 GradientStops and Apply to GradientStop Object.
+                    foreach (var element in colorRange)
+                    {
+                        if (gradientOffsetsEnumerator.MoveNext())
+                        {
+                            gradientStops.Add(new GradientStop(element, gradientOffsetsEnumerator.Current));
+
+                            if (gradientOffsetsEnumerator.MoveNext())
+                            {
+                                gradientStops.Add(new GradientStop(element, gradientOffsetsEnumerator.Current));
+                            }
+                        }
+                    }
+
+                    return new LinearGradientBrush(new GradientStopCollection(gradientStops), 0);
+                }
+            }
+
+            else
+            {
+                // ColorRange is Empty.
+                return null;
+            }
+        }
+
+        protected IEnumerable<double> ComputeGradientOffsets(int colorCount)
+        {
+            double gradientDivision = 1d / colorCount;
+            double currentDivision;
+
+            var offsets = new List<double>() { 0d };
+
+            for (int count = 1; count <= colorCount; count++)
+            {
+                currentDivision = offsets.Last() + gradientDivision;
+
+                for (int j = 1; j <= 2; j++)
+                {
+                    offsets.Add(currentDivision);
+                }
+            }
+
+            offsets.Add(1d);
+
+            return offsets;
+        }
         #endregion
     }
 }

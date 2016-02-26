@@ -77,12 +77,18 @@
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
 
-        <Border x:Name="LabelStripArea" BorderThickness="1" Grid.Row="3" Grid.Column="1" BorderBrush="Black" Background="#FCE1E1E1">
-            <local:LabelStrip x:Name="LabelStrip" Style="{Binding Path=DisplayedTemplate}" DataSource="{Binding Path=Units}"
+        <Border x:Name="LabelStripArea" BorderThickness="1" Grid.Row="3" Grid.Column="1" BorderBrush="Black" Background="#FCE1E1E1"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <local:LabelStrip x:Name="LabelStrip"
+                              Style="{Binding Path=DisplayedTemplate}" DataSource="{Binding Path=Units}"
                               UniqueUpperCellTemplates="{Binding Path=UniqueUpperCellTemplates}" 
                               UniqueLowerCellTemplates="{Binding Path=UniqueLowerCellTemplates}"
                               Mergers="{Binding Path=Mergers}" SelectedCells="{Binding Path=SelectedCells}"
                               Cells="{Binding Path=Cells}">
+                <local:LabelStrip.LayoutTransform>
+                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="{Binding Path=LabelScale}" ScaleY="{Binding Path=LabelScale}"/>
+                </local:LabelStrip.LayoutTransform>
+                
             </local:LabelStrip>
 
             <Border.ContextMenu>
@@ -90,6 +96,14 @@
                     <MenuItem Header="Apply Unique Template" Command="{Binding Path=MakeUniqueTemplateCommand}"/>
                     <MenuItem Header="Remove Unique Template" Command="{Binding Path=RemoveUniqueTemplateCommand}" />
                     <MenuItem Header="Remove All Unique Templates" Command="{Binding Path=RemoveAllUniqueTemplatesCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="Reset Zoom" Command="{Binding Path=ResetZoomCommand}"/>
+                    <MenuItem Header="Zoom In" Command="{Binding Path=ZoomInCommand}"/>
+                    <MenuItem Header="Zoom Out" Command="{Binding Path=ZoomOutCommand}"/>
+                    <MenuItem Header="200%" Command="{Binding Path=SetZoomPercentageCommand}" CommandParameter="200"/>
+                    <MenuItem Header="150%" Command="{Binding Path=SetZoomPercentageCommand}" CommandParameter="150"/>
+                    <MenuItem Header="100%" Command="{Binding Path=SetZoomPercentageCommand}" CommandParameter="100"/>
+                    <MenuItem Header="75%" Command="{Binding Path=SetZoomPercentageCommand}" CommandParameter="75"/>
                 </ContextMenu>
             </Border.ContextMenu>
         </Border>
@@ -129,7 +143,7 @@
                 <MenuItem Header="_Template Label Assignments..." Command="{Binding Path=OpenTemplateSettings}" CommandParameter="1"/>
                 <Separator/>
                 <MenuItem Header="_Labels..." Command="{Binding Path=ShowLabelManagerCommand}"/>
-                <MenuItem Header="_Label Colours" Command="{Binding Path=ShowLabelColorManagerCommand}"/>
+                <MenuItem Header="_Label Colours..." Command="{Binding Path=ShowLabelColorManagerCommand}"/>
                 <MenuItem Header="_Database..."/>
 
             </MenuItem>
@@ -270,9 +284,12 @@
                         Style="{StaticResource ToolBarStyle}">
                         <StackPanel VerticalAlignment="Stretch"
                                     Background="{StaticResource ControlGridBackground}">
-                            <Button Width="20" Content="1X" Height="20" Margin="5"/>
-                            <Button Width="20" Content="+" Height="20" Margin="5"/>
-                            <Button Width="20" Content="-" Height="20" Margin="5"/>
+                            <Button Width="20" Content="1X" Height="20" Margin="5"
+                                    Command="{Binding Path=ResetZoomCommand}"/>
+                            <Button Width="20" Content="+" Height="20" Margin="5"
+                                    Command="{Binding Path=ZoomInCommand}"/>
+                            <Button Width="20" Content="-" Height="20" Margin="5"
+                                    Command="{Binding Path=ZoomOutCommand}"/>
                         </StackPanel>
                     </ToolBar>
                 </ToolBarTray>

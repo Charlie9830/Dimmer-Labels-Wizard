@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Dimmer_Labels_Wizard_WPF
@@ -15,6 +16,9 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelColorManagerViewModel()
         {
             RefreshUnitGroups(LabelField.Position);
+
+            // Commands.
+            _OkCommand = new RelayCommand(OkCommandExecute);
         }
 
         #region Binding Source Properties
@@ -36,36 +40,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-
-        protected UnitGroup _SelectedUnitGroup;
-
-        public UnitGroup SelectedUnitGroup
-        {
-            get { return _SelectedUnitGroup; }
-            set
-            {
-                if (_SelectedUnitGroup != value)
-                {
-                    _SelectedUnitGroup = value;
-
-                    // Set Color.
-                    if (value != null)
-                    {
-                        SelectedUnitGroupColor = value.UnitGroupColor;
-                    }
-                    
-                    else
-                    {
-                        SelectedUnitGroupColor = Colors.White;
-                    }
-
-                    // Notify.
-                    OnPropertyChanged(nameof(SelectedUnitGroup));
-                }
-            }
-        }
-
-
         protected Color _SelectedUnitGroupColor = Colors.White;
 
         public Color SelectedUnitGroupColor
@@ -78,9 +52,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     _SelectedUnitGroupColor = value;
 
                     // Update Model.
-                    if (SelectedUnitGroup != null)
+                    foreach (var element in SelectedUnitGroups)
                     {
-                        SelectedUnitGroup.UnitGroupColor = value;
+                        element.UnitGroupColor = value;
                     }
 
                     // Notify.
@@ -120,9 +94,52 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
+        #region Commands.
+
+        protected RelayCommand _OkCommand;
+        public ICommand OkCommand
+        {
+            get
+            {
+                return _OkCommand;
+            }
+        }
+
+        protected void OkCommandExecute(object parameter)
+        {
+            var window = parameter as LabelColorManager;
+
+            window.Close();
+        }
+
+        #endregion
+
+        #region Non Binding Properties.
+
+        protected List<UnitGroup> _SelectedUnitGroups = new List<UnitGroup>();
+
+        public List<UnitGroup> SelectedUnitGroups
+        {
+            get { return _SelectedUnitGroups; }
+            set
+            {
+                if (_SelectedUnitGroups != value)
+                {
+                    _SelectedUnitGroups = value;
+                }
+            }
+        }
+
+        #endregion
+
         #region Methods      
         protected void RefreshUnitGroups(LabelField labelField)
         {
+            foreach (var element in UnitGroups)
+            {
+                element.PropertyChanged -= UnitGroup_PropertyChanged;
+            }
+
             UnitGroups.Clear();
 
             var query = GetLabelFieldGroups(labelField);
@@ -138,6 +155,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     };
 
                     UnitGroups.Add(unitGroup);
+
+                    unitGroup.PropertyChanged += UnitGroup_PropertyChanged;
                 }
             }
         }
@@ -155,18 +174,22 @@ namespace Dimmer_Labels_Wizard_WPF
                     return from item in Globals.DimmerDistroUnits
                            group item by item.InstrumentName into itemgroup
                            select itemgroup;
+
                 case LabelField.MulticoreName:
                     return from item in Globals.DimmerDistroUnits
-                           group item by item.ChannelNumber into itemgroup
+                           group item by item.MulticoreName into itemgroup
                            select itemgroup;
+
                 case LabelField.Position:
                     return from item in Globals.DimmerDistroUnits
                            group item by item.Position into itemgroup
                            select itemgroup;
+
                 case LabelField.UserField1:
                     return from item in Globals.DimmerDistroUnits
                            group item by item.UserField1 into itemgroup
                            select itemgroup;
+
                 case LabelField.UserField2:
                     return from item in Globals.DimmerDistroUnits
                            group item by item.UserField2 into itemgroup
@@ -175,6 +198,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     return from item in Globals.DimmerDistroUnits
                            group item by item.UserField3 into itemgroup
                            select itemgroup;
+
                 case LabelField.UserField4:
                     return from item in Globals.DimmerDistroUnits
                            group item by item.UserField4 into itemgroup
@@ -183,7 +207,52 @@ namespace Dimmer_Labels_Wizard_WPF
                     return new List<List<DimmerDistroUnit>>() as IEnumerable<IEnumerable<DimmerDistroUnit>>;
             }
         }
-          
+
+        #endregion
+
+        #region Event Handlers.
+        private void UnitGroup_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var unitGroup = sender as UnitGroup;
+
+            if (e.PropertyName == "IsSelected")
+            {
+                bool isSelected = unitGroup.IsSelected;
+
+                if (isSelected)
+                {
+                    // Selected.
+                    if (SelectedUnitGroups.Contains(unitGroup) == false)
+                    {
+                        SelectedUnitGroups.Add(unitGroup);
+                    }
+                }
+
+                else
+                {
+                    // Deselected.
+                    SelectedUnitGroups.Remove(unitGroup);
+                }
+
+                // Set Color.
+                if (SelectedUnitGroups.Count > 0)
+                {
+                    _SelectedUnitGroupColor = SelectedUnitGroups.First().UnitGroupColor;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedUnitGroupColor));
+                }
+
+                else
+                {
+                    _SelectedUnitGroupColor = Colors.White;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedUnitGroupColor));
+                }
+            }
+
+        }
         #endregion
     }
 }

@@ -22,10 +22,8 @@
                     <DataTemplate>
                         <Rectangle x:Name="Rectangle" Width="20" Height="20" StrokeThickness="1" Stroke="Black"
                                    Fill="{Binding Converter={StaticResource ColorToBrush}}"/>
-
                         <DataTemplate.Triggers>
                             <Trigger SourceName="Rectangle" Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Rectangle" Property="StrokeThickness" Value="2"/>
                                 <Setter TargetName="Rectangle" Property="Stroke" Value="White"/>
                             </Trigger>
                         </DataTemplate.Triggers>
