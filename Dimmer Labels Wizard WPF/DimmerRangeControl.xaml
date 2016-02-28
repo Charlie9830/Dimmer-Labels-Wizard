@@ -10,21 +10,24 @@
     <UserControl.DataContext>
         <local:RangeControlViewModel/>
     </UserControl.DataContext>
-    
+
     <Grid>
         <Border BorderBrush="White" BorderThickness="1">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Label Content="Universe" VerticalAlignment="Center"
                        Style="{StaticResource ControlLabelStyle}"/>
-                <TextBox Width="35" Height="20"/>
+                <TextBox Width="35" Height="20"
+                         Text="{Binding Path=UniverseNumber, Converter={StaticResource HideZeroValueConverter}}"/>
 
                 <TextBlock Text="First Number" TextWrapping="Wrap" Width="45" TextAlignment="Center"
                            Foreground="White" Margin="5,5,5,5"/>
-                <TextBox Width="35" Height="20" Text="999"/>
+                <TextBox Width="35" Height="20"
+                         Text="{Binding Path=FirstDimmerNumber, Converter={StaticResource HideZeroValueConverter}}"/>
 
                 <TextBlock Text="Last Number" TextWrapping="Wrap" Width="45" TextAlignment="Center" Margin="5"
                            Foreground="White"/>
-                <TextBox Width="35" Height="20" Margin="0,0,5,0"/>
+                <TextBox Width="35" Height="20" Margin="0,0,5,0"
+                         Text="{Binding Path=LastDimmerNumber, Converter={StaticResource HideZeroValueConverter}}"/>
             </StackPanel>
         </Border>
         

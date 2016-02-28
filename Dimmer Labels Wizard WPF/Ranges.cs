@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public class DimmerRange
+    public abstract class UnitRangeBase
+    {
+
+    }
+
+    public class DimmerRange : UnitRangeBase
     {
         public int Universe { get; set; }
         public int FirstDimmerNumber { get; set; }
         public int LastDimmerNumber { get; set; }
     }
 
-    public class DistroRange
+    public class DistroRange : UnitRangeBase
     {
         public int FirstDimmerNumber { get; set; }
         public int LastDimmerNumber { get; set; }

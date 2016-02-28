@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="ImportUnitsWindow" Height="585" Width="1000">
+        Title="ImportUnitsWindow" Height="585" Width="1100">
     <Grid Background="{StaticResource WindowBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -141,11 +141,9 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Row 0 -->
-                    <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Width="320" Height="180">
-                        <TextBlock Foreground="White" Text="Range Control" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                   Margin="80"/>
-                    </Border>
-                    
+                    <local:RangeControlContainer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                                 ControlType="Dimmer"/>
+
                     <!-- Row 1 -->
                     <Label Content="Data Format" Grid.Row="1" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
@@ -195,10 +193,9 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Row 0 -->
-                    <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-                        <TextBlock Foreground="White" Text="Range Control" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                   Margin="80"/>
-                    </Border>
+                    <local:RangeControlContainer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                                 ControlType="Distro"/>
+
 
                     <!-- Row 1 -->
                     <Label Content="Data Format" Grid.Row="1" Grid.Column="0"

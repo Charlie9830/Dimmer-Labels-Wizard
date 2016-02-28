@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dimmer Labels Wizard", "Dimmer Labels Wizard\Dimmer Labels Wizard.csproj", "{43E06D1A-CA92-4CA2-B435-389D4787494B}"
 EndProject
@@ -16,14 +16,12 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{43E06D1A-CA92-4CA2-B435-389D4787494B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{43E06D1A-CA92-4CA2-B435-389D4787494B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43E06D1A-CA92-4CA2-B435-389D4787494B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD50B9EC-2D9B-4EFA-BE98-848CFFF1B1A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AD50B9EC-2D9B-4EFA-BE98-848CFFF1B1A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD50B9EC-2D9B-4EFA-BE98-848CFFF1B1A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD50B9EC-2D9B-4EFA-BE98-848CFFF1B1A2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{33CD9906-8510-4BD1-86FE-2A2282845B21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33CD9906-8510-4BD1-86FE-2A2282845B21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33CD9906-8510-4BD1-86FE-2A2282845B21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33CD9906-8510-4BD1-86FE-2A2282845B21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
