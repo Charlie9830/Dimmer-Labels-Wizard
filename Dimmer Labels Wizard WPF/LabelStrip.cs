@@ -79,10 +79,6 @@ namespace Dimmer_Labels_Wizard_WPF
             MouseDown += LabelStrip_MouseDown;
         }
 
-        public LabelStrip(LabelStripStorage storage)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
         #region Constants
@@ -199,7 +195,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 // Handle Existing Elements
                 var collection = e.NewValue as IEnumerable<Merge>;
-                    
+
                 foreach (var element in collection)
                 {
                     instance.Merge(element);
@@ -384,7 +380,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Handle Existing Collection Elements.
             RefreshCellTemplates(standardTemplate, uniqueTemplates, cellCollection);
-            
+
         }
 
         private void UniqueUpperCellTemplatesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -409,7 +405,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var newTemplate = e.NewValue as LabelCellTemplate;
             var uniqueTemplates = instance.UniqueLowerCellTemplates;
             var lowerCells = instance.LowerCells;
-            
+
 
             RefreshCellTemplates(newTemplate, uniqueTemplates, lowerCells);
         }
@@ -672,7 +668,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // instance.CoerceValue(HeightProperty);
         }
 
-       
+
 
         public IEnumerable<LabelCell> SelectedCells
         {
@@ -707,7 +703,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Override and Overriden Handlers
-        
+
         #endregion
 
         #region Event Handlers
@@ -844,7 +840,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                         // Set Template
                         cell.Style = LowerCellTemplate;
-                        
+
                         // Connect event Handlers.
                         cell.PropertyChanged += LowerCell_PropertyChanged;
                         cell.MouseDown += Cell_MouseDown;
@@ -1102,7 +1098,7 @@ namespace Dimmer_Labels_Wizard_WPF
                         }
                     }
                 }
-                
+
                 else
                 {
                     // Selection has shifted to a new Cell. Okay it dump currently selected Cells AND rows.
@@ -1157,7 +1153,7 @@ namespace Dimmer_Labels_Wizard_WPF
             if (mergeInstructions.VerticalPosition == CellVerticalPosition.Upper)
             {
                 cellCollection = UpperCells;
-                
+
             }
             else
             {
@@ -1247,13 +1243,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Re Insert Consumed Cells into Collection.
             int consumedCellsCount = primaryCell.ConsumedReferencesCount;
-            for (int index = primaryCellIndex + 1, count = 1; count <= consumedCellsCount; index++, count++ )
+            for (int index = primaryCellIndex + 1, count = 1; count <= consumedCellsCount; index++, count++)
             {
                 // Cell initilization will be finshed by CollectionChangedEvent. Data Reference will be assigned by
                 // RefreshCellDataSources().
                 cellCollection.Insert(index, new LabelCell());
             }
-            
+
             // Clear Primary Cells ConsumedReferences List.
             primaryCell.ConsumedReferences.Clear();
 
@@ -1289,7 +1285,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     LabelCellTemplate uniqueTemplate = uniqueTemplatesList.Find(item => item.IsUniqueTemplate == true &&
                     item.UniqueCellIndex == index);
-                    
+
                     if (uniqueTemplate != null)
                     {
                         // Assign Unique Template.
@@ -1494,45 +1490,5 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #endregion
-
-        #region Print Helper Methods
-        static Size GetMaxLabelStripDimensions()
-        {
-            double topHeight = Math.Max(UserParameters.DistroLabelHeightInMM * unitConversionRatio,
-                UserParameters.DimmerLabelHeightInMM * unitConversionRatio);
-
-            double topWidth = Math.Max(UserParameters.DistroLabelWidthInMM * unitConversionRatio,
-                UserParameters.DimmerLabelWidthInMM * unitConversionRatio);
-
-            Size returnSize = new Size(topWidth * 12, topHeight);
-
-            return returnSize;
-        }
-
-        #endregion
-
-        #region Serialization
-        public LabelStripStorage GenerateStorage()
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
-        #region Interface Implementations
-        public int CompareTo(LabelStrip other)
-        {
-            if (other.RackUnitType == RackUnitType)
-            {
-                return RackNumber - other.RackNumber;
-            }
-
-            return other.RackUnitType - RackUnitType;
-        }
-        #endregion
-    }
-
-    public class LabelStripStorage
-    {
-        // Needs Re Implementation.
     }
 }

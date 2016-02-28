@@ -35,7 +35,6 @@ namespace Dimmer_Labels_Wizard_WPF
             UniverseNumber = storage.UniverseNumber;
             AbsoluteDMXAddress = storage.AbsoluteDMXAddress;
             DimmerNumber = storage.DimmerNumber;
-            RackNumber = storage.RackNumber;
     }
 
         // Imported Data
@@ -262,71 +261,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public int UniverseNumber { get; set; }
         public int AbsoluteDMXAddress { get; set; }
         public int DimmerNumber { get; set; }
-        public int RackNumber { get; set; }
 
-        #region DataGrid Bounded Properties
-        // Exposed Properties for UnResolveableData DataGrid.
-        protected bool _OmitUnit = false;
-        protected bool _ParseSuccessful = false;
-
-        public string DataGridDimmerNumberText
-        {
-            get
-            {
-                return _DimmerNumberText;
-            }
-            set
-            {
-                _DimmerNumberText = value;
-                SetParseValue();
-                OnPropertyChanged("DataGridDimmerNumberText");
-            }
-        }
-
-        public bool OmitUnit
-        {
-            get
-            {
-                return _OmitUnit;
-            }
-            set
-            {
-                _OmitUnit = value;
-                SetParseValue();
-                OnPropertyChanged("OmitUnit");
-            }
-        }
-
-        public bool ParseSuccessful
-        {
-            get
-            {
-                return _ParseSuccessful;
-            }
-        }
-
-        // Sets the Parse Successful value taking into account the Omit Value. Uses PreviewParseUnitData, So Parsed values
-        // are not pushed to rest of Object.
-        public void SetParseValue()
-        {
-            if (PreviewParseUnitData() == true)
-            {
-                _ParseSuccessful = true;
-            }
-
-            else if (_OmitUnit == true)
-            {
-                _ParseSuccessful = true;
-            }
-
-            else
-            {
-                _ParseSuccessful = false;
-            }
-
-            OnPropertyChanged("ParseSuccessful");
-        }
-        #endregion
 
         public override string ToString()
         {
@@ -523,181 +458,93 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Control Method for Parse Methods. Determines Rack Type and calls Parse Methods. Adds unit to Unparseable
         // List if string format does not Match the User set option.
-        public void ParseUnitData()
+        public void ParseUnitData(UnitImport unitImportParent, ImportConfiguration importConfiguration)
         {
-            RackType rackType = DetermineUnitType(UserParameters.DimmerImportFormat, UserParameters.DistroImportFormat);
+            
+            // Determine RackType.
+            RackType rackType = DetermineUnitType(importConfiguration);
+
             switch (rackType)
             {
                 case RackType.Dimmer:
-                    ParseDimmerNumber();
+                    int universeNumber;
+                    DimmerNumber = ParseDimmerNumber(importConfiguration,out universeNumber);
+                    UniverseNumber = universeNumber;
                     RackUnitType = RackType.Dimmer;
                     break;
                 case RackType.Distro:
-                    ParseDistroNumber();
+                    ParseDistroNumber(importConfiguration);
                     RackUnitType = RackType.Distro;
                     break;
                 case RackType.OutsideLabelRange:
                     RackUnitType = RackType.OutsideLabelRange;
                     break;
                 case RackType.Unparseable:
-                    Globals.UnresolvableUnits.Add(this);
+                    unitImportParent.UnResolveableUnits.Add(this);
                     RackUnitType = RackType.Unparseable;
                     break;
                 case RackType.ClashingRange:
-                    Globals.ClashingRangeData.Add(this);
+                    unitImportParent.ConflictingUnits.Add(this);
                     RackUnitType = RackType.ClashingRange;
                     break;
                 default:
-                    Console.WriteLine("I couldn't find a RackType!");
                     break;
             }
         }
 
-        // Checks if Unit is Parseable without updating Properties or Lists.
-        public bool PreviewParseUnitData()
+        // Returns Parsed Dimmer Number Value.
+        private int ParseDistroNumber(ImportConfiguration importConfiguration)
         {
-            RackType rackType = DetermineUnitType(UserParameters.DimmerImportFormat, UserParameters.DistroImportFormat);
-            switch (rackType)
+            switch (importConfiguration.DistroImportFormat)
             {
-                case RackType.Dimmer:
-                    return true;
-                case RackType.Distro:
-                    return true;
-                case RackType.OutsideLabelRange:
-                    return true;
-                case RackType.Unparseable:
-                    return false;
-                case RackType.ClashingRange:
-                    return false;
-                default:
-                    return false;
-            }
-        }
-
-        // Sets the Member Properties.
-        private void ParseDistroNumber()
-        {
-            switch (UserParameters.DistroImportFormat)
-            {
-                case ImportFormatting.Format1:
-                    DimmerNumber = Convert.ToInt32(RemoveLetters(DimmerNumberText).Trim());
-                    break;
-                case ImportFormatting.Format2:
-                    DimmerNumber = Convert.ToInt32(DimmerNumberText.Trim());
-                    break;
-                case ImportFormatting.Format3:
+                case ImportFormat.Format1:
+                    return Convert.ToInt32(RemoveLetters(DimmerNumberText).Trim());
+                    
+                case ImportFormat.Format2:
+                    return Convert.ToInt32(DimmerNumberText.Trim());
+                    
+                case ImportFormat.Format3:
                     // Split and Discard Number preceeding Slash.
-                    DimmerNumber = Convert.ToInt32(SplitBySlash(DimmerNumberText)[1].Trim());
-                    break;
-                case ImportFormatting.Format4:
+                    return Convert.ToInt32(SplitBySlash(DimmerNumberText)[1].Trim());
+                    
+                case ImportFormat.Format4:
                     // Split and Discard Letter preceeding Slash.
-                    DimmerNumber = Convert.ToInt32(SplitBySlash(DimmerNumberText)[1].Trim());
-                    break;
+                    return Convert.ToInt32(SplitBySlash(DimmerNumberText)[1].Trim());
+                    
                 default:
-                    Console.WriteLine("ParseDistroNumber is Hitting the Default Case!");
-                    break;
+                    throw new ArgumentException("Import Format couldn't be found.");
             }
             
         }
 
-        // Overload: Returns Value to Caller. Returns -1 If Control falls through the Format switch.
-        private int ParseDistroNumber(string text, ImportFormatting format)
-        {
-                int returnValue = -1;
-                switch (format)
-                {
-                    case ImportFormatting.Format1:
-                        returnValue = Convert.ToInt32(RemoveLetters(text).Trim());
-                        break;
-                    case ImportFormatting.Format2:
-                        returnValue = Convert.ToInt32(text.Trim());
-                        break;
-                    case ImportFormatting.Format3:
-                        // Split and Discard Number preceeding Slash.
-                        returnValue = Convert.ToInt32(SplitBySlash(text)[1].Trim());
-                        break;
-                    case ImportFormatting.Format4:
-                        // Split and Discard Letter preceeding Slash.
-                        returnValue = Convert.ToInt32(SplitBySlash(text)[1].Trim());
-                        break;
-                    default:
-                        Console.WriteLine("ParseDistroNumber is Hitting the Default Case!");
-                        break;
-                }
-                return returnValue;
-        }
 
-        // Sets the Member Properties
-        private void ParseDimmerNumber()
+        // Returns Parsed Dimmer Number value, Universe Number returned via out Parameter.
+        private int ParseDimmerNumber(ImportConfiguration importConfiguration, out int universeNumber)
         {
-            switch (UserParameters.DimmerImportFormat)
+            switch (importConfiguration.DimmerImportFormat)
             {
-                case ImportFormatting.Format1:
-                    DimmerNumber = Convert.ToInt32(SplitBySlash(DimmerNumberText)[1].Trim());
-                    UniverseNumber = Convert.ToInt32(SplitBySlash(DimmerNumberText)[0].Trim());
-                    break;
-                case ImportFormatting.Format2:
-                    DimmerNumber = Convert.ToInt32(DimmerNumberText.Trim());
-                    UniverseNumber = ExtractUniverseNumber(DMXAddressText, UserParameters.DMXAddressImportFormat);
-                    break;
-                case ImportFormatting.Format3:
-                    DimmerNumber = Convert.ToInt32(RemoveLetters(DimmerNumberText).Trim());
-                    UniverseNumber = ConvertStreamLetterToNumber(RemoveNumbers(DimmerNumberText).ToCharArray()[0]);
-                    break;
-                case ImportFormatting.Format4:
-                    UniverseNumber = Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(DimmerNumberText)[0].Trim().ToCharArray()[0]));
-                    DimmerNumber = Convert.ToInt32(RemoveSlash(RemoveLetters(DimmerNumberText).Trim()));
-                    break;
+                case ImportFormat.Format1:
+                    universeNumber = Convert.ToInt32(SplitBySlash(DimmerNumberText)[0].Trim());
+                    return Convert.ToInt32(SplitBySlash(DimmerNumberText)[1].Trim());
+
+                    
+                case ImportFormat.Format2:
+                    universeNumber = ExtractUniverseNumber(DMXAddressText, importConfiguration);
+                    return Convert.ToInt32(DimmerNumberText.Trim());
+                    
+                case ImportFormat.Format3:
+                    universeNumber = ConvertStreamLetterToNumber(RemoveNumbers(DimmerNumberText).ToCharArray()[0]);
+                    return Convert.ToInt32(RemoveLetters(DimmerNumberText).Trim());
+                    
+                case ImportFormat.Format4:
+                    universeNumber = Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(DimmerNumberText)[0].Trim().ToCharArray()[0]));
+                    return Convert.ToInt32(RemoveSlash(RemoveLetters(DimmerNumberText).Trim()));
+                    
                 default:
-                    Console.WriteLine("ParseDimmerNumber() is hiting the default case!");
-                    break;
+                    throw new ArgumentException("Dimmer Import Format not found.");
             }
         }
 
-        // Overload Returns Value to Caller. Returns -1 if Controls Falls Through Format Switch.
-        private Globals.DMX ParseDimmerNumber(string text, ImportFormatting format)
-        {
-            Globals.DMX returnValue;
-            returnValue.Channel = -1;
-            returnValue.Universe = -1;
-
-                switch (format)
-                {
-                    case ImportFormatting.Format1:
-                        returnValue.Channel = Convert.ToInt32(SplitBySlash(text)[1].Trim());
-                        returnValue.Universe = Convert.ToInt32(SplitBySlash(text)[0].Trim());
-                        break;
-                    case ImportFormatting.Format2:
-                        returnValue.Channel = Convert.ToInt32(text.Trim());
-                        returnValue.Universe = ExtractUniverseNumber(text, UserParameters.DMXAddressImportFormat);
-                        break;
-                    case ImportFormatting.Format3:
-                        returnValue.Channel = Convert.ToInt32(RemoveLetters(text).Trim());
-                        returnValue.Universe = ConvertStreamLetterToNumber(RemoveNumbers(DimmerNumberText).ToCharArray()[0]);
-                        break;
-                    case ImportFormatting.Format4:
-                        returnValue.Universe = Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(text)[0].Trim().ToCharArray()[0]));
-                        returnValue.Channel = Convert.ToInt32(RemoveSlash(RemoveLetters(text).Trim()));
-                        break;
-                    default:
-                        Console.WriteLine("ParseDimmerNumber() is hiting the default case!");
-                        break;
-                }
-                return returnValue;
-        }
-
-        private void ParseGlobalDMXAddress()
-        {
-            // Copy the Contents into a Working string.
-            string workingString = String.Copy(this.DimmerNumberText);
-
-            // Trim Whitespace.
-            workingString.Trim();
-
-            // Assign result back to Object converted to Int.
-            this.AbsoluteDMXAddress = Convert.ToInt32(workingString);
-
-        }
 
         // Helper Method for Parse Methods. Returns a string with all Letter Characters Removed.
         private string RemoveLetters(string input)
@@ -787,21 +634,24 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Helper Method for ParseUnitData(). Determines Rack Type. Returns RackType.Unparseable If Data
         // cannot be sucseffully assinged a Type.
-        private RackType DetermineUnitType(ImportFormatting dimmerFormat, ImportFormatting distroFormat)
+        private RackType DetermineUnitType(ImportConfiguration importConfiguration)
         {
+            ImportFormat dimmerFormat = importConfiguration.DimmerImportFormat;
+            ImportFormat distroFormat = importConfiguration.DistroImportFormat;
+
             bool verifiedDimmer = false;
             bool verifiedDistro = false;
 
             // Test as Dimmer.
-            if (dimmerFormat != ImportFormatting.NoAssignment &&
-                VerifyStringFormat(DimmerNumberText,RackType.Dimmer,dimmerFormat) == true)
+            if (dimmerFormat != ImportFormat.NoAssignment &&
+                VerifyStringFormat(DimmerNumberText, importConfiguration, RackType.Dimmer,dimmerFormat) == true)
             {
                 verifiedDimmer = true;
             }
 
             // Test as Distro
-            if (distroFormat != ImportFormatting.NoAssignment &&
-                VerifyStringFormat(DimmerNumberText,RackType.Distro,distroFormat) == true)
+            if (distroFormat != ImportFormat.NoAssignment &&
+                VerifyStringFormat(DimmerNumberText, importConfiguration, RackType.Distro,distroFormat) == true)
             {
                 verifiedDistro = true;
             }
@@ -810,7 +660,11 @@ namespace Dimmer_Labels_Wizard_WPF
             // Verified Dimmer.
             if (verifiedDimmer == true && verifiedDistro == false)
             {
-                if (FindRackNumber(ParseDimmerNumber(DimmerNumberText, dimmerFormat)) != -1)
+                // Parse Values into integers.
+                int universe;
+                int dimmerNumber = ParseDimmerNumber(importConfiguration, out universe);
+
+                if (IsInDimmersRange(importConfiguration, universe, dimmerNumber))
                 {
                     return RackType.Dimmer;
                 }
@@ -824,7 +678,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Verified Distro.
             if (verifiedDimmer == false && verifiedDistro == true)
             {
-                if (FindRackNumber(ParseDistroNumber(DimmerNumberText,distroFormat)) != -1)
+                if (IsInDistroRange(importConfiguration, ParseDistroNumber(importConfiguration)))
                 {
                     return RackType.Distro;
                 }
@@ -848,12 +702,14 @@ namespace Dimmer_Labels_Wizard_WPF
                 bool inDistroRange = false;
 
                 // Test Both Ranges
-                if (FindRackNumber(ParseDimmerNumber(DimmerNumberText, dimmerFormat)) != -1)
+                int universeNumber;
+                int dimmerNumber = ParseDimmerNumber(importConfiguration, out universeNumber);
+                if (IsInDimmersRange(importConfiguration, universeNumber, dimmerNumber))
                 {
                     inDimmerRange = true;
                 }
 
-                if (FindRackNumber(ParseDistroNumber(DimmerNumberText,distroFormat)) != -1)
+                if (IsInDistroRange(importConfiguration, ParseDistroNumber(importConfiguration)))
                 {
                     inDistroRange = true;
                 }
@@ -883,43 +739,35 @@ namespace Dimmer_Labels_Wizard_WPF
                     return RackType.ClashingRange;
                 }
             }
+
             return RackType.Unparseable;
         }
 
-        // Helper Method. Refined Version of Private Method DataHandling.FindRackNumber. Checks if Distro DimmerNumber
-        // Resides in a Known Distro Rack. Returns -1 if rack cannot be found.
-        private int FindRackNumber(int dimmerNumber)
+        private bool IsInDistroRange(ImportConfiguration importConfiguration, int dimmerNumber)
         {
-            foreach (var element in UserParameters.DistroRacks)
-            {
-                if (dimmerNumber >= element.StartingAddress &&
-                    dimmerNumber <= element.EndingAddress)
-                {
-                    return element.RackNumber;
-                }
-            }
-            return -1;
+            // Search the DistroRanges for a matching Range. Return true if found.
+            var query = from range in importConfiguration.DistroRanges
+                        where range.FirstDimmerNumber <= DimmerNumber &&
+                        range.LastDimmerNumber >= dimmerNumber
+                        select range;
+
+            return query.Count() > 0;
         }
 
-        // Overload. Checks for Dimmer Racks instead.
-        private int FindRackNumber(Globals.DMX dmxValue)
+        private bool IsInDimmersRange(ImportConfiguration importConfiguration, int universeNumber, int dimmerNumber)
         {
-            foreach (var element in UserParameters.DimmerRacks)
-            {
-                if (dmxValue.Universe == element.StartingAddress.Universe)
-                {
-                    if (dmxValue.Channel >= element.StartingAddress.Channel &&
-                        dmxValue.Channel <= element.EndingAddress.Channel)
-                    {
-                        return element.RackNumber;
-                    }
-                }
-            }
-            return -1;
+            var query = from range in importConfiguration.DimmerRanges
+                        where range.Universe == universeNumber &&
+                        range.FirstDimmerNumber <= dimmerNumber &&
+                        range.LastDimmerNumber >= dimmerNumber
+                        select range;
+
+            return query.Count() > 0;
         }
 
         // Verifies if data Matches its inferred Format.
-        private bool VerifyStringFormat(string data, RackType rackType, ImportFormatting format)
+        private bool VerifyStringFormat(string data, ImportConfiguration importConfiguration,
+            RackType rackType, ImportFormat inferredFormat)
         {
             char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".ToCharArray();
             char[] numbers = "1234567890".ToCharArray();
@@ -928,37 +776,37 @@ namespace Dimmer_Labels_Wizard_WPF
             // Verify Dimmer Formatting
             if (rackType == RackType.Dimmer)
             {
-                switch (format)
+                switch (inferredFormat)
                 {
-                    case ImportFormatting.Format1:
+                    case ImportFormat.Format1:
                         // Does the Data contain a Slash, Numbers AND Not contain any Letters?
                         if (data.IndexOfAny(slash) != -1 && data.IndexOfAny(numbers) != -1 && data.IndexOfAny(letters) == -1)
                         {
                             return true;
                         }
                         return false;
-                    case ImportFormatting.Format2:
+                    case ImportFormat.Format2:
                         // Does the Data Contain ONLY Numeric Characters?
                         if (data.IndexOfAny(numbers) != -1 && data.IndexOfAny(slash) == -1 && data.IndexOfAny(letters) == -1)
                         {
                             return true;
                         }
                         return false;
-                    case ImportFormatting.Format3:
+                    case ImportFormat.Format3:
                         // Does the data Contain Numbers and Letters But NOT Slashes?
                         if (data.IndexOfAny(numbers) != -1 && data.IndexOfAny(letters) != -1 && data.IndexOfAny(slash) == -1)
                         {
                             return true;
                         }
                         return false;
-                    case ImportFormatting.Format4:
+                    case ImportFormat.Format4:
                         // Does the Data Contain Letters, slashes and Numbers?
                         if (data.IndexOfAny(letters) != -1 && data.IndexOfAny(slash) != -1 && data.IndexOfAny(numbers) != -1)
                         {
                             return true;
                         }
                         return false;
-                    case ImportFormatting.NoAssignment:
+                    case ImportFormat.NoAssignment:
                         return false;
 
                     default:
@@ -969,38 +817,38 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else if (rackType == RackType.Distro)
             {
-                switch (format)
+                switch (inferredFormat)
                 {
-                    case ImportFormatting.Format1:
+                    case ImportFormat.Format1:
                         // Does the data Contain Numbers and Letters But NOT Slashes, And Contains the Correct Distro Prefix?
                         if (data.IndexOfAny(numbers) != -1 && data.IndexOfAny(letters) != -1 && data.IndexOfAny(slash) == -1 &&
-                            data.Contains(UserParameters.DistroNumberPrefix))
+                            data.Contains(importConfiguration.DistroNumberPrefix))
                         {
                             return true;
                         }
                         return false;
-                    case ImportFormatting.Format2:
+                    case ImportFormat.Format2:
                         // Does the Data Contain ONLY Numeric Characters?
                         if (data.IndexOfAny(numbers) != -1 && data.IndexOfAny(slash) == -1 && data.IndexOfAny(letters) == -1)
                         {
                             return true;
                         }
                         return false;
-                    case ImportFormatting.Format3:
+                    case ImportFormat.Format3:
                         // Does the Data contain a Slash, Numbers AND Not contain any Letters?
                         if (data.IndexOfAny(slash) != -1 && data.IndexOfAny(numbers) != -1 && data.IndexOfAny(letters) == -1)
                         {
                             return true;
                         }
                         return false;
-                    case ImportFormatting.Format4:
+                    case ImportFormat.Format4:
                         // Does the Data Contain Letters, slashes and Numbers?
                         if (data.IndexOfAny(letters) != -1 && data.IndexOfAny(slash) != -1 && data.IndexOfAny(numbers) != -1)
                         {
                             return true;
                         }
                         return false;
-                    case ImportFormatting.NoAssignment:
+                    case ImportFormat.NoAssignment:
                         return false;
                     default:
                         break;
@@ -1023,57 +871,41 @@ namespace Dimmer_Labels_Wizard_WPF
         // Provides the comparator functionality to the list.Sort() Method. Sorts by Rack Unit Type, Then by Rack Number, then By Dimmer Number.
         public int CompareTo(DimmerDistroUnit other)
         {
-            if (Globals.DimmerDistroSortOrder == SortOrder.Default)
+            if (RackUnitType == other.RackUnitType)
             {
-                if (RackUnitType == other.RackUnitType)
+                if (UniverseNumber == other.UniverseNumber)
                 {
-                    if (RackNumber == other.RackNumber)
-                    {
-                        if (UniverseNumber == other.UniverseNumber)
-                        {
-                            return DimmerNumber - other.DimmerNumber;
-                        }
-                        return UniverseNumber - other.UniverseNumber;
-                    }
-                    return RackNumber - other.RackNumber;
+                    return DimmerNumber - other.DimmerNumber;
                 }
-                return RackUnitType - other.RackUnitType;
+                return UniverseNumber - other.UniverseNumber;
             }
-
-            else
-                if (RackUnitType == other.RackUnitType)
-                {
-                    if (UniverseNumber == other.UniverseNumber)
-                    {
-                        return DimmerNumber - other.DimmerNumber;
-                    }
-                    return UniverseNumber - other.UniverseNumber;
-                }
             return RackUnitType - other.RackUnitType;
         }
 
-        private int ExtractUniverseNumber(string text, ImportFormatting DMXaddressColumnFormat)
+        private int ExtractUniverseNumber(string text, ImportConfiguration importConfiguration)
         {
+            ImportFormat DMXaddressColumnFormat = importConfiguration.DMXAddressImportFormat;
+
             // Overide the Function if User has chosen to overide Universe Infomation.
-            if (DMXaddressColumnFormat == ImportFormatting.NoUniverseData)
+            if (DMXaddressColumnFormat == ImportFormat.NoUniverseData)
             {
-                return UserParameters.DimmerRanges.First().Universe;
+                return 0;
             }
 
-            if (VerifyStringFormat(text, RackType.Dimmer, DMXaddressColumnFormat) == true)
+            if (VerifyStringFormat(text, importConfiguration, RackType.Dimmer, DMXaddressColumnFormat) == true)
             {
                 switch (DMXaddressColumnFormat)
                 {
-                    case ImportFormatting.Format1:
+                    case ImportFormat.Format1:
                         return Convert.ToInt32(SplitBySlash(text)[0].Trim());
-                    case ImportFormatting.Format2:
+                    case ImportFormat.Format2:
                         return Convert.ToInt32(text.Trim());
-                    case ImportFormatting.Format3:
+                    case ImportFormat.Format3:
                         return ConvertStreamLetterToNumber(RemoveNumbers(text).ToCharArray()[0]);
-                    case ImportFormatting.Format4:
+                    case ImportFormat.Format4:
                         return Convert.ToInt32(ConvertStreamLetterToNumber(SplitBySlash(text)[0].Trim().ToCharArray()[0]));
-                    case ImportFormatting.NoUniverseData:
-                        return UserParameters.DimmerRanges.First().Universe;
+                    case ImportFormat.NoUniverseData:
+                        return 0;
                     default:
                         return -2;
                 }
@@ -1082,7 +914,7 @@ namespace Dimmer_Labels_Wizard_WPF
             else
             {
                 Console.WriteLine("Could Not Read DMX Address Column");
-                return UserParameters.DimmerRanges.First().Universe;
+                return 0;
             }
         }
 
@@ -1109,7 +941,6 @@ namespace Dimmer_Labels_Wizard_WPF
             storage.UniverseNumber = UniverseNumber;
             storage.AbsoluteDMXAddress = AbsoluteDMXAddress;
             storage.DimmerNumber = DimmerNumber;
-            storage.RackNumber = RackNumber;
 
             return storage;
 

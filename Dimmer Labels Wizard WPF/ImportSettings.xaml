@@ -55,9 +55,7 @@
         <Label x:Name="label_Copy" IsEnabled="{Binding Path=DimmerUniverseDataEnable}" Content="Data Format" HorizontalAlignment="Left" Margin="10,486,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label_Copy1" IsEnabled="{Binding Path=DistroLabelRangeEnable}" Content="Distro Number Prefix Letter(s)" HorizontalAlignment="Left" Margin="275,403,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBox" IsEnabled="{Binding Path=DistroLabelRangeEnable}" Text="{Binding Path=DistroNumberPrefix}" HorizontalAlignment="Left" Height="23" Margin="275,429,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <local:DimmerRangeSelectorHost x:Name="dimmerRangeSelectorHost" HorizontalAlignment="Left" IsEnabled="{Binding Path=DimmerLabelRangeEnable}"  DimmerRanges="{Binding Path=DimmerRanges}" Margin="11,101,0,0" VerticalAlignment="Top" Width="249" Height="235"/>
-        <local:DistroRangeSelectorHost x:Name="distroRangeSelectorHost" HorizontalAlignment="Left" IsEnabled="{Binding Path=DistroLabelRangeEnable}" DistroRanges="{Binding Path=DistroRanges}" Margin="275,101,0,0" VerticalAlignment="Top" Width="Auto" Height="235"/>
-        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="649,519,0,0" VerticalAlignment="Top" Width="75" Click="NextButton_Click"/>
+       
 
     </Grid>
 </Window>

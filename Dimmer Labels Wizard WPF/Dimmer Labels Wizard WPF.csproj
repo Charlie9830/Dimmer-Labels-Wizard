@@ -105,6 +105,7 @@
       <DependentUpon>FontSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="IModifcationNotification.cs" />
+    <Compile Include="ImportConfiguration.cs" />
     <Compile Include="LabelColorManager.xaml.cs">
       <DependentUpon>LabelColorManager.xaml</DependentUpon>
     </Compile>
@@ -120,6 +121,7 @@
       <DependentUpon>NewTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewTemplateViewModel.cs" />
+    <Compile Include="Ranges.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="RenameTemplate.xaml.cs">
       <DependentUpon>RenameTemplate.xaml</DependentUpon>
@@ -133,17 +135,6 @@
     <Compile Include="DataHandling.cs" />
     <Compile Include="DataLayout.cs" />
     <Compile Include="DimmerDistroUnit.cs" />
-    <Compile Include="DistroRangeSelector.xaml.cs">
-      <DependentUpon>DistroRangeSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DistroRangeSelectorHost.xaml.cs">
-      <DependentUpon>DistroRangeSelectorHost.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DistroRangeSelectorViewModel.cs" />
-    <Compile Include="DimmerRangeSelector.xaml.cs">
-      <DependentUpon>DimmerRangeSelector.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DimmerRangeSelectorViewModel.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="FileImport.cs" />
     <Compile Include="FileImportDialog.xaml.cs">
@@ -163,23 +154,17 @@
     <Compile Include="ImportSettings.xaml.cs">
       <DependentUpon>ImportSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ImportSettingsViewModel.cs" />
     <Compile Include="InstrumentNameResolution.xaml.cs">
       <DependentUpon>InstrumentNameResolution.xaml</DependentUpon>
     </Compile>
     <Compile Include="InstrumentNameResolutionViewModel.cs" />
     <Compile Include="LabelCell.cs" />
-    <Compile Include="DimmerRangeSelectorHost.xaml.cs">
-      <DependentUpon>DimmerRangeSelectorHost.xaml</DependentUpon>
-    </Compile>
     <Compile Include="LabelStrip.cs" />
     <Compile Include="PopUpControlAdorner.cs" />
-    <Compile Include="Racks.cs" />
     <Compile Include="RenderingTesting.cs" />
     <Compile Include="SanitizationDialog.xaml.cs">
       <DependentUpon>SanitizationDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SerialConversion.cs" />
     <Compile Include="Strip.cs" />
     <Compile Include="StyleTemplates.cs" />
     <Compile Include="TemplateEditor.xaml.cs">
@@ -193,11 +178,10 @@
     </Compile>
     <Compile Include="UniqueCellTemplateEditorViewModel.cs" />
     <Compile Include="UnitGroup.cs" />
+    <Compile Include="UnitImport.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UnresolveableDataViewModel.cs" />
-    <Compile Include="UserParameters.cs" />
     <Compile Include="ValueConverters.cs" />
     <Compile Include="ViewModelBase.cs" />
     <Page Include="AdvancedColorPicker.xaml">
@@ -209,18 +193,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ColorPicker.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DimmerRangeSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DistroRangeSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DistroRangeSelectorHost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -249,10 +221,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ImportSettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DimmerRangeSelectorHost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

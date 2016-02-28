@@ -7,10 +7,6 @@
         mc:Ignorable="d"
         Title="UnResolveableData" Height="500.202" Width="635.725">
 
-    <Window.DataContext>
-        <local:UnresolveableDataViewModel/>
-    </Window.DataContext>
-
     <Window.Resources>
         <ImageBrush x:Key="checkMarkBrush" ImageSource="/Resources/checkMark24.png" Stretch="Uniform"/>
         <ImageBrush x:Key="crossMarkBrush" ImageSource="/Resources/crossMark24.png" Stretch="Uniform"/>
@@ -32,7 +28,7 @@
     <Grid>
         <DataGrid x:Name="UnresolveableDataGrid" ItemsSource="{Binding Path=UnresolveableUnits}" AutoGenerateColumns="False" HorizontalAlignment="Left" Margin="11,197,0,0" VerticalAlignment="Top" Height="237" Width="607" CanUserAddRows="False" CanUserDeleteRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Dimmer" IsReadOnly="False" Width="75" Binding="{Binding DataGridDimmerNumberText}"/>
+                <DataGridTextColumn Header="Dimmer" IsReadOnly="False" Width="75" Binding="{Binding DimmerNumberText}"/>
                 <DataGridTextColumn Header="Channel" Width="75" Binding="{Binding ChannelNumber, Mode=OneWay}"/>
                 <DataGridTextColumn Header="Instrument Name" Width="110" Binding="{Binding InstrumentName, Mode=OneWay}"/>
                 <DataGridTextColumn Header="Position" Width="100" Binding="{Binding Position, Mode=OneWay}"/>

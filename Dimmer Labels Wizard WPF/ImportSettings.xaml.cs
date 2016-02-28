@@ -23,15 +23,5 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             InitializeComponent();
         }
-
-        private void NextButton_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = this.DataContext as ImportSettingsViewModel;
-            viewModel.UpdateModel(dimmerRangeSelectorHost,distroRangeSelectorHost);
-
-            this.Close();
-            ApplicationWindows.FileImportWindow = new FileImportDialog();
-            ApplicationWindows.FileImportWindow.Show();
-        }
     }
 }

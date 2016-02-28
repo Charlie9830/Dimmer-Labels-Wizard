@@ -14,7 +14,7 @@ namespace Dimmer_Labels_Wizard_WPF
     // Dimmer Formatting.    Format1 #/###: Format2 ###: Format3 A###: Format4 A/###:.
     // Dimmer Format2 Requires more infomation be Imported as that Format does not provide Universe Infomation.
     // NoUniverseData is used only as a Format2 Overide. Should be referenced only by UserParameters.DMXAddresColumnFormatting.
-    public enum ImportFormatting { Format1, Format2, Format3, Format4, NoUniverseData, NoAssignment }
+    public enum ImportFormat { Format1, Format2, Format3, Format4, NoUniverseData, NoAssignment }
 
     // Enum.GetName() is called on this enum by the LabelCell Data Reference Property changed Handler. Changes to the Names here,
     // may break that property handler. Names must remain the same as their DimmerDistroUnit counterpart properties.
