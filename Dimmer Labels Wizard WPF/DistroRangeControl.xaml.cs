@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for ImportSettings.xaml
+    /// Interaction logic for DistroRangeControl.xaml
     /// </summary>
-    public partial class ImportSettings : Window
+    public partial class DistroRangeControl : UserControl
     {
-        public ImportSettings()
+        public DistroRangeControl()
         {
             InitializeComponent();
         }

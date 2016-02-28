@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for UnResolveableData.xaml
+    /// Interaction logic for DimmerRangeControl.xaml
     /// </summary>
-    public partial class UnResolveableData : Window
+    public partial class DimmerRangeControl : UserControl
     {
-        public UnResolveableData()
+        public DimmerRangeControl()
         {
             InitializeComponent();
         }

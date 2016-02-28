@@ -31,9 +31,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            ApplicationWindows.ImportSettingsWindow = new ImportSettings();
-            Hide();
-            ApplicationWindows.ImportSettingsWindow.Show();
         }
 
         private void DebugButton_Click(object sender, RoutedEventArgs e)
@@ -46,19 +43,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
-            var fileDialog = new OpenFileDialog();
-            fileDialog.Title = "Import File";
-            fileDialog.Filter = "Comma Seperated Values File (*.csv) | *.csv";
-            fileDialog.FilterIndex = 0;
-            fileDialog.DefaultExt = ".csv";
-
-            if (fileDialog.ShowDialog() == true)
-            {
-                string message = string.Empty;
-                FileImport.ValidateFile(fileDialog.FileName, out message);
-
-                MessageBox.Show(message);
-            }
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)

@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="Dimmer_Labels_Wizard_WPF.DimmerRangeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+             mc:Ignorable="d" 
+             Height="auto" Width="auto">
+
+    <UserControl.DataContext>
+        <local:RangeControlViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid>
+        <Border BorderBrush="White" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Label Content="Universe" VerticalAlignment="Center"
+                       Style="{StaticResource ControlLabelStyle}"/>
+                <TextBox Width="35" Height="20"/>
+
+                <TextBlock Text="First Number" TextWrapping="Wrap" Width="45" TextAlignment="Center"
+                           Foreground="White" Margin="5,5,5,5"/>
+                <TextBox Width="35" Height="20" Text="999"/>
+
+                <TextBlock Text="Last Number" TextWrapping="Wrap" Width="45" TextAlignment="Center" Margin="5"
+                           Foreground="White"/>
+                <TextBox Width="35" Height="20" Margin="0,0,5,0"/>
+            </StackPanel>
+        </Border>
+        
+    </Grid>
+</UserControl>

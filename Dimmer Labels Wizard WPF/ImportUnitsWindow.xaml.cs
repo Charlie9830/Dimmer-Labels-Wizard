@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for UnResolveableData.xaml
+    /// Interaction logic for ImportUnitsWindow.xaml
     /// </summary>
-    public partial class UnResolveableData : Window
+    public partial class ImportUnitsWindow : Window
     {
-        public UnResolveableData()
+        public ImportUnitsWindow()
         {
             InitializeComponent();
         }

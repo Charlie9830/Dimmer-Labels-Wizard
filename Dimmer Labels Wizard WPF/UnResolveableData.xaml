@@ -41,7 +41,7 @@
         <Label x:Name="label" Content="Unresolveable Data" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold" FontSize="21.333"/>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="607" Height="73"><Run Text="Some"/><Run Text=" of the data you have imported cannot be accurately processed. Generally this occurs when data entries do not match the &quot;Import Data Format&quot; you specified earlier. To continue please edit the &quot;Dimmer&quot; field of each of the entries"/><Run Text=" so that they match the correct Data Format, alternatively you can choose to omit these items from"/><Run Text=" the Label making process."/></TextBlock>
         <CheckBox x:Name="checkBox" IsChecked="{Binding Path=OmitAll}" Content="Omit All" HorizontalAlignment="Left" Margin="554,177,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="542,439,0,0" VerticalAlignment="Top" Width="75" Click="NextButton_Click"/>
+        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="542,439,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="BackButton" Content="Back" HorizontalAlignment="Left" Margin="462,439,0,0" VerticalAlignment="Top" Width="75"/>
         <Label x:Name="label1" Content="Selected Dimmer Import Format:" HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>
         <Label x:Name="label2" Content="Selected Distro Import Format:" HorizontalAlignment="Left" Margin="323,126,0,0" VerticalAlignment="Top" FontFamily="Segoe UI Semibold"/>

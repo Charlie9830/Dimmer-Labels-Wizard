@@ -22,25 +22,6 @@ namespace Dimmer_Labels_Wizard_WPF
         public FileImportDialog()
         {
             InitializeComponent();
-            Loaded += FileImportDialog_Loaded;
-        }
-
-        private void FileImportDialog_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (FileImport.ImportFile() == true)
-            {
-                Hide();
-                if (Globals.UnresolvableUnits.Count > 0)
-                {
-                    ApplicationWindows.UnResolveableDataWindow = new UnResolveableData();
-                    ApplicationWindows.UnResolveableDataWindow.Show();
-                }
-                else
-                {
-                    ApplicationWindows.SanitizationWindow = new SanitizationDialog();
-                    ApplicationWindows.SanitizationWindow.Show();
-                }
-            }
         }
     }
 }
