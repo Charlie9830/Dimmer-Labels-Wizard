@@ -6,20 +6,64 @@
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
     
-    <Grid>
-        <Label x:Name="label" Content="Welcome" HorizontalAlignment="Left" Margin="207,32,0,0" VerticalAlignment="Top" FontSize="21.333" FontFamily="Segoe UI Semibold"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="140,75,0,0" VerticalAlignment="Top" Width="236">
-            To begin, Browse for a CSV file to Open,
-            or Load from a previously saved Labels file.
-        </TextBlock>
-        <Label x:Name="label1" Content="Import new CSV" HorizontalAlignment="Left" Margin="207,144,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="label1_Copy" Content="Load from Saved Labels" HorizontalAlignment="Left" Margin="188,225,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="ImportButton" Content="Browse" HorizontalAlignment="Left" Margin="217,170,0,0" VerticalAlignment="Top" Width="75" Click="ImportButton_Click"/>
-        <Button x:Name="LoadButton" Content="Browse" HorizontalAlignment="Left" Margin="217,251,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button x:Name="NextButton" Content="Next" HorizontalAlignment="Left" Margin="432,288,0,0" VerticalAlignment="Top" Width="75" Click="NextButton_Click"/>
-        <Button x:Name="DebugButton" Content="Debug" HorizontalAlignment="Left" Margin="432,176,0,0" VerticalAlignment="Top" Width="75" Click="DebugButton_Click"/>
-        <Button x:Name="TestButton" Content="Test" HorizontalAlignment="Left" Margin="432,235,0,0" VerticalAlignment="Top" Width="75" Click="TestButton_Click"/>
+    <Grid Background="{StaticResource WindowBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Row 0 -->
+        <Label Content="Dimmer Labels Wizard" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+               Style="{StaticResource WindowHeaderStyle}"/>
+        
+        <!-- Row 1 -->
+        <HeaderedContentControl Header="New Project" Grid.Row="1" Grid.Column="0" Margin="5"
+                                Style="{StaticResource HeaderedControlStyle}">
+            <Grid Background="{StaticResource ControlGridBackground}">
+                <Button Content="Start" HorizontalAlignment="Left" VerticalAlignment="Center"
+                        Width="75" Height="20" Margin="10"
+                        Command="{Binding Path=NewProjectCommand}"/>
+            </Grid>
+        </HeaderedContentControl>
+        
+        <!-- Row 2 -->
+        <HeaderedContentControl Header="Existing Project" Grid.Row="2" Grid.Column="0" Margin="5"
+                                Style="{StaticResource HeaderedControlStyle}">
+            <Grid Background="{StaticResource ControlGridBackground}">
+                <Button Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Center"
+                        Width="75" Height="20" Margin="10"/>
+            </Grid>
+        </HeaderedContentControl>
+        
+        <!-- Row 3 -->
+        <HeaderedContentControl Header="About" Grid.Row="3" Grid.Column="0" Margin="5"
+                                Style="{StaticResource HeaderedControlStyle}">
+            <Grid Background="{StaticResource ControlGridBackground}">
+                <DockPanel>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" DockPanel.Dock="Left"
+                       Style="{StaticResource ControlLabelStyle}">
+                        Developed by Charlie Hall
+                    </Label>
+
+                    <Label HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5" DockPanel.Dock="Right"
+                       Style="{StaticResource ControlLabelStyle}">
+                        charlie.hall@ozemail.com.au
+                    </Label>
+                </DockPanel>
+            </Grid>
+        </HeaderedContentControl>
 
     </Grid>
+    
 </Window>

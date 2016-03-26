@@ -1,171 +1,152 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using CSVRead = Microsoft.VisualBasic.FileIO;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using CSVRead = Microsoft.VisualBasic.FileIO;
 
 
-//namespace Dimmer_Labels_Wizard_WPF
-//{
-//    public static class FileImport
-//    {
-//        public static string FilePath;
+namespace Dimmer_Labels_Wizard_WPF
+{
+    public static class FileImport
+    {
+        public static bool ValidateFile(string filePath, out string errorMessage)
+        {
+            CSVRead.TextFieldParser file = CreateTextFieldParser(filePath);
+            file.SetDelimiters(",");
 
-//        public static bool ValidateFile(string filePath, out string errorMessage)
-//        {
-//            CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(filePath);
-//            file.SetDelimiters(",");
+            try
+            {
+                while (!file.EndOfData)
+                {
+                    file.ReadLine();
+                }
+            }
 
-//            try
-//            {
-//                while (!file.EndOfData)
-//                {
-//                    file.ReadLine();
-//                }
-//            }
+            catch (CSVRead.MalformedLineException e)
+            {
+                errorMessage = e.Message;
+                return false;
+            }
 
-//            catch (CSVRead.MalformedLineException e)
-//            {
-//                errorMessage = e.Message;
-//                return false;
-//            }
-
-//            errorMessage = string.Empty;
-//            return true;
-//        }
+            errorMessage = string.Empty;
+            return true;
+        }
 
 
-//        public static string[] CollectHeaders()
-//        {
-//            // Create new CSV object Pointed to File Location.
-//            CSVRead.TextFieldParser file = CreateTextFieldParser();
-//            file.SetDelimiters(",");
+        public static IEnumerable<ColumnHeader> CollectHeaders(string filePath)
+        {
+            // Create new CSV object Pointed to File Location.
+            CSVRead.TextFieldParser file = CreateTextFieldParser(filePath);
+            file.SetDelimiters(",");
 
 
-//            // Read the First line to Collect the Cells.
-//            string[] headers = file.ReadFields();
+            // Read the First line to Collect the Cells.
+            string[] headerNames = file.ReadFields();
 
-//            // Close the File to return Cursor to Top.
-//            file.Close();
+            // Close the File to return Cursor to Top.
+            file.Close();
 
-//            return headers;
-//        }
+            // Process headerNames into ColumnHeader objects.
+            List<ColumnHeader> columnHeaders = new List<ColumnHeader>();
 
-//        public static bool ImportFile()
-//        {
-//            // Create new CSV Object and Point it to the file location.
-//            CSVRead.TextFieldParser file = CreateTextFieldParser();
+            int index = 0;
+            foreach (var element in headerNames)
+            {
+                columnHeaders.Add(new ColumnHeader(element, index));
+                index++;
+            }
 
-//            file.SetDelimiters(",");
+            return columnHeaders as IEnumerable<ColumnHeader>;
+            
+        }
 
-//            // Read the First line to Throw out Coloum headerCell values.
-//            file.ReadLine();
+        //public static bool ImportFile()
+        //{
+        //    // Create new CSV Object and Point it to the file location.
+        //    CSVRead.TextFieldParser file = CreateTextFieldParser();
 
-//            // Keep track of and Assign FooterCells/FooterCells list Indices
-//            int index = 0;
+        //    file.SetDelimiters(",");
 
-//            // Collect Column Indexes
-//            int channelColumn = UserParameters.ChannelNumberColumnIndex;
-//            int dimmerColumn = UserParameters.DimmerNumberColumnIndex;
-//            int instrumentNameColumn = UserParameters.InstrumentTypeColumnIndex;
-//            int multicoreNameColumn = UserParameters.MulticoreNameColumnIndex;
-//            int positionColumn = UserParameters.PositionColumnIndex;
-//            int DMXaddressColumn = UserParameters.UniverseDataColumnIndex;
-//            int userField1Column = UserParameters.UserField1ColumnIndex;
-//            int userField2Column = UserParameters.UserField2ColumnIndex;
-//            int userField3Column = UserParameters.UserField3ColumnIndex;
-//            int userField4Column = UserParameters.UserField4ColumnIndex;
+        //    // Read the First line to Throw out Coloum headerCell values.
+        //    file.ReadLine();
 
-//            // Clear DimmerDistroUnits and Unparseable Data Lists if they have already been Populated.
-//            if (Globals.DimmerDistroUnits.Count > 0)
-//            {
-//                Globals.DimmerDistroUnits.Clear();
-//            }
+        //    // Keep track of and Assign FooterCells/FooterCells list Indices
+        //    int index = 0;
 
-//            if (Globals.UnresolvableUnits.Count > 0)
-//            {
-//                Globals.UnresolvableUnits.Clear();
-//            }
+        //    // Collect Column Indexes
+        //    int channelColumn = UserParameters.ChannelNumberColumnIndex;
+        //    int dimmerColumn = UserParameters.DimmerNumberColumnIndex;
+        //    int instrumentNameColumn = UserParameters.InstrumentTypeColumnIndex;
+        //    int multicoreNameColumn = UserParameters.MulticoreNameColumnIndex;
+        //    int positionColumn = UserParameters.PositionColumnIndex;
+        //    int DMXaddressColumn = UserParameters.UniverseDataColumnIndex;
+        //    int userField1Column = UserParameters.UserField1ColumnIndex;
+        //    int userField2Column = UserParameters.UserField2ColumnIndex;
+        //    int userField3Column = UserParameters.UserField3ColumnIndex;
+        //    int userField4Column = UserParameters.UserField4ColumnIndex;
 
-//            while (!file.EndOfData)
-//            {
-//                // Capture Each CSV File Line.
-//                string[] fields = file.ReadFields();
+        //    // Clear DimmerDistroUnits and Unparseable Data Lists if they have already been Populated.
+        //    if (Globals.DimmerDistroUnits.Count > 0)
+        //    {
+        //        Globals.DimmerDistroUnits.Clear();
+        //    }
 
-//                // Check if a value exists in the Dimmer Cell.
-//                if (fields[dimmerColumn] != "")
-//                {
-//                    // Init Object Representing a Dimmer Or Distro Channel Here
-//                    Globals.DimmerDistroUnits.Insert(index, new DimmerDistroUnit());
+        //    if (Globals.UnresolvableUnits.Count > 0)
+        //    {
+        //        Globals.UnresolvableUnits.Clear();
+        //    }
 
-//                    // Populate object if Columns have been assigned Indexes.
-//                    // Directly Imported Data
-//                    Globals.DimmerDistroUnits[index].ChannelNumber = channelColumn == -1 ? "" : fields[channelColumn];
-//                    Globals.DimmerDistroUnits[index].DimmerNumberText = dimmerColumn == -1 ? "" : fields[dimmerColumn];
-//                    Globals.DimmerDistroUnits[index].InstrumentName = instrumentNameColumn == -1 ? "" : fields[instrumentNameColumn];
-//                    Globals.DimmerDistroUnits[index].MulticoreName = multicoreNameColumn == -1 ? "" : fields[multicoreNameColumn];
-//                    Globals.DimmerDistroUnits[index].Position = positionColumn == -1 ? "" : fields[positionColumn];
-//                    Globals.DimmerDistroUnits[index].UserField1 = userField1Column == -1 ? "" : fields[userField1Column];
-//                    Globals.DimmerDistroUnits[index].UserField2 = userField2Column == -1 ? "" : fields[userField2Column];
-//                    Globals.DimmerDistroUnits[index].UserField3 = userField3Column == -1 ? "" : fields[userField3Column];
-//                    Globals.DimmerDistroUnits[index].UserField4 = userField4Column == -1 ? "" : fields[userField4Column];
+        //    while (!file.EndOfData)
+        //    {
+        //        // Capture Each CSV File Line.
+        //        string[] fields = file.ReadFields();
 
-//                    // Application running data.
-//                    Globals.DimmerDistroUnits[index].ImportIndex = index;
+        //        // Check if a value exists in the Dimmer Cell.
+        //        if (fields[dimmerColumn] != "")
+        //        {
+        //            // Init Object Representing a Dimmer Or Distro Channel Here
+        //            Globals.DimmerDistroUnits.Insert(index, new DimmerDistroUnit());
 
-//                    // Import Format specific Data.
-//                    if (UserParameters.DimmerImportFormat == ImportFormatting.Format2)
-//                    {
-//                        Globals.DimmerDistroUnits[index].DMXAddressText = fields[DMXaddressColumn];
-//                    }
+        //            // Populate object if Columns have been assigned Indexes.
+        //            // Directly Imported Data
+        //            Globals.DimmerDistroUnits[index].ChannelNumber = channelColumn == -1 ? "" : fields[channelColumn];
+        //            Globals.DimmerDistroUnits[index].DimmerNumberText = dimmerColumn == -1 ? "" : fields[dimmerColumn];
+        //            Globals.DimmerDistroUnits[index].InstrumentName = instrumentNameColumn == -1 ? "" : fields[instrumentNameColumn];
+        //            Globals.DimmerDistroUnits[index].MulticoreName = multicoreNameColumn == -1 ? "" : fields[multicoreNameColumn];
+        //            Globals.DimmerDistroUnits[index].Position = positionColumn == -1 ? "" : fields[positionColumn];
+        //            Globals.DimmerDistroUnits[index].UserField1 = userField1Column == -1 ? "" : fields[userField1Column];
+        //            Globals.DimmerDistroUnits[index].UserField2 = userField2Column == -1 ? "" : fields[userField2Column];
+        //            Globals.DimmerDistroUnits[index].UserField3 = userField3Column == -1 ? "" : fields[userField3Column];
+        //            Globals.DimmerDistroUnits[index].UserField4 = userField4Column == -1 ? "" : fields[userField4Column];
 
-//                    // Parse Unit Data.
-//                    //Globals.DimmerDistroUnits[index].ParseUnitData();
+        //            // Application running data.
+        //            Globals.DimmerDistroUnits[index].ImportIndex = index;
 
-//                    index++;
-//                }
-//            }
+        //            // Import Format specific Data.
+        //            if (UserParameters.DimmerImportFormat == ImportFormatting.Format2)
+        //            {
+        //                Globals.DimmerDistroUnits[index].DMXAddressText = fields[DMXaddressColumn];
+        //            }
 
-//            file.Close();
+        //            // Parse Unit Data.
+        //            //Globals.DimmerDistroUnits[index].ParseUnitData();
 
-//            return true;
-//        }
+        //            index++;
+        //        }
+        //    }
 
-//        private static CSVRead.TextFieldParser CreateTextFieldParser()
-//        {
-//            if (FilePath != null)
-//            {
-//                Console.WriteLine("Loading from User Selected File");
-//                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(FilePath);
-//                return file;
-//            }
+        //    file.Close();
 
-//            else if (Environment.MachineName == "CHARLIESAMSUNG")
-//            {
-//                Console.WriteLine("Loading from Hardcoded File Path");
-//                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\General Test Data.csv");
-//                return file;
-//            }
+        //    return true;
+        //}
 
-//            else if (Environment.MachineName == "CHARLIE-METABOX")
-//            {
-//                Console.WriteLine("Loading from Hardcoded File Path");
-//                CSVRead.TextFieldParser file = new CSVRead.TextFieldParser(@"C:\Users\Charlie\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\General Test Data.csv");
-//                return file;
-//            }
+        private static CSVRead.TextFieldParser CreateTextFieldParser(string filePath)
+        {
+            var textFieldParser = new CSVRead.TextFieldParser(filePath);
+            textFieldParser.SetDelimiters(",");
 
-//            else
-//            {
-//                Console.WriteLine("Unrecognized Computer: Please add a Condition for this Computer Name, and a Filepath to FileImport.cs");
-//                return null;
-//            }
-//        }
-
-//        private static void DetermineColumnIndexes()
-//        {
-
-//        }
-
-//    }
-//}
+            return textFieldParser;
+        }
+    }
+}

@@ -72,7 +72,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public bool ShowStartMessage
         {
-            get { return !(Ranges.Count() > 0); }
+            get { return !(RangesCount > 0); }
         }
 
         #endregion
@@ -117,15 +117,33 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void RemoveRangeCommandExecute(object parameter)
         {
-            if (Ranges.Count() > 0)
+            if (RangesCount > 0)
             {
-                ((IList<UnitRangeBase>)Ranges).RemoveAt(Ranges.Count() - 1);
+                ((IList<UnitRangeBase>)Ranges).RemoveAt(RangesCount - 1);
             }
         }
 
         protected bool RemoveRangeCommandCanExecute(object parameter)
         {
-            return Ranges.Count() > 0;
+            return RangesCount > 0;     
+        }
+        #endregion
+
+        #region Internal Properties.
+        protected int RangesCount
+        {
+            get
+            {
+                if (Ranges == null)
+                {
+                    return 0;
+                }
+
+                else
+                {
+                    return Ranges.Count();
+                }
+            }
         }
         #endregion
 

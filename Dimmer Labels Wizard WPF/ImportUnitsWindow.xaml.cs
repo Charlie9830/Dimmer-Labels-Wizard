@@ -23,5 +23,10 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             InitializeComponent();
         }
+
+        private void ComboBox_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -96,6 +96,7 @@
     <Compile Include="ColorPicker.xaml.cs">
       <DependentUpon>ColorPicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ColumnHeader.cs" />
     <Compile Include="Comparators.cs" />
     <Compile Include="DimmerRangeControl.xaml.cs">
       <DependentUpon>DimmerRangeControl.xaml</DependentUpon>
@@ -110,8 +111,10 @@
     <Compile Include="FontSelector.xaml.cs">
       <DependentUpon>FontSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FriendlyImportFormat.cs" />
     <Compile Include="IModifcationNotification.cs" />
     <Compile Include="ImportConfiguration.cs" />
+    <Compile Include="ImportUnitsViewModel.cs" />
     <Compile Include="ImportUnitsWindow.xaml.cs">
       <DependentUpon>ImportUnitsWindow.xaml</DependentUpon>
     </Compile>
@@ -123,6 +126,7 @@
       <DependentUpon>LabelManager.xaml</DependentUpon>
     </Compile>
     <Compile Include="LabelManagerViewModel.cs" />
+    <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Merge.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />

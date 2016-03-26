@@ -11,7 +11,6 @@ namespace Dimmer_Labels_Wizard_WPF
         // Import Settings.
         public ImportFormat DimmerImportFormat { get; set; }
         public ImportFormat DMXAddressImportFormat { get; set; }
-              
         public ImportFormat DistroImportFormat { get; set; }
         public string DistroNumberPrefix { get; set; }
 

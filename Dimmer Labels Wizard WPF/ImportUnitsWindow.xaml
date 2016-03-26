@@ -6,6 +6,11 @@
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
         Title="ImportUnitsWindow" Height="585" Width="1100">
+
+    <Window.DataContext>
+        <local:ImportUnitsViewModel/>
+    </Window.DataContext>
+    
     <Grid Background="{StaticResource WindowBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -29,25 +34,35 @@
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.10*"/>
                     <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Label Content="File Path" Grid.Row="0" Grid.Column="0"
+                <Label Content="File Name" Grid.Row="0" Grid.Column="0"
+                       Style="{StaticResource ControlLabelStyle}"/>
+                <Label Grid.Row="0" Grid.Column="1"
+                       Content="{Binding Path=FileName}"
                        Style="{StaticResource ControlLabelStyle}"/>
 
-                <Button Content="Browse"  Width="75" Height="20" Grid.Row="0" Grid.Column="1"/>
+                <Button Content="Browse"  Width="75" Height="20" Grid.Row="0" Grid.Column="2" Margin="5,0,5,0"
+                        Command="{Binding Path=BrowseCommand}"/>
 
-                <Label Content="File Name" Grid.Row="1" Grid.Column="0"
+                <Label Content="File Path" Grid.Row="1" Grid.Column="0"
+                       Style="{StaticResource ControlLabelStyle}"/>
+                <Label Grid.Row="1" Grid.Column="1"
+                       Content="{Binding Path=FilePath}"
                        Style="{StaticResource ControlLabelStyle}"/>
 
-                <Label Content="File Error" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center"
+                <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center"
+                       Content="{Binding Path=FileErrorMessage}"
                        Style="{StaticResource ControlLabelStyle}"/>
             </Grid>
         </HeaderedContentControl>
         
         <!-- Row 2 -->
-        <Grid Grid.Row="2" Margin="10,5,10,10">
+        <Grid Grid.Row="2" Margin="10,5,10,10"
+              IsEnabled="{Binding Path=ImportSettingsEnabled}">
             
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
@@ -78,47 +93,65 @@
                     <!-- Row 0 -->
                     <Label Content="Dimmer Number" Grid.Row="0" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="0" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="0" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedDimmerNumberHeader}"/>
 
                     <!-- Row 1 -->
                     <Label Content="Channel Number" Grid.Row="1" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedChannelNumberHeader}"/>
 
                     <!-- Row 2 -->
                     <Label Content="Position" Grid.Row="2" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="2" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="2" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedPostionHeader}"/>
 
                     <!-- Row 3 -->
                     <Label Content="Multicore Name" Grid.Row="3" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="3" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="3" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedMulticoreNameHeader}"/>
 
                     <!-- Row 4 -->
                     <Label Content="Instrument Name" Grid.Row="4" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="4" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="4" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedMulticoreNameHeader}"/>
 
                     <!-- Row 5 -->
                     <Label Content="User Field 1" Grid.Row="5" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="5" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="5" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedUserField1Header}"/>
 
                     <!-- Row 6 -->
                     <Label Content="User Field 2" Grid.Row="6" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="6" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="6" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedUserField2Header}"/>
 
                     <!-- Row 7 -->
                     <Label Content="User Field 3" Grid.Row="7" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="7" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="7" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedUserField3Header}"/>
 
                     <!-- Row 8 -->
                     <Label Content="User Field 4" Grid.Row="8" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="8" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="8" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedUserField4Header}"/>
 
                 </Grid>
             </HeaderedContentControl>
@@ -142,37 +175,45 @@
 
                     <!-- Row 0 -->
                     <local:RangeControlContainer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                                                 ControlType="Dimmer"/>
+                                                 ControlType="Dimmer"
+                                                 Ranges="{Binding Path=DimmerRanges}"/>
 
                     <!-- Row 1 -->
                     <Label Content="Data Format" Grid.Row="1" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=DimmerImportFormats}"
+                              SelectedItem="{Binding Path=SelectedDimmerImportFormat}"/>
 
                     <!-- Row 2 -->
                     <RadioButton Content="No Universe Data Provided" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                  HorizontalAlignment="Left" Margin="0,5,0,5"
-                                 Foreground="White"
-                                 GroupName="UniverseRadioButtonGroup"/>
+                                 Foreground="White" GroupName="UniverseRadioButtonGroup"
+                                 IsChecked="{Binding Path=NoUniverseDataProvided}"/>
                     
                     <!-- Row 3 -->
                     <RadioButton x:Name="UniverseDataRadioButton" Content="Universe Data in Seperate Column" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                                  Foreground="White" Margin="0,5,0,5"
-                                 GroupName="UniverseRadioButtonGroup"/>
+                                 GroupName="UniverseRadioButtonGroup"
+                                 IsChecked="{Binding Path=UniverseDataInSeperateColumn}"/>
                     
                     <!-- Row 4 -->
                     <Label Content="Universe Column" Grid.Row="4" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"
                            Visibility="{Binding ElementName=UniverseDataRadioButton, Path=IsChecked, Converter={StaticResource BoolToVis}}"/>
                     <ComboBox Grid.Row="4" Grid.Column="1" Height="20" Width="135"
-                              Visibility="{Binding ElementName=UniverseDataRadioButton, Path=IsChecked, Converter={StaticResource BoolToVis}}"/>
+                              Visibility="{Binding ElementName=UniverseDataRadioButton, Path=IsChecked, Converter={StaticResource BoolToVis}}"
+                              ItemsSource="{Binding Path=ColumnHeaders}"
+                              SelectedItem="{Binding Path=SelectedUniverseHeader}"/>
                     
                     <!-- Row 5 -->
                     <Label Content="Data Format" Grid.Row="5" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"
                            Visibility="{Binding ElementName=UniverseDataRadioButton, Path=IsChecked, Converter={StaticResource BoolToVis}}"/>
                     <ComboBox Grid.Row="5" Grid.Column="1" Height="20" Width="135"
-                              Visibility="{Binding ElementName=UniverseDataRadioButton, Path=IsChecked, Converter={StaticResource BoolToVis}}"/>
+                              Visibility="{Binding ElementName=UniverseDataRadioButton, Path=IsChecked, Converter={StaticResource BoolToVis}}"
+                              ItemsSource="{Binding Path=DimmerImportFormats}"
+                              SelectedItem="{Binding Path=SelectedUniverseImportFormat}"/>
 
 
                 </Grid>
@@ -194,26 +235,32 @@
 
                     <!-- Row 0 -->
                     <local:RangeControlContainer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                                                 ControlType="Distro"/>
+                                                 ControlType="Distro"
+                                                 Ranges="{Binding Path=DistroRanges}"/>
 
 
                     <!-- Row 1 -->
                     <Label Content="Data Format" Grid.Row="1" Grid.Column="0"
                            Style="{StaticResource ControlLabelStyle}"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1" Height="20" Width="135"/>
+                    <ComboBox Grid.Row="1" Grid.Column="1" Height="20" Width="135"
+                              ItemsSource="{Binding Path=DistroImportFormats}"
+                              SelectedItem="{Binding Path=SelectedDistroImportFormat}"/>
 
                     <!-- Row 2 -->
                     <Label Content="Prefix(s)" Grid.Row="2" Grid.Column="0"
-                           Style="{StaticResource ControlLabelStyle}"/>
-                    <TextBox Width="135" Height="20"  Grid.Row="2" Grid.Column="1"/>
+                           Style="{StaticResource ControlLabelStyle}"
+                           Visibility="{Binding Path=DistroPrefixEnable, Converter={StaticResource BoolToVis}}"/>
+                    <TextBox Width="135" Height="20"  Grid.Row="2" Grid.Column="1"
+                             Text="{Binding Path=DistroPrefix}"
+                             Visibility="{Binding Path=DistroPrefixEnable, Converter={StaticResource BoolToVis}}"/>
                 </Grid>
             </HeaderedContentControl>
         </Grid>
 
         <!-- Row 3 -->
         <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5">
-            <Button Content="Ok"  Width="75" Height="20" Margin="5"/>
-            <Button Content="Cancel"  Width="75" Height="20"/>
+            <Button Content="Ok"  Width="75" Height="20" Margin="0,5,5,5"/>
+            <Button Content="Cancel"  Width="75" Height="20" Margin="0,5,0,5"/>
         </StackPanel>
 
     </Grid>
