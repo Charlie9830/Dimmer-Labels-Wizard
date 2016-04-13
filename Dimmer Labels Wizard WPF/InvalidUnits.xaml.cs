@@ -15,21 +15,13 @@ using System.Windows.Shapes;
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for SanitizationWindow.xaml
+    /// Interaction logic for InvalidUnits.xaml
     /// </summary>
-    public partial class SanitizationDialog : Window
+    public partial class InvalidUnits : Window
     {
-        public SanitizationDialog()
+        public InvalidUnits()
         {
             InitializeComponent();
-            this.Loaded += SanitizationWindow_Loaded;
-        }
-
-        private void SanitizationWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            DataHandling.SanitizeDimDistroUnits();
-
-            PleaseWaitLabel.Content = "Complete";
         }
     }
 }

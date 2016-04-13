@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Dimmer_Labels_Wizard_WPF
@@ -601,7 +602,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     // Overwrite Data.
                     Globals.DimmerDistroUnits.Clear();
-
                     Globals.DimmerDistroUnits.AddRange(importer.Units);
                 }
 
