@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
+using System.Windows;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public class UnitImport
+    public class UnitImporter
     {
-        public UnitImport(string filePath, string csvDelimiter)
+        public UnitImporter(string filePath, ImportConfiguration importConfiguration)
         {
             FilePath = filePath;
-            CSVDelimiter = csvDelimiter;
+            ImportConfiguration = importConfiguration;
         }
 
 
@@ -20,87 +21,64 @@ namespace Dimmer_Labels_Wizard_WPF
         // Main Working List.
         public List<DimmerDistroUnit> Units = new List<DimmerDistroUnit>();
 
-        public List<DimmerDistroUnit> ConflictingUnits = new List<DimmerDistroUnit>();
+        protected string FilePath = string.Empty;
 
-        public List<DimmerDistroUnit> UnResolveableUnits = new List<DimmerDistroUnit>();
-
-        public string FilePath = string.Empty;
-
-        public string CSVDelimiter = string.Empty;
+        protected ImportConfiguration ImportConfiguration;
         #endregion
 
-        #region CLR Properties.
-        public string[] ColumnHeaders
+        #region Properties.
+        public IEnumerable<DimmerDistroUnit> ConflictingUnits
         {
             get
             {
-                return PeekHeaders();
+                return from unit in Units
+                       where unit.RackUnitType == RackType.ConflictingRange
+                       select unit;
             }
         }
 
+        public IEnumerable<DimmerDistroUnit> UnResolveableUnits
+        {
+            get
+            {
+                return from unit in Units
+                       where unit.RackUnitType == RackType.Unparseable
+                       select unit;
+            }
+        }
+
+        public bool AllUnitsValid
+        {
+            get
+            {
+                return ConflictingUnits.Count() == 0 && UnResolveableUnits.Count() == 0;
+            }
+        }
         #endregion
 
         #region Public Methods.
-        public bool ValidateFile(out string errorMessage)
-        {
-            TextFieldParser file = new TextFieldParser(FilePath);
-            file.SetDelimiters(CSVDelimiter);
-
-            try
-            {
-                while (!file.EndOfData)
-                {
-                    file.ReadLine();
-                }
-            }
-
-            catch (MalformedLineException e)
-            {
-                errorMessage = e.Message;
-                return false;
-            }
-
-            errorMessage = string.Empty;
-            return true;
-        }
-        
-        public bool ImportData(ImportConfiguration importSettings)
+        public void ImportData()
         {
             // Import Data from CSV.
-            Import(importSettings);
-            
-            if (ConflictingUnits.Count == 0 && UnResolveableUnits.Count == 0)
-            {
-                // No further User Interaction is Required.
-                return true;
-            }
+            Import(ImportConfiguration);
 
-            else
-            {
-                // Further User Interaction is Required.
-                return false;
-            }
+            SanitizeData();
         }
 
-        public void SanitizeData()
+        protected void SanitizeData()
         {
-            // Sort.
-            Units.Sort();
-
             // Remove Units that aren't within the Label Range.
             CullOutOfRangeUnits();
 
             // Resolve PiggyBacks.
             ResolvePiggybacks();
 
-            // Resolve Missing Distro Channels.
+            // Resolve Missing Dimmer Numbers.
+            ResolveMissingDimmerNumbers();
 
-            // Resolve Missing Dimmer Channels.
-
+            // Sort.
+            Units.Sort();
         }
-
-
-
         #endregion.
 
         #region Private Methods.
@@ -186,18 +164,87 @@ namespace Dimmer_Labels_Wizard_WPF
 
         }
 
+        protected void ResolveMissingDimmerNumbers()
+        {
+            // Dimmers.
+            if (ImportConfiguration.DimmerRanges.Count != 0)
+            {
+                // Compare the data to the Ranges Provided. If a unit Should exist, as dictated by the Range,
+                // add it to a seperate list, to be merged with the working lists after the Query is executed (Avoids
+                // Enumerator throwing an Exception).
+                var pendingDimmers = new List<DimmerDistroUnit>();
+
+                foreach (var range in ImportConfiguration.DimmerRanges)
+                {
+                    // Get a collection of existing Dimmer Numbers that fall within the current Range.
+                    var existingDimmerNumbers = from unit in Units
+                                where unit.UniverseNumber == range.Universe &&
+                                unit.DimmerNumber >= range.FirstDimmerNumber &&
+                                unit.DimmerNumber <= range.LastDimmerNumber
+                                select unit.DimmerNumber;
+
+                    // Compare with a consequtive range of Integers.
+                    var missingDimmerNumbers = range.Range.Except(existingDimmerNumbers);
+
+                    // Create a new DimmerDistroUnit representing the Missing Number,
+                    // add it to the pendingUnits list.
+                    foreach (var dimmerNumber in missingDimmerNumbers)
+                    {
+                        pendingDimmers.Add(new DimmerDistroUnit()
+                        {
+                            UniverseNumber = range.Universe,
+                            DimmerNumber = dimmerNumber,
+                            RackUnitType = RackType.Dimmer
+                        });
+                    }
+                }
+
+                // Commit newly created Units to Main Units List.
+                Units.AddRange(pendingDimmers);
+            }
+
+            // Distros.
+            if (ImportConfiguration.DistroRanges.Count != 0)
+            {
+                var pendingDistros = new List<DimmerDistroUnit>();
+
+                foreach (var range in ImportConfiguration.DistroRanges)
+                {
+                    // Get a collection of existing Dimmer Numbers that fall within the current Range.
+                    var existingDimmerNumbers = from unit in Units
+                                                where unit.DimmerNumber >= range.FirstDimmerNumber &&
+                                                unit.DimmerNumber <= range.LastDimmerNumber
+                                                select unit.DimmerNumber;
+
+                    // Compare with a consequtive range of Integers.
+                    var missingDimmerNumbers = range.Range.Except(existingDimmerNumbers);
+
+                    // Create a new DimmerDistroUnit representing the Missing Number,
+                    // add it to the pendingUnits list.
+                    foreach (var dimmerNumber in missingDimmerNumbers)
+                    {
+                        pendingDistros.Add(new DimmerDistroUnit()
+                        {
+                            DimmerNumber = dimmerNumber,
+                            RackUnitType = RackType.Distro
+                        });
+                    }
+                }
+
+                // Commit newly created Units to Main Units List.
+                Units.AddRange(pendingDistros);
+            }
+        }
+
         protected void Import(ImportConfiguration importSettings)
         {
-            // Collect Data
-
             // Create new CSV Object and Point it to the file location.
-            TextFieldParser file = CreateTextFieldParser();
+            TextFieldParser file = FileImport.CreateTextFieldParser(FilePath);
 
-            file.SetDelimiters(CSVDelimiter);
+            file.SetDelimiters(",");
 
             // Read the First line to Throw out Column Headers.
             file.ReadLine();
-
 
             // Collect Column Indexes
             int channelColumn = importSettings.ChannelNumberColumnIndex;
@@ -211,12 +258,10 @@ namespace Dimmer_Labels_Wizard_WPF
             int userField3Column = importSettings.UserField3ColumnIndex;
             int userField4Column = importSettings.UserField4ColumnIndex;
 
-            // Clear Working Lists.
+            // Clear Local Collection.
             Units.Clear();
-            UnResolveableUnits.Clear();
-            ConflictingUnits.Clear();
 
-            // Keep track of and Assign FooterCells/FooterCells list Indices
+            // Begin Importing Data.
             int index = 0;
             while (!file.EndOfData)
             {
@@ -262,52 +307,17 @@ namespace Dimmer_Labels_Wizard_WPF
             file.Close();
         }
 
-        private string[] PeekHeaders()
+        public void ShowUnits()
         {
-            // Create new CSV object Pointed to File Location.
-            TextFieldParser file = CreateTextFieldParser();
-            file.SetDelimiters(",");
+            var dialog = new DataDebugWindow();
 
+            foreach (var element in Units)
+            {
+                dialog.Units.Add(element);
+            }
 
-            // Read the First line to Collect the Cells.
-            string[] headers = file.ReadFields();
-
-            // Close the File to return Cursor to Top.
-            file.Close();
-
-            return headers;
+            dialog.ShowDialog();
         }
-
-        private TextFieldParser CreateTextFieldParser()
-        {
-            if (FilePath != null)
-            {
-                Console.WriteLine("Loading from User Selected File");
-                TextFieldParser file = new TextFieldParser(FilePath);
-                return file;
-            }
-
-            else if (Environment.MachineName == "CHARLIESAMSUNG")
-            {
-                Console.WriteLine("Loading from Hardcoded File Path");
-                TextFieldParser file = new TextFieldParser(@"C:\Users\Charlie Samsung\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\General Test Data.csv");
-                return file;
-            }
-
-            else if (Environment.MachineName == "CHARLIE-METABOX")
-            {
-                Console.WriteLine("Loading from Hardcoded File Path");
-                TextFieldParser file = new TextFieldParser(@"C:\Users\Charlie\SkyDrive\C# Projects\Dimmer Labels Wizard\Test Input Files\General Test Data.csv");
-                return file;
-            }
-
-            else
-            {
-                Console.WriteLine("Unrecognized Computer: Please add a Condition for this Computer Name, and a Filepath to FileImport.cs");
-                return null;
-            }
-        }
-
         #endregion
     }
 

@@ -10,9 +10,9 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         // Import Settings.
         public ImportFormat DimmerImportFormat { get; set; }
-        public ImportFormat DMXAddressImportFormat { get; set; }
+        public ImportFormat UniverseImportFormat { get; set; }
         public ImportFormat DistroImportFormat { get; set; }
-        public string DistroNumberPrefix { get; set; }
+        public string DistroNumberPrefix { get; set; } = string.Empty;
 
         public List<DimmerRange> DimmerRanges = new List<DimmerRange>();
         public List<DistroRange> DistroRanges = new List<DistroRange>();

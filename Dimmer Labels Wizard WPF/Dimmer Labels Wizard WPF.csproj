@@ -98,6 +98,9 @@
     </Compile>
     <Compile Include="ColumnHeader.cs" />
     <Compile Include="Comparators.cs" />
+    <Compile Include="DataDebugWindow.xaml.cs">
+      <DependentUpon>DataDebugWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DimmerRangeControl.xaml.cs">
       <DependentUpon>DimmerRangeControl.xaml</DependentUpon>
     </Compile>
@@ -192,7 +195,7 @@
     </Compile>
     <Compile Include="UniqueCellTemplateEditorViewModel.cs" />
     <Compile Include="UnitGroup.cs" />
-    <Compile Include="UnitImport.cs" />
+    <Compile Include="UnitImporter.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
@@ -207,6 +210,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ColorPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataDebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
              mc:Ignorable="d" 
-             Height="180" Width="320">
+             Height="180" Width="350">
 
     <Grid Background="{StaticResource ControlGridBackground}" 
           DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:RangeControlContainer}}">

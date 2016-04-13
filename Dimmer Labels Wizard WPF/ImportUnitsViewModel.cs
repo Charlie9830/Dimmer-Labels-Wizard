@@ -14,9 +14,27 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Constructor.
         public ImportUnitsViewModel()
         {
+            // Intialization.
+            SelectedDimmerImportFormat = _DimmerImportFormats.First();
+            SelectedDistroImportFormat = _DistroImportFormats.First();
+
+            if (Globals.DimmerDistroUnits.Count > 0)
+            {
+                ImportTypeEnabled = true;
+                MergeData = true;
+            }
+
             // Commands.
             _BrowseCommand = new RelayCommand(BrowseCommandExecute);
+            _OkCommand = new RelayCommand(OkCommandExecute);
+
+            // Testing
+            ImportSettingsEnabled = true;
         }
+        #endregion
+
+        #region Protected Fields.
+        protected static readonly ColumnHeader NoColumnAssignment = new ColumnHeader("No Assignment", -1);
         #endregion
 
         #region Public Non Bound Properties.
@@ -30,8 +48,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Binding Source Properties.
-
-
         protected IEnumerable<FriendlyImportFormat> _DimmerImportFormats = new List<FriendlyImportFormat>()
         {
             new FriendlyImportFormat(ImportFormat.Format1, "Universe / Address (1/123)"),
@@ -154,14 +170,14 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedDimmerNumberHeader;
+        protected ColumnHeader _SelectedDimmerNumberHeader = NoColumnAssignment;
 
         public ColumnHeader SelectedDimmerNumberHeader
         {
             get { return _SelectedDimmerNumberHeader; }
             set
             {
-                if (_SelectedDimmerNumberHeader != value)
+                if (value != null && _SelectedDimmerNumberHeader != value)
                 {
                     _SelectedDimmerNumberHeader = value;
 
@@ -172,14 +188,14 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedChannelNumberHeader;
+        protected ColumnHeader _SelectedChannelNumberHeader = NoColumnAssignment;
 
         public ColumnHeader SelectedChannelNumberHeader
         {
             get { return _SelectedChannelNumberHeader; }
             set
             {
-                if (_SelectedChannelNumberHeader != value)
+                if (value != null && _SelectedChannelNumberHeader != value)
                 {
                     _SelectedChannelNumberHeader = value;
 
@@ -190,14 +206,14 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedPositionHeader;
+        protected ColumnHeader _SelectedPositionHeader = NoColumnAssignment;
 
         public ColumnHeader SelectedPostionHeader
         {
             get { return _SelectedPositionHeader; }
             set
             {
-                if (_SelectedPositionHeader != value)
+                if (value != null && _SelectedPositionHeader != value)
                 {
                     _SelectedPositionHeader = value;
 
@@ -208,14 +224,14 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedMulticoreNameHeader;
+        protected ColumnHeader _SelectedMulticoreNameHeader = NoColumnAssignment;
 
         public ColumnHeader SelectedMulticoreNameHeader
         {
             get { return _SelectedMulticoreNameHeader; }
             set
             {
-                if (_SelectedMulticoreNameHeader != value)
+                if (value != null && _SelectedMulticoreNameHeader != value)
                 {
                     _SelectedMulticoreNameHeader = value;
 
@@ -226,14 +242,14 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedInstrumentNameHeader;
+        protected ColumnHeader _SelectedInstrumentNameHeader = NoColumnAssignment;
 
         public ColumnHeader SelectedInstrumentNameHeader
         {
             get { return _SelectedInstrumentNameHeader; }
             set
             {
-                if (_SelectedInstrumentNameHeader != value)
+                if (value != null && _SelectedInstrumentNameHeader != value)
                 {
                     _SelectedInstrumentNameHeader = value;
 
@@ -244,14 +260,14 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedUserField1Header;
+        protected ColumnHeader _SelectedUserField1Header = NoColumnAssignment;
 
         public ColumnHeader SelectedUserField1Header
         {
             get { return _SelectedUserField1Header; }
             set
             {
-                if (_SelectedUserField1Header != value)
+                if (value != null && _SelectedUserField1Header != value)
                 {
                     _SelectedUserField1Header = value;
 
@@ -261,14 +277,14 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected ColumnHeader _SelectedUserField2Header;
+        protected ColumnHeader _SelectedUserField2Header = NoColumnAssignment;
 
         public ColumnHeader SelectedUserField2Header
         {
             get { return _SelectedUserField2Header; }
             set
             {
-                if (_SelectedUserField2Header != value)
+                if (value != null && _SelectedUserField2Header != value)
                 {
                     _SelectedUserField2Header = value;
 
@@ -278,14 +294,14 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected ColumnHeader _SelectedUserField3Header;
+        protected ColumnHeader _SelectedUserField3Header = NoColumnAssignment;
 
         public ColumnHeader SelectedUserField3Header
         {
             get { return _SelectedUserField3Header; }
             set
             {
-                if (_SelectedUserField3Header != value)
+                if (value != null && _SelectedUserField3Header != value)
                 {
                     _SelectedUserField3Header = value;
 
@@ -295,14 +311,14 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected ColumnHeader _SelectedUserField4Header;
+        protected ColumnHeader _SelectedUserField4Header = NoColumnAssignment;
 
         public ColumnHeader SelectedUserField4Header
         {
             get { return _SelectedUserField4Header; }
             set
             {
-                if (_SelectedUserField4Header != value)
+                if (value != null && _SelectedUserField4Header != value)
                 {
                     _SelectedUserField4Header = value;
 
@@ -383,7 +399,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected bool _UniverseDataInSeperateColumn = true;
+        protected bool _UniverseDataInSeperateColumn = false;
 
         public bool UniverseDataInSeperateColumn
         {
@@ -402,7 +418,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
 
-        protected ColumnHeader _SelectedUniverseHeader;
+        protected ColumnHeader _SelectedUniverseHeader = NoColumnAssignment;
 
         public ColumnHeader SelectedUniverseHeader
         {
@@ -459,7 +475,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected string _DistroPrefix;
+        protected string _DistroPrefix = string.Empty;
 
         public string DistroPrefix
         {
@@ -493,12 +509,116 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
         }
-        
 
+
+        protected bool _ImportTypeEnabled = false;
+
+        public bool ImportTypeEnabled
+        {
+            get { return _ImportTypeEnabled; }
+            set
+            {
+                if (_ImportTypeEnabled != value)
+                {
+                    _ImportTypeEnabled = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(ImportTypeEnabled));
+                }
+            }
+        }
+
+
+        protected bool _MergeData = true;
+
+        public bool MergeData
+        {
+            get { return _MergeData; }
+            set
+            {
+                if (_MergeData != value)
+                {
+                    _MergeData = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(MergeData));
+                }
+            }
+        }
 
         #endregion
 
         #region Commands.
+
+        protected RelayCommand _OkCommand;
+        public ICommand OkCommand
+        {
+            get
+            {
+                return _OkCommand;
+            }
+        }
+
+        protected void OkCommandExecute(object parameter)
+        {
+            // Check UI input for Sanity.
+
+            // Create a Unit Importer.
+            var importer = new UnitImporter(FilePath, GetImportConfiguration());
+
+            // Execute Import.
+            importer.ImportData();
+
+            if (importer.AllUnitsValid)
+            {
+                // Commit New data to Database.
+                if (MergeData)
+                {
+                    var unitComparer = new DimmerDistroUnitEqualityComparer();
+
+                    foreach (var element in importer.Units)
+                    {
+                        // Determine if a matching Unit already Exists.
+                        var existingUnit = Globals.DimmerDistroUnits.Find(item => unitComparer.Equals(item, element));
+                        
+                        if (existingUnit != null)
+                        {
+                            // If a matching unit already exists, Replace It.
+                            int index = Globals.DimmerDistroUnits.IndexOf(existingUnit);
+
+                            Globals.DimmerDistroUnits[index] = element;
+                        }
+
+                        else
+                        {
+                            // Otherwise Add a new Unit.
+                            Globals.DimmerDistroUnits.Add(element);
+                        }
+                    }    
+                }
+
+                else
+                {
+                    // Overwrite Data.
+                    Globals.DimmerDistroUnits.Clear();
+
+                    Globals.DimmerDistroUnits.AddRange(importer.Units);
+                }
+
+                // Continue to the Next Window.
+                
+            }
+
+            else
+            {
+                // Invalid Units, Initiate Invalid Units Dialog.
+
+                // 
+            }
+
+            // Debug.
+            importer.ShowUnits();
+        }
 
         protected RelayCommand _BrowseCommand;
         public ICommand BrowseCommand
@@ -542,6 +662,48 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods.
+        protected ImportConfiguration GetImportConfiguration()
+        {
+            // Build an ImportConfiguration Object.
+            var configuration = new ImportConfiguration();
+
+            // Column Indexes.
+            configuration.DimmerNumberColumnIndex = SelectedDimmerNumberHeader.Index;
+            configuration.ChannelNumberColumnIndex = SelectedChannelNumberHeader.Index;
+            configuration.MulticoreNameColumnIndex = SelectedMulticoreNameHeader.Index;
+            configuration.PositionColumnIndex = SelectedPostionHeader.Index;
+            configuration.InstrumentTypeColumnIndex = SelectedInstrumentNameHeader.Index;
+            configuration.UserField1ColumnIndex = SelectedUserField1Header.Index;
+            configuration.UserField2ColumnIndex = SelectedUserField2Header.Index;
+            configuration.UserField3ColumnIndex = SelectedUserField3Header.Index;
+            configuration.UserField4ColumnIndex = SelectedUserField4Header.Index;
+            configuration.UniverseDataColumnIndex = SelectedUniverseHeader.Index;
+
+            // Import Formats.
+            if (DimmerRanges.Count > 0)
+            {
+                configuration.DimmerImportFormat = SelectedDimmerImportFormat.ImportFormat;
+
+                if (UniverseDataInSeperateColumn)
+                {
+                    configuration.UniverseImportFormat = SelectedUniverseImportFormat.ImportFormat;
+                }
+            }
+
+            if (DistroRanges.Count > 0)
+            {
+                configuration.DistroImportFormat = SelectedDistroImportFormat.ImportFormat;
+                configuration.DistroNumberPrefix = DistroPrefix;
+            }
+
+            // Ranges.
+            configuration.DimmerRanges = DimmerRanges;
+            configuration.DistroRanges = DistroRanges;
+
+            return configuration;
+
+        }
+
         protected void SetDistroEnables(ImportFormat distroImportFormat)
         {
             switch (distroImportFormat)
@@ -565,7 +727,14 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void PopulateColumnMappingControl()
         {
-            ColumnHeaders = FileImport.CollectHeaders(FilePath);
+            // Pre Generate a ColumnHeader object representing no Selection.
+            var columnHeaders = new List<ColumnHeader>();
+            columnHeaders.Add(NoColumnAssignment);
+
+            // Collect Column Headers.
+            columnHeaders.AddRange(FileImport.CollectHeaders(FilePath));
+            ColumnHeaders = columnHeaders;
+
             PredictColumnSelections();
         }
 
@@ -582,23 +751,13 @@ namespace Dimmer_Labels_Wizard_WPF
             // Multicore Name.
             SelectedMulticoreNameHeader = headers.Find(item => item.HeaderLowerCase.Contains("multicore name") ||
             item.HeaderLowerCase.Contains("weiland") ||
-            item.HeaderLowerCase.Contains("multi"));
+            item.HeaderLowerCase.Contains("multi") ||
+            item.HeaderLowerCase.Contains("loom"));
 
             // Instrument Name.
             SelectedInstrumentNameHeader = headers.Find(item => item.HeaderLowerCase.Contains("instrument") ||
-            item.HeaderLowerCase.Contains("unit"));
-
-            // UserField1.
-            SelectedUserField1Header = headers.Find(item => item.HeaderLowerCase.Contains("user field 1"));
-
-            // UserField2.
-            SelectedUserField2Header = headers.Find(item => item.HeaderLowerCase.Contains("user field 2"));
-
-            // UserField3.
-            SelectedUserField3Header = headers.Find(item => item.HeaderLowerCase.Contains("user field 3"));
-
-            // UserField4.
-            SelectedUserField4Header = headers.Find(item => item.HeaderLowerCase.Contains("user field 4"));
+            item.HeaderLowerCase.Contains("unit") ||
+            item.HeaderLowerCase.Contains("type"));
         }
         #endregion
     }

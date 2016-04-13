@@ -17,6 +17,9 @@
         <!-- Boolean to Visibilty Converter, True == Visible, False == Collapsed -->
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         
+        <!-- Boolean to Brush Converter. True to Green. False to Red -->
+        <local:BooleanToBrushConverter x:Key="BoolToBrush"/>
+
         <!-- Color to Brush Converter -->
         <local:ColorToBrushConverter x:Key="ColorToBrush"/>
         

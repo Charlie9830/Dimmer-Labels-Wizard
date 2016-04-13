@@ -48,7 +48,9 @@ namespace Dimmer_Labels_Wizard_WPF
         protected string _UserField4 = string.Empty;
         protected string _Custom = string.Empty;
 
-        #region Imported Data Public Accsesors.
+        #region Public Accessors.
+        
+
         public string ChannelNumber
         {
             get
@@ -229,6 +231,43 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public int DimmerNumber
+        {
+            get
+            {
+                return _DimmerNumber;
+            }
+            set
+            {
+                if (value != _DimmerNumber)
+                {
+                    _DimmerNumber = value;
+                    OnPropertyChanged(nameof(DimmerNumber));
+                }
+            }
+        }
+
+        public RackType RackUnitType
+        {
+            get
+            {
+                return _RackUnitType;
+            }
+
+            set
+            {
+                if (_RackUnitType != value)
+                {
+                    _RackUnitType = value;
+
+                    OnPropertyChanged(nameof(RackUnitType));
+                }
+            }
+        }
+
+        
+
+
         public Color LabelColor
         {
             get
@@ -257,11 +296,11 @@ namespace Dimmer_Labels_Wizard_WPF
         public int ImportIndex;
 
         // Inferred Data
-        public RackType RackUnitType { get; set; }
         public int UniverseNumber { get; set; }
         public int AbsoluteDMXAddress { get; set; }
-        public int DimmerNumber { get; set; }
 
+        protected int _DimmerNumber = 0;
+        protected RackType _RackUnitType;
 
         public override string ToString()
         {
@@ -458,7 +497,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Control Method for Parse Methods. Determines Rack Type and calls Parse Methods. Adds unit to Unparseable
         // List if string format does not Match the User set option.
-        public void ParseUnitData(UnitImport unitImportParent, ImportConfiguration importConfiguration)
+        public void ParseUnitData(UnitImporter unitImporterParent, ImportConfiguration importConfiguration)
         {
             
             // Determine RackType.
@@ -473,19 +512,17 @@ namespace Dimmer_Labels_Wizard_WPF
                     RackUnitType = RackType.Dimmer;
                     break;
                 case RackType.Distro:
-                    ParseDistroNumber(importConfiguration);
+                    DimmerNumber = ParseDistroNumber(importConfiguration);
                     RackUnitType = RackType.Distro;
                     break;
                 case RackType.OutsideLabelRange:
                     RackUnitType = RackType.OutsideLabelRange;
                     break;
                 case RackType.Unparseable:
-                    unitImportParent.UnResolveableUnits.Add(this);
                     RackUnitType = RackType.Unparseable;
                     break;
-                case RackType.ClashingRange:
-                    unitImportParent.ConflictingUnits.Add(this);
-                    RackUnitType = RackType.ClashingRange;
+                case RackType.ConflictingRange:
+                    RackUnitType = RackType.ConflictingRange;
                     break;
                 default:
                     break;
@@ -526,8 +563,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 case ImportFormat.Format1:
                     universeNumber = Convert.ToInt32(SplitBySlash(DimmerNumberText)[0].Trim());
                     return Convert.ToInt32(SplitBySlash(DimmerNumberText)[1].Trim());
-
-                    
+ 
                 case ImportFormat.Format2:
                     universeNumber = ExtractUniverseNumber(DMXAddressText, importConfiguration);
                     return Convert.ToInt32(DimmerNumberText.Trim());
@@ -736,7 +772,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 // In Both Ranges.
                 if (inDimmerRange == true && inDistroRange == true)
                 {
-                    return RackType.ClashingRange;
+                    return RackType.ConflictingRange;
                 }
             }
 
@@ -747,7 +783,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             // Search the DistroRanges for a matching Range. Return true if found.
             var query = from range in importConfiguration.DistroRanges
-                        where range.FirstDimmerNumber <= DimmerNumber &&
+                        where range.FirstDimmerNumber <= dimmerNumber &&
                         range.LastDimmerNumber >= dimmerNumber
                         select range;
 
@@ -884,7 +920,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private int ExtractUniverseNumber(string text, ImportConfiguration importConfiguration)
         {
-            ImportFormat DMXaddressColumnFormat = importConfiguration.DMXAddressImportFormat;
+            ImportFormat DMXaddressColumnFormat = importConfiguration.UniverseImportFormat;
 
             // Overide the Function if User has chosen to overide Universe Infomation.
             if (DMXaddressColumnFormat == ImportFormat.NoUniverseData)
@@ -948,7 +984,45 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
     }
 
-    
+
+    public class DimmerDistroUnitEqualityComparer : IEqualityComparer<DimmerDistroUnit>
+    {
+        public bool Equals(DimmerDistroUnit x, DimmerDistroUnit y)
+        {
+            if (x.RackUnitType == y.RackUnitType)
+            {
+                // Dimmer.
+                if (x.RackUnitType == RackType.Dimmer)
+                {
+                    return x.UniverseNumber == y.UniverseNumber && 
+                        x.DimmerNumber == y.DimmerNumber;
+                }
+
+                if (x.RackUnitType == RackType.Distro)
+                {
+                    return x.DimmerNumber == y.DimmerNumber;
+                }
+
+                else
+                {
+                    throw new NotSupportedException("Equality Comparison is only supported on Units of RackType Dimmer or Distro)");
+                }
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
+        public int GetHashCode(DimmerDistroUnit obj)
+        {
+            var hCode = obj.UniverseNumber ^ obj.DimmerNumber;
+
+            return hCode.GetHashCode();
+        }
+    }
+
     public class DimmerDistroUnitStorage
     {
         public string ChannelNumber;

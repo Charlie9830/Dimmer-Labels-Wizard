@@ -57,12 +57,14 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (_UniverseNumber != value)
                 {
-                    _UniverseNumber = value;
+                    _UniverseNumber = CoerceUniverseNumber(value);
 
                     UpdateRange(value, FirstDimmerNumber, LastDimmerNumber);
 
                     // Notify.
                     OnPropertyChanged(nameof(UniverseNumber));
+                    OnPropertyChanged(nameof(IsValidDimmerRange));
+                    OnPropertyChanged(nameof(IsValidDistroRange));
                 }
             }
         }
@@ -77,12 +79,14 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (_FirstDimmerNumber != value)
                 {
-                    _FirstDimmerNumber = value;
+                    _FirstDimmerNumber = CoerceFirstDimmer(value);
 
                     UpdateRange(UniverseNumber, value, LastDimmerNumber);
 
                     // Notify.
                     OnPropertyChanged(nameof(FirstDimmerNumber));
+                    OnPropertyChanged(nameof(IsValidDimmerRange));
+                    OnPropertyChanged(nameof(IsValidDistroRange));
                 }
             }
         }
@@ -97,13 +101,34 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (_LastDimmerNumber != value)
                 {
-                    _LastDimmerNumber = value;
+                    _LastDimmerNumber = CoerceLastDimmer(value);
 
                     UpdateRange(UniverseNumber, FirstDimmerNumber, value);
 
                     // Notify.
                     OnPropertyChanged(nameof(LastDimmerNumber));
+                    OnPropertyChanged(nameof(IsValidDimmerRange));
+                    OnPropertyChanged(nameof(IsValidDistroRange));
                 }
+            }
+        }
+
+        public bool IsValidDimmerRange
+        {
+            get
+            {
+                return UniverseNumber != 0 &&
+                    FirstDimmerNumber != 0 &&
+                    LastDimmerNumber != 0;
+            }
+        }
+
+        public bool IsValidDistroRange
+        {
+            get
+            {
+                return FirstDimmerNumber != 0 &&
+                    LastDimmerNumber != 0;
             }
         }
 
@@ -127,6 +152,80 @@ namespace Dimmer_Labels_Wizard_WPF
                 var range = _Range as DistroRange;
                 range.FirstDimmerNumber = firstDimmer;
                 range.LastDimmerNumber = lastDimmer;
+            }
+        }
+
+        protected int CoerceFirstDimmer(int newValue)
+        { 
+            if (newValue < 0)
+            {
+                newValue = 0;
+            }
+
+            if (newValue > 512)
+            {
+                newValue = 512;
+            }
+
+            // Cross Coerce with LastDimmerNumber.
+            if (LastDimmerNumber == 0)
+            {
+                // Last Dimmer Number has not been Set yet.
+                return newValue;
+            }
+
+            if (newValue > LastDimmerNumber)
+            {
+                return LastDimmerNumber;
+            }
+
+            else
+            {
+                return newValue;
+            }
+        }
+
+        protected int CoerceLastDimmer(int newValue)
+        {
+            
+            if (newValue < 0)
+            {
+                newValue = 0;
+            }
+
+            if (newValue > 512)
+            {
+                newValue = 512;
+            }
+
+            // Cross Coerce with FirstDimmerNumber.
+            if (FirstDimmerNumber == 0)
+            {
+                // First Dimmer Number has not been set yet.
+                return newValue;
+            }
+
+            if (newValue < FirstDimmerNumber)
+            {
+                return FirstDimmerNumber;
+            }
+
+            else
+            {
+                return newValue;
+            }
+        }
+
+        protected int CoerceUniverseNumber(int newValue)
+        {
+            if (newValue < 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return newValue;
             }
         }
 

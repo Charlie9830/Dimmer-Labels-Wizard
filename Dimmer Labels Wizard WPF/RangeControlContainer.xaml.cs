@@ -93,16 +93,21 @@ namespace Dimmer_Labels_Wizard_WPF
             if (ControlType == RackType.Dimmer)
             {
                 // Dimmer.
-                ((IList<UnitRangeBase>)Ranges).Add(
-                    new DimmerRange() { Universe = 1, FirstDimmerNumber = 1, LastDimmerNumber = 12 });
+                ((IList<DimmerRange>)Ranges).Add(
+                    new DimmerRange() { Universe = 0, FirstDimmerNumber = 0, LastDimmerNumber = 0 });
             }
 
             else
             {
                 // Distro.
-                ((IList<UnitRangeBase>)Ranges).Add(
-                    new DistroRange() { FirstDimmerNumber = 1, LastDimmerNumber = 12 });
+                ((IList<DistroRange>)Ranges).Add(
+                    new DistroRange() { FirstDimmerNumber = 0, LastDimmerNumber = 0 });
             }
+
+            // Add Range Control and Notify.
+            AddRangeControl(Ranges.Last());
+            RaisePropertyChanged(nameof(ShowStartMessage));
+            _RemoveRangeCommand.CheckCanExecute();
         }
 
 
@@ -119,7 +124,26 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             if (RangesCount > 0)
             {
-                ((IList<UnitRangeBase>)Ranges).RemoveAt(RangesCount - 1);
+                UnitRangeBase rangeBuffer;
+
+                if (ControlType == RackType.Dimmer)
+                {
+                    // Dimmer.
+                    rangeBuffer = Ranges.Last();
+                    ((IList<DimmerRange>)Ranges).RemoveAt(RangesCount - 1);
+                }
+
+                else
+                {
+                    // Distro.
+                    rangeBuffer = Ranges.Last();
+                    ((IList<DistroRange>)Ranges).RemoveAt(RangesCount - 1);
+                }
+
+                // Remove Range Control and Notify.
+                RemoveRangeControl(rangeBuffer);
+                RaisePropertyChanged(nameof(ShowStartMessage));
+                _RemoveRangeCommand.CheckCanExecute();
             }
         }
 
@@ -148,8 +172,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region DependencyProperties.
-
-
         public IEnumerable<UnitRangeBase> Ranges
         {
             get { return (IEnumerable<UnitRangeBase>)GetValue(RangesProperty); }
@@ -166,18 +188,8 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as RangeControlContainer;
 
-            INotifyCollectionChanged newCollection = e.NewValue as INotifyCollectionChanged;
-            INotifyCollectionChanged oldCollection = e.OldValue as INotifyCollectionChanged;
-
-            if (oldCollection != null)
+            if (e.NewValue != null)
             {
-                oldCollection.CollectionChanged -= instance.RangeControls_CollectionChanged;
-            }
-
-            if (newCollection != null)
-            {
-                newCollection.CollectionChanged += instance.RangeControls_CollectionChanged;
-
                 // Handle Existing Elements.
                 var collection = e.NewValue as IEnumerable<UnitRangeBase>;
 
@@ -190,37 +202,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
 
+            // Notify.
+            instance.RaisePropertyChanged(nameof(ShowStartMessage));
+
             // Executes.
             instance._RemoveRangeCommand.CheckCanExecute();
         }
-
-        private void RangeControls_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (var element in e.NewItems)
-                {
-                    var range = element as UnitRangeBase;
-                    AddRangeControl(range);
-                }
-            }
-
-            if (e.OldItems != null)
-            {
-                foreach (var element in e.OldItems)
-                {
-                    var range = element as UnitRangeBase;
-                    RemoveRangeControl(range);
-                }
-            }
-
-            // Notify.
-            RaisePropertyChanged(nameof(ShowStartMessage));
-
-            // Executes.
-            _RemoveRangeCommand.CheckCanExecute();
-        }
-
 
         #endregion
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Dimmer_Labels_Wizard_WPF
 {
     // DimDistroUnit Object Data type tracking.
-    public enum RackType { Dimmer, Distro, OutsideLabelRange, Unparseable, ClashingRange};
+    public enum RackType { Dimmer, Distro, OutsideLabelRange, Unparseable, ConflictingRange};
     public enum SortOrder { Default, DimmerAndDistroNumber}; // Update DimDistroUnit.CompareTo if you Add anything.
 
     // Distro Formating.     Format1 ND###: Format2 ###: Format3 #/###: Format4 A/###:.
@@ -39,6 +39,8 @@ namespace Dimmer_Labels_Wizard_WPF
     public enum MoveDirection { Up, Down};
 
     public enum TemplateEditorActiveTab { Settings, Assignments};
+
+    public enum ImportType { Merge, Overwrite};
 }
 
 
