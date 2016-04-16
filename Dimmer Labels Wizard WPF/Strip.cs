@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,10 +23,21 @@ namespace Dimmer_Labels_Wizard_WPF
         // Mergers.
         public ObservableCollection<Merge> Mergers = new ObservableCollection<Merge>();
 
-        // RackType.
         #endregion
 
         #region Properties.
+
+        protected Guid _GUID = Guid.NewGuid();
+
+        [Key]
+        public Guid GUID
+        {
+            get
+            {
+                return _GUID;
+            }
+        }
+
         public IEnumerable<DimmerDistroUnit> Units
         {
             get

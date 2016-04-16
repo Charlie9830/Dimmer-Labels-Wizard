@@ -17,28 +17,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
         }
 
-        public DimmerDistroUnit(DimmerDistroUnitStorage storage)
-        {
-            ChannelNumber = storage.ChannelNumber;
-            InstrumentName = storage.InstrumentName;
-            MulticoreName = storage.MulticoreName;
-            Position = storage.Position;
-            UserField1 = storage.UserField1;
-            UserField2 = storage.UserField2;
-            UserField3 = storage.UserField3;
-            UserField4 = storage.UserField4;
-
-            DimmerNumberText = storage.DimmerNumberText;
-            DMXAddressText = storage.DMXAddressText;
-
-            ImportIndex = storage.ImportIndex;
-
-            RackUnitType = storage.RackUnitType;
-            UniverseNumber = storage.UniverseNumber;
-            AbsoluteDMXAddress = storage.AbsoluteDMXAddress;
-            DimmerNumber = storage.DimmerNumber;
-    }
-
         // Imported Data
         protected string _ChannelNumber = string.Empty;
         protected string _InstrumentName = string.Empty;
