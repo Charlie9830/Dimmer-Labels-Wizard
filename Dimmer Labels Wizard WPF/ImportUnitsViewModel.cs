@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -19,23 +20,19 @@ namespace Dimmer_Labels_Wizard_WPF
             SelectedDimmerImportFormat = _DimmerImportFormats.First();
             SelectedDistroImportFormat = _DistroImportFormats.First();
 
-            if (Globals.DimmerDistroUnits.Count > 0)
-            {
-                ImportTypeEnabled = true;
-                MergeData = true;
-            }
-
             // Commands.
             _BrowseCommand = new RelayCommand(BrowseCommandExecute);
             _OkCommand = new RelayCommand(OkCommandExecute);
 
             // Testing
-            ImportSettingsEnabled = true;
+            ImportSettingsEnabled = false;
         }
         #endregion
 
         #region Protected Fields.
-        protected static readonly ColumnHeader NoColumnAssignment = new ColumnHeader("No Assignment", -1);
+        protected static readonly ColumnHeader _NoColumnAssignment = new ColumnHeader("No Assignment", -1);
+
+        protected readonly UnitRepository _UnitRepo = new UnitRepository(new PrimaryDB());
         #endregion
 
         #region Public Non Bound Properties.
@@ -171,7 +168,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedDimmerNumberHeader = NoColumnAssignment;
+        protected ColumnHeader _SelectedDimmerNumberHeader = _NoColumnAssignment;
 
         public ColumnHeader SelectedDimmerNumberHeader
         {
@@ -189,7 +186,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedChannelNumberHeader = NoColumnAssignment;
+        protected ColumnHeader _SelectedChannelNumberHeader = _NoColumnAssignment;
 
         public ColumnHeader SelectedChannelNumberHeader
         {
@@ -207,7 +204,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedPositionHeader = NoColumnAssignment;
+        protected ColumnHeader _SelectedPositionHeader = _NoColumnAssignment;
 
         public ColumnHeader SelectedPostionHeader
         {
@@ -225,7 +222,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedMulticoreNameHeader = NoColumnAssignment;
+        protected ColumnHeader _SelectedMulticoreNameHeader = _NoColumnAssignment;
 
         public ColumnHeader SelectedMulticoreNameHeader
         {
@@ -243,7 +240,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedInstrumentNameHeader = NoColumnAssignment;
+        protected ColumnHeader _SelectedInstrumentNameHeader = _NoColumnAssignment;
 
         public ColumnHeader SelectedInstrumentNameHeader
         {
@@ -261,7 +258,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected ColumnHeader _SelectedUserField1Header = NoColumnAssignment;
+        protected ColumnHeader _SelectedUserField1Header = _NoColumnAssignment;
 
         public ColumnHeader SelectedUserField1Header
         {
@@ -278,7 +275,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected ColumnHeader _SelectedUserField2Header = NoColumnAssignment;
+        protected ColumnHeader _SelectedUserField2Header = _NoColumnAssignment;
 
         public ColumnHeader SelectedUserField2Header
         {
@@ -295,7 +292,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected ColumnHeader _SelectedUserField3Header = NoColumnAssignment;
+        protected ColumnHeader _SelectedUserField3Header = _NoColumnAssignment;
 
         public ColumnHeader SelectedUserField3Header
         {
@@ -312,7 +309,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected ColumnHeader _SelectedUserField4Header = NoColumnAssignment;
+        protected ColumnHeader _SelectedUserField4Header = _NoColumnAssignment;
 
         public ColumnHeader SelectedUserField4Header
         {
@@ -419,7 +416,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
 
-        protected ColumnHeader _SelectedUniverseHeader = NoColumnAssignment;
+        protected ColumnHeader _SelectedUniverseHeader = _NoColumnAssignment;
 
         public ColumnHeader SelectedUniverseHeader
         {
@@ -530,7 +527,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected bool _MergeData = true;
+        protected bool _MergeData = false;
 
         public bool MergeData
         {
@@ -572,52 +569,39 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (importer.AllUnitsValid)
             {
-                // Commit New data to Database.
-                if (MergeData)
-                {
-                    var unitComparer = new DimmerDistroUnitEqualityComparer();
+                // Sanitize Data.
+                importer.SanitizeData();
 
-                    foreach (var element in importer.Units)
-                    {
-                        // Determine if a matching Unit already Exists.
-                        var existingUnit = Globals.DimmerDistroUnits.Find(item => unitComparer.Equals(item, element));
-                        
-                        if (existingUnit != null)
-                        {
-                            // If a matching unit already exists, Replace It.
-                            int index = Globals.DimmerDistroUnits.IndexOf(existingUnit);
+                // Push Data to Database.
+                CommitToDatabase(importer, MergeData);
 
-                            Globals.DimmerDistroUnits[index] = element;
-                        }
+                // Continue to Next Window.
 
-                        else
-                        {
-                            // Otherwise Add a new Unit.
-                            Globals.DimmerDistroUnits.Add(element);
-                        }
-                    }    
-                }
-
-                else
-                {
-                    // Overwrite Data.
-                    Globals.DimmerDistroUnits.Clear();
-                    Globals.DimmerDistroUnits.AddRange(importer.Units);
-                }
-
-                // Continue to the Next Window.
-                
             }
 
             else
             {
                 // Invalid Units, Initiate Invalid Units Dialog.
+                var dialog = new InvalidUnits();
+                var viewModel = dialog.DataContext as InvalidUnitsViewModel;
 
-                // 
+                viewModel.UnitImporter = importer;
+                viewModel.DimmerImportFormat = SelectedDimmerImportFormat;
+                viewModel.DistroImportFormat = SelectedDistroImportFormat;
+
+                // Show Dialog.
+                if (dialog.ShowDialog() == true && importer.AllUnitsValid)
+                {
+                    // Sanitize Data.
+                    importer.SanitizeData();
+
+                    // Push Data to Database.
+                    CommitToDatabase(importer, MergeData);
+
+                    // Continue to Next window.;
+                }
+
             }
-
-            // Debug.
-            importer.ShowUnits();
         }
 
         protected RelayCommand _BrowseCommand;
@@ -662,6 +646,39 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods.
+        protected void CommitToDatabase(UnitImporter importer, bool mergeData)
+        {
+            if (mergeData)
+            {
+                foreach (var element in importer.Units)
+                {
+                    if (_UnitRepo.GetUnit(element.RackUnitType, element.UniverseNumber, element.DimmerNumber) == null)
+                    {
+                        // No existing Unit.
+                        _UnitRepo.InsertUnit(element);
+                    }
+
+                    else
+                    {
+                        // Existing Unit in Database.
+                        _UnitRepo.UpdateUnit(element);
+                    }
+                }
+            }
+                
+
+            else
+            {
+                // Overwrite Data.
+                _UnitRepo.RemoveAllUnits();
+                _UnitRepo.InsertUnitRange(importer.Units);
+            }
+
+            _UnitRepo.Save();
+            
+        }
+
+
         protected ImportConfiguration GetImportConfiguration()
         {
             // Build an ImportConfiguration Object.
@@ -729,7 +746,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             // Pre Generate a ColumnHeader object representing no Selection.
             var columnHeaders = new List<ColumnHeader>();
-            columnHeaders.Add(NoColumnAssignment);
+            columnHeaders.Add(_NoColumnAssignment);
 
             // Collect Column Headers.
             columnHeaders.AddRange(FileImport.CollectHeaders(FilePath));

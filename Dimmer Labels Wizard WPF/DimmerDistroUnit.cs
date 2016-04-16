@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -49,8 +51,6 @@ namespace Dimmer_Labels_Wizard_WPF
         protected string _Custom = string.Empty;
 
         #region Public Accessors.
-        
-
         public string ChannelNumber
         {
             get
@@ -231,6 +231,8 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [Key]
+        [Column(Order = 3)]
         public int DimmerNumber
         {
             get
@@ -247,6 +249,8 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [Key]
+        [Column(Order = 1)]
         public RackType RackUnitType
         {
             get
@@ -261,12 +265,43 @@ namespace Dimmer_Labels_Wizard_WPF
                     _RackUnitType = value;
 
                     OnPropertyChanged(nameof(RackUnitType));
+                    OnPropertyChanged(nameof(IsValid));
                 }
             }
         }
 
-        
 
+        protected bool _OmitUnit = false;
+
+        public bool OmitUnit
+        {
+            get { return _OmitUnit; }
+            set
+            {
+                if (_OmitUnit != value)
+                {
+                    _OmitUnit = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(OmitUnit));
+                    OnPropertyChanged(nameof(IsValid));
+                }
+            }
+        }
+
+        public bool IsValid
+        {
+            get
+            {
+                if (OmitUnit)
+                {
+                    return true;
+                }
+
+                return RackUnitType == RackType.Dimmer ||
+                    RackUnitType == RackType.Distro;
+            }
+        }
 
         public Color LabelColor
         {
@@ -296,6 +331,8 @@ namespace Dimmer_Labels_Wizard_WPF
         public int ImportIndex;
 
         // Inferred Data
+        [Key]
+        [Column(Order = 2)]
         public int UniverseNumber { get; set; }
         public int AbsoluteDMXAddress { get; set; }
 

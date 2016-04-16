@@ -10,28 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for GlobalApplyWarning.xaml
+    /// Interaction logic for DatabaseViewer.xaml
     /// </summary>
-    public partial class GlobalApplyWarning : Window
+    public partial class DatabaseViewer : Window
     {
-        public bool? DontShowDialogAgain = false;
-
-        public GlobalApplyWarning()
+        public DatabaseViewer()
         {
             InitializeComponent();
-        }
-
-        private void OkButton_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-            DontShowDialogAgain = ShowAgainCheckBox.IsChecked;
-            this.Close();
         }
     }
 }

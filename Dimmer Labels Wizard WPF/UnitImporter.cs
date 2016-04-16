@@ -13,7 +13,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public UnitImporter(string filePath, ImportConfiguration importConfiguration)
         {
             FilePath = filePath;
-            ImportConfiguration = importConfiguration;
+            _ImportConfiguration = importConfiguration;
         }
 
 
@@ -23,10 +23,18 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected string FilePath = string.Empty;
 
-        protected ImportConfiguration ImportConfiguration;
+        protected ImportConfiguration _ImportConfiguration;
         #endregion
 
         #region Properties.
+        public ImportConfiguration ImportConfiguration
+        {
+            get
+            {
+                return _ImportConfiguration;
+            }
+        }
+
         public IEnumerable<DimmerDistroUnit> ConflictingUnits
         {
             get
@@ -51,7 +59,8 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return ConflictingUnits.Count() == 0 && UnResolveableUnits.Count() == 0;
+                return ConflictingUnits.Count() == 0 &&
+                    UnResolveableUnits.Count() == 0;
             }
         }
         #endregion
@@ -60,13 +69,15 @@ namespace Dimmer_Labels_Wizard_WPF
         public void ImportData()
         {
             // Import Data from CSV.
-            Import(ImportConfiguration);
-
-            SanitizeData();
+            Import(_ImportConfiguration);
         }
 
-        protected void SanitizeData()
+        public void SanitizeData()
         {
+            if (AllUnitsValid != true)
+            {
+                throw new NotSupportedException("Data must be Valid before it can be Sanitized");
+            }
             // Remove Units that aren't within the Label Range.
             CullOutOfRangeUnits();
 
@@ -78,6 +89,31 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Sort.
             Units.Sort();
+        }
+
+        public void RetryValidation()
+        {
+            // Remove any units marked to be Ommited.
+            var query = from unit in Units
+                        where unit.OmitUnit == true
+                        select unit;
+
+            foreach (var element in query.ToList())
+            {
+                Units.Remove(element);
+            }
+
+            // Attempt to Validate UnResolveable Collection.
+            foreach (var element in UnResolveableUnits.ToList())
+            {
+                element.ParseUnitData(this, _ImportConfiguration);
+            }
+            
+            // Attempt to Validate Conflicting Units Collection.
+            foreach (var element in ConflictingUnits.ToList())
+            {
+                element.ParseUnitData(this, _ImportConfiguration);
+            }
         }
         #endregion.
 
@@ -167,14 +203,14 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void ResolveMissingDimmerNumbers()
         {
             // Dimmers.
-            if (ImportConfiguration.DimmerRanges.Count != 0)
+            if (_ImportConfiguration.DimmerRanges.Count != 0)
             {
                 // Compare the data to the Ranges Provided. If a unit Should exist, as dictated by the Range,
                 // add it to a seperate list, to be merged with the working lists after the Query is executed (Avoids
                 // Enumerator throwing an Exception).
                 var pendingDimmers = new List<DimmerDistroUnit>();
 
-                foreach (var range in ImportConfiguration.DimmerRanges)
+                foreach (var range in _ImportConfiguration.DimmerRanges)
                 {
                     // Get a collection of existing Dimmer Numbers that fall within the current Range.
                     var existingDimmerNumbers = from unit in Units
@@ -204,11 +240,11 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Distros.
-            if (ImportConfiguration.DistroRanges.Count != 0)
+            if (_ImportConfiguration.DistroRanges.Count != 0)
             {
                 var pendingDistros = new List<DimmerDistroUnit>();
 
-                foreach (var range in ImportConfiguration.DistroRanges)
+                foreach (var range in _ImportConfiguration.DistroRanges)
                 {
                     // Get a collection of existing Dimmer Numbers that fall within the current Range.
                     var existingDimmerNumbers = from unit in Units
@@ -305,18 +341,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             file.Close();
-        }
-
-        public void ShowUnits()
-        {
-            var dialog = new DataDebugWindow();
-
-            foreach (var element in Units)
-            {
-                dialog.Units.Add(element);
-            }
-
-            dialog.ShowDialog();
         }
         #endregion
     }

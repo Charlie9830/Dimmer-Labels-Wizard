@@ -26,30 +26,11 @@ namespace Dimmer_Labels_Wizard_WPF
             InitializeComponent();
             
             Application.Current.ShutdownMode = ShutdownMode.OnLastWindowClose;
-            
-        }
 
-        private void NextButton_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void DebugButton_Click(object sender, RoutedEventArgs e)
-        {
-            var window = new Editor();
-            window.ShowDialog();
-
-            Application.Current.Shutdown();
-        }
-
-        private void ImportButton_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-            var window = new LabelManager();
-
+            // Database Viewer.
+            var window = new DatabaseViewer();
             window.Show();
+            
         }
     }
 }
