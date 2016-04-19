@@ -119,25 +119,27 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Methods.
         protected void ValidateText()
         {
-            if (Name == EnterNewName)
-            {
-                ValidationText = InvalidName;
-                IsValidName = false;
-            }
+            //if (Name == EnterNewName)
+            //{
+            //    ValidationText = InvalidName;
+            //    IsValidName = false;
+            //}
 
-            else if (TemplateHelper.ValidateTemplateName(Name) == false)
-            {
-                ValidationText = NameInUse;
-                IsValidName = false;
-            }
+            //else if (TemplateHelper.ValidateTemplateName(Name) == false)
+            //{
+            //    ValidationText = NameInUse;
+            //    IsValidName = false;
+            //}
 
-            else
-            {
-                ValidationText = ValidName;
-                IsValidName = true;
-            }
+            //else
+            //{
+            //    ValidationText = ValidName;
+            //    IsValidName = true;
+            //}
 
-            _OkCommand.CheckCanExecute();
+            //_OkCommand.CheckCanExecute();
+
+            throw new NotImplementedException();
         }
 
         #endregion

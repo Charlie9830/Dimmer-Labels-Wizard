@@ -23,5 +23,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Units.
         public virtual DbSet<DimmerDistroUnit> Units { get; set; }
+
+        // Templates.
+        public virtual DbSet<LabelStripTemplate> Templates { get; set; }
     }
 }

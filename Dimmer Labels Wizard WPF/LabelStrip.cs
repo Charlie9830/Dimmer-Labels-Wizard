@@ -342,8 +342,6 @@ namespace Dimmer_Labels_Wizard_WPF
             RefreshCellTemplates(newTemplate, uniqueTemplates, upperCells);
         }
 
-
-
         public IEnumerable<LabelCellTemplate> UniqueUpperCellTemplates
         {
             get { return (IEnumerable<LabelCellTemplate>)GetValue(UniqueUpperCellTemplatesProperty); }
@@ -748,7 +746,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
                         // Set Template
-                        cell.Style = UpperCellTemplate;
+                        cell.Style = UpperCellTemplate.Style;
 
                         // Connect Event Handler.
                         cell.PropertyChanged += UpperCell_PropertyChanged;
@@ -839,7 +837,7 @@ namespace Dimmer_Labels_Wizard_WPF
                         }
 
                         // Set Template
-                        cell.Style = LowerCellTemplate;
+                        cell.Style = LowerCellTemplate.Style;
 
                         // Connect event Handlers.
                         cell.PropertyChanged += LowerCell_PropertyChanged;
@@ -1270,7 +1268,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 // No Unique Templates. Push Standard template.
                 for (int index = 0; index < collectionCount; index++)
                 {
-                    cellCollection[index].Style = newTemplate;
+                    cellCollection[index].Style = newTemplate.Style;
                 }
             }
 
@@ -1289,13 +1287,13 @@ namespace Dimmer_Labels_Wizard_WPF
                     if (uniqueTemplate != null)
                     {
                         // Assign Unique Template.
-                        cellCollection[index].Style = uniqueTemplate;
+                        cellCollection[index].Style = uniqueTemplate.Style;
                     }
 
                     else
                     {
                         // Assign Standard Template.
-                        cellCollection[index].Style = newTemplate;
+                        cellCollection[index].Style = newTemplate.Style;
                     }
                 }
             }

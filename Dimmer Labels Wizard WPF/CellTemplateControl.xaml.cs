@@ -87,10 +87,12 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (CellTemplate.CellDataMode != value)
                 {
-                    CellTemplate = new LabelCellTemplate(CellTemplate)
-                    {
-                        CellDataMode = value
-                    };
+                    CellTemplate.CellDataMode = value;
+
+                    // Notify.
+                    RaisePropertyChanged(nameof(MultiFieldModeEnable));
+                    RaisePropertyChanged(nameof(SingleFieldModeEnable));
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -151,10 +153,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (CellTemplate.RowHeightMode != value)
                 {
-                    CellTemplate = new LabelCellTemplate(CellTemplate)
-                    {
-                        RowHeightMode = value
-                    };
+                    CellTemplate.RowHeightMode = value;
+
+                    // Notify.
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -172,21 +174,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     if (SelectedRowTemplate != null)
                     {
-                        // Find the SelectedRowTemplate in the RowTemplates collection and modify it's value there,
-                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
-                        // Then Reset the SelectedRowTemplate as it's reference will be broken.
-                        int index = RowTemplates.IndexOf(SelectedRowTemplate);
-                        RowTemplates[index] = new CellRowTemplate(SelectedRowTemplate)
-                        {
-                            Font = value
-                        };
-
-                        // Preserve Selection.
-                        SelectedRowTemplate = RowTemplates[index];
+                        SelectedRowTemplate.Font = value;
                     }
 
                     // Notify.
                     RaisePropertyChanged(nameof(SelectedRowFont));
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -204,21 +197,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     if (SelectedRowTemplate != null)
                     {
-                        // Find the SelectedRowTemplate in the RowTemplates collection and modify it's value there,
-                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
-                        // Then Reset the SelectedRowTemplate as it's reference will be broken.
-                        int index = RowTemplates.IndexOf(SelectedRowTemplate);
-                        RowTemplates[index] = new CellRowTemplate(SelectedRowTemplate)
-                        {
-                            DesiredFontSize = value
-                        };
-
-                        // Preserve Selection.
-                        SelectedRowTemplate = RowTemplates[index];
+                        SelectedRowTemplate.DesiredFontSize = value;
                     }
 
                     // Notify.
                     RaisePropertyChanged(nameof(SelectedRowFontSize));
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -246,21 +230,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     if (SelectedRowTemplate != null)
                     {
-                        // Find the SelectedRowTemplate in the RowTemplates collection and modify it's value there,
-                        // this will trigger the CollectionChanged Event so the change is propagated into the LabelStrip Template.
-                        // Then Reset the SelectedRowTemplate as it's reference will be broken.
-                        int index = RowTemplates.IndexOf(SelectedRowTemplate);
-                        RowTemplates[index] = new CellRowTemplate(SelectedRowTemplate)
-                        {
-                            DataField = value
-                        };
-
-                        // Preserve Selection.
-                        SelectedRowTemplate = RowTemplates[index];
+                        SelectedRowTemplate.DataField = value;
                     }
 
                     // Notify.
                     RaisePropertyChanged(nameof(SelectedRowDataField));
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -275,11 +250,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (CellTemplate.SingleFieldFont != value)
                 {
-                    CellTemplate = new LabelCellTemplate(CellTemplate)
-                    {
-                        SingleFieldFont = value
-                    };
+                    CellTemplate.SingleFieldFont = value;
 
+                    // Notify.
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -294,13 +268,11 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (CellTemplate.SingleFieldDesiredFontSize != value)
                 {
-                    CellTemplate = new LabelCellTemplate(CellTemplate)
-                    {
-                        SingleFieldDesiredFontSize = value
-                    };
+                    CellTemplate.SingleFieldDesiredFontSize = value;
 
                     // Notify.
                     RaisePropertyChanged(nameof(SingleFieldFontSize));
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -316,10 +288,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (CellTemplate.SingleFieldDataField != value)
                 {
-                    CellTemplate = new LabelCellTemplate(CellTemplate)
-                    {
-                        SingleFieldDataField = value
-                    };
+                    CellTemplate.SingleFieldDataField = value;
+
+                    // Notify.
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -376,16 +348,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     while (rowTemplateEnumerator.MoveNext() && proportionsEnumerator.MoveNext())
                     {
-                        newCellTemplates.Add(new CellRowTemplate(rowTemplateEnumerator.Current)
-                        { ManualRowHeight = proportionsEnumerator.Current });
+                        rowTemplateEnumerator.Current.ManualRowHeight = proportionsEnumerator.Current;
                     }
 
-                    // Write back to CellTemplate.
-                    CellTemplate = new LabelCellTemplate(CellTemplate)
-                    {
-                        CellRowTemplates = newCellTemplates
-                    };
-
+                    // Notify.
+                    ForceCellTemplateUpdate();
                 }
             }
         }
@@ -463,7 +430,6 @@ namespace Dimmer_Labels_Wizard_WPF
                             SelectedRowTemplate = collection[selectedItemIndex - 1];
                         }
                     }
-
                 }
             }
         }
@@ -653,6 +619,11 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
+        protected void ForceCellTemplateUpdate()
+        {
+            BindingOperations.GetBindingExpressionBase(this, CellTemplateProperty).UpdateSource();
+        }
+
         protected void BeginRowTemplateCollectionChanged()
         {
             IsInRowCollectionChangedEvent = true;
@@ -672,13 +643,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
             var collection = sender as ObservableCollection<CellRowTemplate>;
 
-            // Push state of collection to DisplayedUpperCellTemplate.
+            // Push state of collection to CellTemplate.
             if (CellTemplate.CellRowTemplates.SequenceEqual(collection) == false)
             {
-                CellTemplate = new LabelCellTemplate(CellTemplate)
-                {
-                    CellRowTemplates = collection.ToList()
-                };
+                CellTemplate.CellRowTemplates = collection.ToList();
             }
 
             // Notify.

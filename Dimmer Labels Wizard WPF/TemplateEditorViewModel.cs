@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -54,18 +55,16 @@ namespace Dimmer_Labels_Wizard_WPF
             get { return _SelectedExistingTemplate; }
             set
             {
-                if (_SelectedExistingTemplate != value && value != null)
+                if (_SelectedExistingTemplate != value)
                 {
-                    // Modify Existing Template.
-                    TemplateHelper.ModifyExistingTemplate(_SelectedExistingTemplate, DisplayedTemplate);
-
-                    // Execute Switch.
                     _SelectedExistingTemplate = value;
-                    DisplayedTemplate = value;
+                    _UpperCellTemplate = value.UpperCellTemplate;
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedExistingTemplate));
+                    OnPropertyChanged(nameof(DisplayedStyle));
                     OnPropertyChanged(nameof(AssignedStrips));
+
 
                     // Command Executes.
                     _RemoveExistingTemplateCommand.CheckCanExecute();
@@ -74,69 +73,39 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+
+        protected LabelCellTemplate _UpperCellTemplate;
+
+        public LabelCellTemplate UpperCellTemplate
+        {
+            get { return _UpperCellTemplate; }
+            set
+            {
+                if (_UpperCellTemplate != value)
+                {
+                    _UpperCellTemplate = value;
+                    _SelectedExistingTemplate.UpperCellTemplate = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(UpperCellTemplate));
+                }
+
+                // Notify Regardless of if the Value has changed. Updates to Properties of UpperCellTemplate
+                // require the Displayed Style to Update.
+                OnPropertyChanged(nameof(DisplayedStyle));
+            }
+        }
+
         public List<DimmerDistroUnit> ExampleUnits
         {
             get { return GenerateExampleUnits(); }
         }
         
-        protected LabelStripTemplate _DisplayedTemplate;
-
-        public LabelStripTemplate DisplayedTemplate
+        public Style DisplayedStyle
         {
             get
             {
-                return _DisplayedTemplate;
-            }
-            set
-            {
-                if (_DisplayedTemplate != value)
-                {
-                    _DisplayedTemplate = value;
-
-                    // Notify.
-                    OnPropertyChanged(nameof(DisplayedTemplate));
-                    OnPropertyChanged(nameof(TemplateName));
-                    OnPropertyChanged(nameof(DisplayedUpperCellTemplate));
-                    OnPropertyChanged(nameof(DisplayedLowerCellTemplate));
-                    OnPropertyChanged(nameof(StripWidth));
-                    OnPropertyChanged(nameof(StripHeight));
-                    OnPropertyChanged(nameof(SelectedStripMode));
-
-                }
-            }
-
-        }
-
-        public LabelCellTemplate DisplayedUpperCellTemplate
-        {
-            get
-            {
-                return DisplayedTemplate.UpperCellTemplate;
-            }
-            
-            set
-            {
-                DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
-                {
-                    Name = DisplayedTemplate.Name,
-                    UpperCellTemplate = value
-                };
-            }
-        }
-
-        public LabelCellTemplate DisplayedLowerCellTemplate
-        {
-            get
-            {
-                return DisplayedTemplate.LowerCellTemplate;
-            }
-            set
-            {
-                DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
-                {
-                    Name = DisplayedTemplate.Name,
-                    LowerCellTemplate = value
-                };
+                return SelectedExistingTemplate?.Style;
             }
         }
 
@@ -144,14 +113,14 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return DisplayedTemplate.Name;
+                return SelectedExistingTemplate.Name;
             }
 
             set
             {
-                if (DisplayedTemplate.Name != value)
+                if (SelectedExistingTemplate.Name != value)
                 {
-                    DisplayedTemplate.Name = value;
+                    SelectedExistingTemplate.Name = value;
                     OnPropertyChanged(nameof(TemplateName));
                 }
             }
@@ -169,18 +138,28 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return Math.Round(DisplayedTemplate.StripWidth / UnitConversionRatio, 2);
-            }
+                if (SelectedExistingTemplate != null)
+                {
+                    
+                    return Math.Round(SelectedExistingTemplate.StripWidth / UnitConversionRatio, 2);
+                }
 
+                else
+                {
+                    return 0;
+                }
+                
+            }
             set
             {
-                if (Math.Round(DisplayedTemplate.StripWidth / UnitConversionRatio, 2) != value)
+                if (SelectedExistingTemplate != null &&
+                    SelectedExistingTemplate.StripWidth != value)
                 {
-                    DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
-                    {
-                        Name = TemplateName,
-                        StripWidth = value * UnitConversionRatio
-                    };
+                    SelectedExistingTemplate.StripWidth = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(StripWidth));
+                    OnPropertyChanged(nameof(DisplayedStyle));
                 }
             }
         }
@@ -189,17 +168,27 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return Math.Round(DisplayedTemplate.StripHeight / UnitConversionRatio, 2);
+                if (SelectedExistingTemplate != null)
+                {
+                    return Math.Round(SelectedExistingTemplate.StripHeight / UnitConversionRatio, 2);
+                }
+
+                else
+                {
+                    return 0;
+                }
+                
             }
             set
             {
-                if (Math.Round(DisplayedTemplate.StripHeight / UnitConversionRatio, 2) != value)
+                if (SelectedExistingTemplate != null &&
+                    SelectedExistingTemplate.StripHeight != value)
                 {
-                    DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
-                    {
-                        Name = TemplateName,
-                        StripHeight = value * UnitConversionRatio
-                    };
+                    SelectedExistingTemplate.StripHeight = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(StripHeight));
+                    OnPropertyChanged(nameof(DisplayedStyle));
                 }
             }
         }
@@ -217,17 +206,25 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return DisplayedTemplate.StripMode;
+                if (SelectedExistingTemplate != null)
+                {
+                    return SelectedExistingTemplate.StripMode;
+                }
+
+                else
+                {
+                    return LabelStripMode.Dual;
+                }
             }
             set
             {
-                if (DisplayedTemplate.StripMode != value)
+                if (SelectedExistingTemplate != null && SelectedExistingTemplate.StripMode != value)
                 {
-                    DisplayedTemplate = new LabelStripTemplate(DisplayedTemplate)
-                    {
-                        Name = TemplateName,
-                        StripMode = value
-                    };
+                    SelectedExistingTemplate.StripMode = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedStripMode));
+                    OnPropertyChanged(nameof(DisplayedStyle));
                 }
             }
         }
@@ -301,21 +298,23 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void RenameTemplateCommandExecute(object parameter)
         {
-            var dialog = new RenameTemplate();
-            var viewModel = dialog.DataContext as RenameTemplateViewModel;
+            //var dialog = new RenameTemplate();
+            //var viewModel = dialog.DataContext as RenameTemplateViewModel;
 
-            if (SelectedExistingTemplate != null)
-            {
-                viewModel.Name = SelectedExistingTemplate.Name;
+            //if (SelectedExistingTemplate != null)
+            //{
+            //    viewModel.Name = SelectedExistingTemplate.Name;
 
-                if (dialog.ShowDialog() == true)
-                {
-                    TemplateHelper.RenameTemplate(SelectedExistingTemplate, viewModel.Name);
+            //    if (dialog.ShowDialog() == true)
+            //    {
+            //        TemplateHelper.RenameTemplate(SelectedExistingTemplate, viewModel.Name);
 
-                    // Notify.
-                    OnPropertyChanged(nameof(TemplateName));
-                }
-            }
+            //        // Notify.
+            //        OnPropertyChanged(nameof(TemplateName));
+            //    }
+            //}
+
+            throw new NotImplementedException();
         }
 
         protected bool RenameTemplateCommandCanExecute(object parameter)
@@ -398,8 +397,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void RemoveExistingTemplateCommandExecute(object parameter)
         {
-            TemplateHelper.RemoveExistingTemplate(SelectedExistingTemplate);
-            SelectedExistingTemplate = Globals.DefaultTemplate;
+            //TemplateHelper.RemoveExistingTemplate(SelectedExistingTemplate);
+            //SelectedExistingTemplate = Globals.DefaultTemplate;
+
+            throw new NotImplementedException();
         }
 
         protected bool RemoveExistingTemplateTemplateCommandCanExecute(object parameter)
@@ -426,7 +427,8 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var window = parameter as TemplateEditor;
 
-            TemplateHelper.ModifyExistingTemplate(SelectedExistingTemplate, DisplayedTemplate);
+            // TemplateHelper.ModifyExistingTemplate(SelectedExistingTemplate, DisplayedStyle);
+            throw new NotImplementedException();
 
             window.Close();
         }
@@ -455,7 +457,7 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 ChannelNumber = "Chan",
                 InstrumentName = "Instr",
-                Position = "Row0 Row1 Row2",
+                Position = "Position",
                 MulticoreName = "Multi",
                 UserField1 = "User Field 1",
                 UserField2 = "User Field 2",

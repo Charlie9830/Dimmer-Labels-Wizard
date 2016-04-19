@@ -1273,7 +1273,7 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Assign template.
                     if (newIndex < RowTemplates.Count)
                     {
-                        collection[newIndex].Style = RowTemplates[newIndex];
+                        collection[newIndex].Style = RowTemplates[newIndex].Style;
                     }
                 }
             }
@@ -1460,7 +1460,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Assign Templates to Rows.
             for (int index = 0; index < newTemplates.Count && index < rows.Count; index++)
             {
-                rows[index].Style = newTemplates[index];
+                rows[index].Style = newTemplates[index].Style;
             }
         }
 

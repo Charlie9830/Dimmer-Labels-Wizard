@@ -176,6 +176,10 @@
     <Compile Include="Migrations\201604161142546_Test.Designer.cs">
       <DependentUpon>201604161142546_Test.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604171518367_AddedTemplates.cs" />
+    <Compile Include="Migrations\201604171518367_AddedTemplates.Designer.cs">
+      <DependentUpon>201604171518367_AddedTemplates.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -200,6 +204,7 @@
     </Compile>
     <Compile Include="RenameTemplateViewModel.cs" />
     <Compile Include="Repositories\IUnitRepository.cs" />
+    <Compile Include="Repositories\TemplateRepository.cs" />
     <Compile Include="Repositories\UnitRepository.cs" />
     <Compile Include="RowHeightEditor.xaml.cs">
       <DependentUpon>RowHeightEditor.xaml</DependentUpon>
@@ -235,7 +240,6 @@
       <DependentUpon>TemplateEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="TemplateEditorViewModel.cs" />
-    <Compile Include="TemplateHelper.cs" />
     <Compile Include="UndoRedoManager.cs" />
     <Compile Include="UniqueCellTemplateEditor.xaml.cs">
       <DependentUpon>UniqueCellTemplateEditor.xaml</DependentUpon>
@@ -378,6 +382,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604161142546_Test.resx">
       <DependentUpon>201604161142546_Test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604171518367_AddedTemplates.resx">
+      <DependentUpon>201604171518367_AddedTemplates.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

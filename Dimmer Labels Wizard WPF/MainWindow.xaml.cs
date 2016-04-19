@@ -30,6 +30,10 @@ namespace Dimmer_Labels_Wizard_WPF
             // Database Viewer.
             var window = new DatabaseViewer();
             window.Show();
+
+            //
+            var window2 = new TemplateEditor();
+            window2.Show();
             
         }
     }

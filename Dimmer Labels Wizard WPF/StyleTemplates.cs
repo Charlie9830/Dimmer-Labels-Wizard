@@ -8,118 +8,27 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.ComponentModel.DataAnnotations;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public abstract class LabelStripTemplateBase : Style
+    public abstract class LabelStripTemplateBase
     {
-        #region Methods
-        protected object GetSetterValue(DependencyProperty property)
-        {
-            var query = GetSetter(property, Setters);
+        public virtual Style Style { get; }
 
-            if (query == null)
-            {
-                return FindAncestorsSetter(property).Value;
-            }
-
-            else
-            {
-                return query.Value;
-            }
-        }
-
-        protected Setter FindAncestorsSetter(DependencyProperty property)
-        {
-            if (BasedOn != null)
-            {
-                bool searchComplete = false;
-                Style searchTarget = BasedOn;
-                Setter searchResult = null;
-
-                while (searchComplete == false)
-                {
-                    if ((searchResult = GetSetter(property, searchTarget.Setters)) == null)
-                    {
-                        // No matching setter found in this node.
-                        if (searchTarget.BasedOn != null)
-                        {
-                            searchTarget = searchTarget.BasedOn;
-                        }
-
-                        else
-                        {
-                            // Search Complete. No Setter found.
-                            searchComplete = true;
-                            return null;
-                        }
-                    }
-
-                    else
-                    {
-                        // Setter Found.
-                        searchComplete = true;
-                        return searchResult;
-                    }
-                }
-
-                return null;
-            }
-
-            else
-            {
-                return null;
-            }
-        } 
-
-        protected Setter GetSetter(DependencyProperty property, SetterBaseCollection setterCollection)
-        {
-            // Cast to Queryable List.
-            List<Setter> setters = new List<Setter>(setterCollection.AsEnumerable().Cast<Setter>());
-
-            var query = setters.Find(item => item.Property == property);
-
-            return query;
-        }
-
-        public void SetSetterValue(DependencyProperty property, object value)
-        {
-            if (GetSetter(property, Setters) == null)
-            {
-                // Add new Setter
-                Setters.Add(new Setter(property, value));
-            }
-
-            else
-            {
-                // Modify Existing Setter
-                GetSetter(property, Setters).Value = value;
-            }
-        }
-        #endregion
+        protected abstract Style GetStyle();
     }
 
-    public class LabelStripTemplate : LabelStripTemplateBase, INotifyPropertyChanged
+    public class LabelStripTemplate : LabelStripTemplateBase, INotifyPropertyChanged, ICloneable
     {
-        public LabelStripTemplate()
-        {
-            TargetType = typeof(LabelStrip);
-            BasedOn = Globals.BaseLabelStripTemplate;
-            
-        }
-
-        public LabelStripTemplate(LabelStripTemplate basedOn)
-        {
-            TargetType = typeof(LabelStrip);
-            BasedOn = basedOn;
-        }
-
         #region Fields
         public List<Strip> AssignedToStrips = new List<Strip>();
         public bool IsBuiltIn = false;
         #endregion
 
         #region Binding Sources.
+
+        public int ID { get; set; }
 
         protected string _Name = "No Name";
 
@@ -159,76 +68,118 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
         #region Styling Values.
         // StripWidth
+        protected double _StripWidth = 70d * 12;
         public double StripWidth
         {
             get
             {
-                return (double)GetSetterValue(LabelStrip.StripWidthProperty);
+                return _StripWidth;
             }
             set
             {
-                SetSetterValue(LabelStrip.StripWidthProperty, value);
+                if (_StripWidth != value)
+                {
+                    _StripWidth = value;
+                }
             }
         }
 
         // Upper Cells Template
+        protected LabelCellTemplate _UpperCellTemplate = new LabelCellTemplate();
         public LabelCellTemplate UpperCellTemplate
         {
             get
             {
-                return (LabelCellTemplate)GetSetterValue(LabelStrip.UpperCellTemplateProperty);
+                return _UpperCellTemplate;
             }
             set
             {
-                SetSetterValue(LabelStrip.UpperCellTemplateProperty, value);
-                
-
+                if (_UpperCellTemplate != value)
+                {
+                    _UpperCellTemplate = value;
+                }
             }
         }
 
+        protected LabelCellTemplate _LowerCellTemplate = new LabelCellTemplate();
         public LabelCellTemplate LowerCellTemplate
         {
             get
             {
-                return (LabelCellTemplate)GetSetterValue(LabelStrip.LowerCellTemplateProperty);
+                return _LowerCellTemplate;
             }
             set
             {
-                SetSetterValue(LabelStrip.LowerCellTemplateProperty, value);
+                if (_LowerCellTemplate != value)
+                {
+                    _LowerCellTemplate = value;
+                }
             }
         }
 
         // Strip Height
+        protected double _StripHeight = 70d;
         public double StripHeight
         {
             get
             {
-                return (double)GetSetterValue(LabelStrip.StripHeightProperty);
+                return _StripHeight;
             }
             set
             {
-                SetSetterValue(LabelStrip.StripHeightProperty, value);
+                if (_StripHeight != value)
+                {
+                    _StripHeight = value;
+                }
             }
         }
 
         // Strip Mode.
+        protected LabelStripMode _StripMode = LabelStripMode.Dual;
         public LabelStripMode StripMode
         {
             get
             {
-                return (LabelStripMode)GetSetterValue(LabelStrip.StripModeProperty);
+                return _StripMode;
             }
             set
             {
-                SetSetterValue(LabelStrip.StripModeProperty, value);
+                if (_StripMode != value)
+                {
+                    _StripMode = value;
+                }
             }
         }
         #endregion
 
         #region Overrides.
+        public override Style Style
+        {
+            get
+            {
+                return GetStyle();
+            }
+        }
+
         public override string ToString()
         {
             return Name;
+        }
+
+        protected override Style GetStyle()
+        {
+            var style = new Style(typeof(LabelStrip));
+            var setters = style.Setters;
+
+            setters.Add(new Setter(LabelStrip.StripWidthProperty, _StripWidth));
+            setters.Add(new Setter(LabelStrip.UpperCellTemplateProperty, _UpperCellTemplate.Clone()));
+            setters.Add(new Setter(LabelStrip.LowerCellTemplateProperty, _LowerCellTemplate.Clone()));
+            setters.Add(new Setter(LabelStrip.StripHeightProperty, _StripHeight));
+            setters.Add(new Setter(LabelStrip.StripModeProperty, _StripMode));
+
+            return style;
+
+            
         }
         #endregion
 
@@ -242,30 +193,25 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public object Clone()
+        {
+            return new LabelStripTemplate()
+            {
+                StripHeight = StripHeight,
+                StripWidth = StripWidth,
+                UpperCellTemplate = UpperCellTemplate,
+                LowerCellTemplate = LowerCellTemplate,
+                StripMode = StripMode,
+                Name = Name,
+            };
+        }
+
         #endregion
     }
 
-    public class LabelCellTemplate : LabelStripTemplateBase
+    public class LabelCellTemplate : LabelStripTemplateBase, ICloneable
     {
-        public LabelCellTemplate()
-        {
-            TargetType = typeof(LabelCell);
-
-            // Check if we are at Runtime or Designtime before setting the BasedOn Property.
-            // Designer will crash because it is not initalizing the Globals.BaseLabelCellTemplate
-            // early enough.
-            if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
-            {
-                BasedOn = Globals.BaseLabelCellTemplate;
-            }
-        }
-
-        public LabelCellTemplate(LabelCellTemplate basedOn)
-        {
-            TargetType = typeof(LabelCell);
-            BasedOn = basedOn;
-        }
-
+       
         #region Fields
 
         public bool IsUniqueTemplate = false;
@@ -273,216 +219,357 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #endregion
 
+        public int ID { get; set; }
+
 
         // Cell Row Templates
+        protected IEnumerable<CellRowTemplate> _CellRowTemplates = new List<CellRowTemplate>();
         public IEnumerable<CellRowTemplate> CellRowTemplates
         {
             get
             {
-                return (IEnumerable<CellRowTemplate>)GetSetterValue(LabelCell.RowTemplatesProperty);
+                return _CellRowTemplates;
             }
             set
             {
-                SetSetterValue(LabelCell.RowTemplatesProperty, value);
+                if (_CellRowTemplates != value)
+                {
+                    _CellRowTemplates = value;
+                }
             }
         }
-        
+
         // Row Height Mode.
+        protected CellRowHeightMode _RowHeightMode = CellRowHeightMode.Static;
         public CellRowHeightMode RowHeightMode
         {
             get
             {
-                return (CellRowHeightMode)GetSetterValue(LabelCell.RowHeightModeProperty);
+                return _RowHeightMode;
             }
             set
             {
-                SetSetterValue(LabelCell.RowHeightModeProperty, value);
+                if (_RowHeightMode != value)
+                {
+                    _RowHeightMode = value;
+                }
             }
         }
 
         // SingleField Font
+        protected Typeface _SingleFieldFont = new Typeface("Arial");
         public Typeface SingleFieldFont
         {
             get
             {
-                return (Typeface)GetSetterValue(LabelCell.SingleFieldFontProperty);
+                return _SingleFieldFont;
             }
             set
             {
-                SetSetterValue(LabelCell.SingleFieldFontProperty, value);
+                if (_SingleFieldFont != value)
+                {
+                    _SingleFieldFont = value;
+                }
+            }
+        }
+
+        public string SingleFieldFontString
+        {
+            get
+            {
+                
             }
         }
 
         // SingleFieldDesiredFontSize
+        protected double _SingleFieldDesiredFontSize = 12d;
         public double SingleFieldDesiredFontSize
         {
             get
             {
-                return (double)GetSetterValue(LabelCell.SingleFieldDesiredFontSizeProperty);
+                return _SingleFieldDesiredFontSize;
             }
             set
             {
-                SetSetterValue(LabelCell.SingleFieldDesiredFontSizeProperty, value);
+                if (_SingleFieldDesiredFontSize != value)
+                {
+                    _SingleFieldDesiredFontSize = value;
+                }
             }
         }
 
         // SingleFieldDataField
+        protected LabelField _SingleFieldDataField = LabelField.NoAssignment;
         public LabelField SingleFieldDataField
         {
             get
             {
-                return (LabelField)GetSetterValue(LabelCell.SingleFieldDataFieldProperty);
+                return _SingleFieldDataField;
             }
             set
             {
-                SetSetterValue(LabelCell.SingleFieldDataFieldProperty, value);
+                if (_SingleFieldDataField != value)
+                {
+                    _SingleFieldDataField = value;
+                }
             }
         }
 
         // Cell Data Mode.
+        protected CellDataMode _CellDataMode = CellDataMode.MultiField;
         public CellDataMode CellDataMode
         {
             get
             {
-                return (CellDataMode)GetSetterValue(LabelCell.CellDataModeProperty);
+                return _CellDataMode;
             }
             set
             {
-                SetSetterValue(LabelCell.CellDataModeProperty, value);
+                if (_CellDataMode != value)
+                {
+                    _CellDataMode = value;
+                }
             }
         }
 
         // Left Weight
+        protected double _LeftWeight = 1d;
         public double LeftWeight
         {
             get
             {
-                return (double)GetSetterValue(LabelCell.LeftWeightProperty);
+                return _LeftWeight;
             }
             set
             {
-                SetSetterValue(LabelCell.LeftWeightProperty, value);
+                if (_LeftWeight != value)
+                {
+                    _LeftWeight = value;
+                }
             }
         }
 
         // Top Weight
+        protected double _TopWeight = 1d;
         public double TopWeight
         {
             get
             {
-                return (double)GetSetterValue(LabelCell.TopWeightProperty);
+                return _TopWeight;
             }
             set
             {
-                SetSetterValue(LabelCell.TopWeightProperty, value);
+                if (_TopWeight != value)
+                {
+                    _TopWeight = value;
+                }
             }
         }
 
         // Right Weight
+        protected double _RightWeight = 1d;
         public double RightWeight
         {
             get
             {
-                return (double)GetSetterValue(LabelCell.RightWeightProperty);
+                return _RightWeight;
             }
             set
             {
-                SetSetterValue(LabelCell.RightWeightProperty, value);
+                if (_RightWeight != value)
+                {
+                    _RightWeight = value;
+                }
             }
         }
 
         // Bottom Weight
+        protected double _BottomWeight = 1d;
         public double BottomWeight
         {
             get
             {
-                return (double)GetSetterValue(LabelCell.BottomWeightProperty);
+                return _BottomWeight;
             }
             set
             {
-                SetSetterValue(LabelCell.BottomWeightProperty, value);
+                if (_BottomWeight != value)
+                {
+                    _BottomWeight = value;
+                }
             }
         }
+
+        #region Overrides.
+        public override Style Style
+        {
+            get
+            {
+                return GetStyle();
+            }
+        }
+
+        protected override Style GetStyle()
+        {
+            var style = new Style(typeof(LabelCell));
+            var setters = style.Setters;
+
+            setters.Add(new Setter(LabelCell.RowTemplatesProperty, _CellRowTemplates));
+            setters.Add(new Setter(LabelCell.RowHeightModeProperty, _RowHeightMode));
+            setters.Add(new Setter(LabelCell.SingleFieldFontProperty, _SingleFieldFont));
+            setters.Add(new Setter(LabelCell.SingleFieldDesiredFontSizeProperty, _SingleFieldDesiredFontSize));
+            setters.Add(new Setter(LabelCell.SingleFieldDataFieldProperty, _SingleFieldDataField));
+            setters.Add(new Setter(LabelCell.CellDataModeProperty, _CellDataMode));
+            setters.Add(new Setter(LabelCell.LeftWeightProperty, _LeftWeight));
+            setters.Add(new Setter(LabelCell.TopWeightProperty, _TopWeight));
+            setters.Add(new Setter(LabelCell.RightWeightProperty, _RightWeight));
+            setters.Add(new Setter(LabelCell.BottomWeightProperty, _BottomWeight));
+
+            return style;
+        }
+
+        public object Clone()
+        {
+            return new LabelCellTemplate()
+            {
+                LeftWeight = LeftWeight,
+                TopWeight = TopWeight,
+                RightWeight = RightWeight,
+                BottomWeight = BottomWeight,
+                SingleFieldDataField = SingleFieldDataField,
+                SingleFieldDesiredFontSize = SingleFieldDesiredFontSize,
+                SingleFieldFont = SingleFieldFont,
+                CellDataMode = CellDataMode,
+                RowHeightMode = RowHeightMode,
+                CellRowTemplates = new List<CellRowTemplate>(CellRowTemplates),
+            };
+        }
+        #endregion
     }
 
-    public class CellRowTemplate : LabelStripTemplateBase
+    public class CellRowTemplate : LabelStripTemplateBase, ICloneable
     {
         public CellRowTemplate()
         {
-            TargetType = typeof(CellRow);
 
-            // Check if we are at Runtime or Designtime before setting the BasedOn Property.
-            // Designer will crash because it is not initalizing the Globals.BaseCellRowTemplate
-            // early enough.
-            if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
-            {
-                BasedOn = Globals.BaseCellRowTemplate;
-            }
+        }
+
+        public CellRowTemplate(CellRowTemplate cellRowTemplate)
+        {
+            ManualRowHeight = cellRowTemplate.ManualRowHeight;
+            DataField = cellRowTemplate.DataField;
             
         }
 
-        public CellRowTemplate(CellRowTemplate basedOn)
-        {
-            TargetType = typeof(CellRow);
-            BasedOn = basedOn;
-        }
+        public int ID { get; set; }
 
         // ManualRowHeight.
+        protected double _ManualRowHeight = 1d;
         public double ManualRowHeight
         {
             get
             {
-                return (double)GetSetterValue(CellRow.RowHeightProperty);
+                return _ManualRowHeight;
             }
             set
             {
-                SetSetterValue(CellRow.RowHeightProperty, value);
+                if (_ManualRowHeight != value)
+                {
+                    _ManualRowHeight = value;
+                }
             }
         }
 
         // DataField.
+        protected LabelField _DataField = LabelField.NoAssignment;
         public LabelField DataField
         {
             get
             {
-                return (LabelField)GetSetterValue(CellRow.DataFieldProperty);
+                return _DataField;
             }
             set
             {
-                SetSetterValue(CellRow.DataFieldProperty, value);
+                if (_DataField != value)
+                {
+                    _DataField = value;
+                }
             }
         }
 
         // Font.
+        protected Typeface _Font = new Typeface("Arial");
         public Typeface Font
         {
             get
             {
-                return (Typeface)GetSetterValue(CellRow.FontProperty);
+                return _Font;
             }
             set
             {
-                SetSetterValue(CellRow.FontProperty, value);
+                if (_Font != value)
+                {
+                    _Font = value;
+                }
             }
         }
 
         // Desired Font Size.
+        protected double _DesiredFontSize = 12d;
         public double DesiredFontSize
         {
             get
             {
-                return (double)GetSetterValue(CellRow.DesiredFontSizeProperty);
+                return _DesiredFontSize;
             }
             set
             {
-                SetSetterValue(CellRow.DesiredFontSizeProperty, value);
+                if (_DesiredFontSize != value)
+                {
+                    _DesiredFontSize = value;
+                }
             }
         }
 
         #region Overrides
+        public override Style Style
+        {
+            get
+            {
+                return GetStyle();
+            }
+        }
+
         public override string ToString()
         {
             return DataField.ToString();
+        }
+
+        protected override Style GetStyle()
+        {
+            var style = new Style(typeof(CellRow));
+            var setters = style.Setters;
+
+
+            // Can't find a Suitable DP for ManualRowHeight Property.
+            
+            setters.Add(new Setter(CellRow.DataFieldProperty, _DataField));
+            setters.Add(new Setter(CellRow.FontProperty, _Font));
+            setters.Add(new Setter(CellRow.DesiredFontSizeProperty, _DesiredFontSize));
+
+            return style;
+
+        }
+
+        public object Clone()
+        {
+            return new CellRowTemplate()
+            {
+                DataField = DataField,
+                DesiredFontSize = DesiredFontSize,
+                ManualRowHeight = ManualRowHeight,
+                Font = Font
+            };
         }
         #endregion
     }

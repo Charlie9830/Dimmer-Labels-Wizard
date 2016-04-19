@@ -85,7 +85,7 @@
                     <Border BorderBrush="Gray" Background="White" BorderThickness="1" Grid.Row="1" Margin="6,5,5,5" Height="220" Width="992" Grid.ColumnSpan="2">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <local:LabelStrip Margin="0,10,0,10"
-                    DataSource="{Binding Path=ExampleUnits}" Style="{Binding Path=DisplayedTemplate}">
+                    DataSource="{Binding Path=ExampleUnits}" Style="{Binding Path=DisplayedStyle}">
                             </local:LabelStrip>
                         </ScrollViewer>
                     </Border>
@@ -132,7 +132,7 @@
 
                                 <!-- Row 4 -->
                                 <local:CellTemplateControl Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Upper Cell Template Settings"
-                                                   CellTemplate="{Binding Path=DisplayedUpperCellTemplate}"/>
+                                                   CellTemplate="{Binding Path=UpperCellTemplate, Mode=TwoWay}"/>
                                 <local:CellTemplateControl Grid.Row="4" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Lower Cell Template Settings"
                                                    CellTemplate="{Binding Path=DisplayedLowerCellTemplate}"/>
 

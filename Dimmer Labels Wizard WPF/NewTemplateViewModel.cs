@@ -112,7 +112,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (IsValidTemplateName)
             {
-                Globals.Templates.Add(new LabelStripTemplate(BasedOnTemplateSelection) { Name = TemplateName });
+                //Globals.Templates.Add(new LabelStripTemplate(BasedOnTemplateSelection) { Name = TemplateName });
+                throw new NotImplementedException();
 
                 // Close Window.
                 window.DialogResult = true;

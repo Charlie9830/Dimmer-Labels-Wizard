@@ -1,0 +1,36 @@
+﻿<Window x:Class="Dimmer_Labels_Wizard_WPF.DatabaseViewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+        mc:Ignorable="d"
+        Title="DatabaseViewer" Height="300" Width="600">
+
+    <Window.DataContext>
+        <local:DatabaseViewerViewModel/>
+    </Window.DataContext>
+    
+    <Grid Background="{StaticResource WindowBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="0">
+            <Button Content="Reload" Width="75" Height="25" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Margin="5"
+                    Command="{Binding Path=ReloadCommand}"/>
+            <Label Style="{StaticResource ControlLabelStyle}" Content="{Binding Path=Status}"/>
+        </StackPanel>
+        
+        
+
+        <DataGrid ItemsSource="{Binding Path=Units}" Margin="10" Grid.Row="1" CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="RackType" Binding="{Binding RackUnitType}"/>
+                <DataGridTextColumn Header="Universe" Binding="{Binding UniverseNumber}"/>
+                <DataGridTextColumn Header="Dimmer Number" Binding="{Binding DimmerNumber}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
