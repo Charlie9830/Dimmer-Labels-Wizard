@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -23,12 +24,15 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         #region Fields
         public List<Strip> AssignedToStrips = new List<Strip>();
-        public bool IsBuiltIn = false;
+
         #endregion
 
-        #region Binding Sources.
+        #region Properties.
 
+        // Database.
         public int ID { get; set; }
+
+        public bool IsBuiltIn { get; set; } = false;
 
         protected string _Name = "No Name";
 
@@ -153,6 +157,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Overrides.
+        [NotMapped]
         public override Style Style
         {
             get
@@ -171,11 +176,11 @@ namespace Dimmer_Labels_Wizard_WPF
             var style = new Style(typeof(LabelStrip));
             var setters = style.Setters;
 
-            setters.Add(new Setter(LabelStrip.StripWidthProperty, _StripWidth));
-            setters.Add(new Setter(LabelStrip.UpperCellTemplateProperty, _UpperCellTemplate.Clone()));
-            setters.Add(new Setter(LabelStrip.LowerCellTemplateProperty, _LowerCellTemplate.Clone()));
-            setters.Add(new Setter(LabelStrip.StripHeightProperty, _StripHeight));
-            setters.Add(new Setter(LabelStrip.StripModeProperty, _StripMode));
+            setters.Add(new Setter(LabelStrip.StripWidthProperty, StripWidth));
+            setters.Add(new Setter(LabelStrip.UpperCellTemplateProperty, UpperCellTemplate.Clone()));
+            setters.Add(new Setter(LabelStrip.LowerCellTemplateProperty, LowerCellTemplate.Clone()));
+            setters.Add(new Setter(LabelStrip.StripHeightProperty, StripHeight));
+            setters.Add(new Setter(LabelStrip.StripModeProperty, StripMode));
 
             return style;
 
@@ -220,11 +225,12 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         public int ID { get; set; }
-
+        public virtual LabelStripTemplate LabelStripTemplate { get; set; }
+        public virtual Strip Strip { get; set; }
 
         // Cell Row Templates
-        protected IEnumerable<CellRowTemplate> _CellRowTemplates = new List<CellRowTemplate>();
-        public IEnumerable<CellRowTemplate> CellRowTemplates
+        protected ICollection<CellRowTemplate> _CellRowTemplates = new List<CellRowTemplate>();
+        public ICollection<CellRowTemplate> CellRowTemplates
         {
             get
             {
@@ -257,27 +263,21 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // SingleField Font
-        protected Typeface _SingleFieldFont = new Typeface("Arial");
+        public SerializableFont SingleFieldSerializableFont { get; set; } = new SerializableFont("Arial");
+        
+        [NotMapped]
         public Typeface SingleFieldFont
         {
             get
             {
-                return _SingleFieldFont;
+                return SingleFieldSerializableFont.Typeface;
             }
             set
             {
-                if (_SingleFieldFont != value)
+                if (SingleFieldSerializableFont.Typeface != value)
                 {
-                    _SingleFieldFont = value;
+                    SingleFieldSerializableFont.Typeface = value;
                 }
-            }
-        }
-
-        public string SingleFieldFontString
-        {
-            get
-            {
-                
             }
         }
 
@@ -401,6 +401,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         #region Overrides.
+        [NotMapped]
         public override Style Style
         {
             get
@@ -414,16 +415,16 @@ namespace Dimmer_Labels_Wizard_WPF
             var style = new Style(typeof(LabelCell));
             var setters = style.Setters;
 
-            setters.Add(new Setter(LabelCell.RowTemplatesProperty, _CellRowTemplates));
-            setters.Add(new Setter(LabelCell.RowHeightModeProperty, _RowHeightMode));
-            setters.Add(new Setter(LabelCell.SingleFieldFontProperty, _SingleFieldFont));
-            setters.Add(new Setter(LabelCell.SingleFieldDesiredFontSizeProperty, _SingleFieldDesiredFontSize));
-            setters.Add(new Setter(LabelCell.SingleFieldDataFieldProperty, _SingleFieldDataField));
-            setters.Add(new Setter(LabelCell.CellDataModeProperty, _CellDataMode));
-            setters.Add(new Setter(LabelCell.LeftWeightProperty, _LeftWeight));
-            setters.Add(new Setter(LabelCell.TopWeightProperty, _TopWeight));
-            setters.Add(new Setter(LabelCell.RightWeightProperty, _RightWeight));
-            setters.Add(new Setter(LabelCell.BottomWeightProperty, _BottomWeight));
+            setters.Add(new Setter(LabelCell.RowTemplatesProperty, CellRowTemplates));
+            setters.Add(new Setter(LabelCell.RowHeightModeProperty, RowHeightMode));
+            setters.Add(new Setter(LabelCell.SingleFieldFontProperty, SingleFieldFont));
+            setters.Add(new Setter(LabelCell.SingleFieldDesiredFontSizeProperty, SingleFieldDesiredFontSize));
+            setters.Add(new Setter(LabelCell.SingleFieldDataFieldProperty, SingleFieldDataField));
+            setters.Add(new Setter(LabelCell.CellDataModeProperty, CellDataMode));
+            setters.Add(new Setter(LabelCell.LeftWeightProperty, LeftWeight));
+            setters.Add(new Setter(LabelCell.TopWeightProperty, TopWeight));
+            setters.Add(new Setter(LabelCell.RightWeightProperty, RightWeight));
+            setters.Add(new Setter(LabelCell.BottomWeightProperty, BottomWeight));
 
             return style;
         }
@@ -462,6 +463,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         public int ID { get; set; }
+        public virtual LabelCellTemplate LabelCellTemplate { get; set; }
 
         // ManualRowHeight.
         protected double _ManualRowHeight = 1d;
@@ -498,18 +500,19 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // Font.
-        protected Typeface _Font = new Typeface("Arial");
+        public SerializableFont SerializableFont { get; set; } = new SerializableFont("Arial");
+        [NotMapped]
         public Typeface Font
         {
             get
             {
-                return _Font;
+                return SerializableFont.Typeface;
             }
             set
             {
-                if (_Font != value)
+                if (SerializableFont.Typeface != value)
                 {
-                    _Font = value;
+                    SerializableFont.Typeface = value;
                 }
             }
         }
@@ -532,6 +535,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         #region Overrides
+        [NotMapped]
         public override Style Style
         {
             get
@@ -553,9 +557,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Can't find a Suitable DP for ManualRowHeight Property.
             
-            setters.Add(new Setter(CellRow.DataFieldProperty, _DataField));
-            setters.Add(new Setter(CellRow.FontProperty, _Font));
-            setters.Add(new Setter(CellRow.DesiredFontSizeProperty, _DesiredFontSize));
+            setters.Add(new Setter(CellRow.DataFieldProperty, DataField));
+            setters.Add(new Setter(CellRow.FontProperty, Font));
+            setters.Add(new Setter(CellRow.DesiredFontSizeProperty, DesiredFontSize));
 
             return style;
 

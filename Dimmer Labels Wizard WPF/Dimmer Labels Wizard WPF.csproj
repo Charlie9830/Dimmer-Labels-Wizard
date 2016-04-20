@@ -180,6 +180,42 @@
     <Compile Include="Migrations\201604171518367_AddedTemplates.Designer.cs">
       <DependentUpon>201604171518367_AddedTemplates.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604190806106_FontChanges.cs" />
+    <Compile Include="Migrations\201604190806106_FontChanges.Designer.cs">
+      <DependentUpon>201604190806106_FontChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604190821052_CellRowCollectionChanges.cs" />
+    <Compile Include="Migrations\201604190821052_CellRowCollectionChanges.Designer.cs">
+      <DependentUpon>201604190821052_CellRowCollectionChanges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604190837005_asdf.cs" />
+    <Compile Include="Migrations\201604190837005_asdf.Designer.cs">
+      <DependentUpon>201604190837005_asdf.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604190845514_AddedFontSet.cs" />
+    <Compile Include="Migrations\201604190845514_AddedFontSet.Designer.cs">
+      <DependentUpon>201604190845514_AddedFontSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604190854052_asdas.cs" />
+    <Compile Include="Migrations\201604190854052_asdas.Designer.cs">
+      <DependentUpon>201604190854052_asdas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604190912139_pool.cs" />
+    <Compile Include="Migrations\201604190912139_pool.Designer.cs">
+      <DependentUpon>201604190912139_pool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604190914385_Kitchen.cs" />
+    <Compile Include="Migrations\201604190914385_Kitchen.Designer.cs">
+      <DependentUpon>201604190914385_Kitchen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604190920299_hallway.cs" />
+    <Compile Include="Migrations\201604190920299_hallway.Designer.cs">
+      <DependentUpon>201604190920299_hallway.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604191249004_AddedStrips.cs" />
+    <Compile Include="Migrations\201604191249004_AddedStrips.Designer.cs">
+      <DependentUpon>201604191249004_AddedStrips.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -204,11 +240,13 @@
     </Compile>
     <Compile Include="RenameTemplateViewModel.cs" />
     <Compile Include="Repositories\IUnitRepository.cs" />
+    <Compile Include="Repositories\StripRepository.cs" />
     <Compile Include="Repositories\TemplateRepository.cs" />
     <Compile Include="Repositories\UnitRepository.cs" />
     <Compile Include="RowHeightEditor.xaml.cs">
       <DependentUpon>RowHeightEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SerializableFont.cs" />
     <Compile Include="SpecializedCollections.cs" />
     <Compile Include="CellRow.cs" />
     <Compile Include="DataLayout.cs" />
@@ -385,6 +423,33 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604171518367_AddedTemplates.resx">
       <DependentUpon>201604171518367_AddedTemplates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604190806106_FontChanges.resx">
+      <DependentUpon>201604190806106_FontChanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604190821052_CellRowCollectionChanges.resx">
+      <DependentUpon>201604190821052_CellRowCollectionChanges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604190837005_asdf.resx">
+      <DependentUpon>201604190837005_asdf.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604190845514_AddedFontSet.resx">
+      <DependentUpon>201604190845514_AddedFontSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604190854052_asdas.resx">
+      <DependentUpon>201604190854052_asdas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604190912139_pool.resx">
+      <DependentUpon>201604190912139_pool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604190914385_Kitchen.resx">
+      <DependentUpon>201604190914385_Kitchen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604190920299_hallway.resx">
+      <DependentUpon>201604190920299_hallway.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604191249004_AddedStrips.resx">
+      <DependentUpon>201604191249004_AddedStrips.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

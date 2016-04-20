@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -16,6 +17,12 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public EditorViewModel()
         {
+            // Database Repositories.
+            PrimaryDB context = new PrimaryDB();
+            _UnitRepository = new UnitRepository(context);
+            _TemplateRepository = new TemplateRepository(context);
+            _StripRepository = new StripRepository(context);
+
             SelectedCells.CollectionChanged += SelectedCells_CollectionChanged;
             SelectedRows.CollectionChanged += SelectedRows_CollectionChanged;
             Units.CollectionChanged += Units_CollectionChanged;
@@ -24,14 +31,13 @@ namespace Dimmer_Labels_Wizard_WPF
             Mergers.CollectionChanged += Mergers_CollectionChanged;
 
             // Global Event Subscriptions.
-            Globals.Strips.CollectionChanged += Strips_CollectionChanged;
+            Strips.CollectionChanged += Strips_CollectionChanged;
 
             // Commands.
             _MergeSelectedCellsCommand = new RelayCommand(MergeSelectedCellsExecute, MergeSelectedCellsCanExecute);
             _SplitSelectedCellsCommand = new RelayCommand(SplitSelectedCellsExecute, SplitSelectedCellsCanExecute);
             _UndoCommand = new RelayCommand(UndoCommandExecute, UndoCommandCanExecute);
             _RedoCommand = new RelayCommand(RedoCommandExecute, RedoCommandCanExecute);
-            _ApplyTemplateChangesCommand = new RelayCommand(ApplyTemplateChangesCommandExecute);
             _CreateNewTemplateCommand = new RelayCommand(CreateNewTemplateCommandExecute);
             _EditTemplateCommand = new RelayCommand(EditTemplateCommandExecute, EditTemplateCommandCanExecute);
             _MakeUniqueTemplateCommand = new RelayCommand(MakeUniqueTemplateCommandExecute, MakeUniqueTemplateCommandCanExecute);
@@ -50,6 +56,11 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         #region Fields
+        // Database and Repositories.
+        protected UnitRepository _UnitRepository;
+        protected TemplateRepository _TemplateRepository;
+        protected StripRepository _StripRepository;
+
         protected UndoRedoManager UndoRedoManager;
 
         private static double unitConversionRatio = 96d / 25.4d;
@@ -442,19 +453,11 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        private LabelStripTemplate _DisplayedTemplate;
+        private Style _DisplayedStyle;
 
-        public LabelStripTemplate DisplayedTemplate
+        public Style DisplayedStyle
         {
-            get { return _DisplayedTemplate; }
-            set
-            {
-                if (value != _DisplayedTemplate)
-                {
-                    _DisplayedTemplate = value;
-                    OnPropertyChanged(nameof(DisplayedTemplate));
-                }
-            }
+            get { return _DisplayedStyle; }
         }
 
         private LabelStripTemplate _SelectedStripTemplate;
@@ -470,13 +473,13 @@ namespace Dimmer_Labels_Wizard_WPF
                 if (value != _SelectedStripTemplate)
                 {
                     _SelectedStripTemplate = value;
-                    DisplayedTemplate = _SelectedStripTemplate;
 
                     // Push Change to Selected Strip.
                     SelectedStrip.AssignedTemplate = _SelectedStripTemplate;
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedStripTemplate));
+                    OnPropertyChanged(nameof(DisplayedStyle));
 
                     // Executes.
                     _EditTemplateCommand.CheckCanExecute();
@@ -486,8 +489,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public ObservableCollection<LabelStripTemplate> StripTemplates
         {
-            get { return Globals.Templates; }
-            set { Globals.Templates = value; }
+            get { return _TemplateRepository.Local; }
         }
 
 
@@ -511,11 +513,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return Globals.Strips;
-            }
-            set
-            {
-                Globals.Strips = value;
+                return _StripRepository.Local;
             }
 
         }
@@ -942,10 +940,7 @@ namespace Dimmer_Labels_Wizard_WPF
             templateEditor.ShowDialog();
 
             // Assert Displayed Template.
-            if (SelectedStrip != null)
-            {
-                DisplayedTemplate = SelectedStrip.AssignedTemplate;
-            }
+            OnPropertyChanged(nameof(DisplayedStyle));
         }
 
         protected bool EditTemplateCommandCanExecute(object parameter)
@@ -970,6 +965,8 @@ namespace Dimmer_Labels_Wizard_WPF
             var newTemplateDialog = new NewTemplate();
             var newTemplateViewModel = newTemplateDialog.DataContext as NewTemplateViewModel;
 
+            newTemplateViewModel.InjectRepositories(_TemplateRepository);
+
             if (SelectedStripTemplate != null)
             {
                 // If a selection exists, set the Based On Property to that selection.
@@ -983,14 +980,14 @@ namespace Dimmer_Labels_Wizard_WPF
                 var templateEditorViewModel = templateEditor.DataContext as TemplateEditorViewModel;
 
                 // Pre Select the new Template.
-                templateEditorViewModel.SelectedExistingTemplate = Globals.Templates.Last();
+                templateEditorViewModel.SelectedExistingTemplate = _TemplateRepository.Local.Last();
 
                 templateEditor.ShowDialog();
 
                 if (SelectedStrip != null)
                 {
                     // Re Assert Displayed Template in case user also edited the currently Displayed Template.
-                    DisplayedTemplate = SelectedStrip.AssignedTemplate;
+                    OnPropertyChanged(nameof(DisplayedStyle));
                 }
             }
         }
@@ -1026,23 +1023,8 @@ namespace Dimmer_Labels_Wizard_WPF
             if (SelectedStrip != null)
             {
                 // Re Assert Displayed Template in case user also edited the Currently displayed Template.
-                DisplayedTemplate = SelectedStrip.AssignedTemplate;
+                OnPropertyChanged(nameof(DisplayedStyle));
             }
-        }
-
-        private RelayCommand _ApplyTemplateChangesCommand;
-
-        public ICommand ApplyTemplateChangesCommand
-        {
-            get
-            {
-                return _ApplyTemplateChangesCommand;
-            }
-        }
-
-        protected void ApplyTemplateChangesCommandExecute(object parameter)
-        {
-            ApplyTemplateChanges();
         }
 
         // Undo.
@@ -1411,24 +1393,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
-        protected void ApplyTemplateChanges()
-        {
-            if (SelectedStripTemplate != null && SelectedStripTemplate.EditorUpdatesPending)
-            {
-                // Modify existing Template.
-                // TemplateHelper.ModifyExistingTemplate(SelectedStrip.AssignedTemplate, DisplayedTemplate);
-                throw new NotImplementedException();
-
-                LoadTemplate(SelectedStrip);
-                SelectedStripTemplate.EditorUpdatesPending = false;
-            }
-        }
-
-        protected void DiscardTemplateChanges()
-        {
-            DisplayedTemplate = SelectedStrip.AssignedTemplate;
-        }
-
         private void NotifyPropertyGridUI()
         {
             OnPropertyChanged(nameof(DatabaseDimmerNumber));
@@ -1505,15 +1469,14 @@ namespace Dimmer_Labels_Wizard_WPF
                 return;
             }
 
-            DisplayedTemplate = strip.AssignedTemplate;
-
             // Appearance Controls
-            _SelectedLabelStripMode = DisplayedTemplate.StripMode;
-            _StripWidthmm = DisplayedTemplate.StripWidth / unitConversionRatio;
-            _StripHeightmm = DisplayedTemplate.StripHeight / unitConversionRatio;
-            _SelectedStripTemplate = DisplayedTemplate;
+            _SelectedLabelStripMode = strip.AssignedTemplate.StripMode;
+            _StripWidthmm = strip.AssignedTemplate.StripWidth / unitConversionRatio;
+            _StripHeightmm = strip.AssignedTemplate.StripHeight / unitConversionRatio;
+            _SelectedStripTemplate = strip.AssignedTemplate;
 
             // Notify.
+            OnPropertyChanged(nameof(DisplayedStyle));
             OnPropertyChanged(nameof(SelectedLabelStripMode));
             OnPropertyChanged(nameof(StripWidthmm));
             OnPropertyChanged(nameof(StripHeightmm));

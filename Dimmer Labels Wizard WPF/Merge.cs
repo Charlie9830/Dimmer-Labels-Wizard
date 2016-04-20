@@ -8,10 +8,10 @@ namespace Dimmer_Labels_Wizard_WPF
 {
     public class Merge
     {
-        public CellVerticalPosition VerticalPosition;
+        public Merge()
+        {
 
-        public DimmerDistroUnit PrimaryUnit;
-        public List<DimmerDistroUnit> ConsumedUnits;
+        }
 
         public Merge(CellVerticalPosition verticalPosition,
             DimmerDistroUnit primaryUnit,
@@ -21,5 +21,16 @@ namespace Dimmer_Labels_Wizard_WPF
             PrimaryUnit = primaryUnit;
             ConsumedUnits = consumedUnits;
         }
+
+        // Database.
+        public int ID { get; set; }
+        public virtual Strip Strip { get; set; }
+
+        public CellVerticalPosition VerticalPosition;
+
+        public DimmerDistroUnit PrimaryUnit;
+        public List<DimmerDistroUnit> ConsumedUnits;
+
+
     }
 }

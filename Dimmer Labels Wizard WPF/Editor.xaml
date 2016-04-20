@@ -80,7 +80,7 @@
         <Border x:Name="LabelStripArea" BorderThickness="1" Grid.Row="3" Grid.Column="1" BorderBrush="Black" Background="#FCE1E1E1"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <local:LabelStrip x:Name="LabelStrip"
-                              Style="{Binding Path=DisplayedTemplate}" DataSource="{Binding Path=Units}"
+                              Style="{Binding Path=DisplayedStyle}" DataSource="{Binding Path=Units}"
                               UniqueUpperCellTemplates="{Binding Path=UniqueUpperCellTemplates}" 
                               UniqueLowerCellTemplates="{Binding Path=UniqueLowerCellTemplates}"
                               Mergers="{Binding Path=Mergers}" SelectedCells="{Binding Path=SelectedCells}"

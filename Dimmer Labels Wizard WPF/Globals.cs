@@ -75,12 +75,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 LowerCellTemplate = lowerCellTemplate,
             };
 
-            Templates.Add(labelStripTemplate);
+            // Templates.Add(labelStripTemplate);
             DefaultTemplate = labelStripTemplate;
         }
-
-        // Debug Mode
-        public static bool DebugActive = false;
 
         // Standard FontSizes.
         public static double[] StandardFontSizes = new double[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
@@ -117,83 +114,20 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public static SortOrder DimmerDistroSortOrder { get; set; }
-
         // List to Hold StripData Objects.
-        public static ObservableCollection<Strip> Strips = new ObservableCollection<Strip>();
-
-        public static CellRowTemplate BaseCellRowTemplate = new CellRowTemplate()
-        {
-            ManualRowHeight = 1d,
-            Font = new Typeface("Arial"),
-            DesiredFontSize = 12d,
-            DataField = LabelField.NoAssignment,
-        };
-
-        public static LabelCellTemplate BaseLabelCellTemplate = new LabelCellTemplate()
-        {
-            CellDataMode = CellDataMode.MultiField,
-            SingleFieldFont = new Typeface("Arial"),
-            SingleFieldDesiredFontSize = 12,
-            SingleFieldDataField = LabelField.NoAssignment,
-            RowHeightMode = CellRowHeightMode.Static,
-            LeftWeight = 1d,
-            TopWeight = 1d,
-            RightWeight = 1d,
-            BottomWeight = 1d,
-            CellRowTemplates = new List<CellRowTemplate>() as IEnumerable<CellRowTemplate>,
-        };
-
-        // Not to be confused with the Default Strip Template. The Base LabelStripTemplates only exist to gaurantee
-        // that the Property Accsessors of instances of LabelStripTemplate, LabelCellTemplate and CellRowTemplate will also
-        // find a value. Otherwise they would return null, which is indistiguishable from a property value.
-        public static LabelStripTemplate BaseLabelStripTemplate = new LabelStripTemplate()
-        {
-            StripHeight = 70d,
-            StripWidth = 70d * 12,
-            StripMode = LabelStripMode.Dual,
-            UpperCellTemplate = BaseLabelCellTemplate,
-            LowerCellTemplate = BaseLabelCellTemplate,
-            Name = "Base Template"
-        };
+        //public static ObservableCollection<Strip> Strips = new ObservableCollection<Strip>();
 
         // By Default, this is contained within the Templates Collection.
         public static LabelStripTemplate DefaultTemplate;
 
         // Template Storage.
-        public static ObservableCollection<LabelStripTemplate> Templates = 
-            new ObservableCollection<LabelStripTemplate>();
+        //public static ObservableCollection<LabelStripTemplate> Templates = 
+        //    new ObservableCollection<LabelStripTemplate>();
 
         // Color Storage. (Dimmer, Color).
         public static Dictionary<int, Color> DimmerLabelColors = new Dictionary<int, Color>();
         public static Dictionary<int, Color> DistroLabelColors = new Dictionary<int, Color>();
 
-        // List to Hold Imported Elements with Dimmer Data that does not Match Formatting Styles.
-        public static List<DimmerDistroUnit> UnresolvableUnits = new List<DimmerDistroUnit>();
-
-        // List to hold Imported Elements that passed both Dimmer and Distro String Verifcation,
-        // and reside in the same Range.
-        public static List<DimmerDistroUnit> ClashingRangeData = new List<DimmerDistroUnit>();
-
-        // Represents DMX Addresses.
-        
-        public struct DMX
-        {
-            public int Universe;
-            public int Channel;
-        }
-
-        public struct BoolString
-        {
-            public BoolString (bool sanityCheck, string errorMessage)
-            {
-                SanityCheck = sanityCheck;
-                ErrorMessage = errorMessage;
-            }
-
-            public bool SanityCheck;
-            public string ErrorMessage;
-        }
     }
 }
 

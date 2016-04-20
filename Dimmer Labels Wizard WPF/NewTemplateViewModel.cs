@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -16,6 +17,9 @@ namespace Dimmer_Labels_Wizard_WPF
             _CancelCommand = new RelayCommand(CancelCommandExecute);
         }
 
+        // Database Repositories.
+        protected TemplateRepository _TemplateRepository;
+
         protected const string _EnterTemplateName = "Enter Template Name";
 
         #region Binding Sources
@@ -23,7 +27,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return Globals.Templates;
+                return _TemplateRepository.GetTemplates();
             }
         }
 
@@ -147,6 +151,11 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
+        public void InjectRepositories(TemplateRepository template)
+        {
+            _TemplateRepository = template;
+        }
+
         protected bool ValidateTemplateName(string name)
         {
             // Collect existing names.

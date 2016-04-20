@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -23,21 +26,13 @@ namespace Dimmer_Labels_Wizard_WPF
         // Mergers.
         public ObservableCollection<Merge> Mergers = new ObservableCollection<Merge>();
 
+        // Database.
+        public int ID { get; set; }
+
         #endregion
 
         #region Properties.
-
-        protected Guid _GUID = Guid.NewGuid();
-
-        [Key]
-        public Guid GUID
-        {
-            get
-            {
-                return _GUID;
-            }
-        }
-
+        [NotMapped]
         public IEnumerable<DimmerDistroUnit> Units
         {
             get
@@ -140,7 +135,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         protected bool _IsPoolSelected;
-
+        [NotMapped]
         public bool IsPoolSelected
         {
             get { return _IsPoolSelected; }
@@ -158,7 +153,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         protected bool _IsAssignedSelected;
-
+        [NotMapped]
         public bool IsAssignedSelected
         {
             get { return _IsAssignedSelected; }
@@ -176,7 +171,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         protected bool _IsSelected;
-
+        [NotMapped]
         public bool IsSelected
         {
             get { return _IsSelected; }

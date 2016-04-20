@@ -31,7 +31,13 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-
+        public ObservableCollection<Strip> Strips
+        {
+            get
+            {
+                return _Context.Strips.Local;
+            }
+        }
 
         protected string _Status = "Idle";
 
@@ -63,6 +69,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             Status = "Loading";
             _Context.Units.Load();
+            _Context.Strips.Load();
             Status = "Idle";
         }
     }

@@ -31,6 +31,9 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void NewProjectCommandExecute(object parameter)
         {
             var ImportWindow = new ImportUnitsWindow();
+            var viewModel = ImportWindow.DataContext as ImportUnitsViewModel;
+            viewModel.InSetup = true;
+
             ImportWindow.Show();
         }
         #endregion

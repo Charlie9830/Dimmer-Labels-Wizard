@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -13,6 +14,12 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public LabelManagerViewModel()
         {
+            // Repositories.
+            PrimaryDB context = new PrimaryDB();
+            _TemplateRepository = new TemplateRepository(context);
+            _UnitRepository = new UnitRepository(context);
+            _StripRepository = new StripRepository(context);
+
             // Commands.
             _AddNewStripCommand = new RelayCommand(AddNewStripCommandExecute);
             _RemoveSelectedTemplatesCommand = new RelayCommand(RemoveSelectedCommandsExecute, RemoveSelectedCommandsCanExecute);
@@ -27,6 +34,13 @@ namespace Dimmer_Labels_Wizard_WPF
                 element.PropertyChanged += ExistingStrip_PropertyChanged;
             }
         }
+
+        // Database Repositories.
+        TemplateRepository _TemplateRepository;
+        UnitRepository _UnitRepository;
+        StripRepository _StripRepository;
+
+        public bool InSetup = false;
 
         #region Binding Source Properties.
         public RackType[] RackTypes
@@ -138,7 +152,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return Globals.Templates as IEnumerable<LabelStripTemplate>;
+                return _TemplateRepository.GetTemplates();
             }
         }
 
@@ -170,7 +184,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return Globals.Strips;
+                return _StripRepository.Local;
             }
         }
 
@@ -423,8 +437,25 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var window = parameter as LabelManager;
 
-            window.DialogResult = true;
-            window.Close();
+            _TemplateRepository.Save();
+            _StripRepository.Save();
+            _UnitRepository.Save();
+
+            if (InSetup)
+            {
+                var templateEditor = new TemplateEditor();
+                var viewModel = templateEditor.DataContext as TemplateEditorViewModel;
+                viewModel.InSetup = true;
+
+                window.Close();
+                templateEditor.Show();
+            }
+
+            else
+            {
+                window.DialogResult = true;
+                window.Close();
+            }
         }
 
         #endregion

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="DatabaseViewer" Height="300" Width="600">
+        Title="DatabaseViewer" Height="500" Width="800">
 
     <Window.DataContext>
         <local:DatabaseViewerViewModel/>
@@ -15,6 +15,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="0">
@@ -22,15 +27,20 @@
                     Command="{Binding Path=ReloadCommand}"/>
             <Label Style="{StaticResource ControlLabelStyle}" Content="{Binding Path=Status}"/>
         </StackPanel>
-        
-        
 
-        <DataGrid ItemsSource="{Binding Path=Units}" Margin="10" Grid.Row="1" CanUserAddRows="False">
+
+        <Label Content="Units" Style="{StaticResource WindowHeaderStyle}" Grid.Row="1"/>
+        <DataGrid ItemsSource="{Binding Path=Units}" Height="200" Margin="10" Grid.Row="2" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="RackType" Binding="{Binding RackUnitType}"/>
                 <DataGridTextColumn Header="Universe" Binding="{Binding UniverseNumber}"/>
                 <DataGridTextColumn Header="Dimmer Number" Binding="{Binding DimmerNumber}"/>
             </DataGrid.Columns>
         </DataGrid>
+
+        <Label Content="Strips" Style="{StaticResource WindowHeaderStyle}" Grid.Row="3"/>
+        <DataGrid ItemsSource="{Binding Path=Strips}" Height="100" Margin="10" Grid.Row="4" CanUserAddRows="False">
+        </DataGrid>
+
     </Grid>
 </Window>

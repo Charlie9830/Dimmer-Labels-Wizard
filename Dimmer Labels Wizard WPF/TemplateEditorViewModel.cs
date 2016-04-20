@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 
 namespace Dimmer_Labels_Wizard_WPF
@@ -17,6 +18,11 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Constructor
         public TemplateEditorViewModel()
         {
+            // Repositories.
+            PrimaryDB context = new PrimaryDB();
+            _TemplateRepository = new TemplateRepository(context);
+            _StripRepository = new StripRepository(context);
+
             // Command Binding
             _CreateNewTemplateCommand = new RelayCommand(CreateNewTemplateCommandExecute);
 
@@ -34,15 +40,19 @@ namespace Dimmer_Labels_Wizard_WPF
             // Initialization.
             SelectedExistingTemplate = Globals.DefaultTemplate;
         }
-
-
         #endregion
 
         #region Fields.
+        public bool InSetup = false;
+
         // Constants
         protected const double UnitConversionRatio = 96d / 25.4d;
 
-        // Variables.
+
+        // Database Repositories.
+        protected TemplateRepository _TemplateRepository;
+        protected StripRepository _StripRepository;
+        
         protected bool IsInUpperRowCollectionChangedEvent = false;
         protected bool IsInLowerRowCollectionChangedEvent = false;
         #endregion
@@ -130,7 +140,15 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return Globals.Templates;
+                if (_TemplateRepository == null)
+                {
+                    return new ObservableCollection<LabelStripTemplate>();
+                }
+
+                else
+                {
+                    return _TemplateRepository.Local;
+                }
             }
         }
 
@@ -241,7 +259,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             get
             {
-                return Globals.Strips;
+                return _StripRepository.GetStrips();
             }
         }
 
@@ -381,7 +399,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (dialogResult == true)
             {
-                SelectedExistingTemplate = Globals.Templates.Last();
+                SelectedExistingTemplate = _TemplateRepository.GetTemplates().Last();
             }
         }
 
@@ -427,10 +445,21 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var window = parameter as TemplateEditor;
 
-            // TemplateHelper.ModifyExistingTemplate(SelectedExistingTemplate, DisplayedStyle);
-            throw new NotImplementedException();
+            _TemplateRepository.Save();
+            _StripRepository.Save();
 
-            window.Close();
+            if (InSetup)
+            {
+                var editor = new Editor();
+                window.Close();
+                editor.Show();
+            }
+
+            else
+            {
+                window.Close();
+            }
+            
         }
         #endregion
 
@@ -444,7 +473,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Query for a Collection of strips with the Selected Template assigned to them.
-            var query = from strip in Globals.Strips
+            var query = from strip in AllStrips
                         where strip.AssignedTemplate == SelectedExistingTemplate
                         select strip;
 
@@ -475,7 +504,6 @@ namespace Dimmer_Labels_Wizard_WPF
 
             return examples;
         }
-
 
         #endregion
     }

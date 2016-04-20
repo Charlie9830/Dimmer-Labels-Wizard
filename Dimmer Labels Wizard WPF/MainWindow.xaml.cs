@@ -32,7 +32,7 @@ namespace Dimmer_Labels_Wizard_WPF
             window.Show();
 
             //
-            var window2 = new TemplateEditor();
+            var window2 = new Editor();
             window2.Show();
             
         }

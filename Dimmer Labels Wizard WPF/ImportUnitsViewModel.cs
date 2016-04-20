@@ -29,10 +29,12 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
-        #region Protected Fields.
+        #region Fields.
         protected static readonly ColumnHeader _NoColumnAssignment = new ColumnHeader("No Assignment", -1);
 
         protected readonly UnitRepository _UnitRepo = new UnitRepository(new PrimaryDB());
+
+        public bool InSetup = false;
         #endregion
 
         #region Public Non Bound Properties.
@@ -559,6 +561,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void OkCommandExecute(object parameter)
         {
+            var window = parameter as Window;
+
             // Check UI input for Sanity.
 
             // Create a Unit Importer.
@@ -575,8 +579,16 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Push Data to Database.
                 CommitToDatabase(importer, MergeData);
 
-                // Continue to Next Window.
+                if (InSetup)
+                {
+                    // Continue to Next Window.
+                    OpenLabelManager(window);
+                }
 
+                else
+                {
+                    window.Close();
+                }
             }
 
             else
@@ -598,7 +610,16 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Push Data to Database.
                     CommitToDatabase(importer, MergeData);
 
-                    // Continue to Next window.;
+                    if (InSetup)
+                    {
+                        // Continue to Next window.
+                        OpenLabelManager(window);
+                    }
+                    
+                    else
+                    {
+                        window.Close();
+                    }
                 }
 
             }
@@ -646,6 +667,19 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods.
+        protected void OpenLabelManager(Window ownerWindow)
+        {
+            var labelManager = new LabelManager();
+            var viewModel = labelManager.DataContext as LabelManagerViewModel;
+
+            if (ownerWindow != null)
+            {
+                ownerWindow.Close();
+            }
+
+            labelManager.Show();
+        }
+
         protected void CommitToDatabase(UnitImporter importer, bool mergeData)
         {
             if (mergeData)
