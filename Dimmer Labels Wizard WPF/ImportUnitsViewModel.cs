@@ -671,6 +671,7 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var labelManager = new LabelManager();
             var viewModel = labelManager.DataContext as LabelManagerViewModel;
+            viewModel.InSetup = true;
 
             if (ownerWindow != null)
             {

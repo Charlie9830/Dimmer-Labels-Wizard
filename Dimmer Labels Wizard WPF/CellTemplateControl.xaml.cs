@@ -47,6 +47,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Fields.
         protected bool IsInRowCollectionChangedEvent = false;
+        protected bool IncomingTemplate = false;
         #endregion
 
         #region Binding Source Properties.
@@ -578,7 +579,7 @@ namespace Dimmer_Labels_Wizard_WPF
         // Using a DependencyProperty as the backing store for CellTemplate.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CellTemplateProperty =
             DependencyProperty.Register("CellTemplate", typeof(LabelCellTemplate), typeof(CellTemplateControl),
-                new FrameworkPropertyMetadata(Globals.DefaultTemplate.UpperCellTemplate,
+                new FrameworkPropertyMetadata(new LabelCellTemplate(),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
                     new PropertyChangedCallback(OnCellTemplatePropertyChanged)));
 
@@ -604,15 +605,18 @@ namespace Dimmer_Labels_Wizard_WPF
             // Executes.
             instance._ShowCellManualRowDialogCommand.CheckCanExecute();
 
-
             // RowTemplates Collection.
             if (instance.IsInRowCollectionChangedEvent == false)
             {
+                instance.IncomingTemplate = true;
+
                 instance.RowTemplates.Clear();
                 foreach (var element in newValue.CellRowTemplates)
                 {
                     instance.RowTemplates.Add(element);
                 }
+
+                instance.IncomingTemplate = false;
             }
         }
 
@@ -644,7 +648,8 @@ namespace Dimmer_Labels_Wizard_WPF
             var collection = sender as ObservableCollection<CellRowTemplate>;
 
             // Push state of collection to CellTemplate.
-            if (CellTemplate.CellRowTemplates.SequenceEqual(collection) == false)
+            if (CellTemplate.CellRowTemplates.SequenceEqual(collection) == false &&
+                IncomingTemplate == false)
             {
                 CellTemplate.CellRowTemplates = collection.ToList();
             }
@@ -653,6 +658,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _RemoveRowTemplateCommand.CheckCanExecute();
             _MoveRowTemplateUpCommand.CheckCanExecute();
             _MoveRowTemplateDownCommand.CheckCanExecute();
+            ForceCellTemplateUpdate();
 
             // Reset collection Event Flags.
             EndRowTemplateCollectionChanged();

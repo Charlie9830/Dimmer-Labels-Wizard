@@ -789,6 +789,11 @@ namespace Dimmer_Labels_Wizard_WPF
             var instance = d as LabelCell;
             string newData = (string)e.NewValue;
 
+            if (instance.CellDataMode == CellDataMode.MultiField)
+            {
+                return;
+            }
+
             SetSingleFieldRows(instance, newData);
         }
 
@@ -808,6 +813,11 @@ namespace Dimmer_Labels_Wizard_WPF
             var instance = d as LabelCell;
             LabelField newDataField = (LabelField)e.NewValue;
             DimmerDistroUnit reference = instance.DataReference;
+
+            if (instance.CellDataMode == CellDataMode.MultiField)
+            {
+                return;
+            }
 
             if (reference != null)
             {
@@ -839,6 +849,11 @@ namespace Dimmer_Labels_Wizard_WPF
             Typeface newFont = e.NewValue as Typeface;
             double scaledFontSize;
 
+            if (instance.CellDataMode == CellDataMode.MultiField)
+            {
+                return;
+            }
+
             AssignSingleFieldDataLayouts(instance, out scaledFontSize);
 
             // Set Row Fonts.
@@ -868,6 +883,11 @@ namespace Dimmer_Labels_Wizard_WPF
             double newDesiredFontSize = (double)e.NewValue;
             ObservableCollection<CellRow> rowCollection = instance.Rows;
             double scaledFontSize;
+
+            if (instance.CellDataMode == CellDataMode.MultiField)
+            {
+                return;
+            }
 
             AssignSingleFieldDataLayouts(instance, out scaledFontSize);
 

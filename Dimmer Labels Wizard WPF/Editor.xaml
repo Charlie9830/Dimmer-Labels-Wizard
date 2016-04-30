@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="Editor" Height="700" Width="1500">
+        Title="Editor" Height="700" Width="1500" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
         <local:EditorViewModel/>

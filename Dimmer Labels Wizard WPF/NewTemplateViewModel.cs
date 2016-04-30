@@ -12,6 +12,9 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public NewTemplateViewModel()
         {
+            // Repositories.
+            _TemplateRepository = new TemplateRepository(new PrimaryDB());
+
             // Command Binding.
             _CreateCommand = new RelayCommand(CreateCommandExecute, CreateCommandCanExecute);
             _CancelCommand = new RelayCommand(CancelCommandExecute);
@@ -30,25 +33,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 return _TemplateRepository.GetTemplates();
             }
         }
-
-
-        protected LabelStripTemplate _BasedOnTemplateSelection = Globals.DefaultTemplate;
-
-        public LabelStripTemplate BasedOnTemplateSelection
-        {
-            get { return _BasedOnTemplateSelection; }
-            set
-            {
-                if (_BasedOnTemplateSelection != value)
-                {
-                    _BasedOnTemplateSelection = value;
-
-                    // Notify.
-                    OnPropertyChanged(nameof(BasedOnTemplateSelection));
-                }
-            }
-        }
-
 
         protected string _TemplateName = _EnterTemplateName;
 
@@ -116,8 +100,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (IsValidTemplateName)
             {
-                //Globals.Templates.Add(new LabelStripTemplate(BasedOnTemplateSelection) { Name = TemplateName });
-                throw new NotImplementedException();
+                _TemplateRepository.InsertTemplate(new LabelStripTemplate() { Name = TemplateName });
+
+                _TemplateRepository.Save();
+                _TemplateRepository.Dispose();
 
                 // Close Window.
                 window.DialogResult = true;
@@ -144,6 +130,8 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var window = parameter as NewTemplate;
 
+            _TemplateRepository.Dispose();
+
             // Close Window.
             window.DialogResult = false;
             window.Close();
@@ -151,11 +139,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
-        public void InjectRepositories(TemplateRepository template)
-        {
-            _TemplateRepository = template;
-        }
-
         protected bool ValidateTemplateName(string name)
         {
             // Collect existing names.

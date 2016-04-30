@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace Dimmer_Labels_Wizard_WPF.Repositories
 {
@@ -35,6 +36,20 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
                     select unit).ToList();
         }
 
+        public IList<DimmerDistroUnit> GetDimmersSorted()
+        {
+            return (from unit in GetUnitsSorted()
+                   where unit.RackUnitType == RackType.Dimmer
+                   select unit).ToList();
+        }
+
+        public IList<DimmerDistroUnit> GetDistrosSorted()
+        {
+            return (from unit in GetUnitsSorted()
+                    where unit.RackUnitType == RackType.Distro
+                    select unit).ToList();
+        }
+
         public void InsertUnit(DimmerDistroUnit unit)
         {
             _Context.Units.Add(unit);
@@ -63,6 +78,11 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
         public void Save()
         {
             _Context.SaveChanges();
+        }
+
+        public void Load()
+        {
+            _Context.Units.Load();
         }
 
         public void UpdateUnit(DimmerDistroUnit unit)

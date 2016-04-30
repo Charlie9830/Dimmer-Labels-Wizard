@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -15,11 +16,20 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public LabelColorManagerViewModel()
         {
+            // Repositories.
+            _UnitRepository = new UnitRepository(new PrimaryDB());
+            _LocalUnits = _UnitRepository.GetUnits();
+
             RefreshUnitGroups(LabelField.Position);
 
             // Commands.
             _OkCommand = new RelayCommand(OkCommandExecute);
         }
+
+        // Fields.
+        protected UnitRepository _UnitRepository;
+        protected IList<DimmerDistroUnit> _LocalUnits;
+
 
         #region Binding Source Properties
 
@@ -115,7 +125,6 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Non Binding Properties.
-
         protected List<UnitGroup> _SelectedUnitGroups = new List<UnitGroup>();
 
         public List<UnitGroup> SelectedUnitGroups
@@ -166,41 +175,41 @@ namespace Dimmer_Labels_Wizard_WPF
             switch (labelfield)
             {
                 case LabelField.ChannelNumber:
-                    return from item in Globals.DimmerDistroUnits
+                    return from item in _LocalUnits
                            group item by item.ChannelNumber into itemgroup
                            select itemgroup;
                     
                 case LabelField.InstrumentName:
-                    return from item in Globals.DimmerDistroUnits
+                    return from item in _LocalUnits
                            group item by item.InstrumentName into itemgroup
                            select itemgroup;
 
                 case LabelField.MulticoreName:
-                    return from item in Globals.DimmerDistroUnits
+                    return from item in _LocalUnits
                            group item by item.MulticoreName into itemgroup
                            select itemgroup;
 
                 case LabelField.Position:
-                    return from item in Globals.DimmerDistroUnits
+                    return from item in _LocalUnits
                            group item by item.Position into itemgroup
                            select itemgroup;
 
                 case LabelField.UserField1:
-                    return from item in Globals.DimmerDistroUnits
+                    return from item in _LocalUnits
                            group item by item.UserField1 into itemgroup
                            select itemgroup;
 
                 case LabelField.UserField2:
-                    return from item in Globals.DimmerDistroUnits
+                    return from item in _LocalUnits
                            group item by item.UserField2 into itemgroup
                            select itemgroup;
                 case LabelField.UserField3:
-                    return from item in Globals.DimmerDistroUnits
+                    return from item in _LocalUnits
                            group item by item.UserField3 into itemgroup
                            select itemgroup;
 
                 case LabelField.UserField4:
-                    return from item in Globals.DimmerDistroUnits
+                    return from item in _LocalUnits
                            group item by item.UserField4 into itemgroup
                            select itemgroup;
                 default:

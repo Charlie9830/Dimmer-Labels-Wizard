@@ -29,7 +29,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected string _Custom = string.Empty;
 
         #region Public Accessors.
-        public string ChannelNumber
+        public  string ChannelNumber
         {
             get
             {
@@ -49,7 +49,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string InstrumentName
+        public  string InstrumentName
         {
             get
             {
@@ -69,7 +69,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string MulticoreName
+        public  string MulticoreName
         {
             get
             {
@@ -89,7 +89,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string Position
+        public  string Position
         {
             get
             {
@@ -109,7 +109,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string UserField1
+        public  string UserField1
         {
             get
             {
@@ -129,7 +129,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string UserField2
+        public  string UserField2
         {
             get
             {
@@ -149,7 +149,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string UserField3
+        public  string UserField3
         {
             get
             {
@@ -169,7 +169,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string UserField4
+        public  string UserField4
         {
             get
             {
@@ -189,7 +189,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public string Custom
+        public  string Custom
         {
             get
             {
@@ -209,9 +209,12 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+
+        protected int _DimmerNumber = 0;
+
         [Key]
         [Column(Order = 3)]
-        public int DimmerNumber
+        public  int DimmerNumber
         {
             get
             {
@@ -226,6 +229,8 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
         }
+
+        protected RackType _RackUnitType;
 
         [Key]
         [Column(Order = 1)]
@@ -250,7 +255,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         protected bool _OmitUnit = false;
-
+        [NotMapped]
         public bool OmitUnit
         {
             get { return _OmitUnit; }
@@ -267,6 +272,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [NotMapped]
         public bool IsValid
         {
             get
@@ -281,6 +287,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [NotMapped]
         public Color LabelColor
         {
             get
@@ -300,28 +307,19 @@ namespace Dimmer_Labels_Wizard_WPF
         // Imported Temporary Data
         protected string _DimmerNumberText = string.Empty;
 
-        public string DimmerNumberText
-        { get { return _DimmerNumberText; } set { _DimmerNumberText = value; } }
+        [NotMapped]
+        public string DimmerNumberText { get; set; }
 
+        [NotMapped]
         public string DMXAddressText { get; set; }
-
-        // Application running data
-        public int ImportIndex;
 
         // Inferred Data
         [Key]
         [Column(Order = 2)]
         public int UniverseNumber { get; set; }
-        public int AbsoluteDMXAddress { get; set; }
 
-        protected int _DimmerNumber = 0;
-        protected RackType _RackUnitType;
 
-        public override string ToString()
-        {
-            return "Dimmer Number: " + DimmerNumber.ToString();
-        }
-
+        #region Methods.
         private Color GetLabelColor()
         {
             Color color;
@@ -969,33 +967,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        #region Serialization
-        public DimmerDistroUnitStorage GenerateStorage()
-        {
-            DimmerDistroUnitStorage storage = new DimmerDistroUnitStorage();
-
-            storage.ChannelNumber = ChannelNumber;
-            storage.InstrumentName = InstrumentName;
-            storage.MulticoreName = MulticoreName;
-            storage.Position = Position;
-            storage.UserField1 = UserField1;
-            storage.UserField2 = UserField2;
-            storage.UserField3 = UserField3;
-            storage.UserField4 = UserField4;
-
-            storage.DimmerNumberText = DimmerNumberText;
-            storage.DMXAddressText = DMXAddressText;
-
-            storage.ImportIndex = ImportIndex;
-
-            storage.RackUnitType = RackUnitType;
-            storage.UniverseNumber = UniverseNumber;
-            storage.AbsoluteDMXAddress = AbsoluteDMXAddress;
-            storage.DimmerNumber = DimmerNumber;
-
-            return storage;
-
-        }
         #endregion
     }
 
@@ -1036,30 +1007,5 @@ namespace Dimmer_Labels_Wizard_WPF
 
             return hCode.GetHashCode();
         }
-    }
-
-    public class DimmerDistroUnitStorage
-    {
-        public string ChannelNumber;
-        public string InstrumentName;
-        public string MulticoreName;
-        public string Position;
-        public string UserField1;
-        public string UserField2;
-        public string UserField3;
-        public string UserField4;
-
-        public string DimmerNumberText;
-        public string DMXAddressText;
-
-        public int ImportIndex;
-
-        public RackType RackUnitType;
-        public int UniverseNumber;
-        public int AbsoluteDMXAddress;
-        public int DimmerNumber;
-        public int RackNumber;
-
-
     }
 }

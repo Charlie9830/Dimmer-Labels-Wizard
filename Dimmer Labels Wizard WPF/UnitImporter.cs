@@ -324,9 +324,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     newUnit.UserField3 = userField3Column == -1 ? string.Empty : fields[userField3Column];
                     newUnit.UserField4 = userField4Column == -1 ? string.Empty : fields[userField4Column];
 
-                    // Application running data.
-                    newUnit.ImportIndex = index;
-
                     // Import Format specific Data.
                     if (importSettings.DimmerImportFormat == ImportFormat.Format2)
                     {

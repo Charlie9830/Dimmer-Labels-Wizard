@@ -23,10 +23,11 @@ namespace Dimmer_Labels_Wizard_WPF
             _TemplateRepository = new TemplateRepository(context);
             _StripRepository = new StripRepository(context);
 
+            LoadRespositories();
+
             SelectedCells.CollectionChanged += SelectedCells_CollectionChanged;
             SelectedRows.CollectionChanged += SelectedRows_CollectionChanged;
             Units.CollectionChanged += Units_CollectionChanged;
-            StripTemplates.CollectionChanged += StripTemplates_CollectionChanged;
             SelectedUnits.CollectionChanged += SelectedUnits_CollectionChanged;
             Mergers.CollectionChanged += Mergers_CollectionChanged;
 
@@ -52,7 +53,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _SetZoomPercentageCommand = new RelayCommand(SetZoomPercentageCommandExecute);
 
             // Initialize UndoRedoManager.
-            UndoRedoManager = new UndoRedoManager();
+            UndoRedoManager = new UndoRedoManager(_UnitRepository);
         }
 
         #region Fields
@@ -453,11 +454,12 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        private Style _DisplayedStyle;
-
         public Style DisplayedStyle
         {
-            get { return _DisplayedStyle; }
+            get
+            {
+                return SelectedStripTemplate?.Style;
+            }
         }
 
         private LabelStripTemplate _SelectedStripTemplate;
@@ -475,7 +477,10 @@ namespace Dimmer_Labels_Wizard_WPF
                     _SelectedStripTemplate = value;
 
                     // Push Change to Selected Strip.
-                    SelectedStrip.AssignedTemplate = _SelectedStripTemplate;
+                    if (SelectedStrip != null)
+                    {
+                        SelectedStrip.AssignedTemplate = _SelectedStripTemplate;
+                    }
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedStripTemplate));
@@ -487,9 +492,22 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public ObservableCollection<LabelStripTemplate> StripTemplates
+
+        protected IList<LabelStripTemplate> _StripTemplates;
+
+        public IList<LabelStripTemplate> StripTemplates
         {
-            get { return _TemplateRepository.Local; }
+            get { return _StripTemplates; }
+            set
+            {
+                if (_StripTemplates != value)
+                {
+                    _StripTemplates = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(StripTemplates));
+                }
+            }
         }
 
 
@@ -712,6 +730,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void ShowLabelColorManagerCommandExecute(object parameter)
         {
+            // Persist Progress.
+            _TemplateRepository.Save();
+            _StripRepository.Save();
+            _UnitRepository.Save();
+
             var dialog = new LabelColorManager();
             dialog.ShowDialog();
 
@@ -729,6 +752,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void ShowLabelManagerCommandExecute(object parameter)
         {
+            // Persist Progress.
+            _TemplateRepository.Save();
+            _StripRepository.Save();
+
             var dialog = new LabelManager();
             var viewModel = dialog.DataContext as LabelManagerViewModel;
 
@@ -739,6 +766,8 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             dialog.ShowDialog();
+
+            LoadRespositories();
 
             PresentStripData(_SelectedStrip);
         }
@@ -932,14 +961,28 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void EditTemplateCommandExecute(object parameter)
         {
+            // Persist Progess.
+            _TemplateRepository.Save();
+            _StripRepository.Save();
+            _UnitRepository.Save();
+
             var templateEditor = new TemplateEditor();
             var viewModel = templateEditor.DataContext as TemplateEditorViewModel;
 
-            viewModel.SelectedExistingTemplate = SelectedStripTemplate;
+            // Preselect Template.
+            viewModel.SelectedTemplateName = SelectedStripTemplate.Name;
 
             templateEditor.ShowDialog();
 
+            LoadRespositories();
+
             // Assert Displayed Template.
+            if (SelectedStrip != null)
+            {
+                _SelectedStripTemplate = SelectedStrip.AssignedTemplate;
+                OnPropertyChanged(nameof(SelectedStripTemplate));    
+            }
+
             OnPropertyChanged(nameof(DisplayedStyle));
         }
 
@@ -960,18 +1003,15 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void CreateNewTemplateCommandExecute(object parameter)
         {
+            // Persist Progress.
+            _TemplateRepository.Save();
+            _StripRepository.Save();
+            _UnitRepository.Save();
+
             // Show the NewTemplate Dialog first. If user chooses to continue with New Template creation. Show
             // the Template Editor with the new Template pre selected.
             var newTemplateDialog = new NewTemplate();
             var newTemplateViewModel = newTemplateDialog.DataContext as NewTemplateViewModel;
-
-            newTemplateViewModel.InjectRepositories(_TemplateRepository);
-
-            if (SelectedStripTemplate != null)
-            {
-                // If a selection exists, set the Based On Property to that selection.
-                newTemplateViewModel.BasedOnTemplateSelection = SelectedStripTemplate;
-            }
 
             if (newTemplateDialog.ShowDialog() == true)
             {
@@ -980,9 +1020,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 var templateEditorViewModel = templateEditor.DataContext as TemplateEditorViewModel;
 
                 // Pre Select the new Template.
-                templateEditorViewModel.SelectedExistingTemplate = _TemplateRepository.Local.Last();
+                templateEditorViewModel.SelectedTemplateName = newTemplateViewModel.TemplateName;
 
                 templateEditor.ShowDialog();
+
+                _TemplateRepository.Load();
 
                 if (SelectedStrip != null)
                 {
@@ -990,6 +1032,8 @@ namespace Dimmer_Labels_Wizard_WPF
                     OnPropertyChanged(nameof(DisplayedStyle));
                 }
             }
+
+            LoadRespositories();
         }
 
         protected RelayCommand _OpenTemplateSettings;
@@ -1003,6 +1047,11 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void OpenTemplateSettingsExecute(object parameter)
         {
+            // Persist Progress.
+            _TemplateRepository.Save();
+            _StripRepository.Save();
+            _UnitRepository.Save();
+
             if (parameter.GetType() != typeof(string))
             {
                 return;
@@ -1113,8 +1162,6 @@ namespace Dimmer_Labels_Wizard_WPF
             return false;
         }
 
-
-
         // Split Cells / DeMerge Cells.
         private RelayCommand _SplitSelectedCellsCommand;
 
@@ -1176,11 +1223,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
                 }
             }
-        }
-
-        private void StripTemplates_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            
         }
 
         private void Strips_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1393,6 +1435,16 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
+        protected void LoadRespositories()
+        {
+
+            StripTemplates = _TemplateRepository.GetTemplates();
+            _StripRepository.Load();
+
+            // Notify.
+            OnPropertyChanged(nameof(Strips));
+        }
+
         private void NotifyPropertyGridUI()
         {
             OnPropertyChanged(nameof(DatabaseDimmerNumber));
@@ -1438,7 +1490,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Load new StripData.
             if (_SelectedStrip != null)
             {
-                foreach (var element in _SelectedStrip.Units)
+                foreach (var element in _SelectedStrip.GetUnits(_UnitRepository))
                 {
                     Units.Add(element);
                 }
@@ -1469,6 +1521,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 return;
             }
 
+            // Displayed Template.
+            SelectedStripTemplate = strip.AssignedTemplate;
+
             // Appearance Controls
             _SelectedLabelStripMode = strip.AssignedTemplate.StripMode;
             _StripWidthmm = strip.AssignedTemplate.StripWidth / unitConversionRatio;
@@ -1485,21 +1540,6 @@ namespace Dimmer_Labels_Wizard_WPF
             OnPropertyChanged(nameof(UniqueLowerCellTemplates));
         }
 
-        private void RegisterTemplateChange(string propertyName)
-        {
-            if (SelectedStripTemplate != null)
-            {
-                SelectedStripTemplate.EditorUpdatesPending = true;
-            }
-        }
-
-        private void ClearTemplateChangeRegister()
-        {
-            foreach (var element in StripTemplates)
-            {
-                element.EditorUpdatesPending = false;
-            }
-        }
 
         private void WriteDebugOutput(string message)
         {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 
 namespace Dimmer_Labels_Wizard_WPF.Repositories
 {
@@ -28,11 +29,29 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
 
         public IList<Strip> GetStrips()
         {
-            return (from strip in _Context.Strips
-                    select strip).ToList();
+            return _Context.Strips.Select(item => item)
+                                  .Include(item => item.AssignedTemplate).ToList();
         }
 
+        public void Remove(Strip strip)
+        {
+            _Context.Strips.Remove(strip);
+        }
 
+        public void RemoveAll()
+        {
+            _Context.Database.ExecuteSqlCommand("DELETE from Strips");
+        }
+
+        public void Load()
+        {
+            _Context.Strips.Load();
+        }
+
+        public void Save()
+        {
+            _Context.SaveChanges();
+        }
         #endregion
     }
 }

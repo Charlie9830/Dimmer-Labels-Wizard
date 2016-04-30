@@ -15,9 +15,12 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             // Commands.
             _ReloadCommand = new RelayCommand(ReloadCommandExecute);
+            _ExecuteSQLCommand = new RelayCommand(ExecuteSQLCommandExecute);
 
             Status = "Loading";
             _Context.Units.Load();
+            _Context.Strips.Load();
+            _Context.Templates.Load();
             Status = "Idle";
         }
 
@@ -39,6 +42,14 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        public ObservableCollection<LabelStripTemplate> Templates
+        {
+            get
+            {
+                return _Context.Templates.Local;
+            }
+        }
+
         protected string _Status = "Idle";
 
         public string Status
@@ -52,6 +63,24 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Notify.
                     OnPropertyChanged(nameof(Status));
+                }
+            }
+        }
+
+
+        protected string _SQLCommand;
+
+        public string SQLCommand
+        {
+            get { return _SQLCommand; }
+            set
+            {
+                if (_SQLCommand != value)
+                {
+                    _SQLCommand = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SQLCommand));
                 }
             }
         }
@@ -70,7 +99,27 @@ namespace Dimmer_Labels_Wizard_WPF
             Status = "Loading";
             _Context.Units.Load();
             _Context.Strips.Load();
+            _Context.Templates.Load();
             Status = "Idle";
+        }
+
+
+        protected RelayCommand _ExecuteSQLCommand;
+        public ICommand ExecuteSQLCommand
+        {
+            get
+            {
+                return _ExecuteSQLCommand;
+            }
+        }
+
+        protected void ExecuteSQLCommandExecute(object parameter)
+        {
+            Status = "Executing SQL Command";
+            _Context.Database.ExecuteSqlCommand(SQLCommand);
+
+            ReloadCommandExecute(new object());
+
         }
     }
 }

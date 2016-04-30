@@ -16,9 +16,11 @@
     <Window.Resources>
         <Style x:Key="ListBoxAssignedStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
             <Setter Property="IsSelected" Value="{Binding IsAssignedSelected}"/>
+            <Setter Property="Content" Value="{Binding Name}"/>
         </Style>
         <Style x:Key="ListBoxPoolStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
             <Setter Property="IsSelected" Value="{Binding IsPoolSelected}"/>
+            <Setter Property="Content" Value="{Binding Path=Name}"/>
         </Style>
     </Window.Resources>
 
@@ -134,7 +136,7 @@
                                 <local:CellTemplateControl Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Upper Cell Template Settings"
                                                    CellTemplate="{Binding Path=UpperCellTemplate, Mode=TwoWay}"/>
                                 <local:CellTemplateControl Grid.Row="4" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Lower Cell Template Settings"
-                                                   CellTemplate="{Binding Path=DisplayedLowerCellTemplate}"/>
+                                                   CellTemplate="{Binding Path=LowerCellTemplate, Mode=TwoWay}"/>
 
                             </Grid>
                         </HeaderedContentControl>

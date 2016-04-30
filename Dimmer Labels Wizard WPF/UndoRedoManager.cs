@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
     public class UndoRedoManager
     {
-        public UndoRedoManager()
+        public UndoRedoManager(UnitRepository unitRepository)
         {
             // Connect to DataModel.
-            foreach (var element in Globals.DimmerDistroUnits)
+            foreach (var element in unitRepository.GetUnits())
             {
                 element.NotifyModification += Incoming_Modification;
             }

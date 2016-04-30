@@ -216,6 +216,30 @@
     <Compile Include="Migrations\201604191249004_AddedStrips.Designer.cs">
       <DependentUpon>201604191249004_AddedStrips.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604210854401_DimmerDistroUnitHouseKeeping.cs" />
+    <Compile Include="Migrations\201604210854401_DimmerDistroUnitHouseKeeping.Designer.cs">
+      <DependentUpon>201604210854401_DimmerDistroUnitHouseKeeping.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604210904412_FurtherHouseKeeping.cs" />
+    <Compile Include="Migrations\201604210904412_FurtherHouseKeeping.Designer.cs">
+      <DependentUpon>201604210904412_FurtherHouseKeeping.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604210911418_MoreHouseKeeping.cs" />
+    <Compile Include="Migrations\201604210911418_MoreHouseKeeping.Designer.cs">
+      <DependentUpon>201604210911418_MoreHouseKeeping.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604230719564_LabelCellTemplateNav.cs" />
+    <Compile Include="Migrations\201604230719564_LabelCellTemplateNav.Designer.cs">
+      <DependentUpon>201604230719564_LabelCellTemplateNav.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604230836316_Justworkalready.cs" />
+    <Compile Include="Migrations\201604230836316_Justworkalready.Designer.cs">
+      <DependentUpon>201604230836316_Justworkalready.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604261323466_LabelCellTest.cs" />
+    <Compile Include="Migrations\201604261323466_LabelCellTest.Designer.cs">
+      <DependentUpon>201604261323466_LabelCellTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -239,6 +263,7 @@
       <DependentUpon>RenameTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="RenameTemplateViewModel.cs" />
+    <Compile Include="ColorDictionary.cs" />
     <Compile Include="Repositories\IUnitRepository.cs" />
     <Compile Include="Repositories\StripRepository.cs" />
     <Compile Include="Repositories\TemplateRepository.cs" />
@@ -264,10 +289,6 @@
       <DependentUpon>LabelRanging.xaml</DependentUpon>
     </Compile>
     <Compile Include="HelpViewModel.cs" />
-    <Compile Include="InstrumentNameResolution.xaml.cs">
-      <DependentUpon>InstrumentNameResolution.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="InstrumentNameResolutionViewModel.cs" />
     <Compile Include="LabelCell.cs" />
     <Compile Include="LabelStrip.cs" />
     <Compile Include="PopUpControlAdorner.cs" />
@@ -335,10 +356,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ImportUnitsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="InstrumentNameResolution.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -450,6 +467,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604191249004_AddedStrips.resx">
       <DependentUpon>201604191249004_AddedStrips.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604210854401_DimmerDistroUnitHouseKeeping.resx">
+      <DependentUpon>201604210854401_DimmerDistroUnitHouseKeeping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604210904412_FurtherHouseKeeping.resx">
+      <DependentUpon>201604210904412_FurtherHouseKeeping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604210911418_MoreHouseKeeping.resx">
+      <DependentUpon>201604210911418_MoreHouseKeeping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604230719564_LabelCellTemplateNav.resx">
+      <DependentUpon>201604230719564_LabelCellTemplateNav.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604230836316_Justworkalready.resx">
+      <DependentUpon>201604230836316_Justworkalready.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604261323466_LabelCellTest.resx">
+      <DependentUpon>201604261323466_LabelCellTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

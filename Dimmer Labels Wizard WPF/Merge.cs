@@ -23,13 +23,13 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // Database.
-        public int ID { get; set; }
+        public virtual int ID { get; set; }
         public virtual Strip Strip { get; set; }
 
-        public CellVerticalPosition VerticalPosition;
+        public virtual CellVerticalPosition VerticalPosition { get; set; }
 
-        public DimmerDistroUnit PrimaryUnit;
-        public List<DimmerDistroUnit> ConsumedUnits;
+        public virtual DimmerDistroUnit PrimaryUnit { get; set; }
+        public virtual List<DimmerDistroUnit> ConsumedUnits { get; set; } = new List<DimmerDistroUnit>();
 
 
     }

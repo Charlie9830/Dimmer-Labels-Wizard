@@ -1099,7 +1099,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 else
                 {
-                    // Selection has shifted to a new Cell. Okay it dump currently selected Cells AND rows.
+                    // Selection has shifted to a new Cell. Dump currently selected Cells AND rows.
 
                     // Clear SelectedRows.
                     while (SelectedCells.Count() > 0)

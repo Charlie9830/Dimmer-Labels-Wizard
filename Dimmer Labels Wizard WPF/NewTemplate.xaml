@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="Create new Template" Height="208" Width="312" WindowStyle="ToolWindow" Topmost="True" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
+        Title="Create new Template" Height="173.741" Width="312" WindowStyle="ToolWindow" Topmost="True" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
 
     <Window.DataContext>
         <local:NewTemplateViewModel/>
@@ -30,15 +30,11 @@
                    Style="{StaticResource ControlLabelStyle}"/>
             <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="72,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="140"
                      Text="{Binding Path=TemplateName, UpdateSourceTrigger=PropertyChanged}"/>
-            <Label x:Name="label1" Content="Based On" HorizontalAlignment="Left" Margin="6,38,0,0" VerticalAlignment="Top"
-                   Style="{StaticResource ControlLabelStyle}"/>
-            <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="72,38,0,0" VerticalAlignment="Top" Width="140"
-                      ItemsSource="{Binding Path=ExistingTemplates}" SelectedItem="{Binding Path=BasedOnTemplateSelection}"/>
-            <Button x:Name="button" Content="Create" HorizontalAlignment="Left" Margin="130,101,0,0" VerticalAlignment="Top" Width="75"
+            <Button x:Name="button" Content="Create" HorizontalAlignment="Left" Margin="131,72,0,0" VerticalAlignment="Top" Width="75"
                     Command="{Binding Path=CreateCommand}" CommandParameter="{Binding ElementName=Window}"/>
-            <Button x:Name="button1" Content="Cancel" HorizontalAlignment="Left" Margin="210,101,0,0" VerticalAlignment="Top" Width="75"
+            <Button x:Name="button1" Content="Cancel" HorizontalAlignment="Left" Margin="211,72,0,0" VerticalAlignment="Top" Width="75"
                     Command="{Binding Path=CancelCommand}" CommandParameter="{Binding ElementName=Window}"/>
-            <Label x:Name="label2" Content="Invalid Name" HorizontalAlignment="Left" Margin="92,65,0,0" VerticalAlignment="Top"
+            <Label x:Name="label2" Content="Invalid Name" HorizontalAlignment="Left" Margin="97,38,0,0" VerticalAlignment="Top"
                    Style="{StaticResource ControlLabelStyle}" Visibility="{Binding Path=IsValidationMessageVisible, Converter={StaticResource BoolToVis}}"/>
         </Grid>
     </Grid>

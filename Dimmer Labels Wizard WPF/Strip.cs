@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 
 
@@ -20,11 +21,13 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Fields.
         // Unique Cell Templates.
-        public ObservableCollection<LabelCellTemplate> UpperUniqueCellTemplates = new ObservableCollection<LabelCellTemplate>();
-        public ObservableCollection<LabelCellTemplate> LowerUniqueCellTemplates = new ObservableCollection<LabelCellTemplate>();
+        public virtual ObservableCollection<LabelCellTemplate> UpperUniqueCellTemplates { get; set; } =
+            new ObservableCollection<LabelCellTemplate>();
+        public virtual ObservableCollection<LabelCellTemplate> LowerUniqueCellTemplates { get; set; } =
+            new ObservableCollection<LabelCellTemplate>();
 
         // Mergers.
-        public ObservableCollection<Merge> Mergers = new ObservableCollection<Merge>();
+        public ObservableCollection<Merge> Mergers { get; set; } = new ObservableCollection<Merge>();
 
         // Database.
         public int ID { get; set; }
@@ -32,16 +35,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Properties.
-        [NotMapped]
-        public IEnumerable<DimmerDistroUnit> Units
-        {
-            get
-            {
-                return GetUnits();
-            }
-        }
-
-        private LabelStripTemplate _AssignedTemplate = Globals.DefaultTemplate;
+        private LabelStripTemplate _AssignedTemplate = null;
 
         public LabelStripTemplate AssignedTemplate
         {
@@ -126,6 +120,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [NotMapped]
         public string Name
         {
             get
@@ -189,7 +184,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods.
-        private IEnumerable<DimmerDistroUnit> GetUnits()
+        public IEnumerable<DimmerDistroUnit> GetUnits(UnitRepository unitRepository)
         {
             if (FirstDimmer == 0 && LastDimmer == 0)
             {
@@ -200,7 +195,7 @@ namespace Dimmer_Labels_Wizard_WPF
             if (RackType == RackType.Dimmer)
             {
                 // Dimmer.
-                var query = from unit in Globals.Dimmers
+                var query = from unit in unitRepository.GetDimmersSorted()
                             where unit.UniverseNumber == Universe
                             select unit;
 
@@ -210,7 +205,7 @@ namespace Dimmer_Labels_Wizard_WPF
             else
             {
                 // Distro.
-                return Globals.Distros.Skip(FirstDimmer - 1).Take((LastDimmer + 1) - FirstDimmer);
+                return unitRepository.GetDistrosSorted().Skip(FirstDimmer - 1).Take((LastDimmer + 1) - FirstDimmer);
             }
         }
 

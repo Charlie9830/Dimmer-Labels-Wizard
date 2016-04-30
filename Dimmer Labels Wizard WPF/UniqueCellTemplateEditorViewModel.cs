@@ -17,7 +17,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region Binding Source Properties.
-        protected LabelCellTemplate _DisplayedTemplate = Globals.DefaultTemplate.UpperCellTemplate;
+        protected LabelCellTemplate _DisplayedTemplate = null;
 
         public LabelCellTemplate DisplayedTemplate
         {

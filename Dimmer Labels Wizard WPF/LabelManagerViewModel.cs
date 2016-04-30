@@ -17,27 +17,26 @@ namespace Dimmer_Labels_Wizard_WPF
             // Repositories.
             PrimaryDB context = new PrimaryDB();
             _TemplateRepository = new TemplateRepository(context);
-            _UnitRepository = new UnitRepository(context);
             _StripRepository = new StripRepository(context);
 
             // Commands.
             _AddNewStripCommand = new RelayCommand(AddNewStripCommandExecute);
-            _RemoveSelectedTemplatesCommand = new RelayCommand(RemoveSelectedCommandsExecute, RemoveSelectedCommandsCanExecute);
+            _RemoveSelectedTemplatesCommand = new RelayCommand(RemoveSelectedCommandExecute, RemoveSelectedCommandsCanExecute);
             _GenerateLabelsCommand = new RelayCommand(GenerateLabelsCommandExecute);
             _OkCommand = new RelayCommand(OkCommandExecute);
 
             ExistingStrips.CollectionChanged += ExistingStrips_CollectionChanged;
 
-            // Subsribe Existing Strip Elements to PropertyChanged Handler.
-            foreach (var element in ExistingStrips)
+            // Populate Existing Strips.
+            foreach (var element in _StripRepository.GetStrips())
             {
-                element.PropertyChanged += ExistingStrip_PropertyChanged;
+                ExistingStrips.Add(element);
             }
+
         }
 
         // Database Repositories.
         TemplateRepository _TemplateRepository;
-        UnitRepository _UnitRepository;
         StripRepository _StripRepository;
 
         public bool InSetup = false;
@@ -180,11 +179,12 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        protected ObservableCollection<Strip> _ExistingStrips = new ObservableCollection<Strip>();
         public ObservableCollection<Strip> ExistingStrips
         {
             get
             {
-                return _StripRepository.Local;
+                return _ExistingStrips;
             }
         }
 
@@ -292,7 +292,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected LabelStripTemplate _SelectedRangeTemplate = Globals.DefaultTemplate;
+        protected LabelStripTemplate _SelectedRangeTemplate = null;
 
         public LabelStripTemplate SelectedRangeTemplate
         {
@@ -404,11 +404,12 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected void RemoveSelectedCommandsExecute(object parameter)
+        protected void RemoveSelectedCommandExecute(object parameter)
         {
             foreach (var element in SelectedStrips)
             {
                 ExistingStrips.Remove(element);
+                _StripRepository.Remove(element);
             }
 
             if (ExistingStrips.Count > 0)
@@ -439,16 +440,14 @@ namespace Dimmer_Labels_Wizard_WPF
 
             _TemplateRepository.Save();
             _StripRepository.Save();
-            _UnitRepository.Save();
 
             if (InSetup)
             {
-                var templateEditor = new TemplateEditor();
-                var viewModel = templateEditor.DataContext as TemplateEditorViewModel;
-                viewModel.InSetup = true;
+                var Editor = new Editor();
+                var viewModel = Editor.DataContext as EditorViewModel;
 
                 window.Close();
-                templateEditor.Show();
+                Editor.Show();
             }
 
             else

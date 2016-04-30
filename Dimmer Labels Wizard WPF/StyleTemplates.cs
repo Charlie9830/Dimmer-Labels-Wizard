@@ -13,24 +13,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    public abstract class LabelStripTemplateBase
+
+    public class LabelStripTemplate : INotifyPropertyChanged
     {
-        public virtual Style Style { get; }
-
-        protected abstract Style GetStyle();
-    }
-
-    public class LabelStripTemplate : LabelStripTemplateBase, INotifyPropertyChanged, ICloneable
-    {
-        #region Fields
-        public List<Strip> AssignedToStrips = new List<Strip>();
-
-        #endregion
-
         #region Properties.
 
         // Database.
-        public int ID { get; set; }
+        public  int ID { get; set; }
+        public virtual ICollection<Strip> Strip { get; set; }
+
 
         public bool IsBuiltIn { get; set; } = false;
 
@@ -73,7 +64,7 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Styling Values.
         // StripWidth
         protected double _StripWidth = 70d * 12;
-        public double StripWidth
+        public  double StripWidth
         {
             get
             {
@@ -90,7 +81,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Upper Cells Template
         protected LabelCellTemplate _UpperCellTemplate = new LabelCellTemplate();
-        public LabelCellTemplate UpperCellTemplate
+        public virtual LabelCellTemplate UpperCellTemplate
         {
             get
             {
@@ -106,7 +97,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         protected LabelCellTemplate _LowerCellTemplate = new LabelCellTemplate();
-        public LabelCellTemplate LowerCellTemplate
+        public virtual LabelCellTemplate LowerCellTemplate
         {
             get
             {
@@ -123,7 +114,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Strip Height
         protected double _StripHeight = 70d;
-        public double StripHeight
+        public  double StripHeight
         {
             get
             {
@@ -140,7 +131,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Strip Mode.
         protected LabelStripMode _StripMode = LabelStripMode.Dual;
-        public LabelStripMode StripMode
+        public  LabelStripMode StripMode
         {
             get
             {
@@ -156,9 +147,8 @@ namespace Dimmer_Labels_Wizard_WPF
         }
         #endregion
 
-        #region Overrides.
         [NotMapped]
-        public override Style Style
+        public Style Style
         {
             get
             {
@@ -171,7 +161,7 @@ namespace Dimmer_Labels_Wizard_WPF
             return Name;
         }
 
-        protected override Style GetStyle()
+        protected Style GetStyle()
         {
             var style = new Style(typeof(LabelStrip));
             var setters = style.Setters;
@@ -183,10 +173,7 @@ namespace Dimmer_Labels_Wizard_WPF
             setters.Add(new Setter(LabelStrip.StripModeProperty, StripMode));
 
             return style;
-
-            
         }
-        #endregion
 
         #region Interfaces
         public event PropertyChangedEventHandler PropertyChanged;
@@ -197,40 +184,24 @@ namespace Dimmer_Labels_Wizard_WPF
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        public object Clone()
-        {
-            return new LabelStripTemplate()
-            {
-                StripHeight = StripHeight,
-                StripWidth = StripWidth,
-                UpperCellTemplate = UpperCellTemplate,
-                LowerCellTemplate = LowerCellTemplate,
-                StripMode = StripMode,
-                Name = Name,
-            };
-        }
-
         #endregion
     }
 
-    public class LabelCellTemplate : LabelStripTemplateBase, ICloneable
+    public class LabelCellTemplate : ICloneable
     {
-       
-        #region Fields
-
-        public bool IsUniqueTemplate = false;
-        public int UniqueCellIndex = -1;
-
-        #endregion
-
-        public int ID { get; set; }
+        public  int ID { get; set; }
         public virtual LabelStripTemplate LabelStripTemplate { get; set; }
         public virtual Strip Strip { get; set; }
 
+        // Test.
+        public string EFTest { get; set; }
+
+        public bool IsUniqueTemplate { get; set; } = false;
+        public int UniqueCellIndex { get; set; } = -1;
+
         // Cell Row Templates
-        protected ICollection<CellRowTemplate> _CellRowTemplates = new List<CellRowTemplate>();
-        public ICollection<CellRowTemplate> CellRowTemplates
+        protected List<CellRowTemplate> _CellRowTemplates = new List<CellRowTemplate>();
+        public virtual List<CellRowTemplate> CellRowTemplates
         {
             get
             {
@@ -263,7 +234,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // SingleField Font
-        public SerializableFont SingleFieldSerializableFont { get; set; } = new SerializableFont("Arial");
+        public  SerializableFont SingleFieldSerializableFont { get; set; } = new SerializableFont("Arial");
         
         [NotMapped]
         public Typeface SingleFieldFont
@@ -283,7 +254,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // SingleFieldDesiredFontSize
         protected double _SingleFieldDesiredFontSize = 12d;
-        public double SingleFieldDesiredFontSize
+        public  double SingleFieldDesiredFontSize
         {
             get
             {
@@ -300,7 +271,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // SingleFieldDataField
         protected LabelField _SingleFieldDataField = LabelField.NoAssignment;
-        public LabelField SingleFieldDataField
+        public  LabelField SingleFieldDataField
         {
             get
             {
@@ -317,7 +288,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Cell Data Mode.
         protected CellDataMode _CellDataMode = CellDataMode.MultiField;
-        public CellDataMode CellDataMode
+        public  CellDataMode CellDataMode
         {
             get
             {
@@ -334,7 +305,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Left Weight
         protected double _LeftWeight = 1d;
-        public double LeftWeight
+        public  double LeftWeight
         {
             get
             {
@@ -351,7 +322,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Top Weight
         protected double _TopWeight = 1d;
-        public double TopWeight
+        public  double TopWeight
         {
             get
             {
@@ -368,7 +339,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Right Weight
         protected double _RightWeight = 1d;
-        public double RightWeight
+        public  double RightWeight
         {
             get
             {
@@ -385,7 +356,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Bottom Weight
         protected double _BottomWeight = 1d;
-        public double BottomWeight
+        public  double BottomWeight
         {
             get
             {
@@ -400,9 +371,8 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        #region Overrides.
         [NotMapped]
-        public override Style Style
+        public Style Style
         {
             get
             {
@@ -410,17 +380,17 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected override Style GetStyle()
+        protected Style GetStyle()
         {
             var style = new Style(typeof(LabelCell));
             var setters = style.Setters;
 
+            setters.Add(new Setter(LabelCell.CellDataModeProperty, CellDataMode));
             setters.Add(new Setter(LabelCell.RowTemplatesProperty, CellRowTemplates));
             setters.Add(new Setter(LabelCell.RowHeightModeProperty, RowHeightMode));
             setters.Add(new Setter(LabelCell.SingleFieldFontProperty, SingleFieldFont));
             setters.Add(new Setter(LabelCell.SingleFieldDesiredFontSizeProperty, SingleFieldDesiredFontSize));
             setters.Add(new Setter(LabelCell.SingleFieldDataFieldProperty, SingleFieldDataField));
-            setters.Add(new Setter(LabelCell.CellDataModeProperty, CellDataMode));
             setters.Add(new Setter(LabelCell.LeftWeightProperty, LeftWeight));
             setters.Add(new Setter(LabelCell.TopWeightProperty, TopWeight));
             setters.Add(new Setter(LabelCell.RightWeightProperty, RightWeight));
@@ -445,10 +415,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 CellRowTemplates = new List<CellRowTemplate>(CellRowTemplates),
             };
         }
-        #endregion
     }
 
-    public class CellRowTemplate : LabelStripTemplateBase, ICloneable
+    public class CellRowTemplate
     {
         public CellRowTemplate()
         {
@@ -465,9 +434,11 @@ namespace Dimmer_Labels_Wizard_WPF
         public int ID { get; set; }
         public virtual LabelCellTemplate LabelCellTemplate { get; set; }
 
+
+
         // ManualRowHeight.
         protected double _ManualRowHeight = 1d;
-        public double ManualRowHeight
+        public  double ManualRowHeight
         {
             get
             {
@@ -484,7 +455,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // DataField.
         protected LabelField _DataField = LabelField.NoAssignment;
-        public LabelField DataField
+        public  LabelField DataField
         {
             get
             {
@@ -519,7 +490,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Desired Font Size.
         protected double _DesiredFontSize = 12d;
-        public double DesiredFontSize
+        public  double DesiredFontSize
         {
             get
             {
@@ -534,9 +505,8 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        #region Overrides
         [NotMapped]
-        public override Style Style
+        public Style Style
         {
             get
             {
@@ -549,7 +519,7 @@ namespace Dimmer_Labels_Wizard_WPF
             return DataField.ToString();
         }
 
-        protected override Style GetStyle()
+        protected Style GetStyle()
         {
             var style = new Style(typeof(CellRow));
             var setters = style.Setters;
@@ -564,17 +534,5 @@ namespace Dimmer_Labels_Wizard_WPF
             return style;
 
         }
-
-        public object Clone()
-        {
-            return new CellRowTemplate()
-            {
-                DataField = DataField,
-                DesiredFontSize = DesiredFontSize,
-                ManualRowHeight = ManualRowHeight,
-                Font = Font
-            };
-        }
-        #endregion
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="DatabaseViewer" Height="500" Width="800">
+        Title="DatabaseViewer" Height="650" Width="800">
 
     <Window.DataContext>
         <local:DatabaseViewerViewModel/>
@@ -19,6 +19,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             
         </Grid.RowDefinitions>
 
@@ -26,10 +27,14 @@
             <Button Content="Reload" Width="75" Height="25" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Margin="5"
                     Command="{Binding Path=ReloadCommand}"/>
             <Label Style="{StaticResource ControlLabelStyle}" Content="{Binding Path=Status}"/>
+            <TextBox Width="200" Margin="5"
+                     Text="{Binding Path=SQLCommand}"/>
+            <Button Width="75" Height="20" Content="Execute SQL"
+                    Command="{Binding Path=ExecuteSQLCommand}"/>
         </StackPanel>
 
 
-        <Label Content="Units" Style="{StaticResource WindowHeaderStyle}" Grid.Row="1"/>
+        <Label Content="DimmerDistroUnits" Style="{StaticResource WindowHeaderStyle}" Grid.Row="1"/>
         <DataGrid ItemsSource="{Binding Path=Units}" Height="200" Margin="10" Grid.Row="2" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="RackType" Binding="{Binding RackUnitType}"/>
@@ -42,5 +47,9 @@
         <DataGrid ItemsSource="{Binding Path=Strips}" Height="100" Margin="10" Grid.Row="4" CanUserAddRows="False">
         </DataGrid>
 
+        <Label Content="LabelStripTemplates" Style="{StaticResource WindowHeaderStyle}" Grid.Row="5"/>
+        <DataGrid ItemsSource="{Binding Path=Templates}" Height="100" Margin="10" Grid.Row="6" CanUserAddRows="False">
+        </DataGrid>
+        
     </Grid>
 </Window>
