@@ -225,6 +225,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             instance.TextBlock.Text = instance.Data.Substring(layout.FirstIndex, layout.Length);
             instance.CoerceValue(ActualFontSizeProperty);
+            instance.CoerceValue(RowHeightProperty);
         }
 
         /// <summary>

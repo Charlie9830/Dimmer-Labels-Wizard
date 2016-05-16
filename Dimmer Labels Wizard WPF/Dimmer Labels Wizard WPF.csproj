@@ -240,6 +240,18 @@
     <Compile Include="Migrations\201604261323466_LabelCellTest.Designer.cs">
       <DependentUpon>201604261323466_LabelCellTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604300837348_AddedColorDictionaries.cs" />
+    <Compile Include="Migrations\201604300837348_AddedColorDictionaries.Designer.cs">
+      <DependentUpon>201604300837348_AddedColorDictionaries.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605090614444_ColorBacking.cs" />
+    <Compile Include="Migrations\201605090614444_ColorBacking.Designer.cs">
+      <DependentUpon>201605090614444_ColorBacking.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605110928356_AddedAlphaChannel.cs" />
+    <Compile Include="Migrations\201605110928356_AddedAlphaChannel.Designer.cs">
+      <DependentUpon>201605110928356_AddedAlphaChannel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -264,6 +276,7 @@
     </Compile>
     <Compile Include="RenameTemplateViewModel.cs" />
     <Compile Include="ColorDictionary.cs" />
+    <Compile Include="Repositories\ColorDictionaryRepository.cs" />
     <Compile Include="Repositories\IUnitRepository.cs" />
     <Compile Include="Repositories\StripRepository.cs" />
     <Compile Include="Repositories\TemplateRepository.cs" />
@@ -485,6 +498,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604261323466_LabelCellTest.resx">
       <DependentUpon>201604261323466_LabelCellTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604300837348_AddedColorDictionaries.resx">
+      <DependentUpon>201604300837348_AddedColorDictionaries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605090614444_ColorBacking.resx">
+      <DependentUpon>201605090614444_ColorBacking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605110928356_AddedAlphaChannel.resx">
+      <DependentUpon>201605110928356_AddedAlphaChannel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -12,6 +12,15 @@ namespace Dimmer_Labels_Wizard_WPF
     /// </summary>
     public class UnitGroup : ViewModelBase
     {
+        public UnitGroup(ColorDictionary dimmerColorDictionary, ColorDictionary distroColorDictionary)
+        {
+            _DimmerColorDictionary = dimmerColorDictionary;
+            _DistroColorDictionary = distroColorDictionary;
+        }
+
+        ColorDictionary _DimmerColorDictionary;
+        ColorDictionary _DistroColorDictionary;
+
         #region Binding Source Properties
 
         protected string _Name;
@@ -32,9 +41,9 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected IEnumerable<DimmerDistroUnit> _Units;
+        protected List<DimmerDistroUnit> _Units;
 
-        public IEnumerable<DimmerDistroUnit> Units
+        public List<DimmerDistroUnit> Units
         {
             get { return _Units; }
             set
@@ -42,10 +51,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 if (_Units != value)
                 {
                     _Units = value;
-
-                    // Set Color.
-                    _UnitGroupColor = GetColor();
-
 
                     // Notify.
                     OnPropertyChanged(nameof(Units));
@@ -55,29 +60,11 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected Color _UnitGroupColor = Colors.White;
-
         public Color UnitGroupColor
         {
             get
             {
-                return _UnitGroupColor;
-            }
-
-            set
-            {
-                if (value != _UnitGroupColor)
-                {
-                    _UnitGroupColor = value;
-
-                    // Update Model.
-                    SetColor(value);
-
-                    // Notify.
-                    OnPropertyChanged(nameof(DisplayedBrush));
-                    OnPropertyChanged(nameof(UnitGroupColor));
-                }
-                
+                return GetColor();
             }
         }
 
@@ -112,15 +99,30 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
+        public void InvalidateDisplayedBrush()
+        {
+            OnPropertyChanged(nameof(DisplayedBrush));
+        }
+
         protected IEnumerable<Color> GetColorRange()
         {
             var colorRange = new List<Color>();
 
             foreach (var element in Units)
             {
-                if (colorRange.Contains(element.LabelColor) == false)
+                // Select Search Space and Find Color.
+                var dictionary = element.RackUnitType == RackType.Dimmer ? _DimmerColorDictionary : _DistroColorDictionary;
+
+                Color unitColor;
+                if (dictionary.TryGetColor(element.UniverseNumber, element.DimmerNumber, out unitColor) == false)
                 {
-                    colorRange.Add(element.LabelColor);
+                    unitColor = Colors.White;
+                }
+
+                // Add to Color Range if not already existing.
+                if (colorRange.Contains(unitColor) == false)
+                {
+                    colorRange.Add(unitColor);
                 }
             }
 
@@ -142,13 +144,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected void SetColor(Color desiredColor)
-        {
-            foreach (var element in Units)
-            {
-                element.LabelColor = desiredColor;
-            }
-        }
 
         protected Brush GetDisplayedBrush()
         {

@@ -19,7 +19,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _UnitRepository = new UnitRepository(context);
             _TemplateRepository = new TemplateRepository(context);
             _StripRepository = new StripRepository(context);
-
+            _ColorDictionaryRepository = new ColorDictionaryRepository(context);
 
             // Initialize.
             InitializeDatabase();
@@ -33,6 +33,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected UnitRepository _UnitRepository;
         protected TemplateRepository _TemplateRepository;
         protected StripRepository _StripRepository;
+        protected ColorDictionaryRepository _ColorDictionaryRepository;
 
         #region Commands.
 
@@ -51,6 +52,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _UnitRepository.RemoveAllUnits();
             _TemplateRepository.RemoveAllUserTemplates();
             _StripRepository.RemoveAll();
+            _ColorDictionaryRepository.RemoveAll();
 
             var ImportWindow = new ImportUnitsWindow();
             var viewModel = ImportWindow.DataContext as ImportUnitsViewModel;

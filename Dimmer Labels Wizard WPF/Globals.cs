@@ -30,8 +30,8 @@ namespace Dimmer_Labels_Wizard_WPF
         //    new ObservableCollection<LabelStripTemplate>();
 
         // Color Storage. (Dimmer, Color).
-        public static Dictionary<int, Color> DimmerLabelColors = new Dictionary<int, Color>();
-        public static Dictionary<int, Color> DistroLabelColors = new Dictionary<int, Color>();
+        //public static Dictionary<int, Color> DimmerLabelColors = new Dictionary<int, Color>();
+        //public static Dictionary<int, Color> DistroLabelColors = new Dictionary<int, Color>();
 
     }
 }

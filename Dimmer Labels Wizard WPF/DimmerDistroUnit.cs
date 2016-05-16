@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -294,11 +295,6 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 return GetLabelColor();
             }
-
-            set
-            {
-                SetLabelColor(value);
-            }
         }
         
 
@@ -322,45 +318,27 @@ namespace Dimmer_Labels_Wizard_WPF
         #region Methods.
         private Color GetLabelColor()
         {
-            Color color;
+            // Establish Connection to DB.
+            ColorDictionaryRepository repo = new ColorDictionaryRepository(new PrimaryDB());
 
             // Select Search Space.
-            var dictionary = RackUnitType == RackType.Dimmer ? Globals.DimmerLabelColors : Globals.DistroLabelColors;
+            ColorDictionary dictionary = RackUnitType == RackType.Dimmer ?
+                repo.DimmerColorDictionary : repo.DistroColorDictionary;
 
-            if (dictionary.TryGetValue(DimmerNumber, out color))
+            Color color;
+            if (dictionary.TryGetColor(UniverseNumber, DimmerNumber, out color ) == true)
             {
+                repo.Dispose();
                 return color;
-            }
+            }         
 
             else
             {
+                repo.Dispose();
                 return Colors.White;
             }
-
         }
 
-        private void SetLabelColor(Color desiredColor)
-        {
-            Color color;
-
-            // Select Search Space.
-            var dictionary = RackUnitType == RackType.Dimmer ? Globals.DimmerLabelColors : Globals.DistroLabelColors;
-
-            if (dictionary.TryGetValue(DimmerNumber, out color))
-            {
-                // Dictionary Entry exists, Modify Value if required.
-                if (color != desiredColor)
-                {
-                    dictionary[DimmerNumber] = desiredColor;
-                }
-            }
-
-            else
-            {
-                // Make a new Entry.
-                dictionary.Add(DimmerNumber, desiredColor);
-            }
-        }
 
         // Provides easier accsess when using Switch Statements to GetData Based on LabelField.
         public string GetData(LabelField labelField)
@@ -965,6 +943,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 Console.WriteLine("Could Not Read DMX Address Column");
                 return 0;
             }
+        }
+
+        public void InvalidateLabelColor()
+        {
+            OnPropertyChanged(nameof(LabelColor));
         }
 
         #endregion

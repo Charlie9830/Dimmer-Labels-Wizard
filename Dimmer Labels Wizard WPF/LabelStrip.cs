@@ -337,7 +337,6 @@ namespace Dimmer_Labels_Wizard_WPF
             var newTemplate = e.NewValue as LabelCellTemplate;
             var uniqueTemplates = instance.UniqueUpperCellTemplates;
             var upperCells = instance.UpperCells;
-            int upperCellsCount = instance.UpperCells.Count;
 
             RefreshCellTemplates(newTemplate, uniqueTemplates, upperCells);
         }
@@ -403,7 +402,6 @@ namespace Dimmer_Labels_Wizard_WPF
             var newTemplate = e.NewValue as LabelCellTemplate;
             var uniqueTemplates = instance.UniqueLowerCellTemplates;
             var lowerCells = instance.LowerCells;
-
 
             RefreshCellTemplates(newTemplate, uniqueTemplates, lowerCells);
         }
@@ -748,6 +746,9 @@ namespace Dimmer_Labels_Wizard_WPF
                         // Set Template
                         cell.Style = UpperCellTemplate.Style;
 
+                        // Refresh LineWeights.
+                        RefreshLineweights(cell);
+
                         // Connect Event Handler.
                         cell.PropertyChanged += UpperCell_PropertyChanged;
                         cell.MouseDown += Cell_MouseDown;
@@ -779,6 +780,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         cell.ConsumedReferences.Clear();
                     }
+
+                    // Refresh remaining LineWeights.
+                    RefreshLineweights();
 
                     // Disconnect Event Handler.
                     cell.PropertyChanged -= UpperCell_PropertyChanged;
@@ -839,6 +843,9 @@ namespace Dimmer_Labels_Wizard_WPF
                         // Set Template
                         cell.Style = LowerCellTemplate.Style;
 
+                        // Refresh new LineWeights.
+                        RefreshLineweights(cell);
+
                         // Connect event Handlers.
                         cell.PropertyChanged += LowerCell_PropertyChanged;
                         cell.MouseDown += Cell_MouseDown;
@@ -870,6 +877,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     {
                         cell.ConsumedReferences.Clear();
                     }
+
+                    // Refresh All Remaining Line Weights.
+                    RefreshLineweights();
 
                     // Disconnect Event Handlers.
                     cell.PropertyChanged -= LowerCell_PropertyChanged;
@@ -918,58 +928,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
                 }
             }
-
-            // LeftWeight.
-            if (e.PropertyName == nameof(cell.LeftWeight))
-            {
-                int cellIndex = UpperCells.IndexOf(cell);
-                double desiredWeight = cell.LeftWeight;
-
-                if (cellIndex == 0)
-                {
-                    // Lefthand Boundary Cell.
-                    cell.ActualLeftWeight = desiredWeight;
-                }
-
-                else
-                {
-                    // Non boundary Cell.
-                    cell.ActualLeftWeight = desiredWeight / 2;
-                    UpperCells[cellIndex - 1].ActualRightWeight = desiredWeight / 2;
-                }
-            }
-
-            // TopWeight
-            if (e.PropertyName == nameof(cell.TopWeight))
-            {
-                cell.ActualTopWeight = cell.TopWeight;
-            }
-
-            // RightWeight
-            if (e.PropertyName == nameof(cell.RightWeight))
-            {
-                int cellIndex = UpperCells.IndexOf(cell);
-                double desiredWeight = cell.RightWeight;
-
-                if (cellIndex == UpperCells.Count - 1)
-                {
-                    // Righthand Boundary cell.
-                    cell.ActualRightWeight = desiredWeight;
-                }
-
-                else
-                {
-                    // Non Boundary cell.
-                    cell.ActualRightWeight = desiredWeight / 2;
-                    UpperCells[cellIndex + 1].ActualLeftWeight = desiredWeight / 2;
-                }
-            }
-
-            // BottomWeight
-            if (e.PropertyName == nameof(cell.BottomWeight))
-            {
-                cell.ActualBottomWeight = cell.BottomWeight;
-            }
         }
 
         protected void LowerCell_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -994,58 +952,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     }
                 }
             }
-
-            //// LeftWeight.
-            //if (e.PropertyName == nameof(cell.LeftWeight))
-            //{
-            //    int cellIndex = UpperCells.IndexOf(cell);
-            //    double desiredWeight = cell.LeftWeight;
-
-            //    if (cellIndex == 0)
-            //    {
-            //        // Lefthand Boundary Cell.
-            //        cell.ActualLeftWeight = desiredWeight;
-            //    }
-
-            //    else
-            //    {
-            //        // Non boundary Cell.
-            //        cell.ActualLeftWeight = desiredWeight / 2;
-            //        UpperCells[cellIndex - 1].ActualRightWeight = desiredWeight / 2;
-            //    }
-            //}
-
-            //// TopWeight
-            //if (e.PropertyName == nameof(cell.TopWeight))
-            //{
-            //    cell.ActualTopWeight = cell.TopWeight;
-            //}
-
-            //// RightWeight
-            //if (e.PropertyName == nameof(cell.RightWeight))
-            //{
-            //    int cellIndex = UpperCells.IndexOf(cell);
-            //    double desiredWeight = cell.RightWeight;
-
-            //    if (cellIndex == UpperCells.Count - 1)
-            //    {
-            //        // Righthand Boundary cell.
-            //        cell.ActualRightWeight = desiredWeight;
-            //    }
-
-            //    else
-            //    {
-            //        // Non Boundary cell.
-            //        cell.ActualRightWeight = desiredWeight / 2;
-            //        UpperCells[cellIndex + 1].ActualLeftWeight = desiredWeight / 2;
-            //    }
-            //}
-
-            //// BottomWeight
-            //if (e.PropertyName == nameof(cell.BottomWeight))
-            //{
-            //    cell.ActualBottomWeight = cell.BottomWeight;
-            //}
         }
 
         private void SelectedCells_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1143,6 +1049,72 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Public Methods
+        protected void RefreshLineweights()
+        {
+            // UpperCells
+            foreach (var element in UpperCells)
+            {
+                RefreshLineweights(element);
+            }
+
+            // LowerCells
+            foreach (var element in LowerCells)
+            {
+                RefreshLineweights(element);
+            }
+        }
+
+        protected void RefreshLineweights(LabelCell cell)
+        {
+            var cellVerticalPosition = UpperCells.IndexOf(cell) == -1 ?
+                CellVerticalPosition.Lower : CellVerticalPosition.Upper;
+
+            var collection = cellVerticalPosition == CellVerticalPosition.Upper ?
+                UpperCells : LowerCells;
+
+            // LeftWeight.
+            int leftCellIndex = collection.IndexOf(cell);
+            double leftDesiredWeight = cell.LeftWeight;
+
+            if (leftCellIndex == 0)
+            {
+                // Lefthand Boundary Cell.
+                cell.ActualLeftWeight = leftDesiredWeight;
+            }
+
+            else
+            {
+                // Non boundary Cell.
+                cell.ActualLeftWeight = leftDesiredWeight / 2;
+                collection[leftCellIndex - 1].ActualRightWeight = leftDesiredWeight / 2;
+            }
+
+
+            // TopWeight
+            cell.ActualTopWeight = cell.TopWeight;
+            
+
+            // RightWeight
+            int rightCellIndex = collection.IndexOf(cell);
+            double rightDesiredWeight = cell.RightWeight;
+
+            if (rightCellIndex == collection.Count - 1)
+            {
+                // Righthand Boundary cell.
+                cell.ActualRightWeight = rightDesiredWeight;
+            }
+
+            else
+            {
+                // Non Boundary cell.
+                cell.ActualRightWeight = rightDesiredWeight / 2;
+                collection[rightCellIndex + 1].ActualLeftWeight = rightDesiredWeight / 2;
+            }
+    
+            // BottomWeight
+            cell.ActualBottomWeight = cell.BottomWeight;
+        }
+
         public void Merge(Merge mergeInstructions)
         {
             // Collect CellsList.

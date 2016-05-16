@@ -28,10 +28,14 @@ namespace Dimmer_Labels_Wizard_WPF
             ExistingStrips.CollectionChanged += ExistingStrips_CollectionChanged;
 
             // Populate Existing Strips.
+            BeginExistingStripLoad();
+
             foreach (var element in _StripRepository.GetStrips())
             {
                 ExistingStrips.Add(element);
             }
+
+            EndExistingStripLoad();
 
         }
 
@@ -40,6 +44,7 @@ namespace Dimmer_Labels_Wizard_WPF
         StripRepository _StripRepository;
 
         public bool InSetup = false;
+        protected bool _LoadingExistingStrips = false;
 
         #region Binding Source Properties.
         public RackType[] RackTypes
@@ -460,6 +465,16 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods.
+        protected void BeginExistingStripLoad()
+        {
+            _LoadingExistingStrips = true;
+        }
+
+        protected void EndExistingStripLoad()
+        {
+            _LoadingExistingStrips = false;
+        }
+
         protected void DeselectAllStrips()
         {
             foreach (var element in SelectedStrips)
@@ -499,19 +514,41 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             if (e.NewItems != null)
             {
+                // Hookup Property Changed Event.
                 foreach (var element in e.NewItems)
                 {
                     var item = element as INotifyPropertyChanged;
                     item.PropertyChanged += ExistingStrip_PropertyChanged;
                 }
+
+                if (_LoadingExistingStrips == false)
+                {
+                    // Push to DB.
+                    foreach (var element in e.NewItems)
+                    {
+                        var item = element as Strip;
+                        _StripRepository.Insert(item);
+                    }
+                }
             }
 
             if (e.OldItems != null)
             {
+                // Hookup Property Changed Event.
                 foreach (var element in e.OldItems)
                 {
                     var item = element as INotifyPropertyChanged;
                     item.PropertyChanged -= ExistingStrip_PropertyChanged;
+                }
+
+                if (_LoadingExistingStrips == false)
+                {
+                    // Push Change to DB.
+                    foreach (var element in e.OldItems)
+                    {
+                        var item = element as Strip;
+                        _StripRepository.Remove(item);
+                    }
                 }
             }
         }

@@ -77,6 +77,8 @@
         <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
             <Button Content="Ok" Width="75" Height="20" Margin="0,5,10,10"
                     Command="{Binding Path=OkCommand}" CommandParameter="{Binding ElementName=Window}"/>
+            <Button Content="Cancel" Width="75" Height="20" Margin="0,5,10,10"
+                    Command="{Binding Path=CancelCommand}" CommandParameter="{Binding ElementName=Window}"/>
         </StackPanel>
 
     </Grid>

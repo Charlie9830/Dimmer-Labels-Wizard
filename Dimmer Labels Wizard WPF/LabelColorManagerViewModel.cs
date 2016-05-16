@@ -17,19 +17,29 @@ namespace Dimmer_Labels_Wizard_WPF
         public LabelColorManagerViewModel()
         {
             // Repositories.
-            _UnitRepository = new UnitRepository(new PrimaryDB());
+            var context = new PrimaryDB();
+            _UnitRepository = new UnitRepository(context);
             _LocalUnits = _UnitRepository.GetUnits();
+
+            _ColorDictionaryRepository = new ColorDictionaryRepository(context);
+            _DimmerColorDictionary = _ColorDictionaryRepository.DimmerColorDictionary;
+            _DistroColorDictionary = _ColorDictionaryRepository.DistroColorDictionary;
 
             RefreshUnitGroups(LabelField.Position);
 
             // Commands.
             _OkCommand = new RelayCommand(OkCommandExecute);
+            _CancelCommand = new RelayCommand(CancelCommandExecute);
+
         }
 
         // Fields.
         protected UnitRepository _UnitRepository;
+        protected ColorDictionaryRepository _ColorDictionaryRepository;
         protected IList<DimmerDistroUnit> _LocalUnits;
 
+        protected ColorDictionary _DimmerColorDictionary;
+        protected ColorDictionary _DistroColorDictionary;
 
         #region Binding Source Properties
 
@@ -54,7 +64,10 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public Color SelectedUnitGroupColor
         {
-            get { return _SelectedUnitGroupColor; }
+            get
+            {
+                return _SelectedUnitGroupColor;
+            }
             set
             {
                 if (_SelectedUnitGroupColor != value)
@@ -62,14 +75,46 @@ namespace Dimmer_Labels_Wizard_WPF
                     _SelectedUnitGroupColor = value;
 
                     // Update Model.
-                    foreach (var element in SelectedUnitGroups)
+                    foreach (var unitGroup in SelectedUnitGroups)
                     {
-                        element.UnitGroupColor = value;
+                        foreach (var unit in unitGroup.Units)
+                        {
+                            // Dimmer.
+                            if (unit.RackUnitType == RackType.Dimmer)
+                            {
+                                if (_DimmerColorDictionary.ContainsKey(unit.UniverseNumber, unit.DimmerNumber))
+                                {
+                                    _DimmerColorDictionary[unit.UniverseNumber, unit.DimmerNumber] = value;
+                                }
+
+                                else
+                                {
+                                    _DimmerColorDictionary.Add(unit.UniverseNumber, unit.DimmerNumber, value);
+                                }
+                            }
+
+                            // Distro.
+                            if (unit.RackUnitType == RackType.Distro)
+                            {
+                                if (_DistroColorDictionary.ContainsKey(unit.UniverseNumber, unit.DimmerNumber))
+                                {
+                                    _DistroColorDictionary[unit.UniverseNumber, unit.DimmerNumber] = value;
+                                }
+
+                                else
+                                {
+                                    _DistroColorDictionary.Add(unit.UniverseNumber, unit.DimmerNumber, value);
+                                }
+                            }
+                        }
+
+                        unitGroup.InvalidateDisplayedBrush();
                     }
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedUnitGroupColor));
                 }
+                
             }
         }
 
@@ -106,6 +151,24 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Commands.
 
+        protected RelayCommand _CancelCommand;
+        public ICommand CancelCommand
+        {
+            get
+            {
+                return _CancelCommand;
+            }
+        }
+
+        protected void CancelCommandExecute(object parameter)
+        {
+            var window = parameter as LabelColorManager;
+
+            window.DialogResult = false;
+
+            window.Close();
+        }
+
         protected RelayCommand _OkCommand;
         public ICommand OkCommand
         {
@@ -119,6 +182,12 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var window = parameter as LabelColorManager;
 
+            // Commit Changes to DB.
+            _ColorDictionaryRepository.Update(_DimmerColorDictionary);
+            _ColorDictionaryRepository.Update(_DistroColorDictionary);
+            _ColorDictionaryRepository.Save();
+
+            window.DialogResult = true;
             window.Close();
         }
 
@@ -141,7 +210,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #endregion
 
-        #region Methods      
+        #region Methods
         protected void RefreshUnitGroups(LabelField labelField)
         {
             foreach (var element in UnitGroups)
@@ -157,10 +226,10 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 if (element.Count() > 0)
                 {
-                    var unitGroup = new UnitGroup()
+                    var unitGroup = new UnitGroup(_DimmerColorDictionary, _DistroColorDictionary)
                     {
                         Name = element.First().GetData(labelField),
-                        Units = element,
+                        Units = element.ToList(),
                     };
 
                     UnitGroups.Add(unitGroup);
@@ -254,6 +323,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 else
                 {
+                    Console.WriteLine("SelectedUnitGroups.Count == 0");
                     _SelectedUnitGroupColor = Colors.White;
 
                     // Notify.

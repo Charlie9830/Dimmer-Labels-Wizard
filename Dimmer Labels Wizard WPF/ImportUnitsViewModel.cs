@@ -797,6 +797,9 @@ namespace Dimmer_Labels_Wizard_WPF
             // Dimmer.
             SelectedDimmerNumberHeader = headers.Find(item => item.HeaderLowerCase.Contains("dimmer"));
 
+            // Channel.
+            SelectedChannelNumberHeader = headers.Find(item => item.HeaderLowerCase.Contains("channel"));
+
             // Position.
             SelectedPostionHeader = headers.Find(item => item.HeaderLowerCase.Contains("position"));
 

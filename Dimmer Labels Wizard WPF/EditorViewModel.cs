@@ -736,9 +736,15 @@ namespace Dimmer_Labels_Wizard_WPF
             _UnitRepository.Save();
 
             var dialog = new LabelColorManager();
-            dialog.ShowDialog();
 
-            PresentStripData(SelectedStrip);
+            if (dialog.ShowDialog() == true)
+            {
+                // Changes to Coloring have been Made, Invalidate LabelColors.
+                foreach (var element in Units)
+                {
+                    element.InvalidateLabelColor();
+                }
+            }
         }
 
         protected RelayCommand _ShowLabelManagerCommand;

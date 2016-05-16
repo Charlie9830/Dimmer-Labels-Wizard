@@ -10,8 +10,11 @@ namespace Dimmer_Labels_Wizard_WPF
 {
     public class ColorDictionary : IEnumerable<ColorEntry>
     {
-        // Navigation Properties.
-        public virtual ICollection<ColorEntry> Entries { get; set; }
+        public int ID { get; set; }
+        public virtual ICollection<ColorEntry> Entries { get; set; } = new List<ColorEntry>();
+
+        // RackType.
+        public RackType EntriesRackType { get; set; }
 
         // Propeties.
         public int Count
@@ -22,31 +25,32 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public Color this[int key]
+        public Color this[int universeKey, int dimmerNumberKey]
         {
             get
             {
-                return GetColor(key);
+                return GetColor(universeKey, dimmerNumberKey);
             }
 
             set
             {
-                if (ContainsKey(key) == true)
+                if (ContainsKey(universeKey, dimmerNumberKey) == true)
                 {
                     // Remove before adding incoming Entry.
-                    Remove(key);
+                    Remove(universeKey, dimmerNumberKey);
                 }
 
-                Add(key, value);
+                Add(universeKey, dimmerNumberKey, value);
             }
         }
 
 
         // Methods.
-        public Color GetColor(int key)
+        public Color GetColor(int universeKey, int dimmerNumberKey)
         {
             var query = from entry in Entries
-                        where entry.Key == key
+                        where entry.UniverseKey == universeKey &&
+                        entry.DimmerNumberKey == dimmerNumberKey
                         select entry.Value;
 
             if (query.Count() == 0)
@@ -60,10 +64,11 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public bool TryGetColor(int key, out Color value)
+        public bool TryGetColor(int universeKey, int dimmerNumberKey, out Color value)
         {
             var query = from entry in Entries
-                        where entry.Key == key
+                        where entry.UniverseKey == universeKey &&
+                        entry.DimmerNumberKey == dimmerNumberKey
                         select entry;
 
             if (query.Count() == 0)
@@ -79,30 +84,36 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        public bool ContainsKey(int key)
+        public bool ContainsKey(int universeKey, int dimmerNumberKey)
         {
             Color ignore = Colors.White;
 
-            return TryGetColor(key, out ignore);
+            return TryGetColor(universeKey, dimmerNumberKey, out ignore);
         }
 
-        public void Add(int key, Color value)
+        public void Add(int universeKey, int dimmerNumberKey, Color value)
         {
-            if (ContainsKey(key))
+            if (ContainsKey(universeKey, dimmerNumberKey))
             {
                 throw new ArgumentException("An element with the same key already exists in the Dictionary"); 
             }
 
             else
             {
-                Entries.Add(new ColorEntry { Key = key, Value = value });
+                Entries.Add(new ColorEntry
+                {
+                    UniverseKey = universeKey,
+                    DimmerNumberKey = dimmerNumberKey,
+                    Value = value
+                });
             }
         }
 
-        public void Remove(int key)
+        public void Remove(int universeKey, int dimmerNumberKey)
         {
             ColorEntry entry = (from item in Entries
-                                where item.Key == key
+                                where item.UniverseKey == universeKey &&
+                                item.DimmerNumberKey == dimmerNumberKey
                                 select item).ToList().FirstOrDefault();
 
             if (entry != null)
@@ -127,13 +138,39 @@ namespace Dimmer_Labels_Wizard_WPF
         // Auto Generated ID.
         public int ID { get; set; }
 
-        // Key Value Pair.
-        public int Key { get; set; }
-        public Color Value { get; set; }
+        // Key Value Pairings.
+        public int UniverseKey { get; set; }
+        public int DimmerNumberKey { get; set; }
+        public Color Value
+        {
+            get
+            {
+                return new Color()
+                {
+                    A = A,
+                    R = R,
+                    G = G,
+                    B = B,
+                };
+            }
+
+            set
+            {
+                A = value.A;
+                R = value.R;
+                G = value.G;
+                B = value.B;
+            }
+        }
+
+        public byte A { get; set; } = 255;
+        public byte R { get; set; } = 255;
+        public byte G { get; set; } = 255;
+        public byte B { get; set; } = 255;
 
         // Foreign Key.
         public int ColorDictionaryID { get; set; }
-
+        public ColorDictionary ColorDictionary { get; set; }
     }
 
 }

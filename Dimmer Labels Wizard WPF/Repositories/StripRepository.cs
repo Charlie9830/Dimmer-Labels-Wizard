@@ -33,6 +33,11 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
                                   .Include(item => item.AssignedTemplate).ToList();
         }
 
+        public void Insert(Strip strip)
+        {
+            _Context.Strips.Add(strip);
+        }
+
         public void Remove(Strip strip)
         {
             _Context.Strips.Remove(strip);

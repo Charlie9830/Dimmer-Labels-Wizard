@@ -29,5 +29,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Strips.
         public virtual DbSet<Strip> Strips { get; set; }
+
+        // Color Dictionary.
+        public virtual DbSet<ColorDictionary> ColorDictionaries { get; set; }
     }
 }

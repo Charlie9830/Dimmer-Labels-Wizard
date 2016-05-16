@@ -1198,19 +1198,16 @@ namespace Dimmer_Labels_Wizard_WPF
             drawingContext.DrawLine(rightPen, rightA, rightB);
             drawingContext.DrawLine(bottomPen, bottomA, bottomB);
 
-
             // Setup Grid.
             // Don't set Grid Width or Height too less than zero.
             double gridWidth = Width - (ActualLeftWeight) - (ActualRightWeight);
             _Grid.Width = (gridWidth < 0d) ? 0d : gridWidth;
 
-            
             double gridHeight = Height - (ActualTopWeight) - (ActualBottomWeight);
             _Grid.Height = (gridHeight) < 0d ? 0d : gridHeight;
 
             _Grid.Margin = new Thickness(ActualLeftWeight, ActualTopWeight,
                 ActualRightWeight, ActualBottomWeight);
-
         }
         #endregion
 
@@ -1246,7 +1243,18 @@ namespace Dimmer_Labels_Wizard_WPF
                         {
                             element.Data = newData;
                         }
+
+                        // Update Text Color.
+                        SetTextColor(AdjustTextColorLuma(((SolidColorBrush)Background).Color));
                     }
+                }
+            }
+
+            if (propertyName == nameof(DimmerDistroUnit.LabelColor))
+            {
+                if (DataReference != null)
+                {
+                    Background = new SolidColorBrush(DataReference.LabelColor);
                 }
             }
         }
@@ -1618,6 +1626,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 // Writeback Scaled font Size.
                 instance.SingleFieldActualFontSize = scaledFontSize;
+
+                // Update Text Color.
+                instance.SetTextColor(AdjustTextColorLuma(((SolidColorBrush)instance.Background).Color));
             }
         }
 
