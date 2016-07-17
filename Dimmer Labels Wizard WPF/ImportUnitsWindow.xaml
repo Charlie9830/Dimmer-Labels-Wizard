@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="ImportUnitsWindow" Height="650" Width="1100">
+        Title="ImportUnitsWindow" Height="575" Width="1100">
 
     <Window.DataContext>
         <local:ImportUnitsViewModel/>
@@ -254,28 +254,6 @@
                 </Grid>
             </HeaderedContentControl>
         </Grid>
-
-        <!-- Row 3 -->
-        <HeaderedContentControl Header="Import Type" Grid.Row="3" Margin="5"
-                                Style="{StaticResource HeaderedControlStyle}"
-                                IsEnabled="{Binding Path=ImportTypeEnabled}">
-            <Grid Background="{StaticResource ControlGridBackground}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                
-                <!-- Row 0 -->
-                <RadioButton Content="Overwrite existing Units" Foreground="White" Grid.Row="0" Margin="0,5,0,5"
-                             GroupName="ImportType"/>
-                
-                <!-- Row 1 -->
-                <RadioButton Content="Merge with existing Units" Foreground="White" Grid.Row="1" Margin="0,0,0,5"
-                             GroupName="ImportType"
-                             IsChecked="{Binding Path=MergeData}"/>
-
-            </Grid>
-        </HeaderedContentControl>
 
         <!-- Row 4 -->
         <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5">

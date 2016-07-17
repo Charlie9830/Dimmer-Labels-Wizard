@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -23,7 +26,9 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         // Database.
+        [Key]
         public virtual int ID { get; set; }
+
         public virtual Strip Strip { get; set; }
 
         public virtual CellVerticalPosition VerticalPosition { get; set; }

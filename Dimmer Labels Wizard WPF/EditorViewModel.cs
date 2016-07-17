@@ -51,6 +51,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _ZoomInCommand = new RelayCommand(ZoomInCommandExecute);
             _ZoomOutCommand = new RelayCommand(ZoomOutCommandExecute);
             _SetZoomPercentageCommand = new RelayCommand(SetZoomPercentageCommandExecute);
+            _OpenDatabaseManagerCommand = new RelayCommand(OpenDatabaseManagerCommandExecute);
 
             // Initialize UndoRedoManager.
             UndoRedoManager = new UndoRedoManager(_UnitRepository);
@@ -655,6 +656,28 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Commands
+
+
+        protected RelayCommand _OpenDatabaseManagerCommand;
+        public ICommand OpenDatabaseManagerCommand
+        {
+            get
+            {
+                return _OpenDatabaseManagerCommand;
+            }
+        }
+
+        protected void OpenDatabaseManagerCommandExecute(object parameter)
+        {
+            // Persist Progress.
+            _TemplateRepository.Save();
+            _StripRepository.Save();
+            _UnitRepository.Save();
+
+            var dialog = new DatabaseManager();
+
+            dialog.Show();
+        }
 
         protected RelayCommand _SetZoomPercentageCommand;
         public ICommand SetZoomPercentageCommand

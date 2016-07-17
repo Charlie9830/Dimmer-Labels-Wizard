@@ -20,6 +20,11 @@ namespace Dimmer_Labels_Wizard_WPF
     // may break that property handler. Names must remain the same as their DimmerDistroUnit counterpart properties.
     public enum LabelField { NoAssignment, ChannelNumber, InstrumentName, MulticoreName, Position, UserField1 ,UserField2, UserField3, UserField4, Custom}
 
+    // Utilized by Database Manager Find and Replace System. Loosely coupled with LabelField.
+    public enum SearchField { All, ChannelNumber, InstrumentName, MulticoreName, Position, UserField1, UserField2, UserField3, UserField4}
+
+    public enum SortField { DBKeyValues, ChannelNumber, InstrumentName, MulticoreName, Position, UserField1, UserField2, UserField3, UserField4}
+
     public enum RadioButtonSelection { None, All, Rack, Selection };
 
     public enum CellSelectionMode { Cell, Text};

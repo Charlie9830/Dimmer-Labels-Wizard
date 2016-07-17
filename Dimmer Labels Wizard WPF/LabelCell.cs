@@ -70,7 +70,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _Rows.CollectionChanged += Rows_CollectionChanged;
 
             // Setup Grid
-            _Grid.Background = Brushes.White;
+            _Grid.Background = Brushes.Transparent;
             _Grid.HorizontalAlignment = HorizontalAlignment.Left;
             _Grid.VerticalAlignment = VerticalAlignment.Top;
             Content = _Grid;
@@ -1159,9 +1159,6 @@ namespace Dimmer_Labels_Wizard_WPF
             var instance = d as LabelCell;
             var newValue = e.NewValue as SolidColorBrush;
 
-            // Pass Value on to Grid Background.
-            instance._Grid.Background = newValue;
-
             // Set Row Text Color.
             instance.SetTextColor(AdjustTextColorLuma(newValue.Color));
         }
@@ -1178,8 +1175,9 @@ namespace Dimmer_Labels_Wizard_WPF
             var topPen = new Pen(lineBrush, ActualTopWeight);
             var rightPen = new Pen(lineBrush, ActualRightWeight);
             var bottomPen = new Pen(lineBrush, ActualBottomWeight);
+            var fillPen = new Pen(new SolidColorBrush(Colors.Black), 0d);
 
-            // Points.
+            // Border Geometry.
             var leftA = new Point(ActualLeftWeight / 2, 0);
             var leftB = new Point(ActualLeftWeight / 2, Height);
 
@@ -1191,14 +1189,20 @@ namespace Dimmer_Labels_Wizard_WPF
 
             var bottomA = new Point(0, Height - (ActualBottomWeight / 2));
             var bottomB = new Point(Width, Height - (ActualBottomWeight / 2));
-            
+
+            // Fill Geometry.
+            var fillPointA = new Point(0, 0); // Top Left.
+            var fillPointB = new Point(Width, Height); // Bottom Right.
+            var fillRectangle = new Rect(fillPointA, fillPointB);
+
             // Drawing 
+            drawingContext.DrawRectangle(Background, fillPen, fillRectangle);
             drawingContext.DrawLine(leftPen, leftA, leftB);
             drawingContext.DrawLine(topPen, topA, topB);
             drawingContext.DrawLine(rightPen, rightA, rightB);
             drawingContext.DrawLine(bottomPen, bottomA, bottomB);
 
-            // Setup Grid.
+            // Set Grid Geometry.
             // Don't set Grid Width or Height too less than zero.
             double gridWidth = Width - (ActualLeftWeight) - (ActualRightWeight);
             _Grid.Width = (gridWidth < 0d) ? 0d : gridWidth;

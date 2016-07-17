@@ -27,7 +27,7 @@ namespace Dimmer_Labels_Wizard_WPF
             new ObservableCollection<LabelCellTemplate>();
 
         // Mergers.
-        public ObservableCollection<Merge> Mergers { get; set; } = new ObservableCollection<Merge>();
+        public virtual List<Merge> Mergers { get; set; } = new List<Merge>();
 
         // Database.
         public int ID { get; set; }

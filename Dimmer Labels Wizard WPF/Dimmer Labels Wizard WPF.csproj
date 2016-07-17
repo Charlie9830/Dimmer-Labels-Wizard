@@ -104,6 +104,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddNewUnits.xaml.cs">
+      <DependentUpon>AddNewUnits.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddNewUnitsViewModel.cs" />
     <Compile Include="Adorners.cs" />
     <Compile Include="AdvancedColorPicker.xaml.cs">
       <DependentUpon>AdvancedColorPicker.xaml</DependentUpon>
@@ -117,6 +121,10 @@
     </Compile>
     <Compile Include="ColumnHeader.cs" />
     <Compile Include="Comparators.cs" />
+    <Compile Include="DatabaseManager.xaml.cs">
+      <DependentUpon>DatabaseManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DatabaseManagerViewModel.cs" />
     <Compile Include="DatabaseViewer.xaml.cs">
       <DependentUpon>DatabaseViewer.xaml</DependentUpon>
     </Compile>
@@ -140,6 +148,8 @@
       <DependentUpon>FontSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="FriendlyImportFormat.cs" />
+    <Compile Include="FriendlySearchField.cs" />
+    <Compile Include="FriendlySortField.cs" />
     <Compile Include="IModifcationNotification.cs" />
     <Compile Include="ImportConfiguration.cs" />
     <Compile Include="ImportUnitsViewModel.cs" />
@@ -252,6 +262,18 @@
     <Compile Include="Migrations\201605110928356_AddedAlphaChannel.Designer.cs">
       <DependentUpon>201605110928356_AddedAlphaChannel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605181301506_Merges.cs" />
+    <Compile Include="Migrations\201605181301506_Merges.Designer.cs">
+      <DependentUpon>201605181301506_Merges.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605181303240_MergesRollback.cs" />
+    <Compile Include="Migrations\201605181303240_MergesRollback.Designer.cs">
+      <DependentUpon>201605181303240_MergesRollback.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605181405592_Mergesagain.cs" />
+    <Compile Include="Migrations\201605181405592_Mergesagain.Designer.cs">
+      <DependentUpon>201605181405592_Mergesagain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -259,6 +281,9 @@
       <DependentUpon>NewTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewTemplateViewModel.cs" />
+    <Compile Include="PaletteDemonstration.xaml.cs">
+      <DependentUpon>PaletteDemonstration.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PrimaryDB.cs" />
     <Compile Include="PrimaryDBDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -322,8 +347,13 @@
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValidationError.cs" />
     <Compile Include="ValueConverters.cs" />
     <Compile Include="ViewModelBase.cs" />
+    <Page Include="AddNewUnits.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AdvancedColorPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -333,6 +363,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ColorPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DatabaseManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -397,6 +431,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="NewTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PaletteDemonstration.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -507,6 +545,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201605110928356_AddedAlphaChannel.resx">
       <DependentUpon>201605110928356_AddedAlphaChannel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605181301506_Merges.resx">
+      <DependentUpon>201605181301506_Merges.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605181303240_MergesRollback.resx">
+      <DependentUpon>201605181303240_MergesRollback.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605181405592_Mergesagain.resx">
+      <DependentUpon>201605181405592_Mergesagain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

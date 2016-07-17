@@ -62,17 +62,37 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
 
         public void RemoveAllUnits()
         {
+            _Context.Database.ExecuteSqlCommand("DELETE from DimmerDistroUnitMerges");
+            _Context.Database.ExecuteSqlCommand("DELETE from Merges");
             _Context.Database.ExecuteSqlCommand("DELETE from DimmerDistroUnits");
         }
 
         public void RemoveUnit(DimmerDistroUnit unit)
         {
+            foreach (var element in unit.MergePrimaryUnit.ToList())
+            {
+                _Context.Entry(element).State = EntityState.Deleted;
+            }
+
+            foreach (var element in unit.MergeConsumedUnits.ToList())
+            {
+                _Context.Entry(element).State = EntityState.Deleted;
+            }
+
             _Context.Units.Remove(unit);
         }
 
         public void RemoveUnitRange(IEnumerable<DimmerDistroUnit> units)
         {
-            _Context.Units.RemoveRange(units);
+            foreach (var element in units)
+            {
+                RemoveUnit(element);
+            }
+        }
+
+        public void ReplaceUnit(DimmerDistroUnit oldUnit, DimmerDistroUnit newUnit)
+        {
+            _Context.Entry(oldUnit).CurrentValues.SetValues(newUnit);
         }
 
         public void Save()
@@ -109,6 +129,13 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+
+        // Debugging Code.
+        public EntityState GetEntityState(object entity)
+        {
+            return _Context.Entry(entity).State;
         }
     }
 }

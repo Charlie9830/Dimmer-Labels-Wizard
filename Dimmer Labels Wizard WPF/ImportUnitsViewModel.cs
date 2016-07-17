@@ -529,23 +529,6 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        protected bool _MergeData = false;
-
-        public bool MergeData
-        {
-            get { return _MergeData; }
-            set
-            {
-                if (_MergeData != value)
-                {
-                    _MergeData = value;
-
-                    // Notify.
-                    OnPropertyChanged(nameof(MergeData));
-                }
-            }
-        }
-
         #endregion
 
         #region Commands.
@@ -576,17 +559,21 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Sanitize Data.
                 importer.SanitizeData();
 
-                // Push Data to Database.
-                CommitToDatabase(importer, MergeData);
-
                 if (InSetup)
                 {
+                    // If InSetup, Data does not need to be Merged.
+                    CommitToDatabase(importer, false);
+
                     // Continue to Next Window.
                     OpenLabelManager(window);
                 }
 
                 else
                 {
+                    // If not in Setup, by defualt, data should be Merged as the Window would have been called
+                    // from the Database Manager window.
+                    CommitToDatabase(importer, true);
+
                     window.Close();
                 }
             }
@@ -607,17 +594,20 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Sanitize Data.
                     importer.SanitizeData();
 
-                    // Push Data to Database.
-                    CommitToDatabase(importer, MergeData);
-
                     if (InSetup)
                     {
                         // Continue to Next window.
                         OpenLabelManager(window);
+
+                        // Push Data to Database, if InSetup, Data does not need to be Merged.
+                        CommitToDatabase(importer, false);
                     }
                     
                     else
                     {
+                        // Push Data to Database. If not in Setup, by default, data should be Merged as the
+                        // Window would have been called from the Database Manager window.
+                        CommitToDatabase(importer, true);
                         window.Close();
                     }
                 }
@@ -695,8 +685,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     else
                     {
-                        // Existing Unit in Database.
-                        _UnitRepo.UpdateUnit(element);
+                        // Replace the Unit.
+                        _UnitRepo.ReplaceUnit(_UnitRepo.GetUnit(element.RackUnitType, element.UniverseNumber, element.DimmerNumber),
+                            element);
                     }
                 }
             }
@@ -709,8 +700,8 @@ namespace Dimmer_Labels_Wizard_WPF
                 _UnitRepo.InsertUnitRange(importer.Units);
             }
 
+            // Save.
             _UnitRepo.Save();
-            
         }
 
 

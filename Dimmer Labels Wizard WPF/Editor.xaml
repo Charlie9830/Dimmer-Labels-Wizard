@@ -21,9 +21,6 @@
             <Grid HorizontalAlignment="Stretch">
                 <Label VerticalAlignment="Center" HorizontalAlignment="Left"
                        Content="{Binding Name}"/>
-                <Button Content="Update" VerticalAlignment="Center" HorizontalAlignment="Right"
-                        Command="{Binding RelativeSource={RelativeSource AncestorType=local:Editor}, Path=DataContext.ApplyTemplateChangesCommand}"
-                        Visibility="{Binding EditorUpdatesPending, Converter={StaticResource BoolToVis}}"/>
             </Grid>
         </DataTemplate>
         <Style x:Key="ToolBarStyle" TargetType="ToolBar" BasedOn="{StaticResource {x:Type ToolBar}}">
@@ -144,7 +141,7 @@
                 <Separator/>
                 <MenuItem Header="_Labels..." Command="{Binding Path=ShowLabelManagerCommand}"/>
                 <MenuItem Header="_Label Colours..." Command="{Binding Path=ShowLabelColorManagerCommand}"/>
-                <MenuItem Header="_Database..."/>
+                <MenuItem Header="_Database..." Command="{Binding Path=OpenDatabaseManagerCommand}"/>
 
             </MenuItem>
             <MenuItem Header="_Help"/>
@@ -303,6 +300,10 @@
                    Style="{StaticResource ControlLabelStyle}"/>
             <TextBox Width="250" Height="25" HorizontalAlignment="Center"
                      Text="{Binding Path=SelectedData}" Margin="{StaticResource StackPanelItemsOffset}"/>
+            <Button Width="75" Height="25" Content="Merge"
+                    Command="{Binding Path=MergeSelectedCellsCommand}"/>
+            <Button Width="75" Height="25" Content="Split"
+                    Command="{Binding Path=SplitSelectedCellsCommand}"/>
         </StackPanel>
 
         <Expander x:Name="expanderLeft" Header="Templates" ExpandDirection="Right" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch"

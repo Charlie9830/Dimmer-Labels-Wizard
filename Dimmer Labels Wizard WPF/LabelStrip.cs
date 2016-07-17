@@ -258,18 +258,17 @@ namespace Dimmer_Labels_Wizard_WPF
             var lowerCellCount = instance.LowerCellCount;
             var lowerCells = instance.LowerCells;
             var newValue = (double)e.NewValue;
-            double newUpperWidth = newValue / upperCellCount;
-            double newLowerWidth = newValue / lowerCellCount;
+            double newCellBaseWidth = newValue / instance.DataSource.Count();
 
             // Push new Width to child Cells.
             foreach (var element in upperCells)
             {
-                element.Width = newUpperWidth;
+                element.BaseWidth = newCellBaseWidth;
             }
 
             foreach (var element in lowerCells)
             {
-                element.Width = newLowerWidth;
+                element.BaseWidth = newCellBaseWidth;
             }
         }
 
@@ -660,8 +659,6 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 instance._DividerGridRow.Height = new GridLength(0d);
             }
-
-            // instance.CoerceValue(HeightProperty);
         }
 
 
@@ -1005,7 +1002,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 else
                 {
-                    // Selection has shifted to a new Cell. Dump currently selected Cells AND rows.
+                    // Selection has shifted to a new Cell. Dump currently selected Cells AND Rows.
 
                     // Clear SelectedRows.
                     while (SelectedCells.Count() > 0)

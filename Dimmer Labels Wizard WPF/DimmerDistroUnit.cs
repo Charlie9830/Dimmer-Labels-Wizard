@@ -15,8 +15,15 @@ namespace Dimmer_Labels_Wizard_WPF
     {
         public DimmerDistroUnit()
         {
-
         }
+
+        // EF Properties.
+
+        [InverseProperty("PrimaryUnit")]
+        public virtual ICollection<Merge> MergePrimaryUnit { get; set; }
+
+        [InverseProperty("ConsumedUnits")]
+        public virtual ICollection<Merge> MergeConsumedUnits { get; set; }
 
         // Imported Data
         protected string _ChannelNumber = string.Empty;
@@ -30,6 +37,24 @@ namespace Dimmer_Labels_Wizard_WPF
         protected string _Custom = string.Empty;
 
         #region Public Accessors.
+
+        protected bool _IsSelected = false;
+        [NotMapped]
+        public bool IsSelected
+        {
+            get { return _IsSelected; }
+            set
+            {
+                if (_IsSelected != value)
+                {
+                    _IsSelected = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(IsSelected));
+                }
+            }
+        }
+
         public  string ChannelNumber
         {
             get
@@ -250,11 +275,27 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     OnPropertyChanged(nameof(RackUnitType));
                     OnPropertyChanged(nameof(IsValid));
+                    OnPropertyChanged(nameof(IsUniverseEntryEnabled));
                 }
             }
         }
 
 
+        
+
+        [NotMapped]
+        public Color LabelColor
+        {
+            get
+            {
+                return GetLabelColor();
+            }
+        }
+
+
+
+        // Window Specific Properties.
+        // Invalid Units Window.
         protected bool _OmitUnit = false;
         [NotMapped]
         public bool OmitUnit
@@ -273,6 +314,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        // Import Units Window.
         [NotMapped]
         public bool IsValid
         {
@@ -288,15 +330,14 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        [NotMapped]
-        public Color LabelColor
+        // Database Manager Window.
+        public bool IsUniverseEntryEnabled
         {
             get
             {
-                return GetLabelColor();
+                return RackUnitType == RackType.Dimmer;
             }
         }
-        
 
         #endregion
 
@@ -310,9 +351,27 @@ namespace Dimmer_Labels_Wizard_WPF
         public string DMXAddressText { get; set; }
 
         // Inferred Data
+        protected int _UniverseNumber;
         [Key]
         [Column(Order = 2)]
-        public int UniverseNumber { get; set; }
+        public int UniverseNumber
+        {
+            get
+            {
+                return _UniverseNumber;
+            }
+
+            set
+            {
+                if (_UniverseNumber != value)
+                {
+                    _UniverseNumber = value;
+
+                    OnPropertyChanged(nameof(UniverseNumber));
+                }
+            }
+
+        }
 
 
         #region Methods.

@@ -1,0 +1,235 @@
+﻿<Window x:Class="Dimmer_Labels_Wizard_WPF.DatabaseManager"
+        x:Name="Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+        xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Database Manager" Height="630" Width="1400"
+        Background="{StaticResource WindowBackground}" ShowInTaskbar="True" WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <local:DatabaseManagerViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <collections:ArrayList x:Key="DataGridFallbackValue">
+            <local:DimmerDistroUnit Position="Loading..."/>
+        </collections:ArrayList>
+
+        <Style x:Key="SearchBoxHintStyle" TargetType="TextBox">
+            <Style.Resources>
+                <VisualBrush x:Key="HintBrush">
+                    <VisualBrush.Visual>
+                        <Label Content="Find..." HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Style.Resources>
+            <Style.Triggers>
+                <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                    <Setter Property="Background" Value="{StaticResource HintBrush}"/>
+                </Trigger>
+                <Trigger Property="Text" Value="{x:Null}">
+                    <Setter Property="Background" Value="{StaticResource HintBrush}"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="Background" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style x:Key="DataGridStyle" TargetType="DataGrid">
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Height" Value="25"/>
+                        <Setter Property="Background" Value="{StaticResource SubHeaderBackground}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridColumnHeader">
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Rectangle Fill="{StaticResource SubHeaderBackground}"/>
+                                        <ContentPresenter ContentSource="Content">
+                                            <ContentPresenter.ContentTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Foreground="White" VerticalAlignment="Center" Margin="5,0,5,0"
+                                                               Text="{Binding}"/>
+                                                </DataTemplate>
+                                            </ContentPresenter.ContentTemplate>
+                                        </ContentPresenter>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="{StaticResource ControlGridBackground}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <DataTemplate x:Key="LabelColorCellTemplate">
+            <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2"
+                       Fill="{Binding LabelColor, Converter={StaticResource ColorToBrush}}"/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Label Content="Database Manager" Grid.Row="0" Margin="5"
+               Style="{StaticResource WindowHeaderStyle}"/>
+
+        <Border Grid.Row="1" Margin="10,0,10,0" Background="{StaticResource ControlGridBackground}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5">
+                <Button Width="20" Height="20" Content="+" Margin="5,0,5,0"
+                        Command="{Binding Path=AddCommand}"/>
+                <Button Width="20" Height="20" Content="-" Margin="0,0,5,0"
+                        Command="{Binding Path=RemoveCommand}"/>
+                <Button Width="20" Height="20" Content="Import" Margin="0,0,5,0"
+                        Command="{Binding Path=ImportCommand}"/>
+                <Button Width="20" Height="20" Margin="0,0,5,0"
+                        Command="{Binding Path=ToggleFindPopupCommand}">
+                    <Popup IsOpen="{Binding Path=IsFindPopupOpen}" PopupAnimation="Slide">
+                        <Popup.InputBindings>
+                            <KeyBinding Key="Return" Command="{Binding Path=FindPopupEnterPressCommand}" CommandParameter="{Binding ElementName=MainDataGrid}"/>
+                            <KeyBinding Key="Return" Modifiers="Shift" Command="{Binding Path=FindPreviousCommand}" CommandParameter="{Binding ElementName=MainDataGrid}"/>
+                        </Popup.InputBindings>
+
+                        <Grid Background="{StaticResource WindowBackground}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Expander ExpandDirection="Down" IsExpanded="{Binding Path=IsReplaceModeOn}" Grid.Row="0">
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal" Margin="2">
+                                        <TextBox Width="150" Margin="0,0,5,0"
+                                                 Text="{Binding Path=FindInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <Button Width="20" Height="20" Content="Q" Margin="0,0,5,0"
+                                                ToolTip="Search"
+                                                Command="{Binding Path=SearchCommand}"
+                                                CommandParameter="{Binding ElementName=MainDataGrid}"/>
+                                        <Button Width="20" Height="20" Content="&lt;" Margin="0,0,5,0"
+                                                ToolTip="Show and/or Replace previous Unit"
+                                                Command="{Binding Path=FindPreviousCommand}"
+                                                CommandParameter="{Binding ElementName=MainDataGrid}"/>
+                                        <Button Width="20" Height="20" Content=">" Margin="0,0,5,0"
+                                                ToolTip="Show and/or Replace next Unit"
+                                                Command="{Binding Path=FindNextCommand}"
+                                                CommandParameter="{Binding ElementName=MainDataGrid}"/>
+                                        <Button Width="20" Height="20" Content="X"
+                                                ToolTip="Close"
+                                                Command="{Binding Path=CloseFindPopupCommand}"/>
+                                    </StackPanel>
+                                </Expander.Header>
+
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Width="150" Text="{Binding Path=ReplaceInput}" Margin="25,0,0,0"/>
+                                        <Button Width="20" Height="20" Content="R" Margin="5,0,0,0"
+                                                Command="{Binding Path=ReplaceAllCommand}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="2">
+                                <ToggleButton Width="20" Height="20" Content="Aa" Margin="0,0,5,0"
+                                              ToolTip="Case Sensitive"
+                                              IsChecked="{Binding Path=IsFindCaseSensitive}"/>
+                                <ComboBox Width="150" Height="20" Margin="0,0,5,0"
+                                          ItemsSource="{Binding Path=SearchFields}"
+                                          SelectedItem="{Binding Path=SelectedSearchField}"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="2">
+                                <Label Content="{Binding Path=SearchProgressMessage}"
+                                       Style="{StaticResource ControlLabelStyle}"/>
+                            </StackPanel>
+                            
+                        </Grid>
+                    </Popup>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <Grid Height="485" Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="350"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <DataGrid x:Name="MainDataGrid" Grid.Row="0" AutoGenerateColumns="False" Margin="5"
+                          EnableRowVirtualization="False" GridLinesVisibility="Horizontal"
+                          CanUserAddRows="False" CanUserDeleteRows="False"
+                          CanUserResizeRows="False"
+                          ItemsSource="{Binding Path=Units, IsAsync=True, FallbackValue={StaticResource DataGridFallbackValue}}"
+                          Style="{StaticResource DataGridStyle}"
+                          RowStyle="{StaticResource DataGridRowStyle}"
+                          SelectedItem="{Binding Path=SelectedUnit, Mode=TwoWay}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header=" Rack Type" Binding="{Binding RackUnitType}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Universe Number" Binding="{Binding UniverseNumber}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Dimmer Number" Binding="{Binding DimmerNumber}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Channel Number" Binding="{Binding ChannelNumber}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Instrument Name" Width="150" Binding="{Binding InstrumentName}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Position" Width="150" Binding="{Binding Position}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Multicore Name" Width="150" Binding="{Binding MulticoreName}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="User Field 1" Width="100" Binding="{Binding UserField1}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="User Field 2" Width="100" Binding="{Binding UserField2}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="User Field 3" Width="100" Binding="{Binding UserField3}" CanUserSort="False"/>
+                    <DataGridTextColumn Header="User Field 4" Width="100" Binding="{Binding UserField4}" CanUserSort="False"/>
+                    <DataGridTemplateColumn Header="Label Colour" Width="100" CellTemplate="{StaticResource LabelColorCellTemplate}" CanUserSort="False"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <HeaderedContentControl Header="Errors" Grid.Row="1" Margin="5"
+                                        Style="{StaticResource HeaderedControlStyle}">
+                <DataGrid HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="1363"
+                              HeadersVisibility="None" AutoGenerateColumns="False" CanUserAddRows="False"
+                              GridLinesVisibility="None"
+                              Background="{StaticResource ControlGridBackground}"
+                              ItemsSource="{Binding Path=ValidationErrors}"
+                              SelectedItem="{Binding Path=SelectedValidationError}">
+
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </DataGrid.RowStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Label Style="{StaticResource ControlLabelStyle}" Content="{Binding ErrorMessage}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+
+                </DataGrid>
+            </HeaderedContentControl>
+        </Grid>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button Content="Ok" Width="75" Height="20" Margin="0,0,10,0" 
+                    Command="{Binding Path=OkCommand}" CommandParameter="{Binding ElementName=Window}"/>
+        </StackPanel>
+
+    </Grid>
+</Window>
