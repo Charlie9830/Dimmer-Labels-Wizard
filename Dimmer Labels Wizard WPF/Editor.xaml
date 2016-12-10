@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="Editor" Height="700" Width="1500" WindowStartupLocation="CenterScreen">
+        Title="Editor" Height="700" Width="1500" WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing">
 
     <Window.DataContext>
         <local:EditorViewModel/>
@@ -81,7 +82,7 @@
                               UniqueUpperCellTemplates="{Binding Path=UniqueUpperCellTemplates}" 
                               UniqueLowerCellTemplates="{Binding Path=UniqueLowerCellTemplates}"
                               Mergers="{Binding Path=Mergers}" SelectedCells="{Binding Path=SelectedCells}"
-                              Cells="{Binding Path=Cells}">
+                              Cells="{Binding Path=Cells}" Margin="1,-1,-1,1">
                 <local:LabelStrip.LayoutTransform>
                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="{Binding Path=LabelScale}" ScaleY="{Binding Path=LabelScale}"/>
                 </local:LabelStrip.LayoutTransform>
@@ -125,8 +126,7 @@
                 <MenuItem Header="_Import Templates"/>
                 <MenuItem Header="_Export Templates"/>
                 <Separator/>
-                <MenuItem Header="_Page Setup"/>
-                <MenuItem Header="_Print"/>
+                <MenuItem Header="_Print" Command="{Binding Path=OpenPrintDialogCommand}"/>
                 <Separator/>
                 <MenuItem Header="_Exit"/>
             </MenuItem>
@@ -298,12 +298,14 @@
         <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Stretch">
             <Label Content="Data" VerticalAlignment="Center"
                    Style="{StaticResource ControlLabelStyle}"/>
-            <TextBox Width="250" Height="25" HorizontalAlignment="Center"
+            <TextBox Width="250" Height="25" HorizontalAlignment="Center" IsEnabled="False"
                      Text="{Binding Path=SelectedData}" Margin="{StaticResource StackPanelItemsOffset}"/>
             <Button Width="75" Height="25" Content="Merge"
                     Command="{Binding Path=MergeSelectedCellsCommand}"/>
             <Button Width="75" Height="25" Content="Split"
                     Command="{Binding Path=SplitSelectedCellsCommand}"/>
+            <Button Width="75" Height="25" Content="Auto Merge" Margin="20,0,0,0"
+                    Command="{Binding Path=AutoMergeCellsCommand}" IsEnabled="False"/>
         </StackPanel>
 
         <Expander x:Name="expanderLeft" Header="Templates" ExpandDirection="Right" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch"

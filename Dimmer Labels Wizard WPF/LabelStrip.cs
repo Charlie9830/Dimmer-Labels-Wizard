@@ -83,8 +83,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Constants
         private static double unitConversionRatio = 96d / 25.4d;
-        private static double _SingleLabelStripUpperHeightRatio = 0.25d;
-        private static double _SingleLabelStripLowerHeightRatio = 0.75d;
+        private static double _SingleLabelStripUpperHeightRatio = 0.35d;
+        private static double _SingleLabelStripLowerHeightRatio = 0.65d;
         private static double _StripDividerDistance = 40d;
         #endregion
 
@@ -1321,7 +1321,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Reset
-            dataSourceEnum.Reset();
+            dataSourceEnum = newDataSource.GetEnumerator();
 
             IEnumerator<LabelCell> lowerCellsEnum = LowerCells.GetEnumerator();
 

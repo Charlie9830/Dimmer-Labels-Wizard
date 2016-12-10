@@ -58,7 +58,7 @@
                 <DataGrid Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="300" Width="300"  Margin="10"
 					IsSynchronizedWithCurrentItem="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Extended"
 					AutoGenerateColumns="false" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-					ItemsSource="{Binding Path=UnitGroups}" RowStyle="{StaticResource DataGridRow}">
+					ItemsSource="{Binding Path=UnitGroups}" RowStyle="{StaticResource DataGridRow}" EnableRowVirtualization="False" EnableColumnVirtualization="False">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Item" Width="200" IsReadOnly="True"

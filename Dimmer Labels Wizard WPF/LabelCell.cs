@@ -373,6 +373,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private static object CoerceTopWeight(DependencyObject d, object value)
         {
+            var instance = d as LabelCell;
             double lineWeight = (double)value;
 
             if (lineWeight < 0d)
@@ -778,6 +779,11 @@ namespace Dimmer_Labels_Wizard_WPF
         private static object CoerceSingleFieldData(DependencyObject d, object value)
         {
             var data = (string)value;
+            
+            if (data == null)
+            {
+                data = string.Empty;
+            }
 
             // Replaces multiple occurances of Whitespace with single Space. Trims Whitespace off of ends.
             return Regex.Replace(data, @"\s+", " ").Trim();
@@ -1416,6 +1422,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     SelectedRows.Add(row);
                 }
+
+                else
+                {
+                    // Remove just this Row.
+                    SelectedRows.Remove(row);
+                }
             }
 
             else
@@ -1464,7 +1476,7 @@ namespace Dimmer_Labels_Wizard_WPF
         /// </summary>
         /// <param name="backgroundColor"></param>
         /// <returns></returns>
-        private static Color AdjustTextColorLuma(Color backgroundColor)
+        public static Color AdjustTextColorLuma(Color backgroundColor)
         {
             if ((0.299 * backgroundColor.R) + (0.587 * backgroundColor.G) + (0.114 * backgroundColor.B) > 128)
             {

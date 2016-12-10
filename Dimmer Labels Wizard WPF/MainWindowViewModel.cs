@@ -26,6 +26,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Commands.
             _NewProjectCommand = new RelayCommand(NewProjectCommandExecute);
+            _ExistingProjectCommand = new RelayCommand(ExistingProjectCommandExecute);
 
         }
         #endregion
@@ -36,6 +37,21 @@ namespace Dimmer_Labels_Wizard_WPF
         protected ColorDictionaryRepository _ColorDictionaryRepository;
 
         #region Commands.
+
+        protected RelayCommand _ExistingProjectCommand;
+        public ICommand ExistingProjectCommand
+        {
+            get
+            {
+                return _ExistingProjectCommand;
+            }
+        }
+
+        protected void ExistingProjectCommandExecute(object parameter)
+        {
+            var editor = new Editor();
+            editor.Show();
+        }
 
         protected RelayCommand _NewProjectCommand;
         public ICommand NewProjectCommand

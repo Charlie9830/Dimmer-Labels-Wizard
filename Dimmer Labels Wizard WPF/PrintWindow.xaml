@@ -1,0 +1,107 @@
+﻿<Window x:Class="Dimmer_Labels_Wizard_WPF.PrintWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:printing="clr-namespace:System.Printing"
+        xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+        mc:Ignorable="d"
+        Title="PrintWindow" Height="auto" Width="300"
+        Background="{StaticResource WindowBackground}">
+
+    <Window.DataContext>
+        <local:PrintWindowViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <DataTemplate x:Key="RangePrintCellTemplate">
+            <StackPanel>
+                    <CheckBox Margin="5" IsChecked="{Binding Path=IsSelectedForPrinting}"/>
+                </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Row 0 -->
+        <Label Content="Print" Style="{StaticResource WindowHeaderStyle}" Grid.Row="0"/>
+        
+        <!-- Row 1 -->
+        <HeaderedContentControl Header="Page Settings" Style="{StaticResource HeaderedControlStyle}" Grid.Row="1">
+            <Grid Background="{StaticResource ControlGridBackground}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Row 0 -->
+                <Label Content="Size" Style="{StaticResource ControlLabelStyle}" Grid.Row="0" Grid.Column="0"/>
+                <ComboBox Width="130" Grid.Column="1" Margin="5"
+                          IsEnabled="False"
+                          ItemsSource="{Binding Path=PageSizes}"
+                          SelectedItem="{Binding Path=PageSizeName}"/>
+                                 
+            </Grid>
+        </HeaderedContentControl>
+
+        <!-- Row 2 -->
+        <HeaderedContentControl Header="Print Range" Grid.Row="2" Style="{StaticResource HeaderedControlStyle}">
+            <Grid Background="{StaticResource ControlGridBackground}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Row 0 -->
+                <RadioButton Content="All" Style="{StaticResource RadioButtonStyle}" Grid.Row="0" Grid.Column="0"
+                             GroupName="A" IsChecked="{Binding Path=PrintAll}"/>
+                
+                <!-- Row 1 -->
+                <RadioButton Content="All Dimmers" Style="{StaticResource RadioButtonStyle}" Grid.Row="1" Grid.Column="0"
+                             GroupName="A" IsChecked="{Binding Path=PrintAllDimmers}"/>
+                <RadioButton Content="All Distros" Style="{StaticResource RadioButtonStyle}" Grid.Row="1" Grid.Column="1"
+                             GroupName="A" IsChecked="{Binding Path=PrintAllDistros}"/>
+                
+                <!-- Row 2 -->
+                <RadioButton Content="Selection" Style="{StaticResource RadioButtonStyle}" Grid.Row="2" Grid.Column="0" 
+                             GroupName="A" IsChecked="{Binding Path=PrintSelection}"
+                             IsEnabled="False"/>
+                
+                <!-- Row 3 -->
+                <DataGrid Grid.Row="3" Grid.ColumnSpan="2" Margin="5" Height="200" AutoGenerateColumns="False"
+                          IsEnabled="{Binding PrintSelection}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Label" Width="130" Binding="{Binding Path=Name}"/>
+                        <DataGridTemplateColumn Header="Print" Width="50" CellTemplate="{StaticResource RangePrintCellTemplate}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </HeaderedContentControl>
+        
+        <!-- Row 3 -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3">
+            <Button Content="Cancel" Height="20" Width="75"/>
+            <Button Content="Print" Height="20" Width="75" Margin="5"
+                    Command="{Binding Path=PrintCommand}"/>
+        </StackPanel>
+    </Grid>
+</Window>

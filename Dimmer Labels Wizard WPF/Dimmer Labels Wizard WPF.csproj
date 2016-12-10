@@ -281,6 +281,9 @@
       <DependentUpon>NewTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewTemplateViewModel.cs" />
+    <Compile Include="PageTesting.xaml.cs">
+      <DependentUpon>PageTesting.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PaletteDemonstration.xaml.cs">
       <DependentUpon>PaletteDemonstration.xaml</DependentUpon>
     </Compile>
@@ -290,6 +293,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PrimaryDBDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="PrintWindow.xaml.cs">
+      <DependentUpon>PrintWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PrintWindowViewModel.cs" />
     <Compile Include="RangeControlContainer.xaml.cs">
       <DependentUpon>RangeControlContainer.xaml</DependentUpon>
     </Compile>
@@ -434,7 +441,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PageTesting.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PaletteDemonstration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PrintWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -592,69 +607,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\help-circled-24-000000.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Minus-Sign-12.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Plus-Sign-12.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\checkMark24.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\crossMark24.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\bold24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\earth24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\italic24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\underline24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\crosshair24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\magnifyMinus24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\magnifyPlus24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\zoomToFit24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\PaintBrush64.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\UpDownArrow.png" />
+    <None Include="Resources\CloseIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

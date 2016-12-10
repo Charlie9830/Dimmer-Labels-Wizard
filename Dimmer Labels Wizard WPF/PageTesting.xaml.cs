@@ -15,19 +15,13 @@ using System.Windows.Shapes;
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Interaction logic for Editor.xaml
+    /// Interaction logic for PageTesting.xaml
     /// </summary>
-    public partial class Editor : Window
+    public partial class PageTesting : Window
     {
-        public Editor()
+        public PageTesting()
         {
             InitializeComponent();
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            var viewModel = DataContext as EditorViewModel;
-            viewModel.PersistData();
         }
     }
 }

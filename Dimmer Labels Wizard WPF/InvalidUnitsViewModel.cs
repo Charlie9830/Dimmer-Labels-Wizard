@@ -166,9 +166,7 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 // Reload InvalidUnits collection.
                 OnPropertyChanged(nameof(InvalidUnits));
-            }
-
-            
+            } 
         }
 
 

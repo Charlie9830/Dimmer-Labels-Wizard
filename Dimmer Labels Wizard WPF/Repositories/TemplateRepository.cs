@@ -28,8 +28,10 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
         public IList<LabelStripTemplate> GetTemplates()
         {
             return _Context.Templates
-                           .Include(item => item.UpperCellTemplate.CellRowTemplates)
-                           .Include(item => item.LowerCellTemplate.CellRowTemplates)
+                           .Include(item => item.UpperCellTemplate.CellRowTemplates.Select(c => c.SerializableFont))
+                           .Include(item => item.UpperCellTemplate.SingleFieldSerializableFont)
+                           .Include(item => item.LowerCellTemplate.CellRowTemplates.Select(c => c.SerializableFont))
+                           .Include(item => item.LowerCellTemplate.SingleFieldSerializableFont)
                            .ToList();
         }
 

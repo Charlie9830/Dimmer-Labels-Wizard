@@ -73,9 +73,6 @@ namespace Dimmer_Labels_Wizard_WPF
             //            select item).First();
 
             //Console.WriteLine(query.Name);
-
-            var window2 = new Editor();
-            window2.Show();
         }
     }
 }

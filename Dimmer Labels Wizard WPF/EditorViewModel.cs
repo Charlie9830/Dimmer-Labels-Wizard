@@ -18,11 +18,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public EditorViewModel()
         {
             // Database Repositories.
-            PrimaryDB context = new PrimaryDB();
-            _UnitRepository = new UnitRepository(context);
-            _TemplateRepository = new TemplateRepository(context);
-            _StripRepository = new StripRepository(context);
-
+            RefreshContext();
             LoadRespositories();
 
             SelectedCells.CollectionChanged += SelectedCells_CollectionChanged;
@@ -52,6 +48,8 @@ namespace Dimmer_Labels_Wizard_WPF
             _ZoomOutCommand = new RelayCommand(ZoomOutCommandExecute);
             _SetZoomPercentageCommand = new RelayCommand(SetZoomPercentageCommandExecute);
             _OpenDatabaseManagerCommand = new RelayCommand(OpenDatabaseManagerCommandExecute);
+            _OpenPrintDialogCommand = new RelayCommand(OpenPrintDialogExecute);
+            _AutoMergeCellsCommand = new RelayCommand(AutoMergeCellsCommandExecute);
 
             // Initialize UndoRedoManager.
             UndoRedoManager = new UndoRedoManager(_UnitRepository);
@@ -59,6 +57,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Fields
         // Database and Repositories.
+        protected PrimaryDB _Context;
         protected UnitRepository _UnitRepository;
         protected TemplateRepository _TemplateRepository;
         protected StripRepository _StripRepository;
@@ -554,7 +553,6 @@ namespace Dimmer_Labels_Wizard_WPF
                     PresentStripData(value);
                     OnPropertyChanged(nameof(SelectedStrip));
                 }
-                
             }
         }
 
@@ -657,6 +655,101 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Commands
 
+        protected RelayCommand _AutoMergeCellsCommand;
+        public ICommand AutoMergeCellsCommand
+        {
+            get
+            {
+                return _AutoMergeCellsCommand;
+            }
+        }
+
+        protected void AutoMergeCellsCommandExecute(object parameter)
+        {
+            ClearSelections();
+            var merges = new List<Merge>();
+
+            foreach (var element in Strips)
+            {
+                // Select Strip.
+                SelectedStrip = element;
+
+                // Get Upper Cells.
+                var upperCells = (from cell in Cells
+                                  where cell.CellVerticalPosition == CellVerticalPosition.Upper
+                                  select cell).ToList();
+
+                if (upperCells.Count > 0)
+                {
+                    DimmerDistroUnit primaryUnit = new DimmerDistroUnit();
+                    var consumedUnits = new List<DimmerDistroUnit>();
+                    LabelField displayedDataField = upperCells.First().DisplayedDataFields.First();
+                    bool mergeBuilding = false;
+
+                    // Merge Building Loop.
+                    for (int index = 0; index < upperCells.Count; index++)
+                    {
+                        if (index == upperCells.Count - 2)
+                        {
+                            break;
+                        }
+
+                        DimmerDistroUnit currentReference = upperCells[index].DataReference;
+                        DimmerDistroUnit nextReference = upperCells[index + 1].DataReference;
+                        string currentData = currentReference.GetData(displayedDataField);
+                        string nextData = nextReference.GetData(displayedDataField);
+
+                        if (currentData == nextData)
+                        {
+                            if (mergeBuilding == false)
+                            {
+                                // Start building a new Merge
+                                mergeBuilding = true;
+                                primaryUnit = currentReference;
+                                consumedUnits.Add(nextReference);
+                            }
+
+                            else
+                            {
+                                // Merge is already being built, add it to that one.
+                                consumedUnits.Add(currentReference);
+                            }
+                        }
+
+                        else
+                        {
+                            if (mergeBuilding == true)
+                            {
+                                // Complete Merge.
+                                merges.Add(new Merge(CellVerticalPosition.Upper, primaryUnit, consumedUnits));
+
+                                mergeBuilding = false;
+                                primaryUnit = null;
+                                consumedUnits.Clear();
+                            }
+                        }
+                    }
+                }
+
+                element.Mergers.AddRange(merges);
+            }
+        }
+
+        protected RelayCommand _OpenPrintDialogCommand;
+        public ICommand OpenPrintDialogCommand
+        {
+            get
+            {
+                return _OpenPrintDialogCommand;
+            }
+        }
+
+        protected void OpenPrintDialogExecute(object parameter)
+        {
+            var dialog = new PrintWindow();
+
+            dialog.ShowDialog();
+        }
 
         protected RelayCommand _OpenDatabaseManagerCommand;
         public ICommand OpenDatabaseManagerCommand
@@ -670,14 +763,18 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void OpenDatabaseManagerCommandExecute(object parameter)
         {
             // Persist Progress.
-            _TemplateRepository.Save();
-            _StripRepository.Save();
-            _UnitRepository.Save();
+            PersistData();
 
             var dialog = new DatabaseManager();
 
             dialog.Show();
+
+            // Re Load Repositories.
+            RefreshContext();
+            LoadRespositories();
         }
+
+        
 
         protected RelayCommand _SetZoomPercentageCommand;
         public ICommand SetZoomPercentageCommand
@@ -754,9 +851,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void ShowLabelColorManagerCommandExecute(object parameter)
         {
             // Persist Progress.
-            _TemplateRepository.Save();
-            _StripRepository.Save();
-            _UnitRepository.Save();
+            PersistData();
 
             var dialog = new LabelColorManager();
 
@@ -782,8 +877,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void ShowLabelManagerCommandExecute(object parameter)
         {
             // Persist Progress.
-            _TemplateRepository.Save();
-            _StripRepository.Save();
+            PersistData();
 
             var dialog = new LabelManager();
             var viewModel = dialog.DataContext as LabelManagerViewModel;
@@ -810,87 +904,90 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        
+
         protected void MakeUniqueTemplateCommandExecute(object parameter)
         {
-            //var dialog = new UniqueCellTemplateEditor();
-            //var viewModel = dialog.DataContext as UniqueCellTemplateEditorViewModel;
-            //var selectedCells = SelectedCells;
-            //var selectedCellsCount = selectedCells.Count;
+            var dialog = new UniqueCellTemplateEditor();
+            var viewModel = dialog.DataContext as UniqueCellTemplateEditorViewModel;
+            var selectedCells = SelectedCells;
+            var selectedCellsCount = selectedCells.Count;
 
-            //if (selectedCellsCount > 0)
-            //{
-            //    // Collect last Selected Cell.
-            //    var lastCell = selectedCells.Last();
+            if (selectedCellsCount > 0)
+            {
+                // Collect last Selected Cell.
+                var lastCell = selectedCells.Last();
 
-            //    // Setup Dialog.
-            //    viewModel.DisplayedTemplate = lastCell.Style as LabelCellTemplate;
-            //    viewModel.DataReference = lastCell.DataReference;
+                // Setup Dialog.
+                viewModel.DisplayedTemplate = GetCellTemplate(lastCell);
+                viewModel.DataReference = lastCell.DataReference;
 
-            //    // Initiate Dialog.
-            //    if (dialog.ShowDialog() == true)
-            //    {
-            //        // Collect Template.
-            //        var template = viewModel.DisplayedTemplate;
+                // Initiate Dialog.
+                if (dialog.ShowDialog() == true)
+                {
+                    // Collect Template.
+                    var template = viewModel.DisplayedTemplate;
 
-            //        if (SelectedStrip != null)
-            //        {
-            //            foreach (var cell in selectedCells)
-            //            {
-            //                if (cell.CellVerticalPosition == CellVerticalPosition.Upper)
-            //                {
-            //                    // Upper Cell.
-            //                    // Is there any existing Unique Templates with the same CellIndex.
-            //                    var query = from element in SelectedStrip.UpperUniqueCellTemplates
-            //                                where element.IsUniqueTemplate == true &&
-            //                                element.UniqueCellIndex == cell.HorizontalIndex
-            //                                select element;
+                    if (SelectedStrip != null)
+                    {
+                        foreach (var cell in selectedCells)
+                        {
+                            var newTemplate = viewModel.DisplayedTemplate.Clone() as LabelCellTemplate;
+                            newTemplate.IsUniqueTemplate = true;
+                            newTemplate.UniqueCellIndex = cell.HorizontalIndex;
 
-            //                    if (query.Count() > 0)
-            //                    {
-            //                        // Replace that template.
-            //                        SelectedStrip.UpperUniqueCellTemplates[SelectedStrip.UpperUniqueCellTemplates.IndexOf(query.First())] =
-            //                            new LabelCellTemplate(template) { IsUniqueTemplate = true, UniqueCellIndex = cell.HorizontalIndex };
-            //                    }
+                            if (cell.CellVerticalPosition == CellVerticalPosition.Upper)
+                            {
+                                // Upper Cell.
+                                // Is there any existing Unique Templates with the same CellIndex.
+                                var query = from element in SelectedStrip.UpperUniqueCellTemplates
+                                            where element.IsUniqueTemplate == true &&
+                                            element.UniqueCellIndex == cell.HorizontalIndex
+                                            select element;
 
-            //                    else
-            //                    {
-            //                        // Add a new Template.
-            //                        SelectedStrip.UpperUniqueCellTemplates.Add(
-            //                            new LabelCellTemplate(template) { IsUniqueTemplate = true, UniqueCellIndex = cell.HorizontalIndex });
-            //                    }
-            //                }
+                                if (query.Count() > 0)
+                                {
+                                    // Replace that template.
+                                   
+                                    SelectedStrip.UpperUniqueCellTemplates[SelectedStrip.UpperUniqueCellTemplates.IndexOf(query.First())] = newTemplate;
+                                }
 
-            //                else
-            //                {
-            //                    // Lower Cell
-            //                    // Is there any existing Unique Templates with the same CellIndex.
-            //                    var query = from element in SelectedStrip.LowerUniqueCellTemplates
-            //                                where element.IsUniqueTemplate == true &&
-            //                                element.UniqueCellIndex == cell.HorizontalIndex
-            //                                select element;
+                                else
+                                {
+                                    // Add a new Template.
+                                    SelectedStrip.UpperUniqueCellTemplates.Add(newTemplate);
+                                }
+                            }
 
-            //                    if (query.Count() > 0)
-            //                    {
-            //                        // Replace that template.
-            //                        SelectedStrip.LowerUniqueCellTemplates[SelectedStrip.LowerUniqueCellTemplates.IndexOf(query.First())] =
-            //                            new LabelCellTemplate(template) { IsUniqueTemplate = true, UniqueCellIndex = cell.HorizontalIndex };
-            //                    }
+                            else
+                            {
+                                // Lower Cell
+                                // Is there any existing Unique Templates with the same CellIndex.
+                                var query = from element in SelectedStrip.LowerUniqueCellTemplates
+                                            where element.IsUniqueTemplate == true &&
+                                            element.UniqueCellIndex == cell.HorizontalIndex
+                                            select element;
 
-            //                    else
-            //                    {
-            //                        // Add a new Template.
-            //                        SelectedStrip.LowerUniqueCellTemplates.Add(
-            //                            new LabelCellTemplate(template) { IsUniqueTemplate = true, UniqueCellIndex = cell.HorizontalIndex });
-            //                    }
-            //                }
-            //            }
+                                if (query.Count() > 0)
+                                {
+                                    // Replace that template.
+                                    SelectedStrip.LowerUniqueCellTemplates[SelectedStrip.LowerUniqueCellTemplates.IndexOf(query.First())] = newTemplate;
+                                }
 
-            //            // Notify.
-            //            OnPropertyChanged(nameof(UniqueUpperCellTemplates));
-            //            OnPropertyChanged(nameof(UniqueLowerCellTemplates));
-            //        }
-            //    }
-            //}
+                                else
+                                {
+                                    // Add a new Template.
+                                    SelectedStrip.LowerUniqueCellTemplates.Add(newTemplate);
+                                }
+                            }
+                        }
+
+                        // Notify.
+                        OnPropertyChanged(nameof(UniqueUpperCellTemplates));
+                        OnPropertyChanged(nameof(UniqueLowerCellTemplates));
+                    }
+                }
+            }
         }
 
         protected bool MakeUniqueTemplateCommandCanExecute(object parameter)
@@ -991,9 +1088,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void EditTemplateCommandExecute(object parameter)
         {
             // Persist Progess.
-            _TemplateRepository.Save();
-            _StripRepository.Save();
-            _UnitRepository.Save();
+            PersistData();
 
             var templateEditor = new TemplateEditor();
             var viewModel = templateEditor.DataContext as TemplateEditorViewModel;
@@ -1033,9 +1128,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void CreateNewTemplateCommandExecute(object parameter)
         {
             // Persist Progress.
-            _TemplateRepository.Save();
-            _StripRepository.Save();
-            _UnitRepository.Save();
+            PersistData();
 
             // Show the NewTemplate Dialog first. If user chooses to continue with New Template creation. Show
             // the Template Editor with the new Template pre selected.
@@ -1077,9 +1170,7 @@ namespace Dimmer_Labels_Wizard_WPF
         protected void OpenTemplateSettingsExecute(object parameter)
         {
             // Persist Progress.
-            _TemplateRepository.Save();
-            _StripRepository.Save();
-            _UnitRepository.Save();
+            PersistData();
 
             if (parameter.GetType() != typeof(string))
             {
@@ -1102,7 +1193,14 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 // Re Assert Displayed Template in case user also edited the Currently displayed Template.
                 OnPropertyChanged(nameof(DisplayedStyle));
+
+
+                
             }
+
+            // Re Load Repositories.
+            RefreshContext();
+            LoadRespositories();
         }
 
         // Undo.
@@ -1464,14 +1562,70 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
+        public void PersistData()
+        {
+            _TemplateRepository.Save();
+            _StripRepository.Save();
+            _UnitRepository.Save();
+        }
+
+        protected LabelCellTemplate GetCellTemplate(LabelCell cell)
+        {
+            // Select Search Space.
+            IQueryable<LabelCellTemplate> searchSpace =
+                (cell.CellVerticalPosition == CellVerticalPosition.Upper ?
+                SelectedStrip.UpperUniqueCellTemplates : SelectedStrip.LowerUniqueCellTemplates).AsQueryable();
+
+
+            // Query for an existing Unique Template.
+            var query = from uniqueTemplate in searchSpace
+                        where uniqueTemplate.UniqueCellIndex == cell.HorizontalIndex
+                        select uniqueTemplate;
+
+            if (query.Count() > 0)
+            {
+                // Return Unique Template
+                return query.First();
+            }
+
+            else
+            {
+                // Return the Template from the Assigned Strip Template.
+                return cell.CellVerticalPosition == CellVerticalPosition.Upper ?
+                    SelectedStrip.AssignedTemplate.UpperCellTemplate :
+                    SelectedStrip.AssignedTemplate.LowerCellTemplate;
+            }
+        }
+
+        protected void RefreshContext()
+        {
+            // Load/Reload Context.
+            if (_Context != null)
+            {
+                _Context.Dispose();
+            }
+
+            _Context = new PrimaryDB();
+
+            // Load Repositories.
+            _UnitRepository = new UnitRepository(_Context);
+            _TemplateRepository = new TemplateRepository(_Context);
+            _StripRepository = new StripRepository(_Context);
+        }
+
         protected void LoadRespositories()
         {
 
             StripTemplates = _TemplateRepository.GetTemplates();
             _StripRepository.Load();
+            _TemplateRepository.Load();
+            _UnitRepository.Load();
 
             // Notify.
             OnPropertyChanged(nameof(Strips));
+            OnPropertyChanged(nameof(StripTemplates));
+            OnPropertyChanged(nameof(SelectedStrip));
+            OnPropertyChanged(nameof(SelectedStripTemplate));
         }
 
         private void NotifyPropertyGridUI()

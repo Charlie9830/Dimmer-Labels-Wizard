@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         mc:Ignorable="d"
         Title="Database Manager" Height="630" Width="1400"
         Background="{StaticResource WindowBackground}" ShowInTaskbar="True" WindowStartupLocation="CenterScreen">
@@ -19,6 +20,16 @@
         <collections:ArrayList x:Key="DataGridFallbackValue">
             <local:DimmerDistroUnit Position="Loading..."/>
         </collections:ArrayList>
+
+        <CollectionViewSource x:Key="UnitsView" IsLiveSortingRequested="True"
+                              Source="{Binding Path=Units, IsAsync=True,
+                              FallbackValue={StaticResource DataGridFallbackValue}}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="RackUnitType" Direction="Descending"/>
+                <scm:SortDescription PropertyName="UniverseNumber" Direction="Descending"/>
+                <scm:SortDescription PropertyName="DimmerNumber" Direction="Descending"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
 
         <Style x:Key="SearchBoxHintStyle" TargetType="TextBox">
             <Style.Resources>
@@ -115,7 +126,7 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
-                            
+
                             <Expander ExpandDirection="Down" IsExpanded="{Binding Path=IsReplaceModeOn}" Grid.Row="0">
                                 <Expander.Header>
                                     <StackPanel Orientation="Horizontal" Margin="2">
@@ -135,13 +146,17 @@
                                                 CommandParameter="{Binding ElementName=MainDataGrid}"/>
                                         <Button Width="20" Height="20" Content="X"
                                                 ToolTip="Close"
-                                                Command="{Binding Path=CloseFindPopupCommand}"/>
+                                                Command="{Binding Path=CloseFindPopupCommand}">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="{Binding Source={StaticResource CloseIcon}}"/>
+                                            </Button.Background>
+                                        </Button>
                                     </StackPanel>
                                 </Expander.Header>
 
                                 <Grid>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBox Width="150" Text="{Binding Path=ReplaceInput}" Margin="25,0,0,0"/>
+                                        <TextBox Width="150" Text="{Binding Path=ReplaceInput, UpdateSourceTrigger=PropertyChanged}" Margin="25,0,0,0"/>
                                         <Button Width="20" Height="20" Content="R" Margin="5,0,0,0"
                                                 Command="{Binding Path=ReplaceAllCommand}"/>
                                     </StackPanel>
@@ -161,7 +176,7 @@
                                 <Label Content="{Binding Path=SearchProgressMessage}"
                                        Style="{StaticResource ControlLabelStyle}"/>
                             </StackPanel>
-                            
+
                         </Grid>
                     </Popup>
                 </Button>
@@ -177,7 +192,7 @@
                           EnableRowVirtualization="False" GridLinesVisibility="Horizontal"
                           CanUserAddRows="False" CanUserDeleteRows="False"
                           CanUserResizeRows="False"
-                          ItemsSource="{Binding Path=Units, IsAsync=True, FallbackValue={StaticResource DataGridFallbackValue}}"
+                          ItemsSource="{Binding Source={StaticResource UnitsView}}"
                           Style="{StaticResource DataGridStyle}"
                           RowStyle="{StaticResource DataGridRowStyle}"
                           SelectedItem="{Binding Path=SelectedUnit, Mode=TwoWay}">
@@ -214,6 +229,15 @@
 
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True">
+                            <DataGridTemplateColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsFocused" Value="False">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTemplateColumn.CellStyle>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Label Style="{StaticResource ControlLabelStyle}" Content="{Binding ErrorMessage}"/>

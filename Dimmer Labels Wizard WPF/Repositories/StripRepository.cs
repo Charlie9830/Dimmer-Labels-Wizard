@@ -30,8 +30,9 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
         public IList<Strip> GetStrips()
         {
             return _Context.Strips.Select(item => item)
-                                  .Include(nameof(Strip.AssignedTemplate))
-                                  .Include(nameof(Strip.Mergers))
+                                  .Include(item => item.AssignedTemplate.UpperCellTemplate)
+                                  .Include(item => item.AssignedTemplate.LowerCellTemplate)
+                                  .Include(item => item.Mergers)
                                   .ToList();
         }
 

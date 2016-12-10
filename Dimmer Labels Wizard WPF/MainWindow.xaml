@@ -41,8 +41,8 @@
         <HeaderedContentControl Header="Existing Project" Grid.Row="2" Grid.Column="0" Margin="5"
                                 Style="{StaticResource HeaderedControlStyle}">
             <Grid Background="{StaticResource ControlGridBackground}">
-                <Button Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Center"
-                        Width="75" Height="20" Margin="10"/>
+                <Button Content="Editor" HorizontalAlignment="Left" VerticalAlignment="Center"
+                        Width="75" Height="20" Margin="10" Command="{Binding Path=ExistingProjectCommand}"/>
             </Grid>
         </HeaderedContentControl>
         

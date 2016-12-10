@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -177,7 +178,17 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Using a DependencyProperty as the backing store for TextColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextColorProperty =
-            DependencyProperty.Register("TextColor", typeof(Color), typeof(CellRow), new FrameworkPropertyMetadata(Colors.Black, new PropertyChangedCallback(OnTextColorPropertyChanged)));
+            DependencyProperty.Register("TextColor", typeof(Color), typeof(CellRow), new FrameworkPropertyMetadata(Colors.Black,
+                new PropertyChangedCallback(OnTextColorPropertyChanged), new CoerceValueCallback(CoerceTextColorProperty)));
+
+        private static object CoerceTextColorProperty(DependencyObject d, object baseValue)
+        {
+            var instance = d as CellRow;
+            var backgroundBrush = instance.CellParent.Background as SolidColorBrush;
+            Color backgroundColor = backgroundBrush.Color;
+
+            return LabelCell.AdjustTextColorLuma(backgroundColor);
+        }
 
         private static void OnTextColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -223,9 +234,13 @@ namespace Dimmer_Labels_Wizard_WPF
             var layout = (DataLayout)e.NewValue;
             var data = instance.Data;
 
-            instance.TextBlock.Text = instance.Data.Substring(layout.FirstIndex, layout.Length);
+            // Update Textblock Text, but first, Remove any occurances of non ASCII Characters.
+            string incomingText = instance.Data.Substring(layout.FirstIndex, layout.Length);
+            instance.TextBlock.Text = Regex.Replace(incomingText, @"[^\u0000-\u007F]+", string.Empty);
+
             instance.CoerceValue(ActualFontSizeProperty);
             instance.CoerceValue(RowHeightProperty);
+            instance.CoerceValue(TextColorProperty);
         }
 
         /// <summary>

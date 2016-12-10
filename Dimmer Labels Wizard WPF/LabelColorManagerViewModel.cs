@@ -323,13 +323,14 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 else
                 {
-                    Console.WriteLine("SelectedUnitGroups.Count == 0");
                     _SelectedUnitGroupColor = Colors.White;
 
                     // Notify.
                     OnPropertyChanged(nameof(SelectedUnitGroupColor));
                 }
             }
+
+            Console.WriteLine(SelectedUnitGroups.Count);
 
         }
         #endregion

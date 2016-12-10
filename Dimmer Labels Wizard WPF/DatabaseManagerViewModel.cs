@@ -349,6 +349,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     _AddedUnits.Add(element);
 
                     CheckUnitValidation(element);
+
+                    // Select Incoming Unit.
+                    element.IsSelected = true;
                 }
             }
         }
@@ -373,11 +376,18 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     _Units.Remove(unit);
                     _RemovedUnits.Add(unit);
+                    unit.IsSelected = false;
                 }
 
                 foreach (var unit in Units)
                 {
                     CheckUnitValidation(unit);
+                }
+
+                // Validate Removed Units.
+                foreach (var unit in _RemovedUnits)
+                {
+                    ClearValidationError(unit);
                 }
             }
         }
@@ -408,9 +418,17 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var window = parameter as Window;
 
-            UpdateDatabase();
+            if (ValidationErrors.Count > 0)
+            {
+                MessageBox.Show("Please correct all Validation Errors before returning to the Editor.");
+            }
 
-            window.Close();
+            else
+            {
+                UpdateDatabase();
+
+                window.Close();
+            }
         }
 
 
@@ -796,45 +814,6 @@ namespace Dimmer_Labels_Wizard_WPF
             SelectedSearchField = SearchFields.First();
         }
 
-        protected void SetSortField(SortField value)
-        {
-            List<SortDescription> newSortDescriptions = new List<SortDescription>();
-
-            switch (value)
-            {
-                case SortField.DBKeyValues:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.RackUnitType), ListSortDirection.Descending));
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.UniverseNumber), ListSortDirection.Descending));
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.DimmerNumber), ListSortDirection.Descending));
-                    break;
-                case SortField.ChannelNumber:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.ChannelNumber), ListSortDirection.Descending));
-                    break;
-                case SortField.InstrumentName:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.InstrumentName), ListSortDirection.Descending));
-                    break;
-                case SortField.MulticoreName:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.MulticoreName), ListSortDirection.Descending));
-                    break;
-                case SortField.Position:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.Position), ListSortDirection.Descending));
-                    break;
-                case SortField.UserField1:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.UserField1), ListSortDirection.Descending));
-                    break;
-                case SortField.UserField2:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.UserField2), ListSortDirection.Descending));
-                    break;
-                case SortField.UserField3:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.UserField3), ListSortDirection.Descending));
-                    break;
-                case SortField.UserField4:
-                    newSortDescriptions.Add(new SortDescription(nameof(DimmerDistroUnit.UserField4), ListSortDirection.Descending));
-                    break;
-                default:
-                    break;
-            }
-        }
 
         private void ReplaceData(string newData, string currentData, DimmerDistroUnit targetUnit, SearchField searchField)
         {
@@ -1007,7 +986,7 @@ namespace Dimmer_Labels_Wizard_WPF
             
             if (unit.RackUnitType == RackType.Distro)
             {
-                builder.AppendFormat("A Distro with Dimmer Number of {0} conflicts with an existing unit, ",unit.DimmerNumber);
+                builder.AppendFormat("DISTRO - Dimmer Number {0} conflicts with an existing unit, ",unit.DimmerNumber);
                 builder.AppendFormat("The combination of Rack Type and Dimmer Number must be unique for each Unit");
 
                 return builder.ToString();
@@ -1015,7 +994,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
             if (unit.RackUnitType == RackType.Dimmer)
             {
-                builder.AppendFormat("A Dimmer in Universe {0} with a Dimmer Number of {1} ", unit.UniverseNumber, unit.DimmerNumber);
+                builder.AppendFormat("DIMMER - Universe Number {0} - Dimmer Number {1} ", unit.UniverseNumber, unit.DimmerNumber);
                 builder.AppendFormat("conflicts with an existing Unit. ");
                 builder.AppendFormat("The combination of Rack Type, Universe and Dimmer Number must be Unique for each unit.");
 

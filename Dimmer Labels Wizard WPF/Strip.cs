@@ -165,6 +165,23 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
+        protected bool _IsSelectedForPrinting;
+        [NotMapped]
+        public bool IsSelectedForPrinting
+        {
+            get { return _IsSelectedForPrinting; }
+            set
+            {
+                if (_IsSelectedForPrinting != value)
+                {
+                    _IsSelectedForPrinting = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(IsSelectedForPrinting));
+                }
+            }
+        }
+
         protected bool _IsSelected;
         [NotMapped]
         public bool IsSelected

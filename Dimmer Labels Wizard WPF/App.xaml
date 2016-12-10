@@ -14,6 +14,9 @@
         <SolidColorBrush x:Key="ControlLabelTextColor" Color="White"/>
         <SolidColorBrush x:Key="WindowBackground" Color="#FF2D2D30"/>
         
+        <!-- Icons -->
+        <Image x:Key="CloseIcon" Source="/Resources/CloseIcon.png" Stretch="Uniform"/>
+
         <!-- Boolean to Visibilty Converter, True == Visible, False == Collapsed -->
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         
@@ -77,9 +80,17 @@
             <Style.Setters>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                <Setter Property="FontFamily" Value="Segoe UI"/>
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="Foreground" Value="White"/>
+            </Style.Setters>
+        </Style>
+        
+        <!-- Radio Button Style -->
+        <Style x:Key="RadioButtonStyle" TargetType="RadioButton">
+            <Style.Setters>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style.Setters>
         </Style>
         
