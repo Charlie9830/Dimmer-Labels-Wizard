@@ -21,11 +21,21 @@ namespace Dimmer_Labels_Wizard_WPF
         {
         }
 
+        public PrimaryDB(bool configuredForSerialization)
+            : base("name=PrimaryDB")
+        {
+            Configuration.ProxyCreationEnabled = false;
+            Configuration.LazyLoadingEnabled = false;
+        }
+
         // Units.
         public virtual DbSet<DimmerDistroUnit> Units { get; set; }
 
         // Templates.
         public virtual DbSet<LabelStripTemplate> Templates { get; set; }
+
+        // Unique Cell Templates
+        public virtual DbSet<LabelCellTemplate> UniqueCellTemplates { get; set; }
 
         // Strips.
         public virtual DbSet<Strip> Strips { get; set; }

@@ -8,11 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dimmer_Labels_Wizard_WPF.Repositories;
-
-
+using System.Runtime.Serialization;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
+    [DataContract]
     public class Strip : ViewModelBase
     {
         public Strip()
@@ -21,12 +21,15 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Fields.
         // Unique Cell Templates.
+        [DataMember]
         public virtual ObservableCollection<LabelCellTemplate> UpperUniqueCellTemplates { get; set; } =
             new ObservableCollection<LabelCellTemplate>();
+        [DataMember]
         public virtual ObservableCollection<LabelCellTemplate> LowerUniqueCellTemplates { get; set; } =
             new ObservableCollection<LabelCellTemplate>();
 
         // Mergers.
+        [DataMember]
         public virtual List<Merge> Mergers { get; set; } = new List<Merge>();
 
         // Database.
@@ -36,7 +39,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Properties.
         private LabelStripTemplate _AssignedTemplate = null;
-
+        [DataMember]
         public LabelStripTemplate AssignedTemplate
         {
             get { return _AssignedTemplate; }
@@ -52,7 +55,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         protected int _Universe = 0;
-
+        [DataMember]
         public int Universe
         {
             get { return _Universe; }
@@ -69,7 +72,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         protected int _FirstDimmer = 0;
-
+        [DataMember]
         public int FirstDimmer
         {
             get { return _FirstDimmer; }
@@ -86,7 +89,7 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         protected int _LastDimmer = 0;
-
+        [DataMember]
         public int LastDimmer
         {
             get { return _LastDimmer; }
@@ -104,7 +107,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         protected RackType _RackType = RackType.Dimmer;
-
+        [DataMember]
         public RackType RackType
         {
             get { return _RackType; }

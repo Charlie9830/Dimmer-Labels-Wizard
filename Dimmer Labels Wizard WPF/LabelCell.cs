@@ -181,6 +181,87 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+
+
+        public bool IsSpacerCell
+        {
+            get { return (bool)GetValue(IsSpacerCellProperty); }
+            set { SetValue(IsSpacerCellProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsSpacerCell.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsSpacerCellProperty =
+            DependencyProperty.Register("IsSpacerCell", typeof(bool), typeof(LabelCell),
+                new FrameworkPropertyMetadata(false, new PropertyChangedCallback(IsSpacerCellPropertyChanged),
+                    new CoerceValueCallback(CoerceIsSpacerCell)));
+
+        private static object CoerceIsSpacerCell(DependencyObject d, object baseValue)
+        {
+            var instance = d as LabelCell;
+            var newValue = (bool)baseValue;
+
+            if (instance.DataReference != null && newValue == true)
+            {
+                throw new NotSupportedException("You are trying to turn an existing Cell into a Spacer Cell.");
+            }
+
+            return baseValue;
+        }
+
+        private static void IsSpacerCellPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            var newValue = (bool)e.NewValue;
+            SolidColorBrush newBrush;
+
+            if (newValue == true)
+            {
+                newBrush = new SolidColorBrush(Colors.Transparent);
+
+                // Redraw Cell as Spacer Cell.
+                instance.TopLineBrush = newBrush;
+                instance.BottomLineBrush = newBrush;
+            }
+
+            else
+            {
+                newBrush = new SolidColorBrush(Colors.Black);
+                instance.TopLineBrush = newBrush;
+                instance.BottomLineBrush = newBrush;
+                instance.Width = instance.BaseWidth;
+            }
+        }
+
+
+
+        public SolidColorBrush TopLineBrush
+        {
+            get { return (SolidColorBrush)GetValue(TopLineBrushProperty); }
+            set { SetValue(TopLineBrushProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TopLineBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TopLineBrushProperty =
+            DependencyProperty.Register("TopLineBrush", typeof(SolidColorBrush), typeof(LabelCell),
+                new FrameworkPropertyMetadata(new SolidColorBrush(Colors.Black),
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+
+
+
+        public SolidColorBrush BottomLineBrush
+        {
+            get { return (SolidColorBrush)GetValue(BottomLineBrushProperty); }
+            set { SetValue(BottomLineBrushProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for BottomLineBrush.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BottomLineBrushProperty =
+            DependencyProperty.Register("BottomLineBrush", typeof(SolidColorBrush), typeof(LabelCell), 
+                new FrameworkPropertyMetadata(new SolidColorBrush(Colors.Black), 
+                    FrameworkPropertyMetadataOptions.AffectsRender));
+
+
+
         public double BaseWidth
         {
             get { return (double)GetValue(BaseWidthProperty); }
@@ -1174,13 +1255,15 @@ namespace Dimmer_Labels_Wizard_WPF
         protected override void OnRender(DrawingContext drawingContext)
         {
             // Declare Resources.
-            var lineBrush = new SolidColorBrush(Colors.Black);
+            var topLineBrush = TopLineBrush;
+            var bottomLineBrush = BottomLineBrush;
+            var sideLineBrush = new SolidColorBrush(Colors.Black);
 
             // Pens.
-            var leftPen = new Pen(lineBrush, ActualLeftWeight);
-            var topPen = new Pen(lineBrush, ActualTopWeight);
-            var rightPen = new Pen(lineBrush, ActualRightWeight);
-            var bottomPen = new Pen(lineBrush, ActualBottomWeight);
+            var leftPen = new Pen(sideLineBrush, ActualLeftWeight);
+            var topPen = new Pen(topLineBrush, ActualTopWeight);
+            var rightPen = new Pen(sideLineBrush, ActualRightWeight);
+            var bottomPen = new Pen(bottomLineBrush, ActualBottomWeight);
             var fillPen = new Pen(new SolidColorBrush(Colors.Black), 0d);
 
             // Border Geometry.

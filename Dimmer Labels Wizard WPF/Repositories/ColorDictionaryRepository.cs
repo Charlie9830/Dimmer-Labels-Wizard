@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity;
 
 namespace Dimmer_Labels_Wizard_WPF.Repositories
 {
@@ -20,7 +21,7 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
             get
             {
                 // If an exising Dictionary does not already exist. Make one.
-                var query = (from item in _Context.ColorDictionaries
+                var query = (from item in GetColorDictionaries()
                             where item.EntriesRackType == RackType.Distro
                             select item);
 
@@ -28,6 +29,13 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
                 {
                     _Context.ColorDictionaries.Add(new ColorDictionary() { EntriesRackType = RackType.Distro });
                     _Context.SaveChanges();
+
+                    // Re Query Database.
+                    var reQuery = (from item in GetColorDictionaries()
+                                   where item.EntriesRackType == RackType.Distro
+                                   select item).First();
+
+                    return reQuery;
                 }
 
                 return query.First();
@@ -40,7 +48,7 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
             get
             {
                 // If an exising Dictionary does not already exist. Make one.
-                var query = (from item in _Context.ColorDictionaries
+                var query = (from item in GetColorDictionaries()
                              where item.EntriesRackType == RackType.Dimmer
                              select item);
 
@@ -48,6 +56,13 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
                 {
                     _Context.ColorDictionaries.Add(new ColorDictionary() { EntriesRackType = RackType.Dimmer });
                     _Context.SaveChanges();
+
+                    // Re Query Database.
+                    var reQuery = (from item in GetColorDictionaries()
+                                   where item.EntriesRackType == RackType.Dimmer
+                                   select item).First();
+
+                    return reQuery;
                 }
 
                 return query.First();
@@ -63,6 +78,13 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
         {
             _Context.Database.ExecuteSqlCommand("DELETE from ColorEntries");
             _Context.Database.ExecuteSqlCommand("DELETE from ColorDictionaries");
+        }
+
+        public IList<ColorDictionary> GetColorDictionaries()
+        {
+            return _Context.ColorDictionaries
+                .Include(item => item.Entries)
+                .ToList();
         }
 
         public void Save()

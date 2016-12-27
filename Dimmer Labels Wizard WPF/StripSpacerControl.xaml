@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Dimmer_Labels_Wizard_WPF.StripSpacerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
+             mc:Ignorable="d" 
+             Width="auto" Height="auto"
+             d:DesignHeight="30" d:DesignWidth="240">
+
+    <UserControl.DataContext>
+        <local:StripSpacerControlViewModel/>
+    </UserControl.DataContext>
+    
+    <Grid>
+        <Border BorderBrush="White" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Label Content="Index"
+                       Style="{StaticResource ControlLabelStyle}"/>
+                <TextBox Width="35" Height="20"
+                         Text="{Binding Path=SelectedIndex}"/>
+                <Button Content="&lt;" Width="20" Height="20" Margin="5,0,0,0"
+                        Command="{Binding Path=MoveSpacerLeftCommand}"/>
+                <Button Content="&gt;" Width="20" Height="20" Margin="5,0,0,0"
+                        Command="{Binding Path=MoveSpacerRightCommand}"/>
+                <Label Content="Width (mm)"
+                       Style="{StaticResource ControlLabelStyle}"/>
+                <TextBox Width="35" Height="20"
+                         Text="{Binding Path=SelectedWidth}"/>
+            </StackPanel> 
+        </Border>  
+    </Grid>
+</UserControl>

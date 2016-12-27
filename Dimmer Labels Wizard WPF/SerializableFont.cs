@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -16,6 +17,8 @@ namespace Dimmer_Labels_Wizard_WPF
     /// Provides the Type for the backing value of the Style Template Classes. Provides Database friendly
     /// storage of Typefaces.
     /// </summary>
+
+    [DataContract]
     public class SerializableFont
     {
         public SerializableFont()
@@ -28,15 +31,19 @@ namespace Dimmer_Labels_Wizard_WPF
             FontFamilyString = fontFamilyName;
         }
 
-        #region Database Properties.
+        // Database and Navigation Properties.
         public int ID { get; set; }
 
+        [DataMember]
         public bool IsBold { get; set; }
+        [DataMember]
         public bool IsItalics { get; set; }
+        [DataMember]
         public bool IsUnderline { get; set; }
 
+        [DataMember]
         public string FontFamilyString { get; set; } = "Arial";
-        #endregion
+        
 
         #region POCO Properties.
         [NotMapped]

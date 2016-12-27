@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
         Title="Editor" Height="700" Width="1500" WindowStartupLocation="CenterScreen"
-        Closing="Window_Closing">
+        Closing="Window_Closing"
+        x:Name="Window" Cursor="{Binding Path=WindowCursor}">
 
     <Window.DataContext>
         <local:EditorViewModel/>
@@ -49,6 +50,8 @@
     <Window.InputBindings>
         <KeyBinding Command="{Binding Path=UndoCommand}" Gesture="CTRL+Z"/>
         <KeyBinding Command="{Binding Path=RedoCommand}" Gesture="CTRL+Y"/>
+        <KeyBinding Command="{Binding Path=LoadProgramStateCommand}" CommandParameter="{Binding ElementName=Window}" Gesture="CTRL+O"/>
+        <KeyBinding Command="{Binding Path=SaveShortcutCommand}" Gesture="CTRL+S"/>
     </Window.InputBindings>
 
 
@@ -119,14 +122,17 @@
 
         <Menu x:Name="MainMenu" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Height="22" VerticalAlignment="Top" Width="auto">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open"/>
-                <MenuItem Header="_Save"/>
-                <MenuItem Header="_Save As"/>
+                <MenuItem Header="_Open..."
+                          Command="{Binding Path=LoadProgramStateCommand}" CommandParameter="{Binding ElementName=Window}"/>
+                <MenuItem Header="_Save..."
+                          Command="{Binding Path=SaveProgramStateCommand}"/>
+                <MenuItem Header="_Save As..."
+                          Command="{Binding Path=SaveAsProgramStateCommand}"/>
                 <Separator/>
                 <MenuItem Header="_Import Templates"/>
                 <MenuItem Header="_Export Templates"/>
                 <Separator/>
-                <MenuItem Header="_Print" Command="{Binding Path=OpenPrintDialogCommand}"/>
+                <MenuItem Header="_Print..." Command="{Binding Path=OpenPrintDialogCommand}"/>
                 <Separator/>
                 <MenuItem Header="_Exit"/>
             </MenuItem>

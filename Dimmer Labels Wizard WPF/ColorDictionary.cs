@@ -2,18 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
+    [DataContract]
     public class ColorDictionary : IEnumerable<ColorEntry>
     {
+        // Database and Navigation Properties.
         public int ID { get; set; }
+
+        [DataMember]
         public virtual ICollection<ColorEntry> Entries { get; set; } = new List<ColorEntry>();
 
         // RackType.
+        [DataMember]
         public RackType EntriesRackType { get; set; }
 
         // Propeties.
@@ -133,14 +139,21 @@ namespace Dimmer_Labels_Wizard_WPF
         }
     }
 
+    [DataContract]
     public class ColorEntry
     {
-        // Auto Generated ID.
+        // Database and Navigation Properties.
         public int ID { get; set; }
+        public int ColorDictionaryID { get; set; }
+        public ColorDictionary ColorDictionary { get; set; }
 
         // Key Value Pairings.
+        [DataMember]
         public int UniverseKey { get; set; }
+        [DataMember]
         public int DimmerNumberKey { get; set; }
+
+
         public Color Value
         {
             get
@@ -163,14 +176,16 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public byte A { get; set; } = 255;
+        [DataMember]
         public byte R { get; set; } = 255;
+        [DataMember]
         public byte G { get; set; } = 255;
+        [DataMember]
         public byte B { get; set; } = 255;
 
-        // Foreign Key.
-        public int ColorDictionaryID { get; set; }
-        public ColorDictionary ColorDictionary { get; set; }
+
     }
 
 }

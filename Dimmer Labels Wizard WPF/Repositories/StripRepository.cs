@@ -33,6 +33,8 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
                                   .Include(item => item.AssignedTemplate.UpperCellTemplate)
                                   .Include(item => item.AssignedTemplate.LowerCellTemplate)
                                   .Include(item => item.Mergers)
+                                  .Include(item => item.Mergers.Select(c => c.PrimaryUnit))
+                                  .Include(item => item.Mergers.Select(c => c.ConsumedUnits))
                                   .ToList();
         }
 

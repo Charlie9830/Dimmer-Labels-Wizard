@@ -44,5 +44,17 @@ namespace Dimmer_Labels_Wizard_WPF.Properties {
                 return ((string)(this["DLW_PrimaryDB_Connection"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastUsedFilePath {
+            get {
+                return ((string)(this["LastUsedFilePath"]));
+            }
+            set {
+                this["LastUsedFilePath"] = value;
+            }
+        }
     }
 }

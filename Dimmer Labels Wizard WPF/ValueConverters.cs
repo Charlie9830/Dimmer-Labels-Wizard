@@ -106,4 +106,33 @@ namespace Dimmer_Labels_Wizard_WPF
             throw new NotImplementedException();
         }
     }
+
+    public class PixelsToMillimetresConverter : IValueConverter
+    {
+        private const double _UnitConversionRatio = 96d / 25.4d;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var pixelValue = (double)value;
+
+            // Don't Divide by Zero.
+            if (pixelValue == 0)
+            {
+                return 0;
+            }
+
+            else
+            {
+                return pixelValue / _UnitConversionRatio;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var stringValue = (string)value;
+            double numericValue = double.Parse(stringValue);
+
+            return numericValue * _UnitConversionRatio;
+        }
+    }
 }

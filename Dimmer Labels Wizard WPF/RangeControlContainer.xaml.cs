@@ -32,7 +32,7 @@ namespace Dimmer_Labels_Wizard_WPF
             _RemoveRangeCommand = new RelayCommand(RemoveRangeCommandExecute, RemoveRangeCommandCanExecute);
         }
 
-        #region Interal Binding Sources.
+        #region Internal Binding Sources.
 
         protected ObservableCollection<UserControl> _InternalRangeControl = new ObservableCollection<UserControl>();
 

@@ -698,6 +698,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Overwrite Data.
                 _UnitRepo.RemoveAllUnits();
                 _UnitRepo.InsertUnitRange(importer.Units);
+
+                foreach (var element in importer.Units)
+                {
+                    Console.WriteLine(element.DimmerNumber);
+                }
             }
 
             // Save.

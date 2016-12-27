@@ -66,9 +66,12 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             // Clear Database.
             _UnitRepository.RemoveAllUnits();
-            _TemplateRepository.RemoveAllUserTemplates();
             _StripRepository.RemoveAll();
+            _TemplateRepository.RemoveAllTemplates();
             _ColorDictionaryRepository.RemoveAll();
+
+            // Re-Initialize Database Values.
+            InitializeDatabase();
 
             var ImportWindow = new ImportUnitsWindow();
             var viewModel = ImportWindow.DataContext as ImportUnitsViewModel;

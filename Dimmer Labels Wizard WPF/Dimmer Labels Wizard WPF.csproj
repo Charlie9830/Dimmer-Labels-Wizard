@@ -150,6 +150,7 @@
     <Compile Include="FriendlyImportFormat.cs" />
     <Compile Include="FriendlySearchField.cs" />
     <Compile Include="FriendlySortField.cs" />
+    <Compile Include="GlobalPersistanceManager.cs" />
     <Compile Include="IModifcationNotification.cs" />
     <Compile Include="ImportConfiguration.cs" />
     <Compile Include="ImportUnitsViewModel.cs" />
@@ -274,6 +275,10 @@
     <Compile Include="Migrations\201605181405592_Mergesagain.Designer.cs">
       <DependentUpon>201605181405592_Mergesagain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612100517335_Added StripSpacer.cs" />
+    <Compile Include="Migrations\201612100517335_Added StripSpacer.Designer.cs">
+      <DependentUpon>201612100517335_Added StripSpacer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -287,6 +292,10 @@
     <Compile Include="PaletteDemonstration.xaml.cs">
       <DependentUpon>PaletteDemonstration.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProgramState.cs" />
+    <Compile Include="Repositories\UniqueCellTemplateRepository.cs" />
+    <Compile Include="SerializerKnownTypes.cs" />
+    <Compile Include="TemplatePersitanceManager.cs" />
     <Compile Include="PrimaryDB.cs" />
     <Compile Include="PrimaryDBDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -339,6 +348,14 @@
     <Compile Include="PopUpControlAdorner.cs" />
     <Compile Include="RenderingTesting.cs" />
     <Compile Include="Strip.cs" />
+    <Compile Include="StripSpacer.cs" />
+    <Compile Include="StripSpacerControl.xaml.cs">
+      <DependentUpon>StripSpacerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StripSpacerControlContainer.xaml.cs">
+      <DependentUpon>StripSpacerControlContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StripSpacerControlViewModel.cs" />
     <Compile Include="StyleTemplates.cs" />
     <Compile Include="TemplateEditor.xaml.cs">
       <DependentUpon>TemplateEditor.xaml</DependentUpon>
@@ -465,6 +482,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="StripSpacerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StripSpacerControlContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TemplateEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -570,6 +595,9 @@
     <EmbeddedResource Include="Migrations\201605181405592_Mergesagain.resx">
       <DependentUpon>201605181405592_Mergesagain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612100517335_Added StripSpacer.resx">
+      <DependentUpon>201612100517335_Added StripSpacer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -607,7 +635,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\CloseIcon.png" />
+    <EmbeddedResource Include="Resources\CloseIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -7,18 +7,18 @@ using System.Windows.Media;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Dimmer_Labels_Wizard_WPF.Repositories;
+using System.Runtime.Serialization;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
-    
+    [DataContract]
     public class DimmerDistroUnit : ViewModelBase, IComparable<DimmerDistroUnit>, INotifyModification
     {
         public DimmerDistroUnit()
         {
         }
 
-        // EF Properties.
-
+        // Database and Navigation Properties.
         [InverseProperty("PrimaryUnit")]
         public virtual ICollection<Merge> MergePrimaryUnit { get; set; }
 
@@ -55,6 +55,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string ChannelNumber
         {
             get
@@ -75,6 +76,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string InstrumentName
         {
             get
@@ -95,6 +97,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string MulticoreName
         {
             get
@@ -115,6 +118,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string Position
         {
             get
@@ -135,6 +139,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string UserField1
         {
             get
@@ -155,6 +160,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string UserField2
         {
             get
@@ -175,6 +181,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string UserField3
         {
             get
@@ -195,6 +202,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string UserField4
         {
             get
@@ -215,6 +223,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+        [DataMember]
         public  string Custom
         {
             get
@@ -238,6 +247,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected int _DimmerNumber = 0;
 
+        [DataMember]
         [Key]
         [Column(Order = 3)]
         public  int DimmerNumber
@@ -258,6 +268,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected RackType _RackUnitType;
 
+        [DataMember]
         [Key]
         [Column(Order = 1)]
         public RackType RackUnitType
@@ -352,6 +363,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // Inferred Data
         protected int _UniverseNumber;
+        [DataMember]
         [Key]
         [Column(Order = 2)]
         public int UniverseNumber

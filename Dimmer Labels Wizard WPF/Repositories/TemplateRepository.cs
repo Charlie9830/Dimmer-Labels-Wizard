@@ -32,6 +32,7 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
                            .Include(item => item.UpperCellTemplate.SingleFieldSerializableFont)
                            .Include(item => item.LowerCellTemplate.CellRowTemplates.Select(c => c.SerializableFont))
                            .Include(item => item.LowerCellTemplate.SingleFieldSerializableFont)
+                           .Include(item => item.StripSpacers)
                            .ToList();
         }
 
@@ -79,6 +80,15 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
         public void RemoveTemplate(LabelStripTemplate template)
         {
             _Context.Templates.Remove(template);
+        }
+
+        public void RemoveAllTemplates()
+        {
+            _Context.Database.ExecuteSqlCommand("DELETE from LabelStripTemplates");
+            _Context.Database.ExecuteSqlCommand("DELETE from CellRowTemplates");
+            _Context.Database.ExecuteSqlCommand("DELETE from LabelCellTemplates");
+            _Context.Database.ExecuteSqlCommand("DELETE from SerializableFonts");
+            _Context.Database.ExecuteSqlCommand("DELETE from StripSpacers");
         }
 
         public void RemoveAllUserTemplates()

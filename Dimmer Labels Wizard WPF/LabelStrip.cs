@@ -30,6 +30,11 @@ namespace Dimmer_Labels_Wizard_WPF
         /// </summary>
         public LabelStrip()
         {
+            // DP Collections.
+            SetValue(StripSpacersProperty, new List<StripSpacer>());
+            ClearValue(StripSpacersProperty); // Clear the Value so that it may be modified by a Style Setter.
+            // These two lines of code may be acheiving nothing as they are probably just undoing themselves.
+
             // Event Handlers.
             UpperCells.CollectionChanged += UpperCells_CollectionChanged;
             LowerCells.CollectionChanged += LowerCells_CollectionChanged;
@@ -129,6 +134,90 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+        public IList<StripSpacer> StripSpacers
+        {
+            get { return (IList<StripSpacer>)GetValue(StripSpacersProperty); }
+            set { SetValue(StripSpacersProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for StripSpacers.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StripSpacersProperty =
+            DependencyProperty.Register("StripSpacers", typeof(IList<StripSpacer>), typeof(LabelStrip),
+                new FrameworkPropertyMetadata(new List<StripSpacer>(),
+                    new PropertyChangedCallback(OnStripSpacersPropertyChanged),
+                    new CoerceValueCallback(CoerceStripSpacers))); 
+
+        private static object CoerceStripSpacers(DependencyObject d, object baseValue)
+        {
+            return baseValue;
+        }
+
+        private static void OnStripSpacersPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelStrip;
+
+            // Curate and Re-Assert Strip Spacers.
+            instance.CurateStripSpacers(CellVerticalPosition.Upper);
+            instance.CurateStripSpacers(CellVerticalPosition.Lower);        
+        }
+
+
+        private void CurateStripSpacers(CellVerticalPosition collectionVerticalPosition)
+        {
+            ObservableCollection<LabelCell> cellCollection;
+            double spacerHeight = 0;
+
+            // Prepare collections.
+            if (collectionVerticalPosition == CellVerticalPosition.Upper)
+            {
+                cellCollection = UpperCells;
+                spacerHeight = StripMode == LabelStripMode.Dual ?
+                    StripHeight : StripHeight / _SingleLabelStripUpperHeightRatio;
+            }
+
+            else
+            {
+                cellCollection = LowerCells;
+                spacerHeight = StripMode == LabelStripMode.Dual ?
+                    StripHeight : StripHeight / _SingleLabelStripLowerHeightRatio;
+            }
+
+            // Purge Collection of Old Spacers.
+            var spacerIndexes = from spacer in StripSpacers
+                        select spacer.Index;
+
+            var oldSpacerCells = (from cell in cellCollection
+                                  where cell.IsSpacerCell == true &&
+                                  !spacerIndexes.Contains(cellCollection.IndexOf(cell) + 1)
+                                  select cell).ToList();
+
+            foreach (var element in oldSpacerCells)
+            {
+                cellCollection.Remove(element);
+            }
+
+            // Add or Update Spacers in Cell Collection.
+            foreach (var spacer in StripSpacers)
+            {
+                if (spacer.Index - 1 < cellCollection.Count)
+                {
+                    if (cellCollection[spacer.Index - 1].IsSpacerCell == true)
+                    {
+                        // Update Existing Spacer Cell.
+                        var spacerCell = cellCollection[spacer.Index - 1];
+                        spacerCell.Width = spacer.Width;
+                        spacerCell.Height = spacerHeight;
+                    }
+
+                    else
+                    {
+                        // Insert New Cell.
+                        cellCollection.Insert(spacer.Index, CreateNewSpacerCell(spacer.Width, spacerHeight));
+                    }
+                }
+            }
+        }
+      
         public IList<LabelCell> Cells
         {
             get { return (IList<LabelCell>)GetValue(CellsProperty); }
@@ -192,14 +281,14 @@ namespace Dimmer_Labels_Wizard_WPF
             if (newCollection != null)
             {
                 newCollection.CollectionChanged += instance.Mergers_CollectionChanged;
+            }
 
-                // Handle Existing Elements
-                var collection = e.NewValue as IEnumerable<Merge>;
+            // Handle Existing Elements
+            var collection = e.NewValue as IEnumerable<Merge>;
 
-                foreach (var element in collection)
-                {
-                    instance.Merge(element);
-                }
+            foreach (var element in collection)
+            {
+                instance.Merge(element);
             }
         }
 
@@ -519,9 +608,10 @@ namespace Dimmer_Labels_Wizard_WPF
             var instance = d as LabelStrip;
             int newCount = (int)e.NewValue;
             int oldCount = (int)e.OldValue;
-            int difference = newCount - oldCount;
             var upperCells = instance.UpperCells;
             int collectionCount = upperCells.Count;
+            int difference = newCount - oldCount;
+            var stripSpacers = instance.StripSpacers;
 
             if (newCount == collectionCount)
             {
@@ -550,6 +640,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     upperCells.Add(new LabelCell());
                 }
+
+                // Re-Asssert Strip Spacers.
+                instance.CurateStripSpacers(CellVerticalPosition.Upper);
             }
         }
 
@@ -618,6 +711,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     lowerCells.Add(new LabelCell());
                 }
+
+                // Re-Asssert Strip Spacers.
+                instance.CurateStripSpacers(CellVerticalPosition.Lower);
             }
         }
 
@@ -723,7 +819,10 @@ namespace Dimmer_Labels_Wizard_WPF
                         _UpperStackPanel.Children.Insert(e.NewStartingIndex, cell);
 
                         // Add to Cells Collection.
-                        Cells.Add(cell);
+                        if (cell.IsSpacerCell == false)
+                        {
+                            Cells.Add(cell);
+                        }
 
                         // Set Vertical Position Flag.
                         cell.CellVerticalPosition = CellVerticalPosition.Upper;
@@ -741,14 +840,20 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
                         // Set Template
-                        cell.Style = UpperCellTemplate.Style;
+                        if (cell.IsSpacerCell == false)
+                        {
+                            cell.Style = UpperCellTemplate.Style;
+                        }
 
                         // Refresh LineWeights.
                         RefreshLineweights(cell);
 
                         // Connect Event Handler.
-                        cell.PropertyChanged += UpperCell_PropertyChanged;
-                        cell.MouseDown += Cell_MouseDown;
+                        if (cell.IsSpacerCell == false)
+                        {
+                            cell.PropertyChanged += UpperCell_PropertyChanged;
+                            cell.MouseDown += Cell_MouseDown;
+                        }
                     }
                 }
             }
@@ -763,7 +868,10 @@ namespace Dimmer_Labels_Wizard_WPF
                     _UpperStackPanel.Children.Remove(cell);
 
                     // Remove from Cells Collection.
-                    Cells.Remove(cell);
+                    if (cell.IsSpacerCell == false)
+                    {
+                        Cells.Remove(cell);
+                    }
 
                     // Deselect if Selected.
                     if (cell.IsSelected == true)
@@ -782,15 +890,31 @@ namespace Dimmer_Labels_Wizard_WPF
                     RefreshLineweights();
 
                     // Disconnect Event Handler.
-                    cell.PropertyChanged -= UpperCell_PropertyChanged;
-                    cell.MouseDown -= Cell_MouseDown;
+                    if (cell.IsSpacerCell == false)
+                    {
+                        cell.PropertyChanged -= UpperCell_PropertyChanged;
+                        cell.MouseDown -= Cell_MouseDown;
+                    }
                 }
             }
 
             // Set Cell Widths.
             foreach (var cell in collection)
             {
-                cell.BaseWidth = StripWidth / DataSource.Count();
+                if (cell.IsSpacerCell == false)
+                {
+                    int dataSourceCount = DataSource.Count();
+
+                    if (dataSourceCount == 0)
+                    {
+                        cell.BaseWidth = 0;
+                    }
+
+                    else
+                    {
+                        cell.BaseWidth = StripWidth / dataSourceCount;
+                    }
+                }
             }
 
             // Update Horizontal Position Indexes.
@@ -821,7 +945,10 @@ namespace Dimmer_Labels_Wizard_WPF
                         _LowerStackPanel.Children.Insert(e.NewStartingIndex, cell);
 
                         // Add to Cells Collection.
-                        Cells.Add(cell);
+                        if (cell.IsSpacerCell == false)
+                        {
+                            Cells.Add(cell);
+                        }
 
                         // Set Vertical Position Flag.
                         cell.CellVerticalPosition = CellVerticalPosition.Lower;
@@ -838,14 +965,20 @@ namespace Dimmer_Labels_Wizard_WPF
                         }
 
                         // Set Template
-                        cell.Style = LowerCellTemplate.Style;
+                        if (cell.IsSpacerCell == false)
+                        {
+                            cell.Style = LowerCellTemplate.Style;
+                        }
 
                         // Refresh new LineWeights.
                         RefreshLineweights(cell);
 
                         // Connect event Handlers.
-                        cell.PropertyChanged += LowerCell_PropertyChanged;
-                        cell.MouseDown += Cell_MouseDown;
+                        if (cell.IsSpacerCell == false)
+                        {
+                            cell.PropertyChanged += LowerCell_PropertyChanged;
+                            cell.MouseDown += Cell_MouseDown;
+                        }
                     }
                 }
             }
@@ -860,7 +993,10 @@ namespace Dimmer_Labels_Wizard_WPF
                     _LowerStackPanel.Children.Remove(cell);
 
                     // Remove from Cells Collection.
-                    Cells.Remove(cell);
+                    if (cell.IsSpacerCell == false)
+                    {
+                        Cells.Remove(cell);
+                    }
 
                     // Deselect if Selected.
                     if (cell.IsSelected == true)
@@ -879,15 +1015,31 @@ namespace Dimmer_Labels_Wizard_WPF
                     RefreshLineweights();
 
                     // Disconnect Event Handlers.
-                    cell.PropertyChanged -= LowerCell_PropertyChanged;
-                    cell.MouseDown -= Cell_MouseDown;
+                    if (cell.IsSpacerCell == false)
+                    {
+                        cell.PropertyChanged -= LowerCell_PropertyChanged;
+                        cell.MouseDown -= Cell_MouseDown;
+                    }
                 }
             }
 
             // Set Cell Widths.
             foreach (var cell in collection)
             {
-                cell.BaseWidth = StripWidth / DataSource.Count();
+                if (cell.IsSpacerCell == false)
+                {
+                    int dataSourceCount = DataSource.Count();
+
+                    if (dataSourceCount == 0)
+                    {
+                        cell.BaseWidth = 0;
+                    }
+
+                    else
+                    {
+                        cell.BaseWidth = StripWidth / dataSourceCount;
+                    }
+                }
             }
 
             // Update Horizontal Position Indexes.
@@ -1226,6 +1378,12 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Private or Protected Methods
+        private static LabelCell CreateNewSpacerCell(double width, double height)
+        {
+            return new LabelCell() { IsSpacerCell = true, Width = width, Height = height };
+        }
+
+
         private static void RefreshCellTemplates(LabelCellTemplate newTemplate, IEnumerable<LabelCellTemplate> uniqueTemplates,
             ObservableCollection<LabelCell> cellCollection)
         {
@@ -1292,8 +1450,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
 
-            UpperCellCount = newDataSource.Count() - upperTotalConsumedUnits;
-            LowerCellCount = newDataSource.Count() - lowerTotalConsumedUnits;
+            // Update Cell Counts, but ensure that StripSpacers cannot exist by themselves.
+            int upperCellCountBuffer = newDataSource.Count() - upperTotalConsumedUnits;
+            int lowerCellCountBuffer = newDataSource.Count() - lowerTotalConsumedUnits;
+
+            UpperCellCount = upperCellCountBuffer != 0 ? upperCellCountBuffer + StripSpacers.Count : 0;
+            LowerCellCount = lowerCellCountBuffer != 0 ? lowerCellCountBuffer + StripSpacers.Count : 0;
 
             // Assign UpperCells DataReferences
             IEnumerator<LabelCell> upperCellsEnum = UpperCells.GetEnumerator();
@@ -1302,6 +1464,21 @@ namespace Dimmer_Labels_Wizard_WPF
             // Iterate both UpperCells and DataSource.
             while (upperCellsEnum.MoveNext() && dataSourceEnum.MoveNext())
             {
+                // You can Skip a Spacer Cell safely as long as it's Not the last Cell in the Collection.
+                // if it is the last in the collection, you need to convert it to a Standard Cell.
+                if (upperCellsEnum.Current.IsSpacerCell)
+                {
+                    if (upperCellsEnum.Current != UpperCells.Last())
+                    {
+                        upperCellsEnum.MoveNext();
+                    }
+
+                    else
+                    {
+                        upperCellsEnum.Current.IsSpacerCell = false;
+                    }
+                }
+
                 // Set Primary Data Reference.
                 upperCellsEnum.Current.DataReference = dataSourceEnum.Current;
 
@@ -1328,6 +1505,26 @@ namespace Dimmer_Labels_Wizard_WPF
             // Iterate both LowerCells and DataSource.
             while (lowerCellsEnum.MoveNext() && dataSourceEnum.MoveNext())
             {
+                // You can Skip a Spacer Cell safely as long as it's Not the last Cell in the Collection.
+                // if it is the last in the collection, you need to convert it to a Standard Cell.
+                if (lowerCellsEnum.Current.IsSpacerCell)
+                {
+                    if (lowerCellsEnum.Current != LowerCells.Last())
+                    {
+                        lowerCellsEnum.MoveNext();
+                    }
+
+                    else
+                    {
+                        lowerCellsEnum.Current.IsSpacerCell = false;
+                    }
+                }
+
+                if (lowerCellsEnum.Current.IsSpacerCell)
+                {
+                    lowerCellsEnum.MoveNext();
+                }
+
                 // Set Primary Data Reference.
                 lowerCellsEnum.Current.DataReference = dataSourceEnum.Current;
 

@@ -55,10 +55,12 @@
                 
                 <ListBox.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Rename Selected Template" Command="{Binding Path=RenameTemplateCommand}"/>
+                        <MenuItem Header="Rename Selected Template" Command="{Binding Path=RenameTemplateCommand}"
+                                  IsEnabled="False"/>
                         <Separator/>
                         <MenuItem Header="Add new Template..." Command="{Binding Path=CreateNewTemplateCommand}"/>
-                        <MenuItem Header="Remove Selected Template" Command="{Binding Path=RemoveExistingTemplateCommand}"/>
+                        <MenuItem Header="Remove Selected Template" Command="{Binding Path=RemoveExistingTemplateCommand}"
+                                  IsEnabled="False"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
@@ -67,6 +69,10 @@
                         Command="{Binding Path=CreateNewTemplateCommand}"/>
                 <Button Content="-" Height="20" Width="20"
                         Command="{Binding Path=RemoveExistingTemplateCommand}"/>
+                <Button Content="Import" Height="20" Width="45" Margin="5,0,5,0"
+                        Command="{Binding Path=ImportTemplateCommand}"/>
+                <Button Content="Export" Height="20" Width="45"
+                        Command="{Binding Path=ExportTemplateCommand}"/>
             </StackPanel>
         </Grid>
 
@@ -102,7 +108,8 @@
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="1*"/>
                                     <RowDefinition Height="1*"/>
-                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="1*"/>
+                                    <RowDefinition Height="1*"/>
                                 </Grid.RowDefinitions>
 
                                 <Grid.ColumnDefinitions>
@@ -133,9 +140,15 @@
                                ItemsSource="{Binding Path=StripModes}" SelectedItem="{Binding Path=SelectedStripMode}"/>
 
                                 <!-- Row 4 -->
-                                <local:CellTemplateControl Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Upper Cell Template Settings"
+                                <Label Content="Strip Spacers" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center"
+                                       Style="{StaticResource ControlLabelStyle}"/>
+                                <local:StripSpacerControlContainer Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="5"
+                                                                   StripSpacers="{Binding Path=StripSpacers}"/>
+                                
+                                <!-- Row 5 -->
+                                <local:CellTemplateControl Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Upper Cell Template Settings"
                                                    CellTemplate="{Binding Path=UpperCellTemplate, Mode=TwoWay}"/>
-                                <local:CellTemplateControl Grid.Row="4" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Lower Cell Template Settings"
+                                <local:CellTemplateControl Grid.Row="5" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Lower Cell Template Settings"
                                                    CellTemplate="{Binding Path=LowerCellTemplate, Mode=TwoWay}"/>
 
                             </Grid>

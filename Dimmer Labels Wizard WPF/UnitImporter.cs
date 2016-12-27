@@ -214,6 +214,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     // Get a collection of existing Dimmer Numbers that fall within the current Range.
                     var existingDimmerNumbers = from unit in Units
+                                where unit.RackUnitType == RackType.Dimmer
                                 where unit.UniverseNumber == range.Universe &&
                                 unit.DimmerNumber >= range.FirstDimmerNumber &&
                                 unit.DimmerNumber <= range.LastDimmerNumber
@@ -248,6 +249,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     // Get a collection of existing Dimmer Numbers that fall within the current Range.
                     var existingDimmerNumbers = from unit in Units
+                                                where unit.RackUnitType == RackType.Distro
                                                 where unit.DimmerNumber >= range.FirstDimmerNumber &&
                                                 unit.DimmerNumber <= range.LastDimmerNumber
                                                 select unit.DimmerNumber;

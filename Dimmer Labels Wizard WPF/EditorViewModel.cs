@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using Dimmer_Labels_Wizard_WPF.Repositories;
+using Microsoft.Win32;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -50,9 +51,15 @@ namespace Dimmer_Labels_Wizard_WPF
             _OpenDatabaseManagerCommand = new RelayCommand(OpenDatabaseManagerCommandExecute);
             _OpenPrintDialogCommand = new RelayCommand(OpenPrintDialogExecute);
             _AutoMergeCellsCommand = new RelayCommand(AutoMergeCellsCommandExecute);
+            _SaveProgramStateCommand = new RelayCommand(SaveProgramStateCommandExecute, SaveProgramStateCommandCanExecute);
+            _SaveAsProgramStateCommand = new RelayCommand(SaveAsProgramStateCommandExecute);
+            _LoadProgramStateCommand = new RelayCommand(LoadProgramStateCommandExecute);
+            _SaveShortcutCommand = new RelayCommand(SaveShortcutCommandExecute);
 
             // Initialize UndoRedoManager.
             UndoRedoManager = new UndoRedoManager(_UnitRepository);
+
+            LastUsedFilePath = string.Empty;
         }
 
         #region Fields
@@ -81,9 +88,30 @@ namespace Dimmer_Labels_Wizard_WPF
         };
 
         protected bool InPresentStripDataOperation = false;
+
+        protected const string _FileExt = "lab";
+        protected const string _ExtFilter = "Dimmer Labels Wizard Label Files (.lab) |*.lab";
+
         #endregion
 
         #region CLR Properties - Binding Target.
+
+        protected Cursor _WindowCursor = null;
+
+        public Cursor WindowCursor
+        {
+            get { return _WindowCursor; }
+            set
+            {
+                if (_WindowCursor != value)
+                {
+                    _WindowCursor = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(WindowCursor));
+                }
+            }
+        }
 
         protected double _LabelScale = 1d;
 
@@ -642,6 +670,18 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region CLR Properties.
+        public string LastUsedFilePath
+        {
+            get
+            {
+                return Properties.Settings.Default.LastUsedFilePath;
+            }
+            set
+            {
+                Properties.Settings.Default.LastUsedFilePath = value;
+            }
+        }
+
         private ObservableCollection<CellRow> _SelectedRows = new ObservableCollection<CellRow>();
 
         public ObservableCollection<CellRow> SelectedRows
@@ -654,6 +694,284 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Commands
+        protected RelayCommand _SaveShortcutCommand;
+        public ICommand SaveShortcutCommand
+        {
+            get
+            {
+                return _SaveShortcutCommand;
+            }
+        }
+
+        protected void SaveShortcutCommandExecute(object parameter)
+        {
+            if (SaveProgramStateCommandCanExecute(new object()) == true)
+            {
+                SaveProgramState();
+            }
+
+            else
+            {
+                SaveAsProgramState();
+            }
+        }
+
+
+        protected RelayCommand _SaveProgramStateCommand;
+        public ICommand SaveProgramStateCommand
+        {
+            get
+            {
+                return _SaveProgramStateCommand;
+            }
+        }
+
+        protected void SaveProgramStateCommandExecute(object parameter)
+        {
+            // Save or Save As.
+            if (LastUsedFilePath == string.Empty)
+            {
+                SaveAsProgramState();
+            }
+
+            else
+            {
+                SaveProgramState();
+            }
+            
+        }
+
+        protected void SaveProgramState()
+        {
+            ShowWaitCursor();
+
+            if (LastUsedFilePath != string.Empty)
+            {
+                var programState = GetProgramState();
+
+                // Initialize Serializer.
+                var serializer = new GlobalPersistanceManager(LastUsedFilePath);
+                serializer.SerializeProgramState(programState);
+            }
+
+            ClearWaitCursor();
+        }
+
+        private ProgramState GetProgramState()
+        {
+            // Save progress to Database.
+            PersistData();
+
+            // Initialize new Serializer Friendly DB Context.
+            using (var context = new PrimaryDB(true))
+            {
+                var unitRepo = new UnitRepository(context);
+                var stripRepo = new StripRepository(context);
+                var templateRepo = new TemplateRepository(context);
+                var colorRepo = new ColorDictionaryRepository(context);
+
+                // Package up Program State.
+                var programState = new ProgramState();
+
+                programState.Units.AddRange(unitRepo.GetUnits());
+                programState.Strips.AddRange(stripRepo.GetStrips());
+                programState.Templates.AddRange(templateRepo.GetTemplates());
+                programState.ColorDictionaries.Add(colorRepo.DimmerColorDictionary);
+                programState.ColorDictionaries.Add(colorRepo.DistroColorDictionary);
+
+                return programState;
+            }
+        }
+
+        protected bool SaveProgramStateCommandCanExecute(object parameter)
+        {
+            return LastUsedFilePath != string.Empty;
+        }
+
+
+        protected RelayCommand _SaveAsProgramStateCommand;
+        public ICommand SaveAsProgramStateCommand
+        {
+            get
+            {
+                return _SaveAsProgramStateCommand;
+            }
+        }
+
+        protected void SaveAsProgramStateCommandExecute(object parameter)
+        {
+            SaveAsProgramState();
+        }
+
+        protected void SaveAsProgramState()
+        {
+            ShowWaitCursor();
+
+            var programState = GetProgramState();
+
+            var saveDialog = new SaveFileDialog();
+            saveDialog.Filter = _ExtFilter;
+            saveDialog.DefaultExt = _FileExt;
+
+            if (saveDialog.ShowDialog() == true)
+            {
+                string filePath = saveDialog.FileName;
+
+                // Initialize Serializer.
+                var serializer = new GlobalPersistanceManager(filePath);
+                serializer.SerializeProgramState(programState);
+
+                // Store File Path.
+                LastUsedFilePath = filePath;
+
+                // Executes.
+                _SaveProgramStateCommand.CheckCanExecute();
+            }
+
+            ClearWaitCursor();
+        }
+
+        protected RelayCommand _LoadProgramStateCommand;
+        public ICommand LoadProgramStateCommand
+        {
+            get
+            {
+                return _LoadProgramStateCommand;
+            }
+        }
+
+        protected void LoadProgramStateCommandExecute(object parameter)
+        {
+            var window = parameter as Window;
+
+            string messageBoxText = "Changes will be lost, would you like to save changes to the current Labels?";
+            string caption = "Open Labels";
+
+            switch (MessageBox.Show(messageBoxText, caption, MessageBoxButton.YesNoCancel))
+            {
+                case MessageBoxResult.Yes:
+                    if (LastUsedFilePath == string.Empty)
+                    {
+                        SaveAsProgramState();
+                        LoadProgramState(window);
+                        break;
+                    }
+
+                    else
+                    {
+                        SaveProgramState();
+                        LoadProgramState(window);
+                        break;
+                    }
+
+                case MessageBoxResult.No:
+                    LoadProgramState(window);
+                    break;
+
+                case MessageBoxResult.Cancel:
+                    return;
+
+                default:
+                    break;
+            }
+        }
+
+        protected void LoadProgramState(Window window)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Filter = _ExtFilter;
+            dialog.DefaultExt = _FileExt;
+
+            if (dialog.ShowDialog() == true)
+            {
+                string filePath = dialog.FileName;
+
+                var serializer = new GlobalPersistanceManager(filePath);
+                ProgramState incomingProgramingState = serializer.DeserializeProgramState();
+
+                if (incomingProgramingState == null)
+                {
+                    MessageBox.Show("Something went wrong, Please check the file type and try again.",
+                        "File Format Error", MessageBoxButton.OK);
+                    return;
+                }
+
+                // You Should Somehow Vet the incoming Program State here before you Wipe the Database.
+
+                // Clear the Database.
+                var colorRepo = new ColorDictionaryRepository(_Context);
+
+                _UnitRepository.RemoveAllUnits();
+                _StripRepository.RemoveAll();
+                _TemplateRepository.RemoveAllTemplates();                
+                colorRepo.RemoveAll();
+
+                // The Repo Remove functions directly fire SQL commands to the Database, therefore, a new Context needs to
+                // be created to ensure it is in Sync with the DB.
+                using (var context = new PrimaryDB())
+                {
+                    var unitRepository = new UnitRepository(context);
+                    var templateRepository = new TemplateRepository(context);
+                    var stripRepository = new StripRepository(context);
+                    colorRepo = new ColorDictionaryRepository(context);
+
+
+                    // Insert Incoming Data.
+                    foreach (var unit in incomingProgramingState.Units)
+                    {
+                        unitRepository.InsertUnit(unit);
+                    }
+
+                    foreach (var template in incomingProgramingState.Templates)
+                    {
+                        templateRepository.InsertTemplate(template);
+                    }
+
+                    foreach (var strip in incomingProgramingState.Strips)
+                    {
+                        stripRepository.Insert(strip);
+                    }
+
+                    foreach (var dictionary in incomingProgramingState.ColorDictionaries)
+                    {
+                        if (dictionary.EntriesRackType == RackType.Dimmer)
+                        {
+                            foreach (var entry in dictionary)
+                            {
+                                colorRepo.DimmerColorDictionary.Add(entry.UniverseKey, entry.DimmerNumberKey, entry.Value);
+                            }
+                        }
+
+                        if (dictionary.EntriesRackType == RackType.Distro)
+                        {
+                            foreach (var entry in dictionary)
+                            {
+                                colorRepo.DistroColorDictionary.Add(entry.UniverseKey, entry.DimmerNumberKey, entry.Value);
+                            }
+                        }
+                    }
+
+                    unitRepository.Save();
+                    templateRepository.Save();
+                    stripRepository.Save();
+                    colorRepo.Save();
+                }
+
+                // Persist FilePath.
+                LastUsedFilePath = filePath;
+
+                // Reload the Window.
+                window.Close();
+                var newEditor = new Editor();
+
+                // Set LastUsedFilePath value of new ViewModel.
+                var viewModel = newEditor.DataContext as EditorViewModel;
+                viewModel.LastUsedFilePath = filePath;
+
+                newEditor.Show();
+                _Context.Dispose();
+            }
+        }
 
         protected RelayCommand _AutoMergeCellsCommand;
         public ICommand AutoMergeCellsCommand
@@ -746,6 +1064,9 @@ namespace Dimmer_Labels_Wizard_WPF
 
         protected void OpenPrintDialogExecute(object parameter)
         {
+            // Push to Database.
+            PersistData();
+
             var dialog = new PrintWindow();
 
             dialog.ShowDialog();
@@ -1562,6 +1883,16 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods
+        protected void ShowWaitCursor()
+        {
+            WindowCursor = Cursors.Wait;
+        }
+
+        protected void ClearWaitCursor()
+        {
+            WindowCursor = null;
+        }
+
         public void PersistData()
         {
             _TemplateRepository.Save();

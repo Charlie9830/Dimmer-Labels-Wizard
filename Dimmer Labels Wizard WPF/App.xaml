@@ -16,6 +16,9 @@
         
         <!-- Icons -->
         <Image x:Key="CloseIcon" Source="/Resources/CloseIcon.png" Stretch="Uniform"/>
+        
+        <!-- Device Independent Pixels to Millimetres Converter -->
+        <local:PixelsToMillimetresConverter x:Key="PixelsToMMConverter"/>
 
         <!-- Boolean to Visibilty Converter, True == Visible, False == Collapsed -->
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>

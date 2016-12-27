@@ -18,5 +18,8 @@
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
       <Value Profile="(Default)">Data Source=(LocalDb)\MSSQLLocalDB;Initial Catalog=Dimmer_Labels_Wizard_WPF.PrimaryDB;Integrated Security=True</Value>
     </Setting>
+    <Setting Name="LastUsedFilePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
