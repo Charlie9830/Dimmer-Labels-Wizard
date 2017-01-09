@@ -281,10 +281,13 @@ namespace Dimmer_Labels_Wizard_WPF
             labelStrip.Style = strip.AssignedTemplate.Style;
 
             // Load Unique UpperCellTemplates.
-            labelStrip.UniqueUpperCellTemplates = strip.UpperUniqueCellTemplates;
+            throw new NotSupportedException("You have forgotten to Re-Implement UniqueCellTemplates Below.");
+
+            //labelStrip.UniqueUpperCellTemplates = strip.UpperUniqueCellTemplates;
 
             // Load Unique LowerCellTemplates.
-            labelStrip.UniqueLowerCellTemplates = strip.LowerUniqueCellTemplates;
+            //labelStrip.UniqueLowerCellTemplates = strip.LowerUniqueCellTemplates;
+
             return labelStrip;
         }
 

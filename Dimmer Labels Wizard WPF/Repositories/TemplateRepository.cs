@@ -27,6 +27,7 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
 
         public IList<LabelStripTemplate> GetTemplates()
         {
+            // Changes in Include Statements should be carried over to UniqueCellTemplateRepository.GetUniqueTemplates().
             return _Context.Templates
                            .Include(item => item.UpperCellTemplate.CellRowTemplates.Select(c => c.SerializableFont))
                            .Include(item => item.UpperCellTemplate.SingleFieldSerializableFont)

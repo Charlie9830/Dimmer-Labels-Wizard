@@ -433,7 +433,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
 
                 // Modify Template name if required.
-                incomingTemplate.Name = ValidateAndAppendTemplateName(incomingTemplate.Name);
+                // Get a Collection of Existing Template Names.
+                var existingTemplateNames = from template in ExistingTemplates
+                                    select template.Name;
+
+                // Get a Unique Name.
+                incomingTemplate.Name = incomingTemplate.Name.ValidateAndAppendName(existingTemplateNames);
 
                 // Insert into Database.
                 _TemplateRepository.InsertTemplate(incomingTemplate);
@@ -447,56 +452,7 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected string ValidateAndAppendTemplateName(string incomingTemplateName)
-        {
-            var existingTemplates = ExistingTemplates.ToList();
-
-            if (existingTemplates != null)
-            {
-                // Filter to just the Template Names.
-                var templateNames = from template in existingTemplates
-                                    select template.Name;
-
-                // Find existing Identical Names.
-                var existingIdenticalNames = (from name in templateNames
-                                             where name == incomingTemplateName
-                                             select name).ToList();
-
-                if (existingIdenticalNames.Count > 0)
-                {
-                    // Existing Name found.
-                    string existingName = existingIdenticalNames.First();
-
-                    if (existingName == string.Empty)
-                    {
-                        return ValidateAndAppendTemplateName("Imported Template");
-                    }
-
-                    char lastChar = existingName.ToArray().Last();
-                    if (char.IsNumber(lastChar) == true)
-                    {
-                        // Number has already been Appended, Iterate it.
-                        int number = int.Parse(lastChar.ToString());
-                        number++;
-                        return ValidateAndAppendTemplateName(incomingTemplateName + " " + number);
-                    }
-
-                    else
-                    {
-
-                        return ValidateAndAppendTemplateName(incomingTemplateName + " " + 1);
-                    }
-                }
-
-                else
-                {
-                    // No Existing name Found.
-                    return incomingTemplateName;
-                }
-            }
-
-            return incomingTemplateName;
-        }
+       
 
         protected RelayCommand _ExportTemplateCommand;
         public ICommand ExportTemplateCommand
@@ -745,22 +701,25 @@ namespace Dimmer_Labels_Wizard_WPF
 
         private List<DimmerDistroUnit> GenerateExampleUnits()
         {
+            int desiredExampleQty = 12;
+            DimmerDistroUnit demoUnit = (DimmerDistroUnit)Application.Current.Resources["DemoUnit"];
+
             var exampleUnit = new DimmerDistroUnit()
             {
-                ChannelNumber = "Chan",
-                InstrumentName = "Instr",
-                Position = "Position",
-                MulticoreName = "Multi",
-                UserField1 = "User Field 1",
-                UserField2 = "User Field 2",
-                UserField3 = "User Field 3",
-                UserField4 = "User Field 4",
-                Custom = "Custom",
+                ChannelNumber = demoUnit.ChannelNumber,
+                InstrumentName = demoUnit.InstrumentName,
+                Position = demoUnit.Position,
+                MulticoreName = demoUnit.MulticoreName,
+                UserField1 = demoUnit.UserField1,
+                UserField2 = demoUnit.UserField2,
+                UserField3 = demoUnit.UserField3,
+                UserField4 = demoUnit.UserField4,
+                Custom = demoUnit.Custom,
             };
 
             var examples = new List<DimmerDistroUnit>();
 
-            for (int count = 1; count <= 12; count++)
+            for (int count = 1; count <= desiredExampleQty; count++)
             {
                 examples.Add(exampleUnit);
             }

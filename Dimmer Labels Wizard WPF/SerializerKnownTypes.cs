@@ -22,6 +22,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 // LabelCellTemplate and it's Child Types.
                 typeof(LabelCellTemplate),
                 typeof(SerializableFont),
+                typeof(StripAddress),
 
                 // CellRowTemplate and It's Child Types.
                 typeof(CellRowTemplate),

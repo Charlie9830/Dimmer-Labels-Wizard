@@ -50,7 +50,7 @@
                     </Grid.ColumnDefinitions>
 
                     <ListBox Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Margin="5" 
-                                             ScrollViewer.VerticalScrollBarVisibility="Visible" Height="95"
+                                             ScrollViewer.VerticalScrollBarVisibility="Visible" Height="95" Width="150"
                                               ItemsSource="{Binding Path=RowTemplates}" SelectedItem="{Binding Path=SelectedRowTemplate}"/>
 
                     <!-- Row 0 -->

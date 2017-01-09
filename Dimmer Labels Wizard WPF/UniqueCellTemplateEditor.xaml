@@ -6,42 +6,96 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="UniqueCellTemplateEditor" d:DesignHeight="600" d:DesignWidth="500" SizeToContent="WidthAndHeight" 
+        Title="UniqueCellTemplateEditor" d:DesignHeight="600" d:DesignWidth="680" SizeToContent="WidthAndHeight" 
         ResizeMode="NoResize">
 
     <Window.DataContext>
         <local:UniqueCellTemplateEditorViewModel/>
     </Window.DataContext>
 
+
     <Grid Background="{StaticResource WindowBackground}" Width="auto" Height="auto">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.15*"/>
-            <RowDefinition Height="0.75*"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="0.25*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
         
         <!-- Row 0 -->
-        <Label Content="Unique Cell Template"
+        <Label Content="Special Cell Template Manager" Grid.Column="0" Grid.ColumnSpan="2"
                Style="{StaticResource WindowHeaderStyle}"/>
 
         <!-- Row 1 -->
-        <Border Grid.Row="1" Margin="10" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
+        <Border Grid.Row="1" Height="150" Margin="0,10,0,5" Grid.Column="1"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"
                 Background="{StaticResource ControlGridBackground}">
-            <local:LabelCell Style="{Binding Path=DisplayedTemplate}" RenderTransformOrigin="0.5,0.5"
-                             DataReference="{Binding Path=DataReference}">
+            <local:LabelCell Style="{Binding Path=DisplayedStyle}" RenderTransformOrigin="0.5,0.5"
+                             DataReference="{Binding Path=DataReference}"
+                             d:DataContext="">
             </local:LabelCell>
         </Border>
 
+        <DockPanel Grid.Row="1" Grid.RowSpan="3" Grid.Column="0"
+                    VerticalAlignment="Stretch">
+            <ListBox DockPanel.Dock="Bottom" Width="160" Margin="5,10,5,5" Height="360"
+                     ItemsSource="{Binding Path=ExistingUniqueCellTemplates}"
+                     SelectedItem="{Binding Path=SelectedExistingTemplate}"
+                     ItemTemplate="{StaticResource UniqueTemplateItemTemplate}"/>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Height="20"
+                        VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button Content="+" Width="20" Height="20" Margin="0,0,3,0"
+                        Command="{Binding Path=CreateNewUniqueTemplateCommand}"/>
+                <Button Content="-" Width="20" Height="20" Margin="0,0,5,0"
+                        Command="{Binding Path=RemoveUniqueTemplateCommand}"/>
+            </StackPanel>
+        </DockPanel>
+        
+
         <!-- Row 2 -->
-        <local:CellTemplateControl Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                                   CellTemplate="{Binding Path=DisplayedTemplate}"/>
+        <HeaderedContentControl Grid.Row="2" Grid.Column="1" Header="Template Settings"
+                                Style="{StaticResource HeaderedControlStyle}">
+            <Grid Background="{StaticResource ControlGridBackground}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Name" Grid.Row="0" Grid.Column="0"
+                       Style="{StaticResource ControlLabelStyle}"/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                    <TextBox Height="20" Width="130" HorizontalAlignment="Left" VerticalAlignment="Center"
+                         Text="{Binding Path=TemplateName}"/>
+                    <Label Content="In Use" Foreground="Red"
+                           Visibility="{Binding Path=ValidTemplateNameInverse, Converter={StaticResource BoolToVis}}"/>
+                </StackPanel>
+                
+                
+            </Grid>
+            
+        </HeaderedContentControl>
 
         <!-- Row 3 -->
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,5">
+        <local:CellTemplateControl Grid.Row="3" Header="Display Settings" Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                   CellTemplate="{Binding Path=SelectedExistingTemplate, Mode=TwoWay}"/>
+
+        <!-- Row 4 -->
+        <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" 
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,5,0,5">
             <Button Width="75" Height="25" Content="Ok" HorizontalAlignment="Right" Margin="0,0,5,0"
                     Command="{Binding Path=OkCommand}" CommandParameter="{Binding ElementName=Window}"/>
-            <Button Width="75" Height="25" Content="Cancel" HorizontalAlignment="Right" Margin="0,0,5,0"
+            <Button Width="75" Height="25" Content="Cancel" HorizontalAlignment="Right" Margin="0,0,0,0"
                     Command="{Binding Path=CancelCommand}" CommandParameter="{Binding ElementName=Window}"/>
         </StackPanel>
 

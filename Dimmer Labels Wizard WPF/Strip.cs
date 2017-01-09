@@ -19,25 +19,19 @@ namespace Dimmer_Labels_Wizard_WPF
         {
         }
 
-        #region Fields.
+        // Database and Navigation Properties.
+        public int ID { get; set; }
+        public virtual ICollection<StripAddress> StripAddresses { get; set; }
+
+        #region Properties.
         // Unique Cell Templates.
         [DataMember]
-        public virtual ObservableCollection<LabelCellTemplate> UpperUniqueCellTemplates { get; set; } =
-            new ObservableCollection<LabelCellTemplate>();
-        [DataMember]
-        public virtual ObservableCollection<LabelCellTemplate> LowerUniqueCellTemplates { get; set; } =
-            new ObservableCollection<LabelCellTemplate>();
+        public virtual List<LabelCellTemplate> UniqueCellTemplates { get; set; } = new List<LabelCellTemplate>();
 
         // Mergers.
         [DataMember]
         public virtual List<Merge> Mergers { get; set; } = new List<Merge>();
 
-        // Database.
-        public int ID { get; set; }
-
-        #endregion
-
-        #region Properties.
         private LabelStripTemplate _AssignedTemplate = null;
         [DataMember]
         public LabelStripTemplate AssignedTemplate
@@ -201,9 +195,38 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
         }
+
+        [NotMapped]
+        public List<LabelCellTemplateWrapper> FilteredUniqueCellTemplates
+        {
+            get
+            {
+                return GetFilteredUniqueCellTemplates();
+            }
+        }
+
         #endregion
 
         #region Methods.
+        protected List<LabelCellTemplateWrapper> GetFilteredUniqueCellTemplates()
+        {
+            var returnValue = new List<LabelCellTemplateWrapper>();
+
+            foreach (var element in UniqueCellTemplates)
+            {
+                var filteredAddresses = element.StripAddresses.Where(item => item.Strip == this).ToList();
+
+                returnValue.Add(new LabelCellTemplateWrapper()
+                {
+                    CellTemplate = element,
+                    FilteredStripAddresses = filteredAddresses
+                });
+            }
+
+            return returnValue;
+        }
+
+
         public IEnumerable<DimmerDistroUnit> GetUnits(UnitRepository unitRepository)
         {
             if (FirstDimmer == 0 && LastDimmer == 0)

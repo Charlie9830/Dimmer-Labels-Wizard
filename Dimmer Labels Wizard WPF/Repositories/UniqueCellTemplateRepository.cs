@@ -18,32 +18,15 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
 
         public IList<LabelCellTemplate> GetUniqueCellTemplates()
         {
-            return (_Context.UniqueCellTemplates
+            // Changes in Include Statements should be carried over to TemplateRepository.GetTemplates().
+            return (_Context.UniqueLabelCellTemplates
                 .Include(item => item.SingleFieldSerializableFont)
                 .Include(item => item.CellRowTemplates.Select(c => c.SerializableFont)))
+                .Where(item => item.IsUniqueTemplate == true)
                 .ToList();
         }
 
-        public LabelCellTemplate GetUniqueCellTemplate(Strip strip, int horizontalIndex,
-            CellVerticalPosition verticalPosition)
-        {
-            var query = from template in GetUniqueCellTemplates()
-                        where template.Strip == strip &&
-                        template.UniqueCellIndex == horizontalIndex &&
-                        template.UniqueCellVerticalPosition == verticalPosition
-                        select template;
 
-            if (query.Count() == 0)
-            {
-                return null;
-            }
-
-            else
-            {
-                return query.First();
-            }
-
-        }
 
         public void InsertUniqueTemplate(LabelCellTemplate template)
         {
@@ -52,7 +35,7 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
                 throw new NotSupportedException("The Unique Template you are trying to add has not been flagged as Unique.");
             }
 
-            _Context.UniqueCellTemplates.Add(template);
+            _Context.UniqueLabelCellTemplates.Add(template);
         }
 
         public void UpdateUniqueTemplate(LabelCellTemplate template)
@@ -75,6 +58,10 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
             _Context.Entry(template).State = EntityState.Deleted;
         }
 
+        public void Load()
+        {
+            _Context.UniqueLabelCellTemplates.Load();
+        }
 
         #region Interfaces.
         // IDispoable.
@@ -99,6 +86,10 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
             GC.SuppressFinalize(this);
         }
 
+        public void Save()
+        {
+            _Context.SaveChanges();
+        }
         #endregion
     }
 }

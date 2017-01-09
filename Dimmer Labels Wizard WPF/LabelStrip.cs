@@ -134,6 +134,20 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Dependency Properties
+
+
+        public LabelCell MouseOverCell
+        {
+            get { return (LabelCell)GetValue(MouseOverCellProperty); }
+            set { SetValue(MouseOverCellProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MouseOverCell.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MouseOverCellProperty =
+            DependencyProperty.Register("MouseOverCell", typeof(LabelCell), typeof(LabelStrip), new FrameworkPropertyMetadata(null));
+
+
+
         public IList<StripSpacer> StripSpacers
         {
             get { return (IList<StripSpacer>)GetValue(StripSpacersProperty); }
@@ -423,54 +437,38 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as LabelStrip;
             var newTemplate = e.NewValue as LabelCellTemplate;
-            var uniqueTemplates = instance.UniqueUpperCellTemplates;
+            var uniqueTemplateWrappers = instance.UniqueCellTemplateWrappers;
             var upperCells = instance.UpperCells;
 
-            RefreshCellTemplates(newTemplate, uniqueTemplates, upperCells);
+            RefreshCellTemplates(newTemplate, uniqueTemplateWrappers, upperCells, CellVerticalPosition.Upper);
         }
 
-        public IEnumerable<LabelCellTemplate> UniqueUpperCellTemplates
+
+        public IEnumerable<LabelCellTemplateWrapper> UniqueCellTemplateWrappers
         {
-            get { return (IEnumerable<LabelCellTemplate>)GetValue(UniqueUpperCellTemplatesProperty); }
-            set { SetValue(UniqueUpperCellTemplatesProperty, value); }
+            get { return (IEnumerable<LabelCellTemplateWrapper>)GetValue(UniqueCellTemplateWrappersProperty); }
+            set { SetValue(UniqueCellTemplateWrappersProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for UniqueUpperCellTemplates.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty UniqueUpperCellTemplatesProperty =
-            DependencyProperty.Register("UniqueUpperCellTemplates", typeof(IEnumerable<LabelCellTemplate>),
+        // Using a DependencyProperty as the backing store for UniqueCellTemplates.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UniqueCellTemplateWrappersProperty =
+            DependencyProperty.Register("UniqueCellTemplateWrappers", typeof(IEnumerable<LabelCellTemplateWrapper>),
                 typeof(LabelStrip), new FrameworkPropertyMetadata(null,
-                    new PropertyChangedCallback(OnUniqueUpperCellTemplatesPropertyChanged)));
+                    new PropertyChangedCallback(OnUniqueCellTemplateWrappersPropertyChanged)));
 
-        private static void OnUniqueUpperCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnUniqueCellTemplateWrappersPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var instance = d as LabelStrip;
-            var standardTemplate = instance.UpperCellTemplate;
-            var uniqueTemplates = e.NewValue as IEnumerable<LabelCellTemplate>;
-            var cellCollection = instance.UpperCells;
+            var newTemplateWrappers = e.NewValue as IEnumerable<LabelCellTemplateWrapper>;
+            var upperStandardTemplate = instance.UpperCellTemplate;
+            var lowerStandardTemplate = instance.LowerCellTemplate;
+            var upperCellCollection = instance.UpperCells;
+            var lowerCellCollection = instance.LowerCells;
 
-            INotifyCollectionChanged newValue = e.NewValue as INotifyCollectionChanged;
-            INotifyCollectionChanged oldValue = e.OldValue as INotifyCollectionChanged;
-
-            if (oldValue != null)
-            {
-                // Disconnect Event Handler.
-                oldValue.CollectionChanged -= instance.UniqueUpperCellTemplatesCollectionChanged;
-            }
-
-            if (newValue != null)
-            {
-                // Connect Event Handler.
-                newValue.CollectionChanged += instance.UniqueUpperCellTemplatesCollectionChanged;
-            }
-
-            // Handle Existing Collection Elements.
-            RefreshCellTemplates(standardTemplate, uniqueTemplates, cellCollection);
-
-        }
-
-        private void UniqueUpperCellTemplatesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            RefreshCellTemplates(UpperCellTemplate, UniqueUpperCellTemplates, UpperCells);
+            // Handle Existing Elements.
+            // Refresh Upper and Lower Templates.
+            RefreshCellTemplates(upperStandardTemplate, newTemplateWrappers, upperCellCollection, CellVerticalPosition.Upper);
+            RefreshCellTemplates(lowerStandardTemplate, newTemplateWrappers, lowerCellCollection, CellVerticalPosition.Lower);
         }
 
         public LabelCellTemplate LowerCellTemplate
@@ -488,56 +486,10 @@ namespace Dimmer_Labels_Wizard_WPF
         {
             var instance = d as LabelStrip;
             var newTemplate = e.NewValue as LabelCellTemplate;
-            var uniqueTemplates = instance.UniqueLowerCellTemplates;
+            var uniqueTemplateWrappers = instance.UniqueCellTemplateWrappers;
             var lowerCells = instance.LowerCells;
 
-            RefreshCellTemplates(newTemplate, uniqueTemplates, lowerCells);
-        }
-
-
-
-
-        public IEnumerable<LabelCellTemplate> UniqueLowerCellTemplates
-        {
-            get { return (IEnumerable<LabelCellTemplate>)GetValue(UniqueLowerCellTemplatesProperty); }
-            set { SetValue(UniqueLowerCellTemplatesProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for UniqueLowerCellTemplates.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty UniqueLowerCellTemplatesProperty =
-            DependencyProperty.Register("UniqueLowerCellTemplates", typeof(IEnumerable<LabelCellTemplate>),
-                typeof(LabelStrip), new FrameworkPropertyMetadata(null,
-                    new PropertyChangedCallback(OnUniqueLowerCellTemplatesPropertyChanged)));
-
-        private static void OnUniqueLowerCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var instance = d as LabelStrip;
-            var standardTemplate = instance.LowerCellTemplate;
-            var uniqueTemplates = e.NewValue as IEnumerable<LabelCellTemplate>;
-            var cellCollection = instance.LowerCells;
-
-            INotifyCollectionChanged newValue = e.NewValue as INotifyCollectionChanged;
-            INotifyCollectionChanged oldValue = e.OldValue as INotifyCollectionChanged;
-
-            if (oldValue != null)
-            {
-                // Disconnect Event Handler.
-                oldValue.CollectionChanged -= instance.UniqueLowerCellTemplatesCollectionChanged;
-            }
-
-            if (newValue != null)
-            {
-                // Connect Event Handler.
-                newValue.CollectionChanged += instance.UniqueLowerCellTemplatesCollectionChanged;
-            }
-
-            // Handle Existing Collection Elements.
-            RefreshCellTemplates(standardTemplate, uniqueTemplates, cellCollection);
-        }
-
-        private void UniqueLowerCellTemplatesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            RefreshCellTemplates(LowerCellTemplate, UniqueLowerCellTemplates, LowerCells);
+            RefreshCellTemplates(newTemplate, uniqueTemplateWrappers, lowerCells, CellVerticalPosition.Lower);
         }
 
         public double StripHeight
@@ -920,7 +872,8 @@ namespace Dimmer_Labels_Wizard_WPF
             // Update Horizontal Position Indexes.
             for (int index = 0; index < collection.Count; index++)
             {
-                collection[index].HorizontalIndex = index;
+                var cell = collection[index];
+                cell.HorizontalIndex = index;
             }
 
             // Coercion.
@@ -1045,7 +998,8 @@ namespace Dimmer_Labels_Wizard_WPF
             // Update Horizontal Position Indexes.
             for (int index = 0; index < collection.Count; index++)
             {
-                collection[index].HorizontalIndex = index;
+                var cell = collection[index];
+                cell.HorizontalIndex = index;
             }
 
             // Coercion.
@@ -1378,19 +1332,20 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Private or Protected Methods
+
         private static LabelCell CreateNewSpacerCell(double width, double height)
         {
             return new LabelCell() { IsSpacerCell = true, Width = width, Height = height };
         }
 
 
-        private static void RefreshCellTemplates(LabelCellTemplate newTemplate, IEnumerable<LabelCellTemplate> uniqueTemplates,
-            ObservableCollection<LabelCell> cellCollection)
+        private static void RefreshCellTemplates(LabelCellTemplate newTemplate, IEnumerable<LabelCellTemplateWrapper> uniqueTemplateWrappers,
+            ObservableCollection<LabelCell> cellCollection, CellVerticalPosition cellVerticalPosition)
         {
             int collectionCount = cellCollection.Count;
 
             // Push change to Cells.
-            if (uniqueTemplates == null)
+            if (uniqueTemplateWrappers == null || uniqueTemplateWrappers.Count() == 0)
             {
                 // No Unique Templates. Push Standard template.
                 for (int index = 0; index < collectionCount; index++)
@@ -1401,28 +1356,35 @@ namespace Dimmer_Labels_Wizard_WPF
 
             else
             {
-                var uniqueTemplatesList = uniqueTemplates.ToList();
-
                 // Unique Templates.
-                int uniqueTemplateCount = uniqueTemplatesList.Count;
-
-                for (int index = 0; index < collectionCount; index++)
+                foreach (var templateWrapper in uniqueTemplateWrappers)
                 {
-                    LabelCellTemplate uniqueTemplate = uniqueTemplatesList.Find(item => item.IsUniqueTemplate == true &&
-                    item.UniqueCellIndex == index);
+                    // Query for a List of the Horizontal indexes filtering for Cell Vertical Postion.
+                    var uniqueTemplateIndexes = (from address in templateWrapper.FilteredStripAddresses
+                                                 where address.VerticalPosition == cellVerticalPosition
+                                                 select address.HorizontalIndex).ToList();
 
-                    if (uniqueTemplate != null)
+                    for (int index = 0; index < collectionCount; index++)
                     {
-                        // Assign Unique Template.
-                        cellCollection[index].Style = uniqueTemplate.Style;
-                    }
+                        var cell = cellCollection[index];
 
-                    else
-                    {
-                        // Assign Standard Template.
-                        cellCollection[index].Style = newTemplate.Style;
+                        // Look for a matching Cell Index.
+                        int uniqueCellIndex = uniqueTemplateIndexes.FindIndex(item => item == index);
+
+                        if (uniqueCellIndex != -1)
+                        {
+                            // Assign Unique Template.
+                            cell.Style = templateWrapper.CellTemplate.Style;
+                        }
+
+                        else
+                        {
+                            // Assign Standard Template.
+                            cell.Style = newTemplate.Style;
+                        }
                     }
                 }
+                
             }
         }
         /// <summary>
@@ -1651,8 +1613,12 @@ namespace Dimmer_Labels_Wizard_WPF
                 }
             }
         }
-
-
         #endregion
+
+        private class UniqueLabelCellWrapperCollections
+        {
+            public List<LabelCellTemplateWrapper> UniqueUpperCellWrappers { get; set; } = new List<LabelCellTemplateWrapper>();
+            public List<LabelCellTemplateWrapper> UniqueLowerCellWrappers { get; set; } = new List<LabelCellTemplateWrapper>();
+        }
     }
 }

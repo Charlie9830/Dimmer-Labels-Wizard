@@ -84,6 +84,7 @@ namespace Dimmer_Labels_Wizard_WPF
             {
                 return CellTemplate.CellDataMode;
             }
+
             set
             {
                 if (CellTemplate.CellDataMode != value)
@@ -581,7 +582,24 @@ namespace Dimmer_Labels_Wizard_WPF
             DependencyProperty.Register("CellTemplate", typeof(LabelCellTemplate), typeof(CellTemplateControl),
                 new FrameworkPropertyMetadata(new LabelCellTemplate(),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    new PropertyChangedCallback(OnCellTemplatePropertyChanged)));
+                    new PropertyChangedCallback(OnCellTemplatePropertyChanged), 
+                    new CoerceValueCallback(CoerceCellTemplate)));
+
+        private static object CoerceCellTemplate(DependencyObject d, object baseValue)
+        {
+            var value = baseValue as LabelCellTemplate;
+
+            // Don't let the Cell Template fall to Null.
+            if (value == null)
+            {
+                return new LabelCellTemplate();
+            }
+
+            else
+            {
+                return value;
+            }
+        }
 
         private static void OnCellTemplatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

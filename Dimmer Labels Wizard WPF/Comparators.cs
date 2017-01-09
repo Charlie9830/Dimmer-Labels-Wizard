@@ -56,4 +56,31 @@ namespace Dimmer_Labels_Wizard_WPF
             return hCode.GetHashCode();
         }
     }
+
+    public class StripAddressComparer : IEqualityComparer<StripAddress>
+    {
+        public bool Equals(StripAddress x, StripAddress y)
+        {
+            if (x == null || y == null)
+            {
+                return false;
+            }
+
+            if (x.Strip == y.Strip && x.VerticalPosition == y.VerticalPosition && x.HorizontalIndex == y.HorizontalIndex)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
+        public int GetHashCode(StripAddress obj)
+        {
+            int hCode = obj.Strip.GetHashCode() ^ obj.VerticalPosition.GetHashCode() ^ obj.HorizontalIndex.GetHashCode();
+            return hCode.GetHashCode();
+        }
+    }
 }

@@ -22,6 +22,8 @@
 
         <!-- Boolean to Visibilty Converter, True == Visible, False == Collapsed -->
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+       
+        <local:BooleanToVisibilityInvertedConverter x:Key="BoolToVisInverted"/>
         
         <!-- Boolean to Brush Converter. True to Green. False to Red -->
         <local:BooleanToBrushConverter x:Key="BoolToBrush"/>
@@ -161,6 +163,15 @@
         <Style x:Key="ControlLabelStyle" TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
             <Setter Property="Foreground" Value="{StaticResource ControlLabelTextColor}"/>
         </Style>
+
+        <!-- Item Template for Unique LabelCell Templates -->
+        <DataTemplate x:Key="UniqueTemplateItemTemplate">
+            <TextBlock Text="{Binding UniqueCellName}"/>
+        </DataTemplate>
+        
+        <local:DimmerDistroUnit x:Key="DemoUnit" ChannelNumber="Channel" InstrumentName="Instrument" MulticoreName="MultiCore"
+                                Position="Position" UserField1="User 1" UserField2="User 2" UserField3="User 3" UserField4="User 4"
+                                Custom="Custom"/>
 
     </Application.Resources>
 </Application>

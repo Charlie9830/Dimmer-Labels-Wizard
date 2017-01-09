@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Dimmer_Labels_Wizard_WPF.Repositories;
 using System.Runtime.Serialization;
+using System.Windows;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -302,8 +303,6 @@ namespace Dimmer_Labels_Wizard_WPF
                 return GetLabelColor();
             }
         }
-
-
 
         // Window Specific Properties.
         // Invalid Units Window.

@@ -30,7 +30,6 @@ namespace Dimmer_Labels_Wizard_WPF
         public bool IsBuiltIn { get; set; } = false;
 
         protected string _Name = "No Name";
-
         [DataMember]
         public string Name
         {
@@ -217,26 +216,43 @@ namespace Dimmer_Labels_Wizard_WPF
     }
 
     [DataContract]
-    public class LabelCellTemplate : ICloneable
+    public class LabelCellTemplate : ViewModelBase, ICloneable
     {
         // Database and Navigation Properties.
-        public  int ID { get; set; }
+        public int ID { get; set; }
         public virtual LabelStripTemplate LabelStripTemplate { get; set; }
-        public virtual Strip Strip { get; set; }
-
+        public virtual ICollection<Strip> Strip { get; set; }
+        
         // Test.
         public string EFTest { get; set; }
 
 
         // Unique Cell Template Properties.
         [DataMember]
-        public bool IsUniqueTemplate { get; set; } = false;
+        public virtual bool IsUniqueTemplate { get; set; } = false;
+
+        protected string _UniqueCellName = string.Empty;
         [DataMember]
-        public int UniqueCellIndex { get; set; } = -1;
+        public virtual string UniqueCellName
+        {
+            get { return _UniqueCellName; }
+            set
+            {
+                if (_UniqueCellName != value)
+                {
+                    _UniqueCellName = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(UniqueCellName));
+                }
+            }
+        }
+
         [DataMember]
-        public CellVerticalPosition UniqueCellVerticalPosition { get; set; } = CellVerticalPosition.Lower;
-        [DataMember]
-        public string UniqueCellName { get; set; } = string.Empty;
+        public virtual List<StripAddress> StripAddresses { get; set; } = new List<StripAddress>();
+        [NotMapped]
+        public virtual bool IsSpecialSelectionHandlingTemplate { get; set; } = false;
+        
 
         // Cell Row Templates
         protected List<CellRowTemplate> _CellRowTemplates = new List<CellRowTemplate>();
@@ -276,7 +292,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
         // SingleField Font
         [DataMember]
-        public  SerializableFont SingleFieldSerializableFont { get; set; } = new SerializableFont("Arial");
+        public SerializableFont SingleFieldSerializableFont { get; set; } = new SerializableFont("Arial");
         
         [NotMapped]
         public Typeface SingleFieldFont
@@ -462,8 +478,17 @@ namespace Dimmer_Labels_Wizard_WPF
                 CellDataMode = CellDataMode,
                 RowHeightMode = RowHeightMode,
                 CellRowTemplates = new List<CellRowTemplate>(CellRowTemplates),
+                StripAddresses = new List<StripAddress>(StripAddresses),
+                UniqueCellName = UniqueCellName,
+                IsUniqueTemplate = IsUniqueTemplate,
             };
         }
+    }
+
+    public class LabelCellTemplateWrapper
+    {
+        public LabelCellTemplate CellTemplate { get; set; }
+        public List<StripAddress> FilteredStripAddresses { get; set; } = new List<StripAddress>();
     }
 
     [DataContract]

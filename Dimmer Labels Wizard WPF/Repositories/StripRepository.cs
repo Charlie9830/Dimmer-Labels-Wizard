@@ -35,6 +35,7 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
                                   .Include(item => item.Mergers)
                                   .Include(item => item.Mergers.Select(c => c.PrimaryUnit))
                                   .Include(item => item.Mergers.Select(c => c.ConsumedUnits))
+                                  .Include(item => item.UniqueCellTemplates.Select(c => c.StripAddresses))
                                   .ToList();
         }
 
@@ -50,6 +51,7 @@ namespace Dimmer_Labels_Wizard_WPF.Repositories
 
         public void RemoveAll()
         {
+            _Context.Database.ExecuteSqlCommand("DELETE FROM StripAddresses");
             _Context.Database.ExecuteSqlCommand("DELETE from Strips");
         }
 

@@ -144,6 +144,7 @@
       <DependentUpon>Editor.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditorViewModel.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FontSelector.xaml.cs">
       <DependentUpon>FontSelector.xaml</DependentUpon>
     </Compile>
@@ -279,6 +280,22 @@
     <Compile Include="Migrations\201612100517335_Added StripSpacer.Designer.cs">
       <DependentUpon>201612100517335_Added StripSpacer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612270600048_RefactoredUniqueCellTemplates.cs" />
+    <Compile Include="Migrations\201612270600048_RefactoredUniqueCellTemplates.Designer.cs">
+      <DependentUpon>201612270600048_RefactoredUniqueCellTemplates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612280353195_AddedEFHandlingForUniqueCellTemplates.cs" />
+    <Compile Include="Migrations\201612280353195_AddedEFHandlingForUniqueCellTemplates.Designer.cs">
+      <DependentUpon>201612280353195_AddedEFHandlingForUniqueCellTemplates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701040604464_FurtherAdditionsToUniqueLabelCell.cs" />
+    <Compile Include="Migrations\201701040604464_FurtherAdditionsToUniqueLabelCell.Designer.cs">
+      <DependentUpon>201701040604464_FurtherAdditionsToUniqueLabelCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.cs" />
+    <Compile Include="Migrations\201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.Designer.cs">
+      <DependentUpon>201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -295,6 +312,7 @@
     <Compile Include="ProgramState.cs" />
     <Compile Include="Repositories\UniqueCellTemplateRepository.cs" />
     <Compile Include="SerializerKnownTypes.cs" />
+    <Compile Include="StripAddress.cs" />
     <Compile Include="TemplatePersitanceManager.cs" />
     <Compile Include="PrimaryDB.cs" />
     <Compile Include="PrimaryDBDataSet.Designer.cs">
@@ -597,6 +615,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612100517335_Added StripSpacer.resx">
       <DependentUpon>201612100517335_Added StripSpacer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612270600048_RefactoredUniqueCellTemplates.resx">
+      <DependentUpon>201612270600048_RefactoredUniqueCellTemplates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612280353195_AddedEFHandlingForUniqueCellTemplates.resx">
+      <DependentUpon>201612280353195_AddedEFHandlingForUniqueCellTemplates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701040604464_FurtherAdditionsToUniqueLabelCell.resx">
+      <DependentUpon>201701040604464_FurtherAdditionsToUniqueLabelCell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.resx">
+      <DependentUpon>201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

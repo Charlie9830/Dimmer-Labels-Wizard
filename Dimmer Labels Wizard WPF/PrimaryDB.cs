@@ -35,7 +35,7 @@ namespace Dimmer_Labels_Wizard_WPF
         public virtual DbSet<LabelStripTemplate> Templates { get; set; }
 
         // Unique Cell Templates
-        public virtual DbSet<LabelCellTemplate> UniqueCellTemplates { get; set; }
+        public virtual DbSet<LabelCellTemplate> UniqueLabelCellTemplates { get; set; }
 
         // Strips.
         public virtual DbSet<Strip> Strips { get; set; }

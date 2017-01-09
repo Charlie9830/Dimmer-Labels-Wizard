@@ -153,12 +153,12 @@ namespace Dimmer_Labels_Wizard_WPF
             set { _CellVerticalPosition = value; }
         }
 
-        private int _HorizontalIndex;
+        private int _RealHorizontalIndex;
 
         public int HorizontalIndex
         {
-            get { return _HorizontalIndex; }
-            set { _HorizontalIndex = value; }
+            get { return _RealHorizontalIndex; }
+            set { _RealHorizontalIndex = value; }
         }
 
         private int _RowCount = 0;

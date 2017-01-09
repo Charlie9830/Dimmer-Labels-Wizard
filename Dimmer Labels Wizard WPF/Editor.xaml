@@ -14,6 +14,7 @@
     </Window.DataContext>
 
     <Window.Resources>
+        <SolidColorBrush x:Key="ToolBarSeparatorStroke" Color="Gray"/>
         <SolidColorBrush x:Key="ToolBarBackgroundKey" Color="LightGray"/>
         <Thickness x:Key="StackPanelItemsOffset" Left="5" Right="5"/>
         <Style x:Key="ListBoxItemStripsStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
@@ -60,7 +61,7 @@
             <!-- 0: Main Menu -->
             <RowDefinition Height="20"/>
             <!-- 1: Appearance Controls -->
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="190"/>
             <!-- 2: Data Controls -->
             <RowDefinition Height="35"/>
             <!-- 3: LabelStrip -->
@@ -82,22 +83,17 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <local:LabelStrip x:Name="LabelStrip"
                               Style="{Binding Path=DisplayedStyle}" DataSource="{Binding Path=Units}"
-                              UniqueUpperCellTemplates="{Binding Path=UniqueUpperCellTemplates}" 
-                              UniqueLowerCellTemplates="{Binding Path=UniqueLowerCellTemplates}"
+                              UniqueCellTemplateWrappers="{Binding Path=FilteredUniqueCellTemplates}"
                               Mergers="{Binding Path=Mergers}" SelectedCells="{Binding Path=SelectedCells}"
-                              Cells="{Binding Path=Cells}" Margin="1,-1,-1,1">
+                              Cells="{Binding Path=Cells}">
                 <local:LabelStrip.LayoutTransform>
                     <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="{Binding Path=LabelScale}" ScaleY="{Binding Path=LabelScale}"/>
                 </local:LabelStrip.LayoutTransform>
-                
+
             </local:LabelStrip>
 
             <Border.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Apply Unique Template" Command="{Binding Path=MakeUniqueTemplateCommand}"/>
-                    <MenuItem Header="Remove Unique Template" Command="{Binding Path=RemoveUniqueTemplateCommand}" />
-                    <MenuItem Header="Remove All Unique Templates" Command="{Binding Path=RemoveAllUniqueTemplatesCommand}"/>
-                    <Separator/>
                     <MenuItem Header="Reset Zoom" Command="{Binding Path=ResetZoomCommand}"/>
                     <MenuItem Header="Zoom In" Command="{Binding Path=ZoomInCommand}"/>
                     <MenuItem Header="Zoom Out" Command="{Binding Path=ZoomOutCommand}"/>
@@ -157,145 +153,121 @@
             <!-- Labels Selector -->
             <HeaderedContentControl Header="Labels"
                                     Style="{StaticResource HeaderedControlStyle}">
-                <Grid Width="200" Height="125" VerticalAlignment="Stretch" Background="{StaticResource ControlGridBackground}">
+                <Grid Width="250" Height="160" VerticalAlignment="Stretch" Background="{StaticResource ControlGridBackground}">
                     <ListBox Margin="5" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                               ItemsSource="{Binding Path=Strips}" SelectedItem="{Binding Path=SelectedStrip}"
                               ItemContainerStyle="{StaticResource ListBoxItemStripsStyle}"/>
                 </Grid>
+
             </HeaderedContentControl>
 
-            <!-- Template Info -->
-            <HeaderedContentControl Header="Template Parameters"
+            <!-- Separator -->
+            <Rectangle Width="1" VerticalAlignment="Stretch" Stroke="{StaticResource ToolBarSeparatorStroke}"/>
+            <HeaderedContentControl Header="Label Templates"
                                     Style="{StaticResource HeaderedControlStyle}">
-                <ToolBarTray Height="125"
-                      Background="{StaticResource ControlGridBackground}">
 
-                    <ToolBar Header="Label" BandIndex="0" Height="125"
-                             Style="{StaticResource ToolBarStyle}">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                              Background="{StaticResource ControlGridBackground}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="1*"/>
-                            </Grid.RowDefinitions>
+                <Grid Width="250" Height="160"
+            		Background="{StaticResource ControlGridBackground}">
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
 
-                            <!-- Row 0 -->
-                            <Label Content="Name" Grid.Row="0" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="** Template Name **" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Width="75" Height="20" Content="New" Margin="5,3,5,0"
+            				Command="{Binding CreateNewTemplateCommand}"/>
+                        <Button Width="75" Height="20" Content="Edit" Margin="0,3,5,0"
+            				Command="{Binding EditTemplateCommand}"/>
+                    </StackPanel>
 
-                            <!-- Row 1 -->
-                            <Label Content="Width (mm)" Grid.Row="1" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="{Binding Path=StripWidthmm}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
+                    <ListBox Grid.Row="1"  Margin="5" Height="125"
+            			ItemsSource="{Binding StripTemplates}"
+            			SelectedItem="{Binding SelectedStripTemplate}"
+            			ItemTemplate="{StaticResource TemplatesListBoxItemTemplate}"
+                        />
+                    
+                    
 
-                            <!-- Row 2 -->
-                            <Label Content="Height (mm)" Grid.Row="2" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="{Binding Path=StripHeightmm}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
 
-                            <!-- Row 3 -->
-                            <Label Content="Mode" Grid.Row="3" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="{Binding Path=SelectedLabelStripMode}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
+                </Grid>
 
-                        </Grid>
-                    </ToolBar>
-
-                    <ToolBar Header="Cell" BandIndex="1" Height="125"
-                             Style="{StaticResource ToolBarStyle}">
-                        <Grid Background="{StaticResource ControlGridBackground}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Row 0 -->
-                            <Label Content="Data Display Mode" Grid.Row="0" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="** Data Display Mode **" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-
-                            <!-- Row 1 -->
-                            <Label Content="Height Mode" Grid.Row="1" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="** Height Mode **" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-
-                        </Grid>
-                    </ToolBar>
-
-                    <ToolBar Header="Row" BandIndex="2" Height="125"
-                             Style="{StaticResource ToolBarStyle}">
-                        <Grid Background="{StaticResource ControlGridBackground}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Row 0 -->
-                            <Label Content="Font" Grid.Row="0" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="** Font **" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-
-                            <!-- Row 1 -->
-                            <Label Content="Font Size" Grid.Row="1" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="** Font Size **" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-
-                            <!-- Row 2 -->
-                            <Label Content="LabelField" Grid.Row="2" Grid.Column="0"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-                            <Label Content="** LabelField **" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"
-                                   Style="{StaticResource ControlLabelStyle}"/>
-
-                        </Grid>
-
-                    </ToolBar>
-                </ToolBarTray>
             </HeaderedContentControl>
 
-            <HeaderedContentControl Header="View"
-                                  Style="{StaticResource HeaderedControlStyle}">
-                <ToolBarTray Height="125"
+            <!-- Label Templates -->
+
+            <!-- Separator -->
+            <Rectangle Width="1" VerticalAlignment="Stretch" Stroke="{StaticResource ToolBarSeparatorStroke}"/>
+
+            <!-- Special Cell Templates -->
+            <HeaderedContentControl Header="Special Cell Templates"
+                                    Style="{StaticResource HeaderedControlStyle}">
+
+                <Grid Width="250" Height="160"
                     Background="{StaticResource ControlGridBackground}">
-                    <ToolBar Header="Zoom" Height="125"
-                        Style="{StaticResource ToolBarStyle}">
-                        <StackPanel VerticalAlignment="Stretch"
-                                    Background="{StaticResource ControlGridBackground}">
-                            <Button Width="20" Content="1X" Height="20" Margin="5"
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <Button Width="75" Height="20" Content="New" Margin="5,3,5,0"
+                                Command="{Binding Path=MakeUniqueTemplateCommand}"/>
+                        <Button Width="75" Height="20" Content="Edit" Margin="0,3,5,0"
+                                Command="{Binding Path=EditUniqueTemplateCommand}"/>
+                    </StackPanel>
+
+                    <ListBox Grid.Row="1"  Margin="5" Height="125"
+                             ItemsSource="{Binding Path=ExistingUniqueTemplates}"
+                             SelectedItem="{Binding Path=SelectedUniqueCellTemplate}"
+                             ItemTemplate="{StaticResource UniqueTemplateItemTemplate}"/>
+
+                </Grid>
+
+            </HeaderedContentControl>
+
+            <!-- Separator -->
+            <Rectangle Width="1" VerticalAlignment="Stretch" Stroke="{StaticResource ToolBarSeparatorStroke}"/>
+
+            <!-- Cell Merging -->
+            <HeaderedContentControl Header="Cell Merging"
+                                    Style="{StaticResource HeaderedControlStyle}">
+
+                <Grid Width="250" Height="160"
+                    Background="{StaticResource ControlGridBackground}">
+                    <WrapPanel Orientation="Horizontal">
+                        <Button Width="75" Height="25" Content="Merge"  Margin="5"
+                            Command="{Binding Path=MergeSelectedCellsCommand}"/>
+                        <Button Width="75" Height="25" Content="Split"
+                            Command="{Binding Path=SplitSelectedCellsCommand}" Margin="5"/>
+                        <Button Width="75" Height="25" Content="Auto Merge" Margin="5"
+                            Command="{Binding Path=AutoMergeCellsCommand}" IsEnabled="False"/>
+                    </WrapPanel>
+
+                </Grid>
+
+            </HeaderedContentControl>
+
+            <!-- Separator -->
+            <Rectangle Width="1" VerticalAlignment="Stretch" Stroke="{StaticResource ToolBarSeparatorStroke}"/>
+
+            <!-- View -->
+            <HeaderedContentControl Header="View"
+                                    Style="{StaticResource HeaderedControlStyle}">
+
+                <Grid Width="250" Height="160"
+                    Background="{StaticResource ControlGridBackground}">
+                    <WrapPanel Orientation="Horizontal">
+                        <Button Width="75" Content="1x Zoom" Height="20" Margin="5"
                                     Command="{Binding Path=ResetZoomCommand}"/>
-                            <Button Width="20" Content="+" Height="20" Margin="5"
+                        <Button Width="75" Content="Zoom In" Height="20" Margin="5"
                                     Command="{Binding Path=ZoomInCommand}"/>
-                            <Button Width="20" Content="-" Height="20" Margin="5"
+                        <Button Width="75" Content="Zoom Out" Height="20" Margin="5"
                                     Command="{Binding Path=ZoomOutCommand}"/>
-                        </StackPanel>
-                    </ToolBar>
-                </ToolBarTray>
+                    </WrapPanel>
+
+                </Grid>
 
             </HeaderedContentControl>
         </StackPanel>
@@ -304,31 +276,10 @@
         <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Stretch">
             <Label Content="Data" VerticalAlignment="Center"
                    Style="{StaticResource ControlLabelStyle}"/>
-            <TextBox Width="250" Height="25" HorizontalAlignment="Center" IsEnabled="False"
+            <TextBox Width="300" Height="25" HorizontalAlignment="Center" IsEnabled="False"
                      Text="{Binding Path=SelectedData}" Margin="{StaticResource StackPanelItemsOffset}"/>
-            <Button Width="75" Height="25" Content="Merge"
-                    Command="{Binding Path=MergeSelectedCellsCommand}"/>
-            <Button Width="75" Height="25" Content="Split"
-                    Command="{Binding Path=SplitSelectedCellsCommand}"/>
-            <Button Width="75" Height="25" Content="Auto Merge" Margin="20,0,0,0"
-                    Command="{Binding Path=AutoMergeCellsCommand}" IsEnabled="False"/>
         </StackPanel>
 
-        <Expander x:Name="expanderLeft" Header="Templates" ExpandDirection="Right" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0" VerticalAlignment="Stretch"
-                  Style="{StaticResource ExpanderStyle}">
-            <Grid Background="{StaticResource WindowBackground}" Width="250">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <ListBox HorizontalAlignment="Stretch" ItemsSource="{Binding Path=StripTemplates}" SelectedItem="{Binding Path=SelectedStripTemplate}"  VerticalAlignment="Stretch" Grid.Row="1" Margin="5,5"
-                         ItemTemplate="{StaticResource TemplatesListBoxItemTemplate}" HorizontalContentAlignment="Stretch"/>
-                <Button x:Name="button" Content="New" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="75" 
-                        Command="{Binding Path=CreateNewTemplateCommand}"/>
-                <Button x:Name="button_Copy" Content="Edit" HorizontalAlignment="Left" Margin="90,4,0,0" VerticalAlignment="Top" Width="75"
-                        Command="{Binding Path=EditTemplateCommand}"/>
-            </Grid>
-        </Expander>
         <Expander x:Name="expanderRight" Header="Database" ExpandDirection="Left" HorizontalAlignment="Right" Grid.Row="3" VerticalAlignment="Stretch" Grid.Column="2"
                   Style="{StaticResource ExpanderStyle}">
             <Grid Background="{StaticResource WindowBackground}" Width="250">

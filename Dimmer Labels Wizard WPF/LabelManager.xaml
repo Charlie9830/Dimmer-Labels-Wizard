@@ -33,16 +33,24 @@
         
         <Label Content="Label Manager" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                Style="{StaticResource WindowHeaderStyle}"/>
-        
-        <ListBox Grid.Row="1" Grid.Column="0" Height="400" HorizontalAlignment="Stretch" Margin="10,0,10,0"
+
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <ListBox Grid.Row="1" Grid.Column="0" Height="340" HorizontalAlignment="Stretch" Margin="10,0,10,0"
                  SelectionMode="Extended"
                  ItemsSource="{Binding Path=ExistingStrips}" ItemContainerStyle="{StaticResource ListBoxItemStyle}"/>
-        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,10">
-            <Button Content="+" Width="20" Height="20"
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,10">
+                <Button Content="+" Width="20" Height="20" Margin="0,0,5,0"
                     Command="{Binding Path=AddNewStripCommand}"/>
-            <Button Content="-" Width="20" Height="20"
+                <Button Content="-" Width="20" Height="20"
                     Command="{Binding Path=RemoveSelectedTemplatesCommand}"/>
-        </StackPanel>
+            </StackPanel>
+        </Grid>
+        
 
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,10,0">
             <HeaderedContentControl Header="Settings"
