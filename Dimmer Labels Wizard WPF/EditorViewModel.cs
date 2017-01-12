@@ -130,12 +130,25 @@ namespace Dimmer_Labels_Wizard_WPF
 
                         if (value != _UniqueTemplateStandardSelection)
                         {
-                            // Push Selected Cell Address Assignments to Unique Cell Template.
+                            // Push Selected Cell Address Assignments to new Template and remove from Old Template.
                             foreach (var address in selectedCellAddresses)
                             {
+                                // Push new Template Address Assignment.
                                 if (_SelectedUniqueCellTemplate.StripAddresses.Contains(address, new StripAddressComparer()) == false)
                                 {
                                     _SelectedUniqueCellTemplate.StripAddresses.Add(address);
+                                }
+
+
+                                // Remove old Tempalte Address Assignment.
+                                if (oldValue != null)
+                                {
+                                    int removalIndex = oldValue.StripAddresses.FindIndex(item => new StripAddressComparer().Equals(item, address));
+
+                                    if (removalIndex != -1)
+                                    {
+                                        oldValue.StripAddresses.RemoveAt(removalIndex);
+                                    }
                                 }
                             }
 
@@ -148,33 +161,29 @@ namespace Dimmer_Labels_Wizard_WPF
 
                         else
                         {
-                            if (oldValue != null)
+                            // Query ExistingUniqueLabelCellTemplates for Templates that Contain the Addresses of Currently Selected Cells.
+                            // and remove those Addresses.
+                            foreach (var element in selectedCellAddresses)
                             {
-                                // Query ExistingUniqueLabelCellTemplates for Templates that Contain the Addresses of Currently Selected Cells.
-                                // and remove those Addresses.
-                                foreach (var element in selectedCellAddresses)
+                                var matchedTemplates = ExistingUniqueTemplates.FindAll(item => item.StripAddresses.Contains(element, new StripAddressComparer()));
+
+                                foreach (var template in matchedTemplates)
                                 {
-                                    var matchedTemplates = ExistingUniqueTemplates.FindAll(item => item.StripAddresses.Contains(element, new StripAddressComparer()));
-
-                                    foreach (var template in matchedTemplates)
-                                    {
-                                        template.StripAddresses.RemoveAll(item => new StripAddressComparer().Equals(element, item));
-                                    }
+                                    template.StripAddresses.RemoveAll(item => new StripAddressComparer().Equals(element, item));
                                 }
+                            }
 
-                                // Purge Strip.UniqueCellTemplate collections of LabelCellTemplates that no longer have any
-                                // StripAddress Assignments.
-                                var purgeQuery = (from strip in Strips
-                                                 let uniqueCellTemplates = strip.UniqueCellTemplates
-                                                 from uniqueCellTemplate in uniqueCellTemplates
-                                                 where uniqueCellTemplate.StripAddresses.Count == 0
-                                                 select new { Strip = strip, UniqueCellTemplate = uniqueCellTemplate }).ToList();
+                            // Purge Strip.UniqueCellTemplate collections of LabelCellTemplates that no longer have any
+                            // StripAddress Assignments.
+                            var purgeQuery = (from strip in Strips
+                                                let uniqueCellTemplates = strip.UniqueCellTemplates
+                                                from uniqueCellTemplate in uniqueCellTemplates
+                                                where uniqueCellTemplate.StripAddresses.Count == 0
+                                                select new { Strip = strip, UniqueCellTemplate = uniqueCellTemplate }).ToList();
 
-                                foreach (var element in purgeQuery)
-                                {
-                                    element.Strip.UniqueCellTemplates.Remove(element.UniqueCellTemplate);
-                                }
-                                
+                            foreach (var element in purgeQuery)
+                            {
+                                element.Strip.UniqueCellTemplates.Remove(element.UniqueCellTemplate);
                             }
                         }
                         
@@ -1907,7 +1916,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     Strip = SelectedStrip,
                     VerticalPosition = cell.CellVerticalPosition,
-                    HorizontalIndex = cell.HorizontalIndex,
+                    RackUnitType = cell.DataReference.RackUnitType,
+                    UniverseNumber = cell.DataReference.UniverseNumber,
+                    DimmerNumber = cell.DataReference.DimmerNumber
                 };
 
                 returnList.Add(address);
@@ -1927,9 +1938,12 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             // Query for an existing Unique Template.
-            Predicate<StripAddress> matchAddressToCell = addr => addr.Strip == SelectedStrip &&
+            Predicate<StripAddress> matchAddressToCell = addr =>
+                                                         addr.Strip == SelectedStrip &&
                                                          addr.VerticalPosition == cell.CellVerticalPosition &&
-                                                         addr.HorizontalIndex == cell.HorizontalIndex;
+                                                         addr.RackUnitType == cell.DataReference?.RackUnitType &&
+                                                         addr.UniverseNumber == cell.DataReference?.UniverseNumber &&
+                                                         addr.DimmerNumber == cell.DataReference?.DimmerNumber;
 
             var query = from uniqueTemplate in FilteredUniqueCellTemplates
                         where uniqueTemplate.FilteredStripAddresses.Find(matchAddressToCell) != null

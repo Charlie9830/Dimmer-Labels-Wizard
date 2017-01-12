@@ -15,11 +15,18 @@ namespace Dimmer_Labels_Wizard_WPF
         public int ID { get; set; }
         public virtual LabelCellTemplate LabelCellTemplate { get; set; }
 
+        // Position Values.
         [DataMember]
         public virtual Strip Strip { get; set; }
         [DataMember]
-        public virtual int HorizontalIndex { get; set; }
-        [DataMember]
         public virtual CellVerticalPosition VerticalPosition { get; set; }
+
+        // DimmerDistroUnit KeyValues.
+        [DataMember]
+        public virtual RackType RackUnitType { get; set; }
+        [DataMember]
+        public virtual int UniverseNumber { get; set; }
+        [DataMember]
+        public virtual int DimmerNumber { get; set; }
     }
 }

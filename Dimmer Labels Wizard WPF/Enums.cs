@@ -21,7 +21,7 @@ namespace Dimmer_Labels_Wizard_WPF
     public enum LabelField { NoAssignment, ChannelNumber, InstrumentName, MulticoreName, Position, UserField1 ,UserField2, UserField3, UserField4, Custom}
 
     // Utilized by Database Manager Find and Replace System. Loosely coupled with LabelField.
-    public enum SearchField { All, ChannelNumber, InstrumentName, MulticoreName, Position, UserField1, UserField2, UserField3, UserField4}
+    public enum SearchField { All, ChannelNumber, InstrumentName, MulticoreName, Position, UserField1, UserField2, UserField3, UserField4 }
 
     public enum SortField { DBKeyValues, ChannelNumber, InstrumentName, MulticoreName, Position, UserField1, UserField2, UserField3, UserField4}
 
@@ -46,6 +46,13 @@ namespace Dimmer_Labels_Wizard_WPF
     public enum TemplateEditorActiveTab { Settings, Assignments};
 
     public enum ImportType { Merge, Overwrite};
+
+    public enum UnitGroupBy { OriginalImportName, ShortName };
+
+    // Overwrite - Clears all Units then Writes new Units in.
+    // BlindMerge - Merges with Existing Units overwriting ShortNames.
+    // PreserveShortNames - Merges with Existing Units and Preserves ShortNames where possible.
+    public enum UnitImportMergeType { Overwrite, BlindMerge, PreserveShortNames }
 }
 
 

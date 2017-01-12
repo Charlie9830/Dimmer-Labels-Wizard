@@ -148,9 +148,12 @@
     <Compile Include="FontSelector.xaml.cs">
       <DependentUpon>FontSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FriendlyEnumCollections.cs" />
     <Compile Include="FriendlyImportFormat.cs" />
+    <Compile Include="FriendlyLabelField.cs" />
     <Compile Include="FriendlySearchField.cs" />
     <Compile Include="FriendlySortField.cs" />
+    <Compile Include="FriendlyUnitGroupBy.cs" />
     <Compile Include="GlobalPersistanceManager.cs" />
     <Compile Include="IModifcationNotification.cs" />
     <Compile Include="ImportConfiguration.cs" />
@@ -296,6 +299,22 @@
     <Compile Include="Migrations\201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.Designer.cs">
       <DependentUpon>201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701090514502_ReImplementationOfStripAddresses.cs" />
+    <Compile Include="Migrations\201701090514502_ReImplementationOfStripAddresses.Designer.cs">
+      <DependentUpon>201701090514502_ReImplementationOfStripAddresses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701090540306_ReImplementationOfStripAddresses2.cs" />
+    <Compile Include="Migrations\201701090540306_ReImplementationOfStripAddresses2.Designer.cs">
+      <DependentUpon>201701090540306_ReImplementationOfStripAddresses2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701110521109_AddedOriginalImportNamesToDimmerDistroUnits.cs" />
+    <Compile Include="Migrations\201701110521109_AddedOriginalImportNamesToDimmerDistroUnits.Designer.cs">
+      <DependentUpon>201701110521109_AddedOriginalImportNamesToDimmerDistroUnits.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701110805546_ChangedNamesofNewDimmerDistroUnitProperties.cs" />
+    <Compile Include="Migrations\201701110805546_ChangedNamesofNewDimmerDistroUnitProperties.Designer.cs">
+      <DependentUpon>201701110805546_ChangedNamesofNewDimmerDistroUnitProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Modification Classes.cs" />
     <Compile Include="ModificationNotificationEvent.cs" />
@@ -385,6 +404,7 @@
     </Compile>
     <Compile Include="UniqueCellTemplateEditorViewModel.cs" />
     <Compile Include="UnitGroup.cs" />
+    <Compile Include="UnitGroupFactory.cs" />
     <Compile Include="UnitImporter.cs" />
     <Compile Include="UnResolveableData.xaml.cs">
       <DependentUpon>UnResolveableData.xaml</DependentUpon>
@@ -627,6 +647,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.resx">
       <DependentUpon>201701040617147_RemovedLabelCellTemplateSpecialSelectionProperty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701090514502_ReImplementationOfStripAddresses.resx">
+      <DependentUpon>201701090514502_ReImplementationOfStripAddresses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701090540306_ReImplementationOfStripAddresses2.resx">
+      <DependentUpon>201701090540306_ReImplementationOfStripAddresses2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701110521109_AddedOriginalImportNamesToDimmerDistroUnits.resx">
+      <DependentUpon>201701110521109_AddedOriginalImportNamesToDimmerDistroUnits.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701110805546_ChangedNamesofNewDimmerDistroUnitProperties.resx">
+      <DependentUpon>201701110805546_ChangedNamesofNewDimmerDistroUnitProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

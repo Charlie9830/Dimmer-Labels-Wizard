@@ -46,7 +46,8 @@
             </Grid.RowDefinitions>
 
             <ListBox Grid.Row="1"  Width="180" Margin="10,10,11,-5" VerticalAlignment="Stretch"
-                     ItemsSource="{Binding Path=ExistingTemplates}" SelectedItem="{Binding Path=SelectedExistingTemplate}">
+                     ItemsSource="{Binding Path=ExistingTemplates}" SelectedItem="{Binding Path=SelectedExistingTemplate}"
+                     Style="{StaticResource ListBoxStyle}">
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="ListBoxItem" >
                         <Label Content="{Binding Name}"/>

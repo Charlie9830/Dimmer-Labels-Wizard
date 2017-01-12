@@ -72,7 +72,24 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     // Modify Value.
                     _ChannelNumber = value;
-                    OnPropertyChanged("ChannelNumber");
+                    OnPropertyChanged(nameof(ChannelNumber));
+                }
+            }
+        }
+
+        protected string _LastImportedChannelNumber = string.Empty;
+        [DataMember]
+        public string LastImportedChannelNumber
+        {
+            get { return _LastImportedChannelNumber; }
+            set
+            {
+                if (_LastImportedChannelNumber != value)
+                {
+                    _LastImportedChannelNumber = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedChannelNumber));
                 }
             }
         }
@@ -98,6 +115,24 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+
+        protected string _LastImportedInstrumentName = string.Empty;
+        [DataMember]
+        public string LastImportedInstrumentName
+        {
+            get { return _LastImportedInstrumentName; }
+            set
+            {
+                if (_LastImportedInstrumentName != value)
+                {
+                    _LastImportedInstrumentName = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedInstrumentName));
+                }
+            }
+        }
+
         [DataMember]
         public  string MulticoreName
         {
@@ -115,6 +150,25 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Modify Value.
                     _MulticoreName = value;
                     OnPropertyChanged("MulticoreName");
+                }
+            }
+        }
+
+
+        protected string _LastImportedMulticoreName = string.Empty;
+
+        [DataMember]
+        public string LastImportedMulticoreName
+        {
+            get { return _LastImportedMulticoreName; }
+            set
+            {
+                if (_LastImportedMulticoreName != value)
+                {
+                    _LastImportedMulticoreName = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedMulticoreName));
                 }
             }
         }
@@ -140,6 +194,24 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+
+        protected string _LastImportedPosition = string.Empty;
+        [DataMember]
+        public string LastImportedPosition
+        {
+            get { return _LastImportedPosition; }
+            set
+            {
+                if (_LastImportedPosition != value)
+                {
+                    _LastImportedPosition = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedPosition));
+                }
+            }
+        }
+
         [DataMember]
         public  string UserField1
         {
@@ -157,6 +229,24 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Modify Value.
                     _UserField1 = value;
                     OnPropertyChanged("UserField1");
+                }
+            }
+        }
+
+
+        protected string _LastImportedUserField1 = string.Empty;
+        [DataMember]
+        public string LastImportedUserField1
+        {
+            get { return _LastImportedUserField1; }
+            set
+            {
+                if (_LastImportedUserField1 != value)
+                {
+                    _LastImportedUserField1 = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedUserField1));
                 }
             }
         }
@@ -182,6 +272,24 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+
+        protected string _LastImportedUserField2 = string.Empty;
+        [DataMember]
+        public string LastImportedUserField2
+        {
+            get { return _LastImportedUserField2; }
+            set
+            {
+                if (_LastImportedUserField2 != value)
+                {
+                    _LastImportedUserField2 = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedUserField2));
+                }
+            }
+        }
+
         [DataMember]
         public  string UserField3
         {
@@ -199,6 +307,25 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Modify Value.
                     _UserField3 = value;
                     OnPropertyChanged("UserField3");
+                }
+            }
+        }
+
+
+        protected string _LastImportedUserField3;
+
+        [DataMember]
+        public string LastImportedUserField3
+        {
+            get { return _LastImportedUserField3; }
+            set
+            {
+                if (_LastImportedUserField3 != value)
+                {
+                    _LastImportedUserField3 = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedUserField3));
                 }
             }
         }
@@ -224,6 +351,24 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+
+        protected string _LastImportedUserField4 = string.Empty;
+        [DataMember]
+        public string LastImportedUserField4
+        {
+            get { return _LastImportedUserField4; }
+            set
+            {
+                if (_LastImportedUserField4 != value)
+                {
+                    _LastImportedUserField4 = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedUserField4));
+                }
+            }
+        }
+
         [DataMember]
         public  string Custom
         {
@@ -245,6 +390,23 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
+
+        protected string _LastImportedCustom = string.Empty;
+        [DataMember]
+        public string LastImportedCustom
+        {
+            get { return _LastImportedCustom; }
+            set
+            {
+                if (_LastImportedCustom != value)
+                {
+                    _LastImportedCustom = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(LastImportedCustom));
+                }
+            }
+        }
 
         protected int _DimmerNumber = 0;
 
@@ -386,6 +548,19 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region Methods.
+        public void CopyShortNamesToLastImportNames()
+        {
+            _LastImportedChannelNumber = ChannelNumber;
+            _LastImportedInstrumentName = InstrumentName;
+            _LastImportedMulticoreName = MulticoreName;
+            _LastImportedPosition = Position;
+            _LastImportedUserField1 = UserField1;
+            _LastImportedUserField2 = UserField2;
+            _LastImportedUserField3 = UserField3;
+            _LastImportedUserField4 = UserField4;
+            _LastImportedCustom = Custom;
+        }
+
         private Color GetLabelColor()
         {
             // Establish Connection to DB.
@@ -437,6 +612,36 @@ namespace Dimmer_Labels_Wizard_WPF
                     return Custom;
                 default:
                     return "DimmerDistroUnit.GetData() Error";
+            }
+        }
+
+        // Provides easier accsess when using Switch Statements to GetData Based on LabelField.
+        public string GetOriginalData(LabelField labelField)
+        {
+            switch (labelField)
+            {
+                case LabelField.NoAssignment:
+                    return "No Assignment";
+                case LabelField.ChannelNumber:
+                    return LastImportedChannelNumber;
+                case LabelField.InstrumentName:
+                    return LastImportedInstrumentName;
+                case LabelField.MulticoreName:
+                    return LastImportedMulticoreName;
+                case LabelField.Position:
+                    return LastImportedPosition;
+                case LabelField.UserField1:
+                    return LastImportedUserField1;
+                case LabelField.UserField2:
+                    return LastImportedUserField2;
+                case LabelField.UserField3:
+                    return LastImportedUserField3;
+                case LabelField.UserField4:
+                    return LastImportedUserField4;
+                case LabelField.Custom:
+                    return LastImportedCustom;
+                default:
+                    return "DimmerDistroUnit.GetOriginalData() Error";
             }
         }
 

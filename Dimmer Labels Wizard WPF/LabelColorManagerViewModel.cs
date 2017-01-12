@@ -41,6 +41,8 @@ namespace Dimmer_Labels_Wizard_WPF
         protected ColorDictionary _DimmerColorDictionary;
         protected ColorDictionary _DistroColorDictionary;
 
+        protected UnitGroupFactory _UnitGroupFactory = new UnitGroupFactory();
+
         #region Binding Source Properties
 
         protected ObservableCollection<UnitGroup> _UnitGroups = new ObservableCollection<UnitGroup>();
@@ -220,69 +222,15 @@ namespace Dimmer_Labels_Wizard_WPF
 
             UnitGroups.Clear();
 
-            var query = GetLabelFieldGroups(labelField);
+            var newUnitGroups = _UnitGroupFactory.CreateColorUnitGroups(_LocalUnits, labelField,
+                _DimmerColorDictionary, _DistroColorDictionary);
 
-            foreach (var element in query)
+
+            foreach (var unitGroup in newUnitGroups)
             {
-                if (element.Count() > 0)
-                {
-                    var unitGroup = new UnitGroup(_DimmerColorDictionary, _DistroColorDictionary)
-                    {
-                        Name = element.First().GetData(labelField),
-                        Units = element.ToList(),
-                    };
-
-                    UnitGroups.Add(unitGroup);
-
-                    unitGroup.PropertyChanged += UnitGroup_PropertyChanged;
-                }
-            }
-        }
-
-        protected IEnumerable<IEnumerable<DimmerDistroUnit>> GetLabelFieldGroups(LabelField labelfield)
-        {
-            switch (labelfield)
-            {
-                case LabelField.ChannelNumber:
-                    return from item in _LocalUnits
-                           group item by item.ChannelNumber into itemgroup
-                           select itemgroup;
-                    
-                case LabelField.InstrumentName:
-                    return from item in _LocalUnits
-                           group item by item.InstrumentName into itemgroup
-                           select itemgroup;
-
-                case LabelField.MulticoreName:
-                    return from item in _LocalUnits
-                           group item by item.MulticoreName into itemgroup
-                           select itemgroup;
-
-                case LabelField.Position:
-                    return from item in _LocalUnits
-                           group item by item.Position into itemgroup
-                           select itemgroup;
-
-                case LabelField.UserField1:
-                    return from item in _LocalUnits
-                           group item by item.UserField1 into itemgroup
-                           select itemgroup;
-
-                case LabelField.UserField2:
-                    return from item in _LocalUnits
-                           group item by item.UserField2 into itemgroup
-                           select itemgroup;
-                case LabelField.UserField3:
-                    return from item in _LocalUnits
-                           group item by item.UserField3 into itemgroup
-                           select itemgroup;
-
-                case LabelField.UserField4:
-                    return from item in _LocalUnits
-                           group item by item.UserField4 into itemgroup
-                           select itemgroup;
-                default:
-                    return new List<List<DimmerDistroUnit>>() as IEnumerable<IEnumerable<DimmerDistroUnit>>;
+                // Attach Event Handler and Add to UnitGroups Collection.
+                unitGroup.PropertyChanged += UnitGroup_PropertyChanged;
+                UnitGroups.Add(unitGroup);
             }
         }
 

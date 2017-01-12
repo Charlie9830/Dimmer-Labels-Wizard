@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dimmer_Labels_Wizard_WPF"
         mc:Ignorable="d"
-        Title="ImportUnitsWindow" Height="575" Width="1100">
+        Title="ImportUnitsWindow" Width="1100" SizeToContent="WidthAndHeight">
 
     <Window.DataContext>
         <local:ImportUnitsViewModel/>
@@ -254,6 +254,27 @@
                 </Grid>
             </HeaderedContentControl>
         </Grid>
+        
+        <!-- Row 3 -->
+        <HeaderedContentControl Header="Merge Settings" Grid.Row="3" Margin="10,5,10,0"
+                                Style="{StaticResource HeaderedControlStyle}"
+                                Visibility="{Binding Path=InSetup, Converter={StaticResource BoolToVisInverted}}">
+            <Grid Background="{StaticResource ControlGridBackground}">
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5">
+                    <RadioButton Content="Overwrite existing Units" Foreground="White" Margin="0,0,0,0"
+                                 GroupName="MergeSettingsGroup"
+                                 IsChecked="{Binding Path=OverwriteExistingUnits}"/>
+                                 
+                    <RadioButton Content="Merge with existing Units" Foreground="White" Margin="0,5,0,0"
+                                 GroupName="MergeSettingsGroup"
+                                 IsChecked="{Binding Path=MergeWithExistingUnits}"/>
+                    <RadioButton Content="Merge with existing Units and preserve Short Names" Foreground="White" Margin="0,5,0,0"
+                                 GroupName="MergeSettingsGroup"
+                                 IsChecked="{Binding Path=MergeAndPreserveShortNames}"/>
+                </StackPanel>
+            </Grid>
+         
+        </HeaderedContentControl>
 
         <!-- Row 4 -->
         <StackPanel Orientation="Horizontal" Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5">

@@ -99,6 +99,15 @@
             </Style.Setters>
         </Style>
         
+        <!-- Toolbar Separator Style -->
+        <Style x:Key="ToolBarSeparatorStyle" TargetType="Rectangle">
+            <Style.Setters>
+                <Setter Property="Width" Value="1"/>
+                <Setter Property="VerticalAlignment" Value="Stretch"/>
+                <Setter Property="Stroke" Value="Gray"/>
+            </Style.Setters>
+        </Style>
+
         <!-- SystemFonts Collection View Source. Bind ItemsSource to This using
              {Binding Source={StaticResource SystemFonts}} Notation, A direct SystemResource Binding won't work. -->
         <CollectionViewSource  x:Key="SystemFontFamilies" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
@@ -166,12 +175,162 @@
 
         <!-- Item Template for Unique LabelCell Templates -->
         <DataTemplate x:Key="UniqueTemplateItemTemplate">
-            <TextBlock Text="{Binding UniqueCellName}"/>
+            <TextBlock Foreground="White" Text="{Binding UniqueCellName}"/>
         </DataTemplate>
         
         <local:DimmerDistroUnit x:Key="DemoUnit" ChannelNumber="Channel" InstrumentName="Instrument" MulticoreName="MultiCore"
                                 Position="Position" UserField1="User 1" UserField2="User 2" UserField3="User 3" UserField4="User 4"
                                 Custom="Custom"/>
+
+        <!-- Style for Listboxes and their Items -->
+        <Style x:Key="ListBoxStyle" TargetType="ListBox">
+            <!-- Overall ListBox  Template -->
+            <Style.Setters>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBox">
+                            <Border BorderBrush="White" BorderThickness="1" Background="#FD1E1E1E">
+                                <ItemsPresenter VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <!-- Item Container Style -->
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border Margin="1" Padding="1">
+                                            <VisualStateManager.VisualStateGroups>
+                                                <VisualStateGroup Name="SelectionStates">
+
+                                                    <!-- Selected Visual State -->
+                                                    <VisualState Name="Selected">
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="selectionBorder" Storyboard.TargetProperty="Opacity" Duration="0" To="1.00"/>
+                                                        </Storyboard>
+                                                    </VisualState>
+
+                                                    <!-- Unselected Visual State -->
+                                                    <VisualState Name="Unselected">
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="selectionBorder" Storyboard.TargetProperty="Opacity" Duration="0" To="0.00"/>
+                                                        </Storyboard>
+                                                    </VisualState>
+
+                                                    <!-- Selected but not in Focus Visual State -->
+                                                    <VisualState Name="SelectedUnfocused">
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="selectionBorder" Storyboard.TargetProperty="Opacity" Duration="0" To="1.00"/>
+                                                        </Storyboard>
+                                                    </VisualState>
+
+                                                </VisualStateGroup>
+                                            </VisualStateManager.VisualStateGroups>
+
+                                            <!-- Visual Tree -->
+                                            <Grid>
+                                                <Rectangle x:Name="selectionBorder" Fill="Transparent" Stroke="White" StrokeThickness="1"/>
+                                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            </Grid>
+
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+
+        <Style x:Key="DataGridStyle" TargetType="DataGrid">
+            <!-- Column Header Style -->
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Height" Value="25"/>
+                        <Setter Property="Background" Value="{StaticResource SubHeaderBackground}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridColumnHeader">
+                                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        <Rectangle Fill="{StaticResource SubHeaderBackground}"/>
+                                        <ContentPresenter ContentSource="Content">
+                                            <ContentPresenter.ContentTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Foreground="White" VerticalAlignment="Center" Margin="5,0,5,0"
+                                                               Text="{Binding}"/>
+                                                </DataTemplate>
+                                            </ContentPresenter.ContentTemplate>
+                                        </ContentPresenter>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            
+            <!-- General Parameters -->
+            <Setter Property="Background" Value="{StaticResource ControlGridBackground}"/>
+            <Setter Property="Foreground" Value="White"/>
+           
+        </Style>
+
+        <!-- Datagrid Row Style (Not Packaged with DataGrid Style so that local Styles intended to provide Multi Selection  Handling
+        can be based off this style) -->
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+            <Style.Setters>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGridRow">
+                            <Border>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        
+                                        <!-- Normal (Default) State-->
+                                        <VisualState x:Name="Normal">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="selectionBorder" Storyboard.TargetProperty="Opacity" Duration="0" To="0"/>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <!-- Normal Selected State -->
+                                        <VisualState Name="Normal_Selected">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="selectionBorder" Storyboard.TargetProperty="Opacity" Duration="0" To="1.00"/>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                        <!-- Unfocused Selected State -->
+                                        <VisualState Name="Unfocused_Selected">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="selectionBorder" Storyboard.TargetProperty="Opacity" Duration="0" To="1.00"/>
+                                            </Storyboard>
+                                        </VisualState>
+
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <!-- Visual Tree -->
+                                    <Grid>
+                                        <Rectangle x:Name="selectionBorder" Fill="Purple" Stroke="White" StrokeThickness="1"/>
+                                        <DataGridCellsPresenter/>
+                                    </Grid>
+
+
+
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
 
     </Application.Resources>
 </Application>

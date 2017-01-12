@@ -41,7 +41,8 @@ namespace Dimmer_Labels_Wizard_WPF
             _SearchView = new CollectionView(Units);
             SetupSearchFields();
             SetSearchPredicate(SearchField.ChannelNumber);
-            
+            _SelectedUnitGroupBy = UnitGroupBys.First();
+            _SelectedLabelField = LabelFields.Find(item => item.LabelField == LabelField.InstrumentName);
 
             var context = new PrimaryDB();
             _UnitRepository = new UnitRepository(context);
@@ -50,9 +51,93 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
         protected UnitRepository _UnitRepository;
+
+
         protected bool _ChangingUnitValues = false;
+        protected UnitGroupFactory _UnitGroupFactory = new UnitGroupFactory();
 
         #region Binding Sources.
+        protected IEnumerable<FriendlyUnitGroupBy> _UnitGroupBys = FriendlyEnumCollections.FriendlyUnitGroupBys;
+
+        public IEnumerable<FriendlyUnitGroupBy> UnitGroupBys
+        {
+            get
+            {
+                return _UnitGroupBys;
+            }
+        }
+
+
+        protected FriendlyUnitGroupBy _SelectedUnitGroupBy;
+
+        public FriendlyUnitGroupBy SelectedUnitGroupBy
+        {
+            get { return _SelectedUnitGroupBy; }
+            set
+            {
+                if (_SelectedUnitGroupBy != value)
+                {
+                    _SelectedUnitGroupBy = value;
+
+                    // Notify Refresh Unit Groups.
+                    RefreshUnitGroups();
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedUnitGroupBy));
+                }
+            }
+        }
+
+
+
+        protected List<FriendlyLabelField> _LabelFields = FriendlyEnumCollections.FriendlyLabelFieldsDisplayedOnly;
+
+        public List<FriendlyLabelField> LabelFields
+        {
+            get
+            {
+                return _LabelFields;
+            }
+        }
+
+        protected FriendlyLabelField _SelectedLabelField;
+
+        public FriendlyLabelField SelectedLabelField
+        {
+            get { return _SelectedLabelField; }
+            set
+            {
+                if (_SelectedLabelField != value)
+                {
+                    _SelectedLabelField = value;
+
+                    // Notify Refresh Unit Groups.
+                    RefreshUnitGroups();
+
+                    // Notify.
+                    OnPropertyChanged(nameof(SelectedLabelField));
+                }
+            }
+        }
+
+
+        protected ObservableCollection<UnitGroup> _UnitGroups = new ObservableCollection<UnitGroup>();
+
+        public ObservableCollection<UnitGroup> UnitGroups
+        {
+            get { return _UnitGroups; }
+            set
+            {
+                if (_UnitGroups != value)
+                {
+                    _UnitGroups = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(UnitGroups));
+                }
+            }
+        }
+
         public IEnumerable<DimmerDistroUnit> UnitsLoadingFallbackValue
         {
             get
@@ -517,6 +602,7 @@ namespace Dimmer_Labels_Wizard_WPF
 
                 BeginSearch();
 
+                // Executes the Search
                 _SearchView.Refresh();
 
                 // Populate Search Results.
@@ -794,22 +880,24 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods.
+        protected void RefreshUnitGroups()
+        {
+            while (UnitGroups.Count > 0)
+            {
+                UnitGroups.RemoveAt(UnitGroups.Count - 1);
+            }
+
+
+            foreach (var element in _UnitGroupFactory.CreateNameUnitGroups(Units, SelectedLabelField.LabelField,
+                SelectedUnitGroupBy.UnitGroupBy))
+            {
+                UnitGroups.Add(element);
+            }
+        }
+
         protected void SetupSearchFields()
         {
-            var searchFields = new List<FriendlySearchField>()
-                {
-                    new FriendlySearchField(SearchField.ChannelNumber, "Channel Number"),
-                    new FriendlySearchField(SearchField.All, "All"),
-                    new FriendlySearchField(SearchField.InstrumentName, "Instrument Name"),
-                    new FriendlySearchField(SearchField.MulticoreName, "Multicore Name"),
-                    new FriendlySearchField(SearchField.Position, "Position"),
-                    new FriendlySearchField(SearchField.UserField1, "User Field 1"),
-                    new FriendlySearchField(SearchField.UserField2, "User Field 2"),
-                    new FriendlySearchField(SearchField.UserField3, "User Field 3"),
-                    new FriendlySearchField(SearchField.UserField4, "User Field 4")
-                };
-
-            SearchFields = searchFields;
+            SearchFields = FriendlyEnumCollections.FriendlySearchFields;
 
             SelectedSearchField = SearchFields.First();
         }

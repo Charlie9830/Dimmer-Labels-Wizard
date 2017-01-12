@@ -78,6 +78,7 @@ namespace Dimmer_Labels_Wizard_WPF
             // Collection Type Dependency Properties.
             SetValue(SelectedRowsPropertyKey, new ObservableCollection<CellRow>());
             SetValue(ConsumedReferencesPropertyKey, new List<DimmerDistroUnit>());
+            SetValue(UniqueCellTemplatesProperty, new List<LabelCellTemplateWrapper>());
         }
         #endregion
 
@@ -182,6 +183,27 @@ namespace Dimmer_Labels_Wizard_WPF
 
         #region Dependency Properties
 
+
+        public List<LabelCellTemplateWrapper> UniqueCellTemplates
+        {
+            get { return (List<LabelCellTemplateWrapper>)GetValue(UniqueCellTemplatesProperty); }
+            set { SetValue(UniqueCellTemplatesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UniqueCellTemplates.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UniqueCellTemplatesProperty =
+            DependencyProperty.Register("UniqueCellTemplates", typeof(List<LabelCellTemplateWrapper>), typeof(LabelCell),
+                new FrameworkPropertyMetadata(null, new PropertyChangedCallback(UniqueCellTemplatesPropertyChanged)));
+
+        private static void UniqueCellTemplatesPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var instance = d as LabelCell;
+            var newCollection = e.NewValue as List<LabelCellTemplateWrapper>;
+            var dataReference = instance.DataReference;
+
+            // Check if a UniqueTemplate needs to be Assigned or Unassigned.
+            RefreshUniqueTemplateAssignment(instance, newCollection, dataReference);
+        }
 
         public bool IsSpacerCell
         {
@@ -318,6 +340,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var rows = instance.Rows;
             var newValue = e.NewValue as DimmerDistroUnit;
             var oldValue = e.OldValue as DimmerDistroUnit;
+            var uniqueTemplates = instance.UniqueCellTemplates;
 
             if (newValue != null)
             {
@@ -366,6 +389,9 @@ namespace Dimmer_Labels_Wizard_WPF
                 // Disconnect outgoing Event.
                 oldValue.PropertyChanged -= instance.DataReference_PropertyChanged;
             }
+
+            // Assign a UniqueCellTemplate if one Exists
+            RefreshUniqueTemplateAssignment(instance, uniqueTemplates, newValue);
         }
 
         public List<DimmerDistroUnit> ConsumedReferences
@@ -1542,6 +1568,50 @@ namespace Dimmer_Labels_Wizard_WPF
 
 
         #region Methods.
+        /// <summary>
+        /// Assigns the UniqueCellTemplate if one exists.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="candidateTemplates"></param>
+        /// <param name="dataReference"></param>
+        private static void RefreshUniqueTemplateAssignment(LabelCell instance,
+            List<LabelCellTemplateWrapper> candidateTemplates,
+            DimmerDistroUnit dataReference )
+        {
+            if (dataReference == null)
+            {
+                return;
+            }
+
+            // Query candidateTemplates for a StripAddress that matches that of the DataReference.
+            var allStripAddresses = (from template in candidateTemplates
+                                     from address in template.FilteredStripAddresses
+                                     select address).ToList();
+
+            var matchedStripAddress = allStripAddresses.Find(
+                item =>
+                item.VerticalPosition == instance.CellVerticalPosition && 
+                item.RackUnitType == dataReference.RackUnitType &&
+                item.UniverseNumber == dataReference.UniverseNumber &&
+                item.DimmerNumber == dataReference.DimmerNumber);
+
+            var matchedTemplate = candidateTemplates.Find(item => item.FilteredStripAddresses.Contains(matchedStripAddress));
+
+            if (matchedTemplate != null)
+            {
+                // A Unique Template has been Found.
+                instance.Style = matchedTemplate.CellTemplate.Style;
+            }
+
+            else
+            {
+                // No Unique Template has been Found. You do not need to Clear the DP Value as the Parent LabelStrip
+                // writes the Standard Template to every Cell in its collection BEFORE Updating the UniqueCellTemplates
+                // Property. Therefore, there should always be an existing value that can remain untouched.
+                
+            }
+        }
+
         /// <summary>
         /// Sets the TextColor of Child Rows.
         /// </summary>

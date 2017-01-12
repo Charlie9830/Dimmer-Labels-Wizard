@@ -14,28 +14,19 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <SolidColorBrush x:Key="ToolBarSeparatorStroke" Color="Gray"/>
-        <SolidColorBrush x:Key="ToolBarBackgroundKey" Color="LightGray"/>
         <Thickness x:Key="StackPanelItemsOffset" Left="5" Right="5"/>
-        <Style x:Key="ListBoxItemStripsStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-            <Setter Property="Content" Value="{Binding Path=Name}"/>
-        </Style>
+
+        <DataTemplate x:Key="StripItemTemplate">
+            <TextBlock Text="{Binding Name}" Foreground="White"/>
+        </DataTemplate>
+        
         <DataTemplate x:Key="TemplatesListBoxItemTemplate" DataType="{x:Type local:LabelStripTemplate}">
             <Grid HorizontalAlignment="Stretch">
-                <Label VerticalAlignment="Center" HorizontalAlignment="Left"
-                       Content="{Binding Name}"/>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White"
+                       Text="{Binding Name}"/>
             </Grid>
         </DataTemplate>
-        <Style x:Key="ToolBarStyle" TargetType="ToolBar" BasedOn="{StaticResource {x:Type ToolBar}}">
-            <Setter Property="HeaderTemplate">
-                <Setter.Value>
-                    <DataTemplate DataType="ToolBar">
-                        <Label Content="{Binding}" Style="{StaticResource ControlLabelStyle}"/>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Background" Value="{StaticResource WindowBackground}"/>
-        </Style>
+
         <Style x:Key="ExpanderStyle" TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
             <Setter Property="Background" Value="{StaticResource WindowBackground}"/>
             <Setter Property="HeaderTemplate">
@@ -155,14 +146,17 @@
                                     Style="{StaticResource HeaderedControlStyle}">
                 <Grid Width="250" Height="160" VerticalAlignment="Stretch" Background="{StaticResource ControlGridBackground}">
                     <ListBox Margin="5" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                              Style="{StaticResource ListBoxStyle}"
                               ItemsSource="{Binding Path=Strips}" SelectedItem="{Binding Path=SelectedStrip}"
-                              ItemContainerStyle="{StaticResource ListBoxItemStripsStyle}"/>
+                              ItemTemplate="{StaticResource StripItemTemplate}"/>
                 </Grid>
 
             </HeaderedContentControl>
 
             <!-- Separator -->
-            <Rectangle Width="1" VerticalAlignment="Stretch" Stroke="{StaticResource ToolBarSeparatorStroke}"/>
+            <Rectangle Width="1" VerticalAlignment="Stretch"
+                       Style="{StaticResource ToolBarSeparatorStyle}"/>
+            
             <HeaderedContentControl Header="Label Templates"
                                     Style="{StaticResource HeaderedControlStyle}">
 
@@ -182,10 +176,10 @@
                     </StackPanel>
 
                     <ListBox Grid.Row="1"  Margin="5" Height="125"
+                        Style="{StaticResource ListBoxStyle}"
             			ItemsSource="{Binding StripTemplates}"
             			SelectedItem="{Binding SelectedStripTemplate}"
-            			ItemTemplate="{StaticResource TemplatesListBoxItemTemplate}"
-                        />
+            			ItemTemplate="{StaticResource TemplatesListBoxItemTemplate}"/>
                     
                     
 
@@ -197,7 +191,8 @@
             <!-- Label Templates -->
 
             <!-- Separator -->
-            <Rectangle Width="1" VerticalAlignment="Stretch" Stroke="{StaticResource ToolBarSeparatorStroke}"/>
+            <Rectangle Width="1" VerticalAlignment="Stretch"
+                       Style="{StaticResource ToolBarSeparatorStyle}"/>
 
             <!-- Special Cell Templates -->
             <HeaderedContentControl Header="Special Cell Templates"
@@ -219,6 +214,7 @@
                     </StackPanel>
 
                     <ListBox Grid.Row="1"  Margin="5" Height="125"
+                             Style="{StaticResource ListBoxStyle}"
                              ItemsSource="{Binding Path=ExistingUniqueTemplates}"
                              SelectedItem="{Binding Path=SelectedUniqueCellTemplate}"
                              ItemTemplate="{StaticResource UniqueTemplateItemTemplate}"/>
@@ -228,7 +224,8 @@
             </HeaderedContentControl>
 
             <!-- Separator -->
-            <Rectangle Width="1" VerticalAlignment="Stretch" Stroke="{StaticResource ToolBarSeparatorStroke}"/>
+            <Rectangle Width="1" VerticalAlignment="Stretch"
+                       Style="{StaticResource ToolBarSeparatorStyle}"/>
 
             <!-- Cell Merging -->
             <HeaderedContentControl Header="Cell Merging"
@@ -250,7 +247,8 @@
             </HeaderedContentControl>
 
             <!-- Separator -->
-            <Rectangle Width="1" VerticalAlignment="Stretch" Stroke="{StaticResource ToolBarSeparatorStroke}"/>
+            <Rectangle Width="1" VerticalAlignment="Stretch" 
+                       Style="{StaticResource ToolBarSeparatorStyle}"/>
 
             <!-- View -->
             <HeaderedContentControl Header="View"

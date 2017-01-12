@@ -66,7 +66,11 @@ namespace Dimmer_Labels_Wizard_WPF
                 return false;
             }
 
-            if (x.Strip == y.Strip && x.VerticalPosition == y.VerticalPosition && x.HorizontalIndex == y.HorizontalIndex)
+            if (x.Strip == y.Strip &&
+                x.VerticalPosition == y.VerticalPosition &&
+                x.RackUnitType == y.RackUnitType &&
+                x.UniverseNumber == y.UniverseNumber &&
+                x.DimmerNumber == y.DimmerNumber)
             {
                 return true;
             }
@@ -79,7 +83,12 @@ namespace Dimmer_Labels_Wizard_WPF
 
         public int GetHashCode(StripAddress obj)
         {
-            int hCode = obj.Strip.GetHashCode() ^ obj.VerticalPosition.GetHashCode() ^ obj.HorizontalIndex.GetHashCode();
+            int hCode = obj.Strip.GetHashCode() ^
+                obj.VerticalPosition.GetHashCode() ^
+                obj.RackUnitType.GetHashCode() ^
+                obj.UniverseNumber.GetHashCode() ^
+                obj.DimmerNumber.GetHashCode();
+             
             return hCode.GetHashCode();
         }
     }

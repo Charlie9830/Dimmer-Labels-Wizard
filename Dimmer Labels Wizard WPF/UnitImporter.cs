@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
 using System.Windows;
+using Dimmer_Labels_Wizard_WPF.Repositories;
 
 namespace Dimmer_Labels_Wizard_WPF
 {
@@ -66,6 +67,112 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Public Methods.
+        public void CommitToDatabase(UnitRepository unitRepo, UnitImportMergeType mergeType)
+        {
+            if (mergeType == UnitImportMergeType.BlindMerge)
+            {
+                foreach (var newUnit in Units)
+                {
+                    var existingUnit = unitRepo.GetUnit(newUnit.RackUnitType, newUnit.UniverseNumber, newUnit.DimmerNumber);
+
+                    if (existingUnit == null)
+                    {
+                        // No existing Unit.
+                        unitRepo.InsertUnit(newUnit);
+                    }
+
+                    else
+                    {
+                        // Replace the Unit.
+                        unitRepo.ReplaceUnit(existingUnit, newUnit);
+                    }
+                }
+            }
+
+            if (mergeType == UnitImportMergeType.PreserveShortNames)
+            {
+                foreach (var newUnit in Units)
+                {
+                    var oldUnit = unitRepo.GetUnit(newUnit.RackUnitType, newUnit.UniverseNumber, newUnit.DimmerNumber);
+
+                    if (oldUnit == null)
+                    {
+                        // No existing Unit.
+                        unitRepo.InsertUnit(newUnit);
+                    }
+
+                    else
+                    {
+                        // Walk the Units Properties of the Existing and New Units, if LastImported Data matches the new Unit
+                        // carry the oldUnit's Short Name Over to the new Unit.
+
+                        // Channel Number
+                        if (oldUnit.LastImportedChannelNumber == newUnit.LastImportedChannelNumber)
+                        {
+                            newUnit.ChannelNumber = oldUnit.ChannelNumber;
+                        }
+
+                        // Instrument Name
+                        if (oldUnit.LastImportedInstrumentName == newUnit.LastImportedInstrumentName)
+                        {
+                            newUnit.InstrumentName = oldUnit.InstrumentName;
+                        }
+
+                        // MulticoreName
+                        if (oldUnit.LastImportedMulticoreName == newUnit.LastImportedMulticoreName)
+                        {
+                            newUnit.MulticoreName = oldUnit.MulticoreName;
+                        }
+
+                        // Position.
+                        if (oldUnit.LastImportedPosition == newUnit.LastImportedPosition)
+                        {
+                            newUnit.Position = oldUnit.Position;
+                        }
+
+                        // User Field 1.
+                        if (oldUnit.LastImportedUserField1 == newUnit.LastImportedUserField1)
+                        {
+                            newUnit.UserField1 = oldUnit.UserField1;
+                        }
+
+                        // User Field 2.
+                        if (oldUnit.LastImportedUserField2 == newUnit.LastImportedUserField2)
+                        {
+                            newUnit.UserField2 = oldUnit.UserField2;
+                        }
+
+                        // User Field 3.
+                        if (oldUnit.LastImportedUserField3 == newUnit.LastImportedUserField3)
+                        {
+                            newUnit.UserField3 = oldUnit.UserField3;
+                        }
+
+                        // User Field 4.
+                        if (oldUnit.LastImportedUserField4 == newUnit.LastImportedUserField4)
+                        {
+                            newUnit.UserField4 = oldUnit.UserField4;
+                        }
+
+                        // Replace the Unit in the DB.
+                        unitRepo.ReplaceUnit(oldUnit, newUnit);
+                    }
+                }
+            }
+
+            if (mergeType == UnitImportMergeType.Overwrite)
+            {
+                // Overwrite Data.
+                unitRepo.RemoveAllUnits();
+                unitRepo.Save();
+
+                unitRepo.InsertUnitRange(Units);
+            }
+
+            // Save.
+            unitRepo.Save();
+        }
+
         public void ImportData()
         {
             // Import Data from CSV.
@@ -325,6 +432,9 @@ namespace Dimmer_Labels_Wizard_WPF
                     newUnit.UserField2 = userField2Column == -1 ? string.Empty : fields[userField2Column];
                     newUnit.UserField3 = userField3Column == -1 ? string.Empty : fields[userField3Column];
                     newUnit.UserField4 = userField4Column == -1 ? string.Empty : fields[userField4Column];
+
+                    // Copy Imported Data into LastImported Data Properties.
+                    newUnit.CopyShortNamesToLastImportNames();
 
                     // Import Format specific Data.
                     if (importSettings.DimmerImportFormat == ImportFormat.Format2)

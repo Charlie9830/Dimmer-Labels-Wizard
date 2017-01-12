@@ -20,6 +20,11 @@ namespace Dimmer_Labels_Wizard_WPF
             SelectedDimmerImportFormat = _DimmerImportFormats.First();
             SelectedDistroImportFormat = _DistroImportFormats.First();
 
+            // RadioButton Initialiation.
+            _OverwriteExistingUnits = false;
+            _MergeAndPreserveShortNames = true;
+            _MergeWithExistingUnits = false;
+
             // Commands.
             _BrowseCommand = new RelayCommand(BrowseCommandExecute);
             _OkCommand = new RelayCommand(OkCommandExecute);
@@ -33,8 +38,6 @@ namespace Dimmer_Labels_Wizard_WPF
         protected static readonly ColumnHeader _NoColumnAssignment = new ColumnHeader("No Assignment", -1);
 
         protected readonly UnitRepository _UnitRepo = new UnitRepository(new PrimaryDB());
-
-        public bool InSetup = false;
         #endregion
 
         #region Public Non Bound Properties.
@@ -48,13 +51,92 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Binding Source Properties.
-        protected IEnumerable<FriendlyImportFormat> _DimmerImportFormats = new List<FriendlyImportFormat>()
+
+        protected bool _InSetup = false;
+
+        public bool InSetup
         {
-            new FriendlyImportFormat(ImportFormat.Format1, "Universe / Address (1/123)"),
-            new FriendlyImportFormat(ImportFormat.Format2, "Address (123)"),
-            new FriendlyImportFormat(ImportFormat.Format3, "Universe Letter Address (A123)"),
-            new FriendlyImportFormat(ImportFormat.Format4, "Universe Letter / Address (A/123)")
-        };
+            get { return _InSetup; }
+            set
+            {
+                if (_InSetup != value)
+                {
+                    _InSetup = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(InSetup));
+                }
+            }
+        }
+
+        protected bool _OverwriteExistingUnits;
+
+        public bool OverwriteExistingUnits
+        {
+            get { return _OverwriteExistingUnits; }
+            set
+            {
+                if (_OverwriteExistingUnits != value)
+                {
+                    _OverwriteExistingUnits = value;
+
+                    // RadioButton Settings.
+                    MergeWithExistingUnits = false;
+                    MergeAndPreserveShortNames = false;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(OverwriteExistingUnits));
+                }
+            }
+        }
+
+
+        protected bool _MergeWithExistingUnits;
+
+        public bool MergeWithExistingUnits
+        {
+            get { return _MergeWithExistingUnits; }
+            set
+            {
+                if (_MergeWithExistingUnits != value)
+                {
+                    _MergeWithExistingUnits = value;
+
+                    // RadioButton Settings.
+                    MergeAndPreserveShortNames = false;
+                    OverwriteExistingUnits = false;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(MergeWithExistingUnits));
+                }
+            }
+        }
+
+
+        protected bool _MergeAndPreserveShortNames;
+
+        public bool MergeAndPreserveShortNames
+        {
+            get { return _MergeAndPreserveShortNames; }
+            set
+            {
+                if (_MergeAndPreserveShortNames != value)
+                {
+                    _MergeAndPreserveShortNames = value;
+
+                    // RadioButton Settings.
+                    MergeWithExistingUnits = false;
+                    OverwriteExistingUnits = false;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(MergeAndPreserveShortNames));
+                }
+            }
+        }
+
+
+        protected IEnumerable<FriendlyImportFormat> _DimmerImportFormats =
+            FriendlyEnumCollections.FriendlyDimmerImportFormats;
 
         public IEnumerable<FriendlyImportFormat> DimmerImportFormats
         {
@@ -64,13 +146,8 @@ namespace Dimmer_Labels_Wizard_WPF
             }
         }
 
-        protected IEnumerable<FriendlyImportFormat> _DistroImportFormats = new List<FriendlyImportFormat>()
-        {
-            new FriendlyImportFormat(ImportFormat.Format1, "Distro Prefix Dimmer Number (ND123)"),
-            new FriendlyImportFormat(ImportFormat.Format2, "Dimmer Number (123)"),
-            new FriendlyImportFormat(ImportFormat.Format3, "Distro Prefix / Dimmer Number (ND/123)"),
-            new FriendlyImportFormat(ImportFormat.Format4, "ID Letter / Dimmer Number (A/123)")
-        };
+        protected IEnumerable<FriendlyImportFormat> _DistroImportFormats = 
+            FriendlyEnumCollections.FriendlyDistroImportFormats;
 
         public IEnumerable<FriendlyImportFormat> DistroImportFormats
         {
@@ -562,7 +639,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 if (InSetup)
                 {
                     // If InSetup, Data does not need to be Merged.
-                    CommitToDatabase(importer, false);
+                    importer.CommitToDatabase(_UnitRepo, UnitImportMergeType.Overwrite);
 
                     // Continue to Next Window.
                     OpenLabelManager(window);
@@ -572,7 +649,7 @@ namespace Dimmer_Labels_Wizard_WPF
                 {
                     // If not in Setup, by defualt, data should be Merged as the Window would have been called
                     // from the Database Manager window.
-                    CommitToDatabase(importer, true);
+                    importer.CommitToDatabase(_UnitRepo, GetMergeType());
 
                     window.Close();
                 }
@@ -596,18 +673,18 @@ namespace Dimmer_Labels_Wizard_WPF
 
                     if (InSetup)
                     {
+                        // Push Data to Database, if InSetup, Data does not need to be Merged.
+                        importer.CommitToDatabase(_UnitRepo, UnitImportMergeType.Overwrite);
+
                         // Continue to Next window.
                         OpenLabelManager(window);
-
-                        // Push Data to Database, if InSetup, Data does not need to be Merged.
-                        CommitToDatabase(importer, false);
                     }
                     
                     else
                     {
                         // Push Data to Database. If not in Setup, by default, data should be Merged as the
                         // Window would have been called from the Database Manager window.
-                        CommitToDatabase(importer, true);
+                        importer.CommitToDatabase(_UnitRepo, GetMergeType());
                         window.Close();
                     }
                 }
@@ -657,6 +734,29 @@ namespace Dimmer_Labels_Wizard_WPF
         #endregion
 
         #region Methods.
+        protected UnitImportMergeType GetMergeType()
+        {
+            if (OverwriteExistingUnits == true)
+            {
+                return UnitImportMergeType.Overwrite;
+            }
+
+            if (MergeWithExistingUnits == true)
+            {
+                return UnitImportMergeType.BlindMerge;
+            }
+
+            if (MergeAndPreserveShortNames == true)
+            {
+                return UnitImportMergeType.PreserveShortNames;
+            }
+
+            else
+            {
+                throw new NotSupportedException("At least one of the Merge Type Radio Buttons must be True");
+            }
+        }
+
         protected void OpenLabelManager(Window ownerWindow)
         {
             var labelManager = new LabelManager();
@@ -669,44 +769,6 @@ namespace Dimmer_Labels_Wizard_WPF
             }
 
             labelManager.Show();
-        }
-
-        protected void CommitToDatabase(UnitImporter importer, bool mergeData)
-        {
-            if (mergeData)
-            {
-                foreach (var element in importer.Units)
-                {
-                    if (_UnitRepo.GetUnit(element.RackUnitType, element.UniverseNumber, element.DimmerNumber) == null)
-                    {
-                        // No existing Unit.
-                        _UnitRepo.InsertUnit(element);
-                    }
-
-                    else
-                    {
-                        // Replace the Unit.
-                        _UnitRepo.ReplaceUnit(_UnitRepo.GetUnit(element.RackUnitType, element.UniverseNumber, element.DimmerNumber),
-                            element);
-                    }
-                }
-            }
-                
-
-            else
-            {
-                // Overwrite Data.
-                _UnitRepo.RemoveAllUnits();
-                _UnitRepo.InsertUnitRange(importer.Units);
-
-                foreach (var element in importer.Units)
-                {
-                    Console.WriteLine(element.DimmerNumber);
-                }
-            }
-
-            // Save.
-            _UnitRepo.Save();
         }
 
 

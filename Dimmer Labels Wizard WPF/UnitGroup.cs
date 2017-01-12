@@ -8,10 +8,15 @@ using System.Windows.Media;
 namespace Dimmer_Labels_Wizard_WPF
 {
     /// <summary>
-    /// Provides Grouping functionality to LabelColorManager.
+    /// Provides Grouping functionality to LabelColorManager and Label Field Short Names.
     /// </summary>
     public class UnitGroup : ViewModelBase
     {
+        /// <summary>
+        /// Used for creating Color Unit Groups.
+        /// </summary>
+        /// <param name="dimmerColorDictionary"></param>
+        /// <param name="distroColorDictionary"></param>
         public UnitGroup(ColorDictionary dimmerColorDictionary, ColorDictionary distroColorDictionary)
         {
             _DimmerColorDictionary = dimmerColorDictionary;
@@ -20,6 +25,20 @@ namespace Dimmer_Labels_Wizard_WPF
 
         ColorDictionary _DimmerColorDictionary;
         ColorDictionary _DistroColorDictionary;
+
+        /// <summary>
+        /// Used for creating Name Color Groups.
+        /// </summary>
+        /// <param name="originalImportName"></param>
+        /// <param name="shortName"></param>
+        public UnitGroup(string originalImportName, string shortName, LabelField labelField)
+        {
+            _OriginalImportName = originalImportName;
+            _ShortName = shortName;
+            _LabelField = labelField;
+        }
+
+        protected LabelField _LabelField;
 
         #region Binding Source Properties
 
@@ -93,6 +112,57 @@ namespace Dimmer_Labels_Wizard_WPF
                     // Notify.
                     OnPropertyChanged(nameof(IsSelected));
                 }
+            }
+        }
+
+
+        protected string _OriginalImportName;
+
+        public string OriginalImportName
+        {
+            get { return _OriginalImportName; }
+            set
+            {
+                if (_OriginalImportName != value)
+                {
+                    _OriginalImportName = value;
+
+                    // Notify.
+                    OnPropertyChanged(nameof(OriginalImportName));
+                }
+            }
+        }
+
+
+        protected string _ShortName;
+
+        public string ShortName
+        {
+            get { return _ShortName; }
+            set
+            {
+                if (_ShortName != value)
+                {
+                    _ShortName = value;
+
+                    // Update Other Units.
+                    foreach (var unit in Units)
+                    {
+                        unit.SetData(value, _LabelField);
+                    }
+
+                    // Notify.
+                    OnPropertyChanged(nameof(ShortName));
+                    OnPropertyChanged(nameof(ShortNameCharacterCount));
+                }
+            }
+        }
+
+        public int ShortNameCharacterCount
+        {
+            get
+            {
+                return ShortName.Length;
             }
         }
 

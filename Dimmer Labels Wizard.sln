@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseReset", "DatabaseRe
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DLW Installer", "DLW Installer\DLW Installer.vdproj", "{4F664DBC-BA69-4A37-970C-89199BD03ACD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DLW R and D", "DLW R and D\DLW R and D.csproj", "{19AB4F35-4D96-4555-953F-A5AAD0F41FD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{38002021-587B-4658-B9AB-5E6E4A5614E3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4F664DBC-BA69-4A37-970C-89199BD03ACD}.Debug|Any CPU.ActiveCfg = Debug
 		{4F664DBC-BA69-4A37-970C-89199BD03ACD}.Release|Any CPU.ActiveCfg = Release
+		{19AB4F35-4D96-4555-953F-A5AAD0F41FD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19AB4F35-4D96-4555-953F-A5AAD0F41FD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19AB4F35-4D96-4555-953F-A5AAD0F41FD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19AB4F35-4D96-4555-953F-A5AAD0F41FD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

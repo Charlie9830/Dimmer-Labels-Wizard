@@ -440,7 +440,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var uniqueTemplateWrappers = instance.UniqueCellTemplateWrappers;
             var upperCells = instance.UpperCells;
 
-            RefreshCellTemplates(newTemplate, uniqueTemplateWrappers, upperCells, CellVerticalPosition.Upper);
+            RefreshCellTemplates(newTemplate, uniqueTemplateWrappers, upperCells);
         }
 
 
@@ -467,8 +467,8 @@ namespace Dimmer_Labels_Wizard_WPF
 
             // Handle Existing Elements.
             // Refresh Upper and Lower Templates.
-            RefreshCellTemplates(upperStandardTemplate, newTemplateWrappers, upperCellCollection, CellVerticalPosition.Upper);
-            RefreshCellTemplates(lowerStandardTemplate, newTemplateWrappers, lowerCellCollection, CellVerticalPosition.Lower);
+            RefreshCellTemplates(upperStandardTemplate, newTemplateWrappers, upperCellCollection);
+            RefreshCellTemplates(lowerStandardTemplate, newTemplateWrappers, lowerCellCollection);
         }
 
         public LabelCellTemplate LowerCellTemplate
@@ -489,7 +489,7 @@ namespace Dimmer_Labels_Wizard_WPF
             var uniqueTemplateWrappers = instance.UniqueCellTemplateWrappers;
             var lowerCells = instance.LowerCells;
 
-            RefreshCellTemplates(newTemplate, uniqueTemplateWrappers, lowerCells, CellVerticalPosition.Lower);
+            RefreshCellTemplates(newTemplate, uniqueTemplateWrappers, lowerCells);
         }
 
         public double StripHeight
@@ -1339,53 +1339,72 @@ namespace Dimmer_Labels_Wizard_WPF
         }
 
 
-        private static void RefreshCellTemplates(LabelCellTemplate newTemplate, IEnumerable<LabelCellTemplateWrapper> uniqueTemplateWrappers,
-            ObservableCollection<LabelCell> cellCollection, CellVerticalPosition cellVerticalPosition)
+        private static void RefreshCellTemplates(LabelCellTemplate newStandardTemplate,
+            IEnumerable<LabelCellTemplateWrapper> uniqueTemplateWrappers,
+            ObservableCollection<LabelCell> cellCollection)
         {
-            int collectionCount = cellCollection.Count;
-
-            // Push change to Cells.
-            if (uniqueTemplateWrappers == null || uniqueTemplateWrappers.Count() == 0)
+            // Push Standard Cells to All Cells to atleast give Each cell a Standard Template and a Fallback value should
+            // it not receive a UniqueCellTemplate.
+            foreach (var cell in cellCollection)
             {
-                // No Unique Templates. Push Standard template.
-                for (int index = 0; index < collectionCount; index++)
+                cell.Style = newStandardTemplate.Style;
+            }
+
+            // Update each Cells UniqueCellTemplates collection. This collection should contain all possible Unique Cell
+            // Templates that this Strip may have, this allows for the Labelcell to determine internally if it needs to display
+            // a Unique Cell Template, alowing it to trigger this determination on Changes to UniqueCellTemplates or the DataReference.
+            if (uniqueTemplateWrappers != null)
+            {
+                foreach (var cell in cellCollection)
                 {
-                    cellCollection[index].Style = newTemplate.Style;
+                    cell.UniqueCellTemplates = uniqueTemplateWrappers.ToList();
                 }
             }
 
-            else
-            {
-                // Unique Templates.
-                foreach (var templateWrapper in uniqueTemplateWrappers)
-                {
-                    // Query for a List of the Horizontal indexes filtering for Cell Vertical Postion.
-                    var uniqueTemplateIndexes = (from address in templateWrapper.FilteredStripAddresses
-                                                 where address.VerticalPosition == cellVerticalPosition
-                                                 select address.HorizontalIndex).ToList();
+            ////int collectionCount = cellCollection.Count;
 
-                    for (int index = 0; index < collectionCount; index++)
-                    {
-                        var cell = cellCollection[index];
+            ////Push change to Cells.
+            ////if (uniqueTemplateWrappers == null || uniqueTemplateWrappers.Count() == 0)
+            ////{
+            ////    No Unique Templates.Push Standard template.
+            ////    for (int index = 0; index < collectionCount; index++)
+            ////    {
+            ////        cellCollection[index].Style = newTemplate.Style;
+            ////    }
+            ////}
 
-                        // Look for a matching Cell Index.
-                        int uniqueCellIndex = uniqueTemplateIndexes.FindIndex(item => item == index);
+            ////else
+            ////{
+            ////    Unique Templates.
+            ////    foreach (var templateWrapper in uniqueTemplateWrappers)
+            ////    {
+            ////        Query for a List of the Horizontal indexes filtering for Cell Vertical Postion.
+            ////       var uniqueTemplateIndexes = (from address in templateWrapper.FilteredStripAddresses
+            ////                                    where address.VerticalPosition == cellVerticalPosition
+            ////                                    select address.HorizontalIndex).ToList();
 
-                        if (uniqueCellIndex != -1)
-                        {
-                            // Assign Unique Template.
-                            cell.Style = templateWrapper.CellTemplate.Style;
-                        }
+            ////        for (int index = 0; index < collectionCount; index++)
+            ////        {
+            ////            var cell = cellCollection[index];
 
-                        else
-                        {
-                            // Assign Standard Template.
-                            cell.Style = newTemplate.Style;
-                        }
-                    }
-                }
-                
-            }
+            ////            Look for a matching Cell Index.
+            ////            int uniqueCellIndex = uniqueTemplateIndexes.FindIndex(item => item == index);
+
+            ////            if (uniqueCellIndex != -1)
+            ////            {
+            ////                Assign Unique Template.
+            ////               cell.Style = templateWrapper.CellTemplate.Style;
+            ////            }
+
+            ////            else
+            ////            {
+            ////                Assign Standard Template.
+            ////               cell.Style = newTemplate.Style;
+            ////            }
+            ////        }
+            ////    }
+
+            ////}
         }
         /// <summary>
         /// Refreshes Cell Collections with new Data Source. Will adjust Collection sizes.

@@ -47,7 +47,8 @@
             <ListBox DockPanel.Dock="Bottom" Width="160" Margin="5,10,5,5" Height="360"
                      ItemsSource="{Binding Path=ExistingUniqueCellTemplates}"
                      SelectedItem="{Binding Path=SelectedExistingTemplate}"
-                     ItemTemplate="{StaticResource UniqueTemplateItemTemplate}"/>
+                     ItemTemplate="{StaticResource UniqueTemplateItemTemplate}"
+                     Style="{StaticResource ListBoxStyle}"/>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Height="20"
                         VerticalAlignment="Center" HorizontalAlignment="Right">
                 <Button Content="+" Width="20" Height="20" Margin="0,0,3,0"
